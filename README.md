@@ -12,7 +12,9 @@ Project goal is to provide a easy way to translate a website on clientside:
 
 # Usage
 
-	// given merged loaded dictionaries
+Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('ns.special' and 'ns.common'):
+
+	// given loaded and merged dictionaries in i18next.js to:
 	{
 	  "en_US": {
 	    "ns.special": {
@@ -49,7 +51,8 @@ Project goal is to provide a easy way to translate a website on clientside:
 	  }
 	}
 
-	// use from code
+## you can translate using `$.t(key, [options])`
+
 	$.i18n.init({
 	    lng: 'en_US',
 	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
@@ -60,7 +63,7 @@ Project goal is to provide a easy way to translate a website on clientside:
 	    $.t('ns.common:add'); // -> add (from dev resourcefile)
 	});
 
-	// use jquery function
+## or you can just `$('.mySelector').i18n()`
 
 	// given
 	<ul class="nav">
