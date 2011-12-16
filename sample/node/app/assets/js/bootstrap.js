@@ -47,6 +47,7 @@
             $.i18n.init({
                 lng: 'de-DE',
                 ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}, // or just 'ns1' set default and list
+                resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
                 dynamicLoad: true,
                 sendMissing: true
             }, function() {

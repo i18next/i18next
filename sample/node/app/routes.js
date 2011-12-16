@@ -83,7 +83,7 @@ exports.actions = function(app, options) {
         }
     };
 
-    app.get('/locales/resource.json', function(req, res) {
+    app.get('/locales/resources.json', function(req, res) {
         res.contentType('json');
 
         languages = req.query.lng.split(' ');
