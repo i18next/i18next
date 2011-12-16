@@ -20,6 +20,7 @@
         interpolationSuffix: '__',
         reusePrefix: '$t(',
         reuseSuffix: ')',
+        pluralSuffix: '_plural',
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
         setJqueryExt: true
     };
