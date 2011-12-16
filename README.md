@@ -10,6 +10,50 @@ Project goal is to provide a easy way to translate a website on clientside:
 - post missing key-value pairs to server (for easy development -> just add missing key on serverside)
 - search for key _en-US_ first, than in _en_, than in fallback language (or de-DE, de , fallback)
 
+# Usage
+
+	// given merged loaded dictionaries
+	{
+	  "en_US": {
+	    "ns.special": {
+	      "app": {
+	        "name": "i18n"
+	      }
+	    },
+	    "ns.common": {}
+	  },
+	  "en": {
+	    "ns.special": {
+	      "app": {
+	        "area": "Area 51"
+	      }
+	    },
+	    "ns.common": {}
+	  },
+	  "dev": {
+	    "ns.common": {
+	      "app": {
+	        "company": {
+	          "name": "my company"
+	        }
+	      },
+	      "add": "add"
+	    },
+	    "ns.special": {}
+	  }
+	}
+
+	$.i18n.init({
+	    lng: 'en_US',
+	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
+	}, function() {
+	    $.t('app.name'); // -> i18n (from en-US resourcefile)
+	    $.t('app.area'); // -> Area 51 (from en resourcefile)
+	    $.t('ns.common:app.company.name'); // -> my company (from dev resourcefile)
+	    $.t('ns.common:add'); // -> add (from dev resourcefile)
+	});
+
+
 # License
 
 Copyright (c) 2011 Jan Mühlemann
