@@ -162,10 +162,10 @@
                 url: [o.dicoPath, '/add/', o.fallbackLng, '/', ns].join(''),
                 type: 'POST',
                 data: payload,
-                success: function(data, status, xhr){
-
+                success: function(data, status, xhr) {
+                    dictionary[o.fallbackLng][ns][key] = notfound;
                 },
-                error : function(xhr, status, error){
+                error : function(xhr, status, error) {
                     
                 },
                 dataType: "json"
