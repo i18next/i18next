@@ -43,8 +43,8 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 	    },
 	    "ns.special": {
 	    	"nav": {
-	    	  "home": "home"
-	          "1": "link1"
+	    	  "home": "home",
+	          "1": "link1",
 	    	  "2": "link2"
 	    	}
 	    }
