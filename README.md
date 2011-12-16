@@ -63,7 +63,7 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 	    $.t('ns.common:add'); // -> add (from dev resourcefile)
 	});
 
-## or you can just `$('.mySelector').i18n()`
+## or you can just `$('.mySelector').i18n()` assuming you have added attribute `data-i18n="key"` to your elements
 
 	// given
 	<ul class="nav">
@@ -79,6 +79,8 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 	}, function() {
 	    $('.nav').i18n();
 	});
+
+For missing keys (if option addMissing is set to true) will be send to server with actual text as defaultValue.
 
 
 # License
