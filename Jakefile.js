@@ -36,16 +36,8 @@ task('doc', [], function() {
     // - __target__ folder where to output the docs
     var docs = [
         { name: 'backbone', 
-          files: [
-              'app/assets/js/backbone/*.js'
-            , 'app/assets/js/backbone/base/*.js'
-            , 'app/assets/js/backbone/routers/controller/*.js'
-            , 'app/assets/js/backbone/routers/indexRouter.js'
-            , 'app/assets/js/backbone/views/controller/*.js'
-            , 'app/assets/js/bootstrap.js'
-            ], 
-          target: 'build/docs/client/backbone' },
-        { name: 'jakefile', files: ['Jakefile.js'], target: 'build/docs/jake' },
+          files: [ 'src/*.js' ], 
+        target: 'build/docs' }
     ];
 
     // __documents all items in docs array serial:__   
@@ -63,91 +55,30 @@ task('doc', [], function() {
     )();
 });
 
-// # client tasks
-// This are tasks used to generate the clientside assets of the application
-namespace('client', function () {
-    
-    // ## BUILD
-    // run `jake client:build`   
-    // or  `jake client:build[true]` for debugging output
-    // will build the projects clientsources.
-    desc('Builds the clientside scripts');
-    task('build', [], function(debug) {
-        
-        // first grab all javascript files for client app
-        // __hint:__ the option `{debug:true}` will return the full list - 
-        // in production we would only get the _client.js_.
-        var files = require('./app/assets/jsFileList').init({debug: true}).client;
-                
-        var readFiles = [],
-            remaining = files.length;
-            
-        // this will read all files from filesystem in parallel
-        for (i = 0, len = files.length; i < len; i++) {
-            
-            // as we need the index (current i) later to put the file into  
-            // the right readFiles array space we put the index into a closure function.
-            var read = function(index) {
-                fs.readFile(files[index], 'utf8', function(err, file) {
-                    if (err) console.log(('- failed to read ' + files[index]).red);
-                    
-                    readFiles[index] = file;
-                    if (debug) console.log(('read ' + files[index]).grey)
-                    remaining--;
-                    
-                    // go on if all files are read in
-                    if (remaining === 0) {
-                        process();
-                    }
-                });
-            };
-            
-            read(i);
-        }
-        
-        // process the _readFiles_ array
-        var process = function() {
-            
-            // fist create target directory and log on error and call fail
-            mkdirs(dirs('public/js'), 0755, function(err) {
-                if (err) {
-                    console.log('- failed to make folder public/js'.red);
-                    fail('client:build - failed to make folder public/js')
-                }
-                
-                // concate the files array
-                var concate =  readFiles.join('\n\n');
-                
-                // replace placeholders in the concated file.
-                concate = concate.replace('.#socketIoPort#.', port);
-                
-                // write the file to the _public/js_ folder
-                fs.writeFile('./public/js/client.js', concate, 'utf8', function(err) {
-                    if (err) { 
-                        console.log('- failed to write public/js/client.js'.red);
-                        fail('client:build - failed to write public/js/client.js')
-                    } else {
-                        
-                        // a basic smoosh configuration object
-                        smoosh.config({
-                          /*"VERSION": "0.1",*/
-                          "JAVASCRIPT": {
-                            "DIST_DIR": "/public/js",
-                            "client": [
-                              "public/js/client.js",
-                            ]
-                          }
-                        })
 
-                        // run smoosh to get minified version of the js file
-                        smoosh.build().analyze();
-                        
-                        console.log('+ written public/js/client.js successfully'.green);
-                    }
-                });
-            });
-        }
+// ## BUILD
+// run `jake client:build`   
+// or  `jake client:build[true]` for debugging output
+// will build the projects clientsources.
+desc('Builds the clientside scripts');
+task('build', [], function(debug) {
+    
+    // a basic smoosh configuration object
+    smoosh.config({
+      "VERSION": "0.1",
+      "JAVASCRIPT": {
+        "DIST_DIR": "build",
+        "i18next": [
+          "src/i18next.js"
+        ]
+      }
     });
+
+    // run smoosh to get minified version of the js file
+    smoosh.build().analyze();
+    
+    console.log('+ written public/js/client.js successfully'.green);
+
 });
 
 // # functions
