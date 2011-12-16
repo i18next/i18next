@@ -20,6 +20,9 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 	    "ns.special": {
 	      "app": {
 	        "name": "i18n"
+	        "insert": "you are __youAre__",
+            "child": "__count__ child",
+            "child_plural": "__count__ children"
 	      }
 	    },
 	    "ns.common": {}
@@ -62,6 +65,15 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 	    $.t('ns.common:app.company.name'); // -> my company (from dev resourcefile)
 	    $.t('ns.common:add'); // -> add (from dev resourcefile)
 	});
+
+### insert values into your translation
+
+	$.t('app.insert', {youAre: 'great'}) // -> you are great
+
+### support for plurals
+
+	$.t('app.child', {count: 1}) // -> 1 child
+    $.t('app.child', {count: 3}) // -> 3 children
 
 ## or you can just `$('.mySelector').i18n()` assuming you have added attribute `data-i18n="key"` to your elements
 

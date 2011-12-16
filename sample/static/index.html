@@ -12,10 +12,16 @@
 <body>
 
     <h3>translated via $.t('app.name')</h3>
-
     <span id="appname"></span> - <span id="apparea"></span>
-
     <button id="add">hello</button>
+
+    <h5>with value insert $.t('app.insert', {youAre: 'great'})</h5>
+    <span id="insert"></span>
+
+    <h5>with plural $.t('app.insert', {youAre: 'great'})</h5>
+    <span id="singular"></span> - <span id="plural"></span>
+
+    
 
     <h3>loaded via attribute 'data-i18n' and $('.nav').i18n();</h3>
     <ul class="nav">
@@ -33,6 +39,9 @@
         $('#add').text($.t('ns.common:add'));
         $('#appname').text($.t('app.name'));
         $('#apparea').text($.t('app.area'));
+        $('#insert').text($.t('app.insert', {youAre: 'great'}))
+        $('#singular').text($.t('app.child', {count: 1}))
+        $('#plural').text($.t('app.child', {count: 3}))
 
         $('.nav').i18n();
     });
