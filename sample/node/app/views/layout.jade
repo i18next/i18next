@@ -1,0 +1,38 @@
+!!! 5
+html(lang="en")
+    head
+        title= title
+        link(href='/css/bootstrap.min.css', rel='stylesheet', type='text/css')
+        link(href='/css/main.css', rel='stylesheet', type='text/css')
+
+    body
+        .topbar(data-dropdown='dropdown')
+            .topbar-inner
+                .container
+                    a.brand(href='#') my App
+                    ul.nav
+                        li.active: a(href='#') home
+                        li: a(href='#') link1
+                        li: a(href='#') link2
+                    form.pull-right
+                        input.span3(id='searchbox', type='text', placeholder='suchen...')
+                    ul.nav.secondary-nav
+                        li.dropdown
+                            a.dropdown-toggle(href='#') Hans Muster
+                            ul.dropdown-menu
+                                li: a(href="#") Secondary link 1
+                                li: a(href="#") Secondary link 2
+                                li.divider
+                                li: a(href="#") Secondary link 3
+        
+        .container
+            .content!= body
+            
+            footer
+                p myCompany 2011
+                
+        // include templates
+        include templates/person   
+        
+        each file in jsFiles
+            script(src=file, type='text/javascript')

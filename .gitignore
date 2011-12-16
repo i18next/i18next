@@ -1,0 +1,15 @@
+$ cat .gitignore
+
+# Can ignore specific files
+.settings.xml
+.monitor
+
+# Use wildcards as well
+*~
+#*.swp
+
+# Can also ignore all directories and files in a directory.
+node_modules
+node_modules/**/*
+build
+build/**/*

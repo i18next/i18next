@@ -1,0 +1,25 @@
+{
+  "author": "jamuhl"
+  , "name": "express-backbone-bootstrap"
+  , "version": "0.0.1"
+  , "private": false
+  , "main": "server.js"
+  , "engines": {
+        "node": "~v0.4.12"
+    }
+  , "dependencies": {
+      "express": "2.4.6"
+    , "gzippo": ">= 0.0.1"
+    , "stylus": ">= 0.0.1"
+    , "nib" : ">= 0.0.1"
+    , "jade": ">= 0.0.1"
+    , "smoosh": "0.2.x"
+    , "glob": ">= 0.0.1"
+    }
+  , "devDependencies": {
+      "docco": ">=0.0.1"
+    , "jake": ">=0.0.1"
+  }
+  , "scripts": {
+  }
+}

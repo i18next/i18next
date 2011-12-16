@@ -1,0 +1,43 @@
+@import "bootstrap_override.styl"
+
+// colors
+$highlight = #0069D6
+
+.personItem
+    position: relative
+    border: solid 1px $highlight
+    background: #fff
+    padding: 0 60px 0 20px
+    margin: 4px 0
+    border-radius: 2px
+       
+    &:hover
+        border: solid 1px $highlight
+        border-left: solid 2px $highlight
+        color: $highlight
+        padding: 0 60px 0 19px
+    
+    .name
+        font-family: Arial, sans-serif
+        font-size: 12pt
+        
+    &.selected
+        border: solid 1px $highlight
+        border-left: solid 2px $highlight
+        color: $highlight
+        padding: 0 60px 0 19px
+        
+    .itemcontent
+        padding: 12px 0 10px 0
+        
+    .commands
+        display: inline-block
+        position: absolute
+        right: 10px
+        bottom: 5px
+        
+        a
+            margin: 0 4px
+
+
+// add you styles

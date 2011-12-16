@@ -1,0 +1,43 @@
+script(id='person', type='text/html')
+    {{^selected}}
+    .itemcontent
+        span.name {{ firstname }} {{ lastname }}
+    {{/selected}}
+    {{#selected}}  
+    {{^editMode}}
+    .itemcontent 
+        span.name {{ firstname }} {{ lastname }}
+    .commands
+        a.deletePerson delete 
+        a.editPerson edit         
+    {{/editMode}} 
+    {{#editMode}}
+    form(id="editForm")
+        include includes/editForm
+        .actions
+            button.btn.cancelEdit abbrechen
+            &nbsp;
+            button.btn.primary.changePerson speichern
+    {{/editMode}}        
+    {{/selected}}
+
+script(id='personItem', type='text/html')
+    .itemcontent
+        span.name {{ firstname }} {{ lastname }}
+    {{#selected}}
+    .commands
+        a.removePerson delete
+    {{/selected}}
+
+script(id='addPerson', type='text/html')
+    h3 Add Person
+    form(id="addForm")
+        include includes/editForm
+        .actions
+            button.btn.cancel abbrechen
+            &nbsp;
+            button.btn.primary.createPerson hinzufügen
+            
+script(id='personSidebar', type='text/html')
+    h3 Knows:
+    ul.unstyled(id='persons')

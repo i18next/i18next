@@ -1,0 +1,203 @@
+﻿body {
+  font-family: Arial,serif;
+  font-size: 0.8em;
+}
+
+a {
+  text-decoration:none;
+  color: black;
+}
+
+.jasmine_reporter .failed a:visited, .jasmine_reporter .failed {
+  color: #993300;
+}
+
+.jasmine_reporter .passed a:visited, .jasmine_reporter .passed {
+  color: #5A753D;
+}
+
+.jasmine_reporter a:hover, .jasmine_reporter a:active {
+  color: #993300;
+}
+.jasmine_reporter .failed a:hover, .jasmine_reporter a:active .failed {
+  background-color: #993300;
+  color:white;
+}
+
+.jasmine_reporter .passed a:hover, .jasmine_reporter a:active .passed {
+  background-color: #5A753D;
+  color:white;
+}
+
+.run_spec {
+  float:right;
+  padding-right: 5px;
+  font-size: 0.9em;
+  text-decoration: none;
+}
+
+.skipped {
+  display: none;
+}
+
+.passed {
+  display: none;
+}
+
+
+.jasmine_reporter {
+  margin: 0 5px;
+}
+
+.banner {
+  color: #303;
+  padding: 5px;
+}
+
+.logo {
+  float: left;
+  font-size: 1.4em;
+  padding-left: 5px;
+}
+
+.logo .version {
+  font-size: .6em;
+  padding-left: 1em;
+  color: gray;
+}
+
+.runner.running {
+  background-color: yellow;
+}
+
+
+.options {
+  text-align: right;
+  font-size: .9em;
+}
+
+
+
+
+.suite {
+  margin: 15px 0 10px 0;
+  padding-left: 1em;
+  font-weight: bold;
+}
+
+.suite .spec {
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.suite.passed a {
+  color: #5A753D;
+}
+
+.spec {
+  padding-left: 3em;
+  clear: both;
+}
+
+
+
+.spec.failed a {
+  color: #993300;
+}
+
+.spec.passed a {
+  color: #5A753D;
+}
+
+.spec.skipped {
+  background-color: #bbb;
+}
+
+.messages {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.passed a {
+  color: #5A753D;
+}
+
+
+.failed a {
+  color: #993300;
+
+}
+
+.skipped {
+  color: #777;
+  background-color: #eee;
+  display: none;
+}
+
+
+/*.resultMessage {*/
+  /*white-space: pre;*/
+/*}*/
+
+.resultMessage span.result {
+  display: block;
+  line-height: 2em;
+  color:#993300;
+}
+
+.fail {
+  color: black;
+}
+
+.stackTrace {
+  /*visibility:hidden;*/
+  color: gray;
+  font-size: .9em
+}
+
+.finished-at {
+  padding-left: 1em;
+  font-size: .6em;
+}
+
+.show-passed .passed,
+.show-skipped .skipped {
+  display: block;
+}
+
+
+#jasmine_content {
+  position:fixed;
+  right: 100%;
+}
+
+.runner {
+  display: block;
+  margin: 5px 0;
+  height: 45px;
+  padding: 16px 0 0px 65px;
+}
+
+.runner.failed {
+  background-image: url(fail.png);
+  background-repeat:no-repeat;
+  background-position:10px;
+}
+
+.runner.passed {
+  background-image: url(go.png);
+  background-repeat:no-repeat;
+  background-position:10px;
+}
+
+.runner .failed a {
+  color: #993300;
+}
+
+.passed .description a {
+  color: #5A753D;
+}
+
+.finished-at {
+  visibility:hidden;
+}
