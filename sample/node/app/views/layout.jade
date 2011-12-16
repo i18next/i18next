@@ -11,9 +11,9 @@ html(lang="en")
                 .container
                     a.brand(href='#') my App
                     ul.nav
-                        li.active: a(href='#') home
-                        li: a(href='#') link1
-                        li: a(href='#') link2
+                        li.active: a(href='#', data-i18n='nav.home') home
+                        li: a(href='#', data-i18n='nav.1') link1
+                        li: a(href='#', data-i18n='nav.2') link2
                     form.pull-right
                         input.span3(id='searchbox', type='text', placeholder='suchen...')
                     ul.nav.secondary-nav

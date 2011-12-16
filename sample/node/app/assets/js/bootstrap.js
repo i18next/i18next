@@ -56,6 +56,8 @@
                 $('.page-header h1').text($.t('app.area'));
                 $('footer p').text($.t('ns.common:app.company.name'));
                 $('#newPerson').text($.t('ns.common:add'));
+
+                $('.nav').i18n();
             });
     };
     

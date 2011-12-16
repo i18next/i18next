@@ -38,12 +38,31 @@
 		if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
 		languages.push(o.fallbackLng);
 
-		fetch(o.lng, o.ns, o.dynamicLoad, function(err){
-			if(o.setDollarT){$.t = $.t || translate;} //shortcut
+		fetch(o.lng, o.ns, o.dynamicLoad, function(err) {
+			if (o.setDollarT) { 
+                $.t = $.t || translate; //shortcut
+                addJqueryFunct();
+            } 
 
 			if (cb) cb(translate);
 		});
 	}
+
+    function addJqueryFunct() {
+        $.fn.i18n = function (options) {
+            return this.each(function () {
+
+                var elements =  $(this).find('[data-i18n]');
+                elements.each(function () {
+                    var ele = $(this)
+                      , key = ele.attr('data-i18n')
+                      , val = ele.text();
+
+                    $(this).text($.t(key, { defaultValue: val }));
+                });
+            });
+        };
+    }
 
 	function applyReplacement(string,replacementHash){
 		$.each(replacementHash,function(key,value){
@@ -136,6 +155,8 @@
 
             var payload = {};
             payload[key] = notfound;
+
+            console.log(payload);
 
             $.ajax({
                 url: [o.dicoPath, '/add/', o.fallbackLng, '/', ns].join(''),

@@ -39,10 +39,17 @@ Project goal is to provide a easy way to translate a website on clientside:
 	      },
 	      "add": "add"
 	    },
-	    "ns.special": {}
+	    "ns.special": {
+	    	"nav": {
+	    	  "home": "home"
+	          "1": "link1"
+	    	  "2": "link2"
+	    	}
+	    }
 	  }
 	}
 
+	// use from code
 	$.i18n.init({
 	    lng: 'en_US',
 	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
@@ -51,6 +58,23 @@ Project goal is to provide a easy way to translate a website on clientside:
 	    $.t('app.area'); // -> Area 51 (from en resourcefile)
 	    $.t('ns.common:app.company.name'); // -> my company (from dev resourcefile)
 	    $.t('ns.common:add'); // -> add (from dev resourcefile)
+	});
+
+	// use jquery function
+
+	// given
+	<ul class="nav">
+		<li class="active"><a href="#" data-i18n="nav.home">home</a></li>
+		<li><a href="#" data-i18n="nav.1">link1</a></li>
+		<li><a href="#" data-i18n="nav.2">link2</a></li>
+	</ul>
+
+	// just do to translate all elements having attribute _data-i18n_
+	$.i18n.init({
+	    lng: 'en_US',
+	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
+	}, function() {
+	    $('.nav').i18n();
 	});
 
 

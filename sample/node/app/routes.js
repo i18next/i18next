@@ -119,7 +119,7 @@ exports.actions = function(app, options) {
                 if (x === keys.length - 1) {
                     value = value[keys[x]] = req.body[m];
                 } else {
-                    value = value[keys[x]] = {};
+                    value = value[keys[x]] = value[keys[x]] || {};
                 }
                 x++;
             }
@@ -157,7 +157,7 @@ exports.actions = function(app, options) {
     app.get('/data/persons', function(req, res) {
         res.contentType('json');
         
-        console.log(repository.persons);
+        //console.log(repository.persons);
         res.send(toResponse({'persons': repository.persons}));
     });
     
@@ -168,7 +168,7 @@ exports.actions = function(app, options) {
         
         repository.persons.push(person);
         
-        console.log(repository.persons);
+        //console.log(repository.persons);
         res.send(person);
     });
     
@@ -183,7 +183,7 @@ exports.actions = function(app, options) {
             }
         }
         
-        console.log(repository.persons);
+        //console.log(repository.persons);
         res.send(found);
     });
     
@@ -221,7 +221,7 @@ exports.actions = function(app, options) {
             console.log(repository.persons[foundAt].persons.splice(foundChildAt, 1));
         }
         
-        console.log(repository.persons);
+        //console.log(repository.persons);
         res.send(found);
     });
        
