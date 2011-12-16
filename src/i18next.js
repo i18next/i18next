@@ -156,8 +156,6 @@
             var payload = {};
             payload[key] = notfound;
 
-            console.log(payload);
-
             $.ajax({
                 url: [o.dicoPath, '/add/', o.fallbackLng, '/', ns].join(''),
                 type: 'POST',
