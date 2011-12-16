@@ -184,14 +184,18 @@
 
 			dictionary = {};
 
+            var todo = ns.namespaces.length * languages.length;
+
 			// load each file individual
 			$.each(ns.namespaces, function(nsIndex, nsValue) {
 				$.each(languages, function(lngIndex, lngValue) {
-					fetchOne(lngValue, nsValue, function(err) {
-						if (err) cb(err);
+					fetchOne(lngValue, nsValue, function(err) {	
+                        todo--; // wait for all done befor callback
+                        if (todo === 0) cb(null);
 					});
 				});
 			});
+
 
 		} else {
 
@@ -223,7 +227,11 @@
 				done(null);
 			},
 			error : function(xhr,status,error){
-				done('failed ns ' + ns + ' with lng ' + lng + ' error: ' + error);
+				if (!dictionary[lng]) dictionary[lng] = {};
+                if (!dictionary[lng][ns]) dictionary[lng][ns] = {};
+
+                dictionary[lng][ns] = {};
+                done(null);
 			},
 			dataType: "json"
 		});

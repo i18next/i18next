@@ -54,7 +54,7 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 ## you can translate using `$.t(key, [options])`
 
 	$.i18n.init({
-	    lng: 'en_US',
+	    lng: 'en-US',
 	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
 	}, function() {
 	    $.t('app.name'); // -> i18n (from en-US resourcefile)
@@ -74,13 +74,20 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 
 	// just do to translate all elements having attribute _data-i18n_
 	$.i18n.init({
-	    lng: 'en_US',
+	    lng: 'en-US',
 	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
 	}, function() {
 	    $('.nav').i18n();
 	});
 
 For missing keys (if option addMissing is set to true) will be send to server with actual text as defaultValue.
+
+# Sample usage
+
+In the folder you find two samples:
+
+- static (best open index.html in firefox - which has best support for _file:///_)
+- node (you will need to have node.js installed)
 
 
 # License
