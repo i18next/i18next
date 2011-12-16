@@ -37,7 +37,7 @@ task('doc', [], function() {
     var docs = [
         { name: 'backbone', 
           files: [ 'src/*.js' ], 
-        target: 'build/docs' }
+        target: 'docs' }
     ];
 
     // __documents all items in docs array serial:__   
@@ -67,7 +67,7 @@ task('build', [], function(debug) {
     smoosh.config({
       "VERSION": "0.1",
       "JAVASCRIPT": {
-        "DIST_DIR": "build",
+        "DIST_DIR": "./",
         "i18next": [
           "src/i18next.js"
         ]
@@ -154,6 +154,9 @@ var document = function(name, source, target, cb) {
             
             // else __move the files__ from the _docs folder_ to target folder `mv source target`
             else {
+
+                if (target === 'docs') return;
+
                 var move = exec('mv docs/* ' + target, function (err, stdout, stderr) {
                     
                     // on error log it and pass error to callback
