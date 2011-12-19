@@ -10,7 +10,6 @@
   , "dependencies": { }
   , "devDependencies": {
       "smoosh": "0.2.x"
-    , "docco": ">=0.0.1"
     , "jake": ">=0.0.1"
   }
   , "scripts": {
