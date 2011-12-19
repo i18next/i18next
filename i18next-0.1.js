@@ -4,7 +4,7 @@
     var o = {
         lng: false,
         fallbackLng: 'dev',
-        ns: 'root',
+        ns: 'translation',
         nsseparator: ':',
         keyseparator: '.',
         
