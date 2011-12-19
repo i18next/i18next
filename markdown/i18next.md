@@ -16,10 +16,10 @@ What else will you find:
 
 - support for pluralized strings
 - insertion of variables into translations
+- translation nesting
 
 What will you find in next release:
 
-- translation nesting
 - support for localstorage
 
 # Usage Sample
@@ -155,6 +155,16 @@ If no namespace is prepended to the resource key i18n will take the default name
     $.t('child', {count: 3}) // -> 3 children
 
 You can set the _pluralSuffix_ as an option on initialisation.
+
+### nesting
+
+    // given resource
+    "app": {
+      "area": "Area 51",
+      "district": "District 9 is more fun than $t(app.area)"
+    }
+
+    $.t('app.district') // -> District 9 is more fun than Area 51
 
 ### or you can just use the jquery function provided
 
