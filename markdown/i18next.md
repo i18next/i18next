@@ -57,7 +57,28 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 
     var takeDefault = $.t('app.type', {defaultValue: 'OpenSource'}); // -> OpenSource
 
-## Basic options for init
+### or you can just use the jquery function provided
+
+    // given resource
+    "nav": {
+      "home": "home",
+      "1": "link1",
+      "2": "link2"
+    }
+
+  // given html
+  <ul class="nav">
+    <li class="active"><a href="#" data-i18n="nav.home">home</a></li>
+    <li><a href="#" data-i18n="nav.1">link1</a></li>
+    <li><a href="#" data-i18n="nav.2">link2</a></li>
+  </ul>
+
+  // just do to translate all elements having attribute _data-i18n_
+    $('.nav').i18n();
+
+Every child element with an _data-i18n_ attribute will be translated with given key.
+
+### Basic options for init
 
     $.i18n.init({
           lng: 'en-US'                               // defaults to get from navigator
@@ -165,27 +186,6 @@ You can set the _pluralSuffix_ as an option on initialisation.
     }
 
     $.t('app.district') // -> District 9 is more fun than Area 51
-
-### or you can just use the jquery function provided
-
-    // given resource
-    "nav": {
-      "home": "home",
-      "1": "link1",
-      "2": "link2"
-    }
-
-	// given html
-	<ul class="nav">
-		<li class="active"><a href="#" data-i18n="nav.home">home</a></li>
-		<li><a href="#" data-i18n="nav.1">link1</a></li>
-		<li><a href="#" data-i18n="nav.2">link2</a></li>
-	</ul>
-
-	// just do to translate all elements having attribute _data-i18n_
-    $('.nav').i18n();
-
-Every child element with an _data-i18n_ attribute will be translated with given key.
 
 ### dynamic resouce route
 
