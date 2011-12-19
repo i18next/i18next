@@ -61,19 +61,19 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 
     // given resource
     "nav": {
-      "home": "home",
-      "1": "link1",
-      "2": "link2"
+        "home": "home",
+        "1": "link1",
+        "2": "link2"
     }
 
-  // given html
-  <ul class="nav">
-    <li class="active"><a href="#" data-i18n="nav.home">home</a></li>
-    <li><a href="#" data-i18n="nav.1">link1</a></li>
-    <li><a href="#" data-i18n="nav.2">link2</a></li>
-  </ul>
+    // given html
+    <ul class="nav">
+        <li class="active"><a href="#" data-i18n="nav.home">home</a></li>
+        <li><a href="#" data-i18n="nav.1">link1</a></li>
+        <li><a href="#" data-i18n="nav.2">link2</a></li>
+    </ul>
 
-  // just do to translate all elements having attribute _data-i18n_
+    // just do to translate all elements having attribute _data-i18n_
     $('.nav').i18n();
 
 Every child element with an _data-i18n_ attribute will be translated with given key.

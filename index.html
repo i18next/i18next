@@ -94,20 +94,20 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 
 <pre><code>// given resource
 &quot;nav&quot;: {
-  &quot;home&quot;: &quot;home&quot;,
-  &quot;1&quot;: &quot;link1&quot;,
-  &quot;2&quot;: &quot;link2&quot;
-}</code></pre>
+    &quot;home&quot;: &quot;home&quot;,
+    &quot;1&quot;: &quot;link1&quot;,
+    &quot;2&quot;: &quot;link2&quot;
+}
 
-<p>  // given html
-  &lt;ul class=&quot;nav&quot;&gt;
+// given html
+&lt;ul class=&quot;nav&quot;&gt;
     &lt;li class=&quot;active&quot;&gt;&lt;a href=&quot;#&quot; data-i18n=&quot;nav.home&quot;&gt;home&lt;/a&gt;&lt;/li&gt;
     &lt;li&gt;&lt;a href=&quot;#&quot; data-i18n=&quot;nav.1&quot;&gt;link1&lt;/a&gt;&lt;/li&gt;
     &lt;li&gt;&lt;a href=&quot;#&quot; data-i18n=&quot;nav.2&quot;&gt;link2&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;</p>
+&lt;/ul&gt;
 
-<p>  // just do to translate all elements having attribute <em>data-i18n</em>
-    $(&#39;.nav&#39;).i18n();</p>
+// just do to translate all elements having attribute _data-i18n_
+$(&#39;.nav&#39;).i18n();</code></pre>
 
 <p>Every child element with an <em>data-i18n</em> attribute will be translated with given key.</p>
 
@@ -263,6 +263,7 @@ seperated by a + which should be a space on serverside).</p>
 <h2>Inspiration</h2>
 
 <ul><li><a href="https://github.com/jpjoyal/jsperanto">jsperanto</a>.</li></ul>
+
 
 
 <!-- END CONTENT -->
