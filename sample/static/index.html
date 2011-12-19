@@ -21,6 +21,8 @@
     <h5>with plural $.t('app.insert', {youAre: 'great'})</h5>
     <span id="singular"></span> - <span id="plural"></span>
 
+    <h5>nesting</h5>
+    <span id="nesting"></span>
     
 
     <h3>loaded via attribute 'data-i18n' and $('.nav').i18n();</h3>
@@ -42,6 +44,7 @@
         $('#insert').text($.t('app.insert', {youAre: 'great'}))
         $('#singular').text($.t('app.child', {count: 1}))
         $('#plural').text($.t('app.child', {count: 3}))
+        $('#nesting').text($.t('app.district'));
 
         $('.nav').i18n();
     });
