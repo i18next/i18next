@@ -100,6 +100,10 @@ In the folder you find two samples:
 - node (you will need to have node.js installed)
 
 
+# Inspiration
+
+- [jsperanto](https://github.com/jpjoyal/jsperanto).
+
 # License
 
 Copyright (c) 2011 Jan Mühlemann
