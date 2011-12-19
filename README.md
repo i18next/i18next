@@ -1,7 +1,5 @@
 # Introduction
 
-This project is in progress and inspirated by [jsperanto](https://github.com/jpjoyal/jsperanto).
-
 Project goal is to provide a easy way to translate a website on clientside:
 
 - fetch resources from server
