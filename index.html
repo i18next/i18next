@@ -49,11 +49,11 @@ where always some features i missed.</p>
 
 <p>What else will you find:</p>
 
-<ul><li>support for pluralized strings</li><li>insertion of variables into translations</li></ul>
+<ul><li>support for pluralized strings</li><li>insertion of variables into translations</li><li>translation nesting</li></ul>
 
 <p>What will you find in next release:</p>
 
-<ul><li>translation nesting</li><li>support for localstorage</li></ul>
+<ul><li>support for localstorage</li></ul>
 
 <h1>Usage Sample</h1>
 
@@ -187,6 +187,16 @@ $.t(&#39;child&#39;, {count: 3}) // -&gt; 3 children</code></pre>
 
 <p>You can set the <em>pluralSuffix</em> as an option on initialisation.</p>
 
+<h3>nesting</h3>
+
+<pre><code>// given resource
+&quot;app&quot;: {
+  &quot;area&quot;: &quot;Area 51&quot;,
+  &quot;district&quot;: &quot;District 9 is more fun than $t(app.area)&quot;
+}
+
+$.t(&#39;app.district&#39;) // -&gt; District 9 is more fun than Area 51</code></pre>
+
 <h3>or you can just use the jquery function provided</h3>
 
 <pre><code>// given resource
@@ -253,6 +263,7 @@ seperated by a + which should be a space on serverside).</p>
 <h2>Inspiration</h2>
 
 <ul><li><a href="https://github.com/jpjoyal/jsperanto">jsperanto</a>.</li></ul>
+
 
 
 <!-- END CONTENT -->
