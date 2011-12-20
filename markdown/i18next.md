@@ -10,6 +10,7 @@ Mostly:
 - have a jquery function to translate all tags marked with a special attibute
 - have an option to post missing translations to the server
 - graceful fallback: if it doesn't find a translation in _en-US_ look first in _en_ befor taking value from fallback language
+- support for localstorage
 
 
 What else will you find:
@@ -17,10 +18,6 @@ What else will you find:
 - support for pluralized strings
 - insertion of variables into translations
 - translation nesting
-
-What will you find in next release:
-
-- support for localstorage
 
 # Usage Sample
 
@@ -33,11 +30,11 @@ Add your resourcefile under /locales/en-US/translation.json
 
     {
         "app": {
-          "name": "i18n"
+            "name": "i18n"
         },
         "creator": {
-          "firstname": "Jan",
-          "lastname": "Mühlemann"
+            "firstname": "Jan",
+            "lastname": "Mühlemann"
         }
     }
 
@@ -85,6 +82,7 @@ Every child element with an _data-i18n_ attribute will be translated with given 
         , fallbackLng: 'en'                          // defaults to 'dev'
         , ns: 'myNamespace'                          // defaults to 'tranalation'
         , resGetPath: 'myFolder/__lng__/__ns__.json' // defaults to 'locales/__lng__/__ns__.json' where ns = translation (default)
+        , useLocalStorage: false                     // defaults to true
         , resStore: {...}                            // if you don't want your resources to be loaded you can provide the resources
     });
 
