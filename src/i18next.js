@@ -31,7 +31,7 @@
       , replacementCounter = 0
       , languages = [];
 
-    function init(options, cb){
+    function init(options, cb) {
         $.extend(o, options);
 
         // namespace
@@ -41,6 +41,7 @@
 
         if(!o.lng) { o.lng = detectLanguage(); }
         currentLng = o.lng;
+        languages = [];
         languages.push(currentLng);
         if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
         languages.push(o.fallbackLng);
@@ -59,6 +60,10 @@
             if (o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
+    }
+
+    function setLng(lng, cb) {
+        init({lng: lng}, cb);
     }
 
     function addJqueryFunct() {
@@ -303,6 +308,7 @@
 
     $.i18n = $.i18n || {
         init: init,
+        setLng: setLng,
         t: translate,
         translate: translate,
         detectLanguage: detectLanguage,

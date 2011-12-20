@@ -12,6 +12,7 @@
         resPostPath: 'locales/add/__lng__/__ns__',
 
         resStore: false,
+        useLocalStorage: true,
 
         dynamicLoad: false,
         sendMissing: false,
@@ -30,8 +31,8 @@
       , replacementCounter = 0
       , languages = [];
 
-    function init(options, cb){
-        $.extend(o,options);
+    function init(options, cb) {
+        $.extend(o, options);
 
         // namespace
         if (typeof o.ns == 'string') {
@@ -40,15 +41,29 @@
 
         if(!o.lng) { o.lng = detectLanguage(); }
         currentLng = o.lng;
+        languages = [];
         languages.push(currentLng);
         if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
         languages.push(o.fallbackLng);
 
-        fetch(o.lng, o.ns, o.dynamicLoad, function(err) {
-            if (o.setJqueryExt) addJqueryFunct();
+        // return immidiatly if res are passed in
+        if (o.resStore) {
+            resStore = o.resStore;
+            cb(null);
+            return;
+        }
 
+        // else load them
+        sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
+            resStore = store;
+
+            if (o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
+    }
+
+    function setLng(lng, cb) {
+        init({lng: lng}, cb);
     }
 
     function addJqueryFunct() {
@@ -156,9 +171,123 @@
         }
 
         if (!found && o.sendMissing) {
+            sync.postMissing(ns, key, notfound);
+        }
 
+        return (found) ? found : notfound;
+    }
+
+    var sync = {
+
+        load: function(lngs, ns, useLocalStorage, dynamicLoad, cb) {
+            if (useLocalStorage) {
+                sync._loadLocal(lngs, function(err, store) {
+                    var missingLngs = [];
+                    for (i = 0, len = lngs.length; i < len; i++) {
+                        if (!store[lngs[i]]) missingLngs.push(lngs[i]);
+                    }
+
+                    if (missingLngs.length > 0) {
+                        sync._fetch(missingLngs, ns, dynamicLoad, function(err, fetched){
+                            $.extend(store, fetched);
+                            sync._storeLocal(fetched);
+
+                            cb(null, store);
+                        });
+                    } else {
+                        cb(null, store);
+                    }
+                });
+            } else {
+                sync._fetch(lngs, ns, dynamicLoad, function(err, store){
+                    cb(null, store);
+                });
+            }
+        },
+
+        _loadLocal: function(lngs, cb) {
+            var store = {};
+
+            if(window.localStorage) {
+
+                var todo = lngs.length;
+
+                $.each(lngs, function(key, lng) {
+                    var local = window.localStorage.getItem('res_' + lng);
+
+                    if (local) {
+                        store[lng] = JSON.parse(local);
+                    }
+
+                    todo--; // wait for all done befor callback
+                    if (todo === 0) cb(null, store);
+                });
+            }
+        },
+
+        _storeLocal: function(store) {
+            if(window.localStorage) {
+                for (var m in store) {
+                    window.localStorage.setItem('res_' + m, JSON.stringify(store[m]));
+                }
+            }
+            return;
+        },
+
+        _fetch: function(lngs, ns, dynamicLoad, cb) {
+            var store = {};
+            
+            if (!dynamicLoad) {
+
+                var todo = ns.namespaces.length * lngs.length;
+
+                // load each file individual
+                $.each(ns.namespaces, function(nsIndex, nsValue) {
+                    $.each(lngs, function(lngIndex, lngValue) {
+                        sync._fetchOne(lngValue, nsValue, function(err, data) { 
+                            store[lngValue] = {};
+                            store[lngValue][nsValue] = data;
+
+                            todo--; // wait for all done befor callback
+                            if (todo === 0) cb(null, store);
+                        });
+                    });
+                });
+
+
+            } else {
+
+                // load all needed stuff once
+                $.ajax({
+                    url: applyReplacement(o.resGetPath, {lng: lngs.join('+'), ns: ns.namespaces.join('+')}),
+                    success: function(data, status, xhr){
+                        cb(null, data);
+                    },
+                    error : function(xhr, status, error){
+                        cb('failed loading resource.json error: ' + error);
+                    },
+                    dataType: "json"
+                });
+                
+            }
+        },
+
+        _fetchOne: function(lng, ns, done) {
+            $.ajax({
+                url: applyReplacement(o.resGetPath, {lng: lng, ns: ns}),
+                success: function(data, status, xhr){
+                    done(null, data);
+                },
+                error : function(xhr, status, error){
+                    done(error, {});
+                },
+                dataType: "json"
+            });
+        },
+
+        postMissing: function(ns, key, defaultValue) {
             var payload = {};
-            payload[key] = notfound;
+            payload[key] = defaultValue;
 
             $.ajax({
                 url: applyReplacement(o.resPostPath, {lng: o.fallbackLng, ns: ns}),
@@ -171,73 +300,7 @@
                 dataType: "json"
             });
         }
-
-        return (found) ? found : notfound;
-    }
-
-    function fetch(lng, ns, dynamicLoad, cb) {
-        if (o.resStore) {
-            resStore = o.resStore;
-            cb(null);
-            return;
-        }
-        
-        if (!dynamicLoad) {
-
-            resStore = {};
-
-            var todo = ns.namespaces.length * languages.length;
-
-            // load each file individual
-            $.each(ns.namespaces, function(nsIndex, nsValue) {
-                $.each(languages, function(lngIndex, lngValue) {
-                    fetchOne(lngValue, nsValue, function(err) { 
-                        todo--; // wait for all done befor callback
-                        if (todo === 0) cb(null);
-                    });
-                });
-            });
-
-
-        } else {
-
-            // load all needed stuff once
-            $.ajax({
-                url: applyReplacement(o.resGetPath, {lng: languages.join('+'), ns: ns.namespaces.join('+')}),
-                success: function(data,status,xhr){
-                    resStore = data;
-                    cb(null);
-                },
-                error : function(xhr,status,error){
-                    cb('failed loading resource.json error: ' + error);
-                },
-                dataType: "json"
-            });
-            
-        }
-    }
-
-    function fetchOne(lng, ns, done){
-        $.ajax({
-            url: applyReplacement(o.resGetPath, {lng: lng, ns: ns}),
-            success: function(data,status,xhr){
-
-                if (!resStore[lng]) resStore[lng] = {};
-                if (!resStore[lng][ns]) resStore[lng][ns] = {};
-
-                resStore[lng][ns] = data;
-                done(null);
-            },
-            error : function(xhr,status,error){
-                if (!resStore[lng]) resStore[lng] = {};
-                if (!resStore[lng][ns]) resStore[lng][ns] = {};
-
-                resStore[lng][ns] = {};
-                done(null);
-            },
-            dataType: "json"
-        });
-    }
+    };
 
     function lng() {
         return currentLng;
@@ -245,6 +308,7 @@
 
     $.i18n = $.i18n || {
         init: init,
+        setLng: setLng,
         t: translate,
         translate: translate,
         detectLanguage: detectLanguage,
