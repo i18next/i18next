@@ -294,7 +294,7 @@
                 type: 'POST',
                 data: payload,
                 success: function(data, status, xhr) {
-                    resStore[o.fallbackLng][ns][key] = notfound;
+                    resStore[o.fallbackLng][ns][key] = defaultValue;
                 },
                 error : function(xhr, status, error) {},
                 dataType: "json"
