@@ -28,10 +28,10 @@
 
 <h3>Grab the sources</h3>
 
-<p>Download the latest sources from github:</p>
+<p>Download the latest source or fork the project from github:</p>
 
 <section id="download"> 
-    <a class="button" href="downloads/i18next-0.1.tar.gz">i18next v0.1</a> 
+    <a class="button" href="downloads/i18next-0.9.tar.gz">i18next v0.9</a> 
     <a class="button" href="downloads/staticSample.tar.gz">sample</a> 
 </section>
 
@@ -45,32 +45,28 @@ where always some features i missed.</p>
 
 <p>Mostly:</p>
 
-<ul><li>Usage of namespaces: split needed translation in more than one file (to share them to other projects, eg. for buttons)</li><li>load resourcesfiles from static source or from a dynamic generated file</li><li>have a jquery function to translate all tags marked with a special attibute</li><li>have an option to post missing translations to the server</li><li>graceful fallback: if it doesn&#39;t find a translation in <em>en-US</em> look first in <em>en</em> befor taking value from fallback language</li></ul>
+<ul><li>Usage of namespaces: split needed translation in more than one file (to share them to other projects, eg. for buttons)</li><li>load resourcesfiles from static source or from a dynamic generated file</li><li>have a jquery function to translate all tags marked with a special attibute</li><li>have an option to post missing translations to the server</li><li>graceful fallback: if it doesn&#39;t find a translation in <em>en-US</em> look first in <em>en</em> befor taking value from fallback language</li><li>support for localstorage</li></ul>
 
 <p>What else will you find:</p>
 
 <ul><li>support for pluralized strings</li><li>insertion of variables into translations</li><li>translation nesting</li></ul>
-
-<p>What will you find in next release:</p>
-
-<ul><li>support for localstorage</li></ul>
 
 <h1>Usage Sample</h1>
 
 <p>Add the i18next.js after the jquery JavaScript.</p>
 
 <pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;jquery-1.6.4.min.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;i18next.js&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;script type=&quot;text/javascript&quot; src=&quot;i18next-[version].js&quot;&gt;&lt;/script&gt;</code></pre>
 
 <p>Add your resourcefile under /locales/en-US/translation.json</p>
 
 <pre><code>{
     &quot;app&quot;: {
-      &quot;name&quot;: &quot;i18n&quot;
+        &quot;name&quot;: &quot;i18n&quot;
     },
     &quot;creator&quot;: {
-      &quot;firstname&quot;: &quot;Jan&quot;,
-      &quot;lastname&quot;: &quot;Mühlemann&quot;
+        &quot;firstname&quot;: &quot;Jan&quot;,
+        &quot;lastname&quot;: &quot;Mühlemann&quot;
     }
 }</code></pre>
 
@@ -84,6 +80,13 @@ where always some features i missed.</p>
 <p>After initialisation you can use <strong>$.t()</strong> instead of setting translation in the init callback:</p>
 
 <pre><code>var appName = $.t(&#39;app.name&#39;); // -&gt; i18n</code></pre>
+
+<p>To change the language:</p>
+
+<pre><code>$.i18n.setLng(&#39;de-DE&#39;, function(t) {
+    // will load needed resources if not provided on init 
+    // and set the currentLanguage
+});</code></pre>
 
 <p>If no resource string is found in the specific language (en-US) it will be looked up in <em>en</em> befor taken from fallback language. 
 If the key is not in the fallback language the key or a optional defaultValue will be displayed:</p>
@@ -118,6 +121,7 @@ $(&#39;.nav&#39;).i18n();</code></pre>
     , fallbackLng: &#39;en&#39;                          // defaults to &#39;dev&#39;
     , ns: &#39;myNamespace&#39;                          // defaults to &#39;tranalation&#39;
     , resGetPath: &#39;myFolder/__lng__/__ns__.json&#39; // defaults to &#39;locales/__lng__/__ns__.json&#39; where ns = translation (default)
+    , useLocalStorage: false                     // defaults to true
     , resStore: {...}                            // if you don&#39;t want your resources to be loaded you can provide the resources
 });</code></pre>
 

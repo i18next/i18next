@@ -24,7 +24,7 @@ What else will you find:
 Add the i18next.js after the jquery JavaScript.
 
     <script type="text/javascript" src="jquery-1.6.4.min.js"></script>
-    <script type="text/javascript" src="i18next.js"></script>
+    <script type="text/javascript" src="i18next-[version].js"></script>
 
 Add your resourcefile under /locales/en-US/translation.json
 
@@ -48,6 +48,13 @@ Init and use the module:
 After initialisation you can use __$.t()__ instead of setting translation in the init callback:
 
     var appName = $.t('app.name'); // -> i18n
+
+To change the language:
+
+    $.i18n.setLng('de-DE', function(t) {
+        // will load needed resources if not provided on init 
+        // and set the currentLanguage
+    });
 
 If no resource string is found in the specific language (en-US) it will be looked up in _en_ befor taken from fallback language. 
 If the key is not in the fallback language the key or a optional defaultValue will be displayed:
