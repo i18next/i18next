@@ -1,3 +1,12 @@
+### Grab the sources
+
+<Download the latest source or fork the project from github:
+
+<section id="download"> 
+    <a class="button" href="public/downloads/i18next-0.9.tar.gz">i18next v0.9</a> 
+    <a class="button" href="public/downloads/staticSample.tar.gz">sample</a> 
+</section>
+
 # Introduction
 
 There are a lot of great javascripts modules around to bring translation to clientside web, but there 
