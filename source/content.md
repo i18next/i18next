@@ -70,7 +70,7 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 
     var takeDefault = $.t('app.type', {defaultValue: 'OpenSource'}); // -> OpenSource
 
-### or you can just use the jquery function provided
+### or use the jquery function
 
     // given resource
     "nav": {
@@ -246,4 +246,4 @@ Just init i18n with the according options (you shouldn't use this option in prod
 
 ## Inspiration
 
-- [jsperanto](https://github.com/jpjoyal/jsperanto).
+- [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.

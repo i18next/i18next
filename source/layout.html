@@ -7,8 +7,10 @@
         <title>i18n - translation made easy</title>
         <link rel='stylesheet' href='public/css/main.css' type='text/css' media='all' />
         <link rel="stylesheet" href="public/css/prettify.css" type="text/css" />
+        <link rel="stylesheet" href="public/css/flexible-nav.min.css" type="text/css" />
         <script type="text/javascript" src="public/js/jquery-1.6.4.min.js"></script>
         <script type="text/javascript" src="public/js/prettify.js"></script>
+        <script type="text/javascript" src="public/js/flexible-nav.min.js"></script>
 </head>
 
 <body>
@@ -24,7 +26,7 @@
     </a>
 </header>
 
-<section>
+<section id='content'>
 
 [[content]]
 
@@ -40,7 +42,26 @@
         $('#title').fadeIn(1000, function(){
             $('#subtitle').fadeIn(2000);            
         });
+
+        var nav = new FlexibleNavMaker('#content h1, #content h2, #content h3').make().prependTo('body');
+        new FlexibleNav(nav);
+        $(".flexible-nav").hide();
     });
+
+    var fadeout = null;
+    window.onscroll = function() {
+        
+        clearTimeout(fadeout);
+                
+        $(".flexible-nav").fadeIn('slow')
+        
+        fadeout = setTimeout(outlineFadeOut,4000);
+    }
+    
+    var outlineFadeOut = function() {
+        $(".flexible-nav").fadeOut()
+    }
+
 </script>
 
 </body>

@@ -7,8 +7,10 @@
         <title>i18n - translation made easy</title>
         <link rel='stylesheet' href='public/css/main.css' type='text/css' media='all' />
         <link rel="stylesheet" href="public/css/prettify.css" type="text/css" />
+        <link rel="stylesheet" href="public/css/flexible-nav.min.css" type="text/css" />
         <script type="text/javascript" src="public/js/jquery-1.6.4.min.js"></script>
         <script type="text/javascript" src="public/js/prettify.js"></script>
+        <script type="text/javascript" src="public/js/flexible-nav.min.js"></script>
 </head>
 
 <body>
@@ -24,7 +26,7 @@
     </a>
 </header>
 
-<section>
+<section id='content'>
 
 <h3>Grab the sources</h3>
 
@@ -86,7 +88,7 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 
 <pre><code><span class="kwd">var</span><span class="pln"> takeDefault </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">'app.type'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln">defaultValue</span><span class="pun">:</span><span class="pln"> </span><span class="str">'OpenSource'</span><span class="pun">});</span><span class="pln"> </span><span class="com">// -&gt; OpenSource</span><span class="pln"><br /></span></code></pre>
 
-<h3>or you can just use the jquery function provided</h3>
+<h3>or use the jquery function</h3>
 
 <pre><code><span class="com">// given resource</span><span class="pln"><br /></span><span class="str">"nav"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"home"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"home"</span><span class="pun">,</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"1"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"link1"</span><span class="pun">,</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"2"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"link2"</span><span class="pln"><br /></span><span class="pun">}</span><span class="pln"><br /><br /></span><span class="com">// given html</span><span class="pln"><br /></span><span class="pun">&lt;</span><span class="pln">ul </span><span class="kwd">class</span><span class="pun">=</span><span class="str">"nav"</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">&lt;</span><span class="pln">li </span><span class="kwd">class</span><span class="pun">=</span><span class="str">"active"</span><span class="pun">&gt;&lt;</span><span class="pln">a href</span><span class="pun">=</span><span class="str">"#"</span><span class="pln"> data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"nav.home"</span><span class="pun">&gt;</span><span class="pln">home</span><span class="pun">&lt;</span><span class="str">/a&gt;&lt;/</span><span class="pln">li</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">&lt;li&gt;</span><span class="pun">&lt;</span><span class="pln">a href</span><span class="pun">=</span><span class="str">"#"</span><span class="pln"> data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"nav.1"</span><span class="pun">&gt;</span><span class="pln">link1</span><span class="pun">&lt;</span><span class="str">/a&gt;&lt;/</span><span class="pln">li</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">&lt;li&gt;</span><span class="pun">&lt;</span><span class="pln">a href</span><span class="pun">=</span><span class="str">"#"</span><span class="pln"> data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"nav.2"</span><span class="pun">&gt;</span><span class="pln">link2</span><span class="pun">&lt;</span><span class="str">/a&gt;&lt;/</span><span class="pln">li</span><span class="pun">&gt;</span><span class="pln"><br /></span><span class="pun">&lt;</span><span class="str">/ul&gt;<br /><br />/</span><span class="pun">/</span><span class="pln"> just </span><span class="kwd">do</span><span class="pln"> to translate all elements having attribute _data</span><span class="pun">-</span><span class="pln">i18n_<br />$</span><span class="pun">(</span><span class="str">'.nav'</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span><span class="pln"><br /></span></code></pre>
 
@@ -150,7 +152,7 @@ seperated by a + which should be a space on serverside).</p>
 <h2>Inspiration</h2>
 
 <ul>
-<li><a href="https://github.com/jpjoyal/jsperanto">jsperanto</a>.</li>
+<li><a href="https://github.com/jpjoyal/jsperanto">jsperanto</a>. Simple translation for your javascripts, yummy with your favorite templates engine like EJS.</li>
 </ul>
 
 </section>
@@ -165,7 +167,26 @@ seperated by a + which should be a space on serverside).</p>
         $('#title').fadeIn(1000, function(){
             $('#subtitle').fadeIn(2000);            
         });
+
+        var nav = new FlexibleNavMaker('#content h1, #content h2, #content h3').make().prependTo('body');
+        new FlexibleNav(nav);
+        $(".flexible-nav").hide();
     });
+
+    var fadeout = null;
+    window.onscroll = function() {
+        
+        clearTimeout(fadeout);
+                
+        $(".flexible-nav").fadeIn('slow')
+        
+        fadeout = setTimeout(outlineFadeOut,4000);
+    }
+    
+    var outlineFadeOut = function() {
+        $(".flexible-nav").fadeOut()
+    }
+
 </script>
 
 </body>
