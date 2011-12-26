@@ -1,12 +1,5 @@
 {
-	"app": {
-		"company": {
-		  "name": "my company"
-		}
-	},
-	"attr": {
-		"placeholder": "translated placeholder",
-		"title": "translated title"	
-	},
-	"add": "add"
+	"test": {
+		"simple_fallback_dev": "ok_from_common_dev"
+	}
 }

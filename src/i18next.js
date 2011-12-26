@@ -36,7 +36,7 @@
 
         // namespace
         if (typeof o.ns == 'string') {
-            o.ns = { namespaces: [o.namespace], defaultNs: o.namespace};
+            o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
         if(!o.lng) { o.lng = detectLanguage(); }
