@@ -26,17 +26,26 @@
     
 
     <h3>loaded via attribute 'data-i18n' and $('.nav').i18n();</h3>
+
+    <h5>basic text</h5>
     <ul class="nav">
         <li class="active"><a href="#" data-i18n="nav.home"></a></li>
         <li><a href="#" data-i18n="nav.1"></a></li>
         <li><a href="#" data-i18n="nav.2"></a></li>
     </ul>
 
+    <h5>extended usage of 'data-i18n' - apply to other attributes</h5>
+    <div id="extendedAttr">
+        <input data-i18n="[placeholder]ns.common:attr.placeholder;" type="text"></input>
+        <button data-i18n="[title]ns.common:attr.title;btn.hoverMe;"></button>
+    </div>
+
 	<script type="text/javascript">
 
     $.i18n.init({
         lng: 'en-US',
-        ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
+        ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
+        useLocalStorage: false
     }, function() {
         $('#add').text($.t('ns.common:add'));
         $('#appname').text($.t('app.name'));
@@ -47,6 +56,7 @@
         $('#nesting').text($.t('app.district'));
 
         $('.nav').i18n();
+        $('#extendedAttr').i18n();
     });
 
 

@@ -4,5 +4,9 @@
 		  "name": "my company"
 		}
 	},
+	"attr": {
+		"placeholder": "translated placeholder",
+		"title": "translated title"	
+	},
 	"add": "add"
 }
