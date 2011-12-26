@@ -1,10 +1,28 @@
+asyncTest("inject resStore on init", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        equals(t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+        equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+        equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+        start();
+    });
+});
+
 asyncTest("load one namespace", function() {
-
-
     $.i18n.init({
         lng: 'en-US',
         ns: 'ns.special',
-        useLocalStorage: false
+        useLocalStorage: false,
+        resStore: false
     }, function(t) {
         equals(t('test.simple_fallback_en-US'),'ok_from_special_en-US', 'from specific lng with namespace given');
         equals(t('test.simple_fallback_en'),'ok_from_special_en', 'from unspecific lng with namespace given');
@@ -15,12 +33,11 @@ asyncTest("load one namespace", function() {
 });
 
 asyncTest("load two namespaces", function() {
-
-
     $.i18n.init({
         lng: 'en-US',
         ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
-        useLocalStorage: false
+        useLocalStorage: false,
+        resStore: false
     }, function(t) {
         //$('#add').text($.t('ns.common:add'));
         equals(t('ns.common:test.simple_fallback_en-US'),'ok_from_common_en-US', 'from specific lng with namespace given');
@@ -34,3 +51,117 @@ asyncTest("load two namespaces", function() {
         start();
     });
 });
+
+asyncTest("extended functions", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { 
+                    nesting1: '1 $t(nesting2)'
+                } 
+            },
+            en: { translation: { 
+                    nesting2: '2 $t(nesting3)' 
+                } 
+            },            
+            'en-US': { translation: { 
+                    nesting3: '3',
+                    pluralTest: 'no plural',
+                    pluralTest_plural: 'plural',
+                    interpolationTest: 'added __toAdd__'
+                } 
+            }
+        }
+    }, function(t) {
+        equals(t('nesting1'),'1 2 3', 'nesting through 3 lngs');
+        equals(t('pluralTest', {count: 1}), 'no plural', 'call plural with count = 1');
+        equals(t('pluralTest', {count: 2}), 'plural', 'call plural with count = 2');
+        equals(t('interpolationTest', {toAdd: 'something'}), 'added something', 'insert variable into resource');
+
+        start();
+    });
+});
+
+asyncTest("jquery shortcut", function() {
+    var testJqueryShortcut = function() {
+        equals($.t('simpleTest_en-US'),'ok_from_en-US', 'via jquery shortcut');
+        start();
+    };
+
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {         
+            'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        testJqueryShortcut();
+    });
+});
+
+asyncTest("basic binding (.i18n()) test", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {         
+            'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        // given
+        $('#qunit-fixture').append('<button id="testBtn" data-i18n="simpleTest"></button>');
+
+        // when
+        $('#qunit-fixture').i18n();
+
+        // then
+        equals($('#testBtn').text(),'ok_from_en-US', 'set text via fn .i18n()');
+        start();
+    });
+});
+
+asyncTest("extended binding (.i18n()) test", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {         
+            'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        // given
+        $('#qunit-fixture').append('<button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button>');
+
+        // when
+        $('#qunit-fixture').i18n();
+
+        // then
+        equals($('#testBtn').text(),'ok_from_en-US', 'set text via fn .i18n()');
+        equals($('#testBtn').attr('title'),'ok_from_en-US', 'set other attr via fn .i18n()');
+        start();
+    });
+});
+
+asyncTest("switching lng", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {          
+            'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
+            'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
+        }
+    }, function(t) {
+        equals(t('simpleTest'),'ok_from_en-US', 'from specific lng');
+
+        $.i18n.setLng('de-DE', function(t) {
+            equals(t('simpleTest'),'ok_from_de-DE', 'from new specific lng');
+        });
+
+        start();
+    });
+});
+

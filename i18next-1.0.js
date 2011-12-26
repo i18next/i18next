@@ -36,7 +36,7 @@
 
         // namespace
         if (typeof o.ns == 'string') {
-            o.ns = { namespaces: [o.namespace], defaultNs: o.namespace};
+            o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
         if(!o.lng) { o.lng = detectLanguage(); }
@@ -49,14 +49,14 @@
         // return immidiatly if res are passed in
         if (o.resStore) {
             resStore = o.resStore;
-            cb(null);
+            if (o.setJqueryExt) addJqueryFunct();
+            if (cb) cb(translate);
             return;
         }
 
         // else load them
         sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
             resStore = store;
-
             if (o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
@@ -67,18 +67,50 @@
     }
 
     function addJqueryFunct() {
+        // $.t shortcut
         $.t = $.t || translate;
 
+        var parse = function(ele, key) {
+            if (key.length === 0) return;
+
+            var attr = 'text';
+
+            if (key.indexOf('[') === 0) {
+                var parts = key.split(']');
+                key = parts[1];
+                attr = parts[0].substr(1, parts[0].length-1);
+            }
+
+            if (key.indexOf(';') === key.length-1) {
+                key = key.substr(0, key.length-2);
+            }
+
+            if (attr === 'text') {
+                ele.text($.t(key, { defaultValue: ele.text() }));
+            } else {
+                ele.attr(attr, $.t(key, { defaultValue: ele.attr(attr) }));
+            }
+        };
+
+        // fn
         $.fn.i18n = function (options) {
             return this.each(function () {
 
                 var elements =  $(this).find('[data-i18n]');
                 elements.each(function () {
                     var ele = $(this)
-                      , key = ele.attr('data-i18n')
-                      , val = ele.text();
+                      , key = ele.attr('data-i18n');
 
-                    $(this).text($.t(key, { defaultValue: val }));
+                    if (key.indexOf(';') <= key.length-1) {
+                        var keys = key.split(';');
+
+                        $.each(keys, function(m, k) {
+                            parse(ele, k);
+                        });
+
+                    } else {
+                        parse(ele, key);
+                    }
                 });
             });
         };
@@ -245,7 +277,7 @@
                 $.each(ns.namespaces, function(nsIndex, nsValue) {
                     $.each(lngs, function(lngIndex, lngValue) {
                         sync._fetchOne(lngValue, nsValue, function(err, data) { 
-                            store[lngValue] = {};
+                            store[lngValue] = store[lngValue] || {};
                             store[lngValue][nsValue] = data;
 
                             todo--; // wait for all done befor callback

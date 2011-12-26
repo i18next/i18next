@@ -49,14 +49,14 @@
         // return immidiatly if res are passed in
         if (o.resStore) {
             resStore = o.resStore;
-            cb(null);
+            if (o.setJqueryExt) addJqueryFunct();
+            if (cb) cb(translate);
             return;
         }
 
         // else load them
         sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
             resStore = store;
-
             if (o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
