@@ -3,7 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-0.9.tar.gz">i18next v0.9</a> 
+    <a class="button" href="public/downloads/i18next-1.0.tar.gz">i18next v1.0</a> 
     <a class="button" href="public/downloads/staticSample.tar.gz">sample</a> 
 </section>
 
@@ -16,7 +16,7 @@ Mostly:
 
 - Usage of namespaces: split needed translation in more than one file (to share them to other projects, eg. for buttons)
 - load resourcesfiles from static source or from a dynamic generated file
-- have a jquery function to translate all tags marked with a special attibute
+- have a jquery function to translate all tags marked with a __data-i18n__ attibute
 - have an option to post missing translations to the server
 - graceful fallback: if it doesn't find a translation in _en-US_ look first in _en_ befor taking value from fallback language
 - support for localstorage
@@ -201,7 +201,33 @@ You can set the _pluralSuffix_ as an option on initialisation.
 
     $.t('app.district') // -> District 9 is more fun than Area 51
 
-### dynamic resouce route
+### NEW v1.0: extended use of the jquery function
+
+    // given resource
+    "attr": {
+        "placeholderText": "search...",
+        "hoverText": "don't have fear click me!",
+        "btnText": "search"
+    }
+
+    // given html
+    <form id="form">
+        <input type="text" data-i18n="[placeholder]attr.placeholderText"></input>
+        // the placeholder text will be set to 'search...'
+        <button data-i18n="[title]attr.hoverText;attr.btnText"></button>
+        // the button's text will be 'search' and on hover you should see 'don't have fear click me!'
+    </form>
+
+    // just do to translate all elements having attribute _data-i18n_
+    $('.nav').i18n();
+
+You can set multiple attributes from wihin the __data-i18n__ attribute by specifing the attribute by enclosing 
+it with __[...]__ followed by the translation key and seperated by __';'__.
+
+When not setting a specific attribute (like on the button in above sample -> attr.btnText) i18next will set the 
+text of given element.
+
+### dynamic (non-static) resouce route
 
 Set the _dynamicLoad_ option to true on init
 
@@ -247,3 +273,25 @@ Just init i18n with the according options (you shouldn't use this option in prod
 ## Inspiration
 
 - [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.
+
+## Release Notes
+
+### v1.0
+
+- support for other attribute translation via _data-i18n_ attribute
+- bug fixes
+- tests with qunit and sinon
+
+### v0.9
+
+- multi-namespace support
+- loading static files or dynamic route
+- jquery function for _data-i18n_ attibute
+- post missing translations to the server
+- graceful fallback en-US -> en -> fallbackLng
+- localstorage support
+- support for pluralized strings
+- insertion of variables into translations
+- translation nesting
+
+

@@ -33,7 +33,7 @@
 <p><Download the latest source or fork the project from github:</p>
 
 <p><section id="download"> 
-    <a class="button" href="public/downloads/i18next-0.9.tar.gz">i18next v0.9</a> 
+    <a class="button" href="public/downloads/i18next-1.0.tar.gz">i18next v1.0</a> 
     <a class="button" href="public/downloads/staticSample.tar.gz">sample</a> 
 </section></p>
 
@@ -47,7 +47,7 @@ where always some features i missed.</p>
 <ul>
 <li>Usage of namespaces: split needed translation in more than one file (to share them to other projects, eg. for buttons)</li>
 <li>load resourcesfiles from static source or from a dynamic generated file</li>
-<li>have a jquery function to translate all tags marked with a special attibute</li>
+<li>have a jquery function to translate all tags marked with a <strong>data-i18n</strong> attibute</li>
 <li>have an option to post missing translations to the server</li>
 <li>graceful fallback: if it doesn't find a translation in <em>en-US</em> look first in <em>en</em> befor taking value from fallback language</li>
 <li>support for localstorage</li>
@@ -130,7 +130,17 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 
 <pre><code><span class="com">// given resource</span><span class="pln"><br /></span><span class="str">"app"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; </span><span class="str">"area"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Area 51"</span><span class="pun">,</span><span class="pln"><br />&nbsp; </span><span class="str">"district"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"District 9 is more fun than $t(app.area)"</span><span class="pln"><br /></span><span class="pun">}</span><span class="pln"><br /><br />$</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">'app.district'</span><span class="pun">)</span><span class="pln"> </span><span class="com">// -&gt; District 9 is more fun than Area 51</span><span class="pln"><br /></span></code></pre>
 
-<h3>dynamic resouce route</h3>
+<h3>NEW v1.0: extended use of the jquery function</h3>
+
+<pre><code><span class="com">// given resource</span><span class="pln"><br /></span><span class="str">"attr"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"placeholderText"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"search..."</span><span class="pun">,</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"hoverText"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"don't have fear click me!"</span><span class="pun">,</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"btnText"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"search"</span><span class="pln"><br /></span><span class="pun">}</span><span class="pln"><br /><br /></span><span class="com">// given html</span><span class="pln"><br /></span><span class="pun">&lt;</span><span class="pln">form id</span><span class="pun">=</span><span class="str">"form"</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">&lt;</span><span class="pln">input type</span><span class="pun">=</span><span class="str">"text"</span><span class="pln"> data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"[placeholder]attr.placeholderText"</span><span class="pun">&gt;&lt;/</span><span class="pln">input</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="com">// the placeholder text will be set to 'search...'</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">&lt;</span><span class="pln">button data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"[title]attr.hoverText;attr.btnText"</span><span class="pun">&gt;&lt;/</span><span class="pln">button</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="com">// the button's text will be 'search' and on hover you should see 'don't have fear click me!'</span><span class="pln"><br /></span><span class="pun">&lt;</span><span class="str">/form&gt;<br /><br />/</span><span class="pun">/</span><span class="pln"> just </span><span class="kwd">do</span><span class="pln"> to translate all elements having attribute _data</span><span class="pun">-</span><span class="pln">i18n_<br />$</span><span class="pun">(</span><span class="str">'.nav'</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span><span class="pln"><br /></span></code></pre>
+
+<p>You can set multiple attributes from wihin the <strong>data-i18n</strong> attribute by specifing the attribute by enclosing 
+it with <strong>[...]</strong> followed by the translation key and seperated by <strong>';'</strong>.</p>
+
+<p>When not setting a specific attribute (like on the button in above sample -> attr.btnText) i18next will set the 
+text of given element.</p>
+
+<h3>dynamic (non-static) resouce route</h3>
 
 <p>Set the <em>dynamicLoad</em> option to true on init</p>
 
@@ -153,6 +163,30 @@ seperated by a + which should be a space on serverside).</p>
 
 <ul>
 <li><a href="https://github.com/jpjoyal/jsperanto">jsperanto</a>. Simple translation for your javascripts, yummy with your favorite templates engine like EJS.</li>
+</ul>
+
+<h2>Release Notes</h2>
+
+<h3>v1.0</h3>
+
+<ul>
+<li>support for other attribute translation via <em>data-i18n</em> attribute</li>
+<li>bug fixes</li>
+<li>tests with qunit and sinon</li>
+</ul>
+
+<h3>v0.9</h3>
+
+<ul>
+<li>multi-namespace support</li>
+<li>loading static files or dynamic route</li>
+<li>jquery function for <em>data-i18n</em> attibute</li>
+<li>post missing translations to the server</li>
+<li>graceful fallback en-US -> en -> fallbackLng</li>
+<li>localstorage support</li>
+<li>support for pluralized strings</li>
+<li>insertion of variables into translations</li>
+<li>translation nesting</li>
 </ul>
 
 </section>
