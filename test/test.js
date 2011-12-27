@@ -2,6 +2,7 @@ asyncTest("inject resStore on init", function() {
     $.i18n.init({
         lng: 'en-US',
         ns: 'translation',
+        dynamicLoad: false,
         useLocalStorage: false,
         resStore: {
             dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
@@ -21,6 +22,7 @@ asyncTest("load one namespace", function() {
     $.i18n.init({
         lng: 'en-US',
         ns: 'ns.special',
+        dynamicLoad: false,
         useLocalStorage: false,
         resStore: false
     }, function(t) {
@@ -36,6 +38,7 @@ asyncTest("load two namespaces", function() {
     $.i18n.init({
         lng: 'en-US',
         ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
+        dynamicLoad: false,
         useLocalStorage: false,
         resStore: false
     }, function(t) {
@@ -50,6 +53,37 @@ asyncTest("load two namespaces", function() {
 
         start();
     });
+});
+
+asyncTest("load non-static (dynamcic) route", function() {
+
+    var res = {
+        dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+        en: { translation: { simpleTest_en: 'ok_from_en' } },            
+        'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+    };
+
+    var server = sinon.fakeServer.create();
+
+    server.respondWith([200, { "Content-Type": "application/json" },
+                        JSON.stringify(res)]);
+
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
+        dynamicLoad: true,
+        useLocalStorage: false
+    }, function(t) {
+        equals(t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+        equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+        equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+        server.restore();
+        start();
+    });
+
+    server.respond();
 });
 
 asyncTest("extended functions", function() {
@@ -165,3 +199,30 @@ asyncTest("switching lng", function() {
     });
 });
 
+asyncTest("auto upload missing resources", function() {
+    var server = sinon.fakeServer.create();
+    var stub = sinon.stub(jQuery, "ajax"); 
+
+    server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
+
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        sendMissing: true,
+        useLocalStorage: false,
+        resStore: {          
+            'en-US': { translation: { } },
+            'en': { translation: { } },
+            'dev': { translation: { } }
+        }
+    }, function(t) {
+        t('simpleTest');
+        server.respond();
+
+        ok(stub.calledOnce); 
+
+        server.restore();
+        stub.restore();
+        start();
+    });
+});
