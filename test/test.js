@@ -118,6 +118,33 @@ asyncTest("extended functions", function() {
     });
 });
 
+asyncTest("extended plural support", function() {
+    $.i18n.init({
+        lng: 'sl',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { } },
+            sl: { translation: { 
+                    beer: 'Pivo',
+                    beer_plural_two: 'Pivi',
+                    beer_plural_few: 'Piva',
+                    beer_plural: 'no idea ;)'
+                } 
+            },            
+            'sl-??': { translation: { } }
+        }
+    }, function(t) {
+        equals(t('beer', {count: 1}), 'Pivo', 'call plural with count = 1');
+        equals(t('beer', {count: 2}), 'Pivi', 'call plural with count = 2');
+        equals(t('beer', {count: 3}), 'Piva', 'call plural with count = 3');
+        equals(t('beer', {count: 4}), 'Piva', 'call plural with count = 4');
+        equals(t('beer', {count: 5}), 'no idea ;)', 'call plural with count = 5');
+
+        start();
+    });
+});
+
 asyncTest("jquery shortcut", function() {
     var testJqueryShortcut = function() {
         equals($.t('simpleTest_en-US'),'ok_from_en-US', 'via jquery shortcut');
