@@ -70,7 +70,7 @@
         // $.t shortcut
         $.t = $.t || translate;
 
-        var parse = function(ele, key) {
+        function parse(ele, key) {
             if (key.length === 0) return;
 
             var attr = 'text';
@@ -90,7 +90,7 @@
             } else {
                 ele.attr(attr, $.t(key, { defaultValue: ele.attr(attr) }));
             }
-        };
+        }
 
         // fn
         $.fn.i18n = function (options) {
@@ -135,14 +135,6 @@
             translated = translated.replace(token,translated_token);
         }
         return translated;
-    }
-
-    function detectLanguage() {
-        if (navigator) {
-            return (navigator.language) ? navigator.language : navigator.userLanguage;
-        } else {
-            return o.fallbackLng;
-        }
     }
 
     function needsPlural(options){
@@ -207,6 +199,14 @@
         }
 
         return (found) ? found : notfound;
+    }
+
+    function detectLanguage() {
+        if (navigator) {
+            return (navigator.language) ? navigator.language : navigator.userLanguage;
+        } else {
+            return o.fallbackLng;
+        }
     }
 
     var sync = {
@@ -344,6 +344,7 @@
         t: translate,
         translate: translate,
         detectLanguage: detectLanguage,
+        sync: sync,
         lng: lng
     };
 })(jQuery);
