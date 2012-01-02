@@ -189,7 +189,7 @@
         }
 
         if (needsPlural(options)) {
-            var optionsSansCount = $.extend({},options);
+            var optionsSansCount = f.extend({},options);
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
             var pluralKey = key + o.pluralSuffix;
