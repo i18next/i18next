@@ -48,7 +48,8 @@
     var f = {
         extend: $ ? $.extend : undefined,
         each: $ ? $.each : undefined,
-        ajax: $ ? $.ajax : undefined
+        ajax: $ ? $.ajax : undefined,
+        detectLanguage: detectLanguage
     };
 
     var resStore = false
@@ -64,7 +65,7 @@
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
-        if(!o.lng) { o.lng = detectLanguage(); }
+        if(!o.lng) { o.lng = f.detectLanguage(); }
         currentLng = o.lng;
         languages = [];
         languages.push(currentLng);
@@ -403,10 +404,11 @@
     i18n.setLng = setLng;
     i18n.t = translate;
     i18n.translate = translate;
-    i18n.detectLanguage = detectLanguage;
+    i18n.detectLanguage = f.detectLanguage;
     i18n.pluralExtensions = pluralExtensions;
     i18n.sync = sync;
     i18n.functions = f;
     i18n.lng = lng;
+    i18n.fallbackLng = o.fallbackLng;
 
 })();
