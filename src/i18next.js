@@ -44,7 +44,7 @@
         languages = [];
         languages.push(currentLng);
         if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
-        languages.push(o.fallbackLng);
+        if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
 
         // return immidiatly if res are passed in
         if (o.resStore) {
