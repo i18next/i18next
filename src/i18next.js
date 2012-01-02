@@ -46,9 +46,9 @@
     // move dependent functions to a container so that
     // they can be overriden easier in no jquery environment (node.js)
     var f = {
-        extend: $.extend,
-        each: $.each,
-        ajax: $.ajax
+        extend: $ ? $.extend : undefined,
+        each: $ ? $.each : undefined,
+        ajax: $ ? $.ajax : undefined
     };
 
     var resStore = false
@@ -399,16 +399,14 @@
     }
 
     // extend main object with main api interface
-    f.extend(i18n, {
-        init: init,
-        setLng: setLng,
-        t: translate,
-        translate: translate,
-        detectLanguage: detectLanguage,
-        pluralExtensions: pluralExtensions,
-        sync: sync,
-        functions: f,
-        lng: lng
-    });
+    i18n.init = init;
+    i18n.setLng = setLng;
+    i18n.t = translate;
+    i18n.translate = translate;
+    i18n.detectLanguage = detectLanguage;
+    i18n.pluralExtensions = pluralExtensions;
+    i18n.sync = sync;
+    i18n.functions = f;
+    i18n.lng = lng;
 
 })();

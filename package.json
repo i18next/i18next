@@ -1,6 +1,6 @@
 {
   "author": "jamuhl"
-  , "name": "express-backbone-bootstrap"
+  , "name": "i18next-clientscript"
   , "version": "0.0.1"
   , "private": false
   , "main": "server.js"
