@@ -1,4 +1,21 @@
-(function($) {
+(function() {
+
+    var root = this
+      , $ = root.jQuery
+      , i18n = {};
+
+    // Export the i18next object for **CommonJS**. 
+    // If we're not in CommonJS, add `i18n` to the
+    // global object or to jquery.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = i18n;
+    } else {
+        if ($) {
+            $.i18n = $.i18n || i18n;
+        } else {
+            root.i18n = root.i18n || i18n;
+        }
+    }
 
     //defaults
     var o = {
@@ -57,7 +74,7 @@
         // return immidiatly if res are passed in
         if (o.resStore) {
             resStore = o.resStore;
-            if (o.setJqueryExt) addJqueryFunct();
+            if ($ && o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
             return;
         }
@@ -381,7 +398,8 @@
         return currentLng;
     }
 
-    $.i18n = $.i18n || {
+    // extend main object with main api interface
+    f.extend(i18n, {
         init: init,
         setLng: setLng,
         t: translate,
@@ -391,5 +409,6 @@
         sync: sync,
         functions: f,
         lng: lng
-    };
-})(jQuery);
+    });
+
+})();
