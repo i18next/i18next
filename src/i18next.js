@@ -26,13 +26,21 @@
         setJqueryExt: true
     };
 
+    // move dependent functions to a container so that
+    // they can be overriden easier in no jquery environment (node.js)
+    var f = {
+        extend: $.extend,
+        each: $.each,
+        ajax: $.ajax
+    };
+
     var resStore = false
       , currentLng = false
       , replacementCounter = 0
       , languages = [];
 
     function init(options, cb) {
-        $.extend(o, options);
+        f.extend(o, options);
 
         // namespace
         if (typeof o.ns == 'string') {
@@ -117,7 +125,7 @@
     }
 
     function applyReplacement(string,replacementHash){
-        $.each(replacementHash,function(key,value){
+        f.each(replacementHash,function(key,value){
             string = string.replace([o.interpolationPrefix,key,o.interpolationSuffix].join(''),value);
         });
         return string;
@@ -223,7 +231,7 @@
 
                     if (missingLngs.length > 0) {
                         sync._fetch(missingLngs, ns, dynamicLoad, function(err, fetched){
-                            $.extend(store, fetched);
+                            f.extend(store, fetched);
                             sync._storeLocal(fetched);
 
                             cb(null, store);
@@ -246,7 +254,7 @@
 
                 var todo = lngs.length;
 
-                $.each(lngs, function(key, lng) {
+                f.each(lngs, function(key, lng) {
                     var local = window.localStorage.getItem('res_' + lng);
 
                     if (local) {
@@ -276,8 +284,8 @@
                 var todo = ns.namespaces.length * lngs.length;
 
                 // load each file individual
-                $.each(ns.namespaces, function(nsIndex, nsValue) {
-                    $.each(lngs, function(lngIndex, lngValue) {
+                f.each(ns.namespaces, function(nsIndex, nsValue) {
+                    f.each(lngs, function(lngIndex, lngValue) {
                         sync._fetchOne(lngValue, nsValue, function(err, data) { 
                             store[lngValue] = store[lngValue] || {};
                             store[lngValue][nsValue] = data;
@@ -292,7 +300,7 @@
             } else {
 
                 // load all needed stuff once
-                $.ajax({
+                f.ajax({
                     url: applyReplacement(o.resGetPath, {lng: lngs.join('+'), ns: ns.namespaces.join('+')}),
                     success: function(data, status, xhr){
                         cb(null, data);
@@ -307,7 +315,7 @@
         },
 
         _fetchOne: function(lng, ns, done) {
-            $.ajax({
+            f.ajax({
                 url: applyReplacement(o.resGetPath, {lng: lng, ns: ns}),
                 success: function(data, status, xhr){
                     done(null, data);
@@ -323,7 +331,7 @@
             var payload = {};
             payload[key] = defaultValue;
 
-            $.ajax({
+            f.ajax({
                 url: applyReplacement(o.resPostPath, {lng: o.fallbackLng, ns: ns}),
                 type: 'POST',
                 data: payload,
@@ -381,6 +389,7 @@
         detectLanguage: detectLanguage,
         pluralExtensions: pluralExtensions,
         sync: sync,
+        functions: f,
         lng: lng
     };
 })(jQuery);

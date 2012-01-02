@@ -228,7 +228,7 @@ asyncTest("switching lng", function() {
 
 asyncTest("auto upload missing resources", function() {
     var server = sinon.fakeServer.create();
-    var stub = sinon.stub(jQuery, "ajax"); 
+    var stub = sinon.stub($.i18n.functions, "ajax"); 
 
     server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
 
