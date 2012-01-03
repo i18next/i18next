@@ -68,7 +68,7 @@
         if(!o.lng) { o.lng = f.detectLanguage(); }
         currentLng = o.lng;
         languages = [];
-        languages.push(currentLng);
+        if (currentLng) languages.push(currentLng);
         if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
         if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
 
@@ -83,7 +83,7 @@
         // else load them
         sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
             resStore = store;
-            if (o.setJqueryExt) addJqueryFunct();
+            if ($ && o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
     }
@@ -409,6 +409,6 @@
     i18n.sync = sync;
     i18n.functions = f;
     i18n.lng = lng;
-    i18n.fallbackLng = o.fallbackLng;
+    i18n.options = o;
 
 })();
