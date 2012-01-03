@@ -1,4 +1,21 @@
-(function($) {
+(function() {
+
+    var root = this
+      , $ = root.jQuery
+      , i18n = {};
+
+    // Export the i18next object for **CommonJS**. 
+    // If we're not in CommonJS, add `i18n` to the
+    // global object or to jquery.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = i18n;
+    } else {
+        if ($) {
+            $.i18n = $.i18n || i18n;
+        } else {
+            root.i18n = root.i18n || i18n;
+        }
+    }
 
     //defaults
     var o = {
@@ -26,30 +43,39 @@
         setJqueryExt: true
     };
 
+    // move dependent functions to a container so that
+    // they can be overriden easier in no jquery environment (node.js)
+    var f = {
+        extend: $ ? $.extend : undefined,
+        each: $ ? $.each : undefined,
+        ajax: $ ? $.ajax : undefined,
+        detectLanguage: detectLanguage
+    };
+
     var resStore = false
       , currentLng = false
       , replacementCounter = 0
       , languages = [];
 
     function init(options, cb) {
-        $.extend(o, options);
+        f.extend(o, options);
 
         // namespace
         if (typeof o.ns == 'string') {
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
-        if(!o.lng) { o.lng = detectLanguage(); }
+        if(!o.lng) { o.lng = f.detectLanguage(); }
         currentLng = o.lng;
         languages = [];
-        languages.push(currentLng);
+        if (currentLng) languages.push(currentLng);
         if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
-        languages.push(o.fallbackLng);
+        if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
 
         // return immidiatly if res are passed in
         if (o.resStore) {
             resStore = o.resStore;
-            if (o.setJqueryExt) addJqueryFunct();
+            if ($ && o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
             return;
         }
@@ -57,7 +83,7 @@
         // else load them
         sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
             resStore = store;
-            if (o.setJqueryExt) addJqueryFunct();
+            if ($ && o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
     }
@@ -70,7 +96,7 @@
         // $.t shortcut
         $.t = $.t || translate;
 
-        var parse = function(ele, key) {
+        function parse(ele, key) {
             if (key.length === 0) return;
 
             var attr = 'text';
@@ -90,7 +116,7 @@
             } else {
                 ele.attr(attr, $.t(key, { defaultValue: ele.attr(attr) }));
             }
-        };
+        }
 
         // fn
         $.fn.i18n = function (options) {
@@ -117,7 +143,7 @@
     }
 
     function applyReplacement(string,replacementHash){
-        $.each(replacementHash,function(key,value){
+        f.each(replacementHash,function(key,value){
             string = string.replace([o.interpolationPrefix,key,o.interpolationSuffix].join(''),value);
         });
         return string;
@@ -135,14 +161,6 @@
             translated = translated.replace(token,translated_token);
         }
         return translated;
-    }
-
-    function detectLanguage() {
-        if (navigator) {
-            return (navigator.language) ? navigator.language : navigator.userLanguage;
-        } else {
-            return o.fallbackLng;
-        }
     }
 
     function needsPlural(options){
@@ -172,10 +190,12 @@
         }
 
         if (needsPlural(options)) {
-            var optionsSansCount = $.extend({},options);
+            var optionsSansCount = f.extend({},options);
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
             var pluralKey = key + o.pluralSuffix;
+            var pluralExtension = pluralExtensions.get(currentLng, options.count);
+            if (pluralExtension !== 'other') { pluralKey = pluralKey + '_' + pluralExtension; }
             var translated = translate(pluralKey,optionsSansCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated,{count:options.count});//apply replacement for count only
@@ -209,6 +229,14 @@
         return (found) ? found : notfound;
     }
 
+    function detectLanguage() {
+        if (navigator) {
+            return (navigator.language) ? navigator.language : navigator.userLanguage;
+        } else {
+            return o.fallbackLng;
+        }
+    }
+
     var sync = {
 
         load: function(lngs, ns, useLocalStorage, dynamicLoad, cb) {
@@ -221,7 +249,7 @@
 
                     if (missingLngs.length > 0) {
                         sync._fetch(missingLngs, ns, dynamicLoad, function(err, fetched){
-                            $.extend(store, fetched);
+                            f.extend(store, fetched);
                             sync._storeLocal(fetched);
 
                             cb(null, store);
@@ -244,7 +272,7 @@
 
                 var todo = lngs.length;
 
-                $.each(lngs, function(key, lng) {
+                f.each(lngs, function(key, lng) {
                     var local = window.localStorage.getItem('res_' + lng);
 
                     if (local) {
@@ -274,8 +302,8 @@
                 var todo = ns.namespaces.length * lngs.length;
 
                 // load each file individual
-                $.each(ns.namespaces, function(nsIndex, nsValue) {
-                    $.each(lngs, function(lngIndex, lngValue) {
+                f.each(ns.namespaces, function(nsIndex, nsValue) {
+                    f.each(lngs, function(lngIndex, lngValue) {
                         sync._fetchOne(lngValue, nsValue, function(err, data) { 
                             store[lngValue] = store[lngValue] || {};
                             store[lngValue][nsValue] = data;
@@ -290,7 +318,7 @@
             } else {
 
                 // load all needed stuff once
-                $.ajax({
+                f.ajax({
                     url: applyReplacement(o.resGetPath, {lng: lngs.join('+'), ns: ns.namespaces.join('+')}),
                     success: function(data, status, xhr){
                         cb(null, data);
@@ -305,7 +333,7 @@
         },
 
         _fetchOne: function(lng, ns, done) {
-            $.ajax({
+            f.ajax({
                 url: applyReplacement(o.resGetPath, {lng: lng, ns: ns}),
                 success: function(data, status, xhr){
                     done(null, data);
@@ -321,7 +349,7 @@
             var payload = {};
             payload[key] = defaultValue;
 
-            $.ajax({
+            f.ajax({
                 url: applyReplacement(o.resPostPath, {lng: o.fallbackLng, ns: ns}),
                 type: 'POST',
                 data: payload,
@@ -334,16 +362,53 @@
         }
     };
 
+    // definition http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html
+    var pluralExtensions = {
+        
+        rules: {
+            'sl': function (n) {
+                return n % 100 === 1 ? 'one' : n % 100 === 2 ? 'two' : n % 100 === 3 || n % 100 === 4 ? 'few' : 'other';
+            }
+        },
+
+        addRule: function(lng, fc) {
+            pluralExtensions.rules[lng] = fc;    
+        },
+
+        get: function(lng, count) {
+            var parts = lng.split('-');
+
+            function getResult(l, c) {
+                if (pluralExtensions.rules[l]) {
+                    return pluralExtensions.rules[l](c);
+                } else {
+                    return c === 1 ? 'one' : 'other';
+                }
+            }
+                        
+            if (parts.length === 2) {
+                return getResult(parts[0], count);
+            } else {
+                return getResult(lng, count);
+            }
+        }
+
+    };
+
     function lng() {
         return currentLng;
     }
 
-    $.i18n = $.i18n || {
-        init: init,
-        setLng: setLng,
-        t: translate,
-        translate: translate,
-        detectLanguage: detectLanguage,
-        lng: lng
-    };
-})(jQuery);
+    // extend main object with main api interface
+    i18n.init = init;
+    i18n.setLng = setLng;
+    i18n.t = translate;
+    i18n.translate = translate;
+    i18n.detectLanguage = f.detectLanguage;
+    i18n.pluralExtensions = pluralExtensions;
+    i18n.sync = sync;
+    i18n.functions = f;
+    i18n.lng = lng;
+    i18n.options = o;
+
+})();
