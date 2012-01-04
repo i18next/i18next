@@ -3,7 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.0.tar.gz">i18next v1.0</a> 
+    <a class="button" href="public/downloads/i18next-1.1.tar.gz">i18next v1.1</a> 
     <a class="button" href="public/downloads/staticSample.tar.gz">sample</a> 
 </section>
 
@@ -191,6 +191,38 @@ If no namespace is prepended to the resource key i18n will take the default name
 
 You can set the _pluralSuffix_ as an option on initialisation.
 
+### NEW v1.1: extended plural support for multiple plurals
+
+    // given resource
+    sl: { 
+        translation: { 
+            beer: 'Pivo',
+            beer_plural_two: 'Pivi',
+            beer_plural_few: 'Piva',
+            beer_plural: 'stop drinking ;)'
+        } 
+    }
+
+    $.t('beer', {count: 1})   // 'Pivo'
+    $.t('beer', {count: 2})   // Pivi'
+    $.t('beer', {count: 3})   // Piva'
+    $.t('beer', {count: 4})   // Piva'
+    $.t('beer', {count: 5})   // stop drinking ;)'
+
+__HINT:__ For now we added only _slovenian_ to the plural rules set as a sample how to do it, but you can easily add new rules 
+on runtime or feel free to fork the project and send a pull request.
+
+    $.i18n.pluralExtensions.addRule('sl', function (n) {
+        return n % 100 === 1 ? 'one' : n % 100 === 2 ? 'two' : n % 100 === 3 || n % 100 === 4 ? 'few' : 'other';
+    });
+
+    // return value 'one' will map to the singular form '[key]'
+    // return value 'other' will map to the common plural form '[key]_plural'
+    // return value 'two' will map to the extended plural in form '[key]_plural_two'
+    // return value 'few' will map to the extended plural in form '[key]_plural_few'
+
+You can find the plural rules on [unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+
 ### nesting
 
     // given resource
@@ -201,7 +233,7 @@ You can set the _pluralSuffix_ as an option on initialisation.
 
     $.t('app.district') // -> District 9 is more fun than Area 51
 
-### NEW v1.0: extended use of the jquery function
+### extended use of the jquery function
 
     // given resource
     "attr": {
@@ -275,6 +307,13 @@ Just init i18n with the according options (you shouldn't use this option in prod
 - [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.
 
 ## Release Notes
+
+### v1.1
+
+- support for multiple plural forms
+- common.js enabled (for node.js serverside)
+- changes to be less dependent on jquery (override it's functions, add to root if no jquery)
+- enable it on serverside with node.js [i18next-node](https://github.com/jamuhl/i18next-node)
 
 ### v1.0
 
