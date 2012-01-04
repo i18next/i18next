@@ -203,7 +203,7 @@
         }
 
         var found;
-        for (i = 0, len = languages.length; i < len; i++ ) {
+        for (var i = 0, len = languages.length; i < len; i++ ) {
             if (found) break;
 
             var l = languages[i];
@@ -243,7 +243,7 @@
             if (useLocalStorage) {
                 sync._loadLocal(lngs, function(err, store) {
                     var missingLngs = [];
-                    for (i = 0, len = lngs.length; i < len; i++) {
+                    for (var i = 0, len = lngs.length; i < len; i++) {
                         if (!store[lngs[i]]) missingLngs.push(lngs[i]);
                     }
 
