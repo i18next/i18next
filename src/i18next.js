@@ -58,6 +58,13 @@
       , languages = [];
 
     function init(options, cb) {
+        
+        if (typeof options === 'function') {
+            cb = options;
+            options = {};
+        }
+        options = options || {};
+        
         f.extend(o, options);
 
         // namespace
