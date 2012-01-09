@@ -110,6 +110,7 @@ asyncTest("extended functions", function() {
         }
     }, function(t) {
         equals(t('nesting1'),'1 2 3', 'nesting through 3 lngs');
+        equals(t('pluralTest', {count: 0}), 'plural', 'call plural with count = 0');
         equals(t('pluralTest', {count: 1}), 'no plural', 'call plural with count = 1');
         equals(t('pluralTest', {count: 2}), 'plural', 'call plural with count = 2');
         equals(t('interpolationTest', {toAdd: 'something'}), 'added something', 'insert variable into resource');
@@ -135,11 +136,46 @@ asyncTest("extended plural support", function() {
             'sl-??': { translation: { } }
         }
     }, function(t) {
+        equals(t('beer', {count: 0}), 'no idea ;)', 'call plural with count = 0');
         equals(t('beer', {count: 1}), 'Pivo', 'call plural with count = 1');
         equals(t('beer', {count: 2}), 'Pivi', 'call plural with count = 2');
         equals(t('beer', {count: 3}), 'Piva', 'call plural with count = 3');
         equals(t('beer', {count: 4}), 'Piva', 'call plural with count = 4');
         equals(t('beer', {count: 5}), 'no idea ;)', 'call plural with count = 5');
+
+        start();
+    });
+});
+
+asyncTest("extended plural support with zero", function() {
+    $.i18n.init({
+        lng: 'ar',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { } },
+            ar: { translation: { 
+                    key: 'singular',
+                    key_plural_zero: 'zero',
+                    key_plural_two: 'two',
+                    key_plural_few: 'few',
+                    key_plural_many: 'many',
+                    key_plural: 'plural'
+                } 
+            },            
+            'ar-??': { translation: { } }
+        }
+    }, function(t) {
+        equals(t('key', {count: 0}), 'zero', 'call plural with count = 0');
+        equals(t('key', {count: 1}), 'singular', 'call plural with count = 1');
+        equals(t('key', {count: 2}), 'two', 'call plural with count = 2');
+        equals(t('key', {count: 3}), 'few', 'call plural with count = 3');
+        equals(t('key', {count: 4}), 'few', 'call plural with count = 4');
+        equals(t('key', {count: 104}), 'few', 'call plural with count = 104');
+        equals(t('key', {count: 11}), 'many', 'call plural with count = 11');
+        equals(t('key', {count: 99}), 'many', 'call plural with count = 99');
+        equals(t('key', {count: 199}), 'many', 'call plural with count = 199');
+        equals(t('key', {count: 100}), 'plural', 'call plural with count = 100');
 
         start();
     });

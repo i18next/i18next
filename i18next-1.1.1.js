@@ -58,6 +58,13 @@
       , languages = [];
 
     function init(options, cb) {
+        
+        if (typeof options === 'function') {
+            cb = options;
+            options = {};
+        }
+        options = options || {};
+        
         f.extend(o, options);
 
         // namespace
@@ -164,7 +171,7 @@
     }
 
     function needsPlural(options){
-        return (options.count && typeof options.count != 'string' && options.count > 1);
+        return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
     }
 
     function translate(key, options){
@@ -368,6 +375,9 @@
         rules: {
             'sl': function (n) {
                 return n % 100 === 1 ? 'one' : n % 100 === 2 ? 'two' : n % 100 === 3 || n % 100 === 4 ? 'few' : 'other';
+            },
+            'ar': function (n) {
+                return n === 0 ? 'zero' : n === 1 ? 'one' : n === 2 ? 'two' : n % 100 >= 3 && n % 100 <= 10 ? 'few' : n % 100 >= 11 && n % 100 <= 99 ? 'many' : 'other';
             }
         },
 
