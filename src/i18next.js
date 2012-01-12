@@ -40,6 +40,7 @@
         reuseSuffix: ')',
         pluralSuffix: '_plural',
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
+        pcontextNotFound: ['context_not_found', Math.random()].join(''),
         setJqueryExt: true
     };
 
@@ -170,6 +171,10 @@
         return translated;
     }
 
+    function hasContext(options){
+        return (options.context && typeof options.context == 'string');
+    }
+
     function needsPlural(options){
         return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
     }
@@ -185,7 +190,9 @@
     */
     function _translate(key, options){
         options = options || {};
-        var notfound = options.defaultValue || key;
+
+        var optionsSansCount, translated
+          , notfound = options.defaultValue || key;
 
         if (!resStore) { return notfound; } // No resStore to translate from
 
@@ -196,14 +203,26 @@
             key = parts[1];
         }
 
+        if (hasContext(options)) {
+            optionsSansCount = f.extend({},options);
+            delete optionsSansCount.context;
+            optionsSansCount.defaultValue = o.contextNotFound;
+            var contextKey = key + '_' +options.context;
+            
+            translated = translate(contextKey, optionsSansCount);
+            if (translated != o.contextNotFound) {
+                return applyReplacement(translated,{context:options.context});//apply replacement for count only
+            }// else continue translation with original/singular key
+        }
+
         if (needsPlural(options)) {
-            var optionsSansCount = f.extend({},options);
+            optionsSansCount = f.extend({},options);
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
             var pluralKey = key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
             if (pluralExtension !== 'other') { pluralKey = pluralKey + '_' + pluralExtension; }
-            var translated = translate(pluralKey,optionsSansCount);
+            translated = translate(pluralKey, optionsSansCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated,{count:options.count});//apply replacement for count only
             }// else continue translation with original/singular key
