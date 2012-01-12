@@ -94,11 +94,11 @@ For missing keys (if option addMissing is set to true) will be send to server wi
 
 # Sample usage
 
-In the folder you find two samples:
+In the folder you find one static sample.
 
-- static (best open index.html in firefox - which has best support for _file:///_)
-- node (you will need to have node.js installed)
+# serverside integrations
 
+[i18next-node](https://github.com/jamuhl/i18next-node) is bringing i18next to node.js
 
 # Inspiration
 
