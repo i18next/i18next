@@ -11,6 +11,11 @@
 
 <body>
 
+    <h3> you can switch lng via ?setLng='lngTag' </h3>
+    <a id="en" href="?setLng=en-US"> en-US </a>
+        | &nbsp;
+    <a id="de" href="?setLng=de-DE"> de-DE </a>
+
     <h3>translated via $.t('app.name')</h3>
     <span id="appname"></span> - <span id="apparea"></span>
     <button id="add">hello</button>
@@ -46,7 +51,7 @@
 	<script type="text/javascript">
 
     $.i18n.init({
-        lng: 'en-US',
+        //lng: 'en-US',
         ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
         useLocalStorage: false
     }, function() {

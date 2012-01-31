@@ -20,6 +20,7 @@
     //defaults
     var o = {
         lng: false,
+        lowerCaseLng: false,
         fallbackLng: 'dev',
         ns: 'translation',
         nsseparator: ':',
@@ -74,11 +75,23 @@
         }
 
         if(!o.lng) { o.lng = f.detectLanguage(); }
-        currentLng = o.lng;
+
         languages = [];
-        if (currentLng) languages.push(currentLng);
-        if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
+        if (o.lng.indexOf('-') === 2 && o.lng.length === 5) {
+            var parts = o.lng.split('-');
+
+            o.lng = o.lowerCaseLng ? 
+                parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+
+            languages.push(o.lng);
+            languages.push(o.lng.substr(0, 2));
+        } else {
+            languages.push(o.lng);
+        }
+
         if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
+        currentLng = o.lng;
 
         // return immidiatly if res are passed in
         if (o.resStore) {
@@ -256,11 +269,42 @@
     }
 
     function detectLanguage() {
-        if (navigator) {
-            return (navigator.language) ? navigator.language : navigator.userLanguage;
-        } else {
-            return o.fallbackLng;
+        var detectedLng;
+
+        // get from qs
+        var qsParm = [];
+        (function() {
+            var query = window.location.search.substring(1);
+            var parms = query.split('&');
+            for (var i=0; i<parms.length; i++) {
+                var pos = parms[i].indexOf('=');
+                if (pos > 0) {
+                    var key = parms[i].substring(0,pos);
+                    var val = parms[i].substring(pos+1);
+                    qsParm[key] = val;
+                }
+            }
+        })();
+        if (qsParm.setLng) {
+            detectedLng = qsParm.setLng;
+
+            if (!cookie.read('i18next')) {
+                cookie.create('i18next', detectedLng);
+            }
         }
+
+        if (!detectedLng) {
+            var c = cookie.read('i18next');
+            if (c) detectedLng = c;
+        }
+
+        if (!detectedLng && navigator) {
+            detectedLng.lng =  (navigator.language) ? navigator.language : navigator.userLanguage;
+        } else {
+            detectedLng.lng =  o.fallbackLng;
+        }
+
+        return detectedLng;
     }
 
     var sync = {
@@ -427,6 +471,35 @@
     function lng() {
         return currentLng;
     }
+
+    var cookie = {
+    
+        create: function(name,value,minutes) {
+                var expires;
+                if (minutes) {
+                        var date = new Date();
+                        date.setTime(date.getTime()+(minutes*60*1000));
+                        expires = "; expires="+date.toGMTString();
+                }
+                else expires = "";
+                document.cookie = name+"="+value+expires+"; path=/";
+        },
+        
+        read: function(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0;i < ca.length;i++) {
+                        var c = ca[i];
+                        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+                }
+                return null;
+        },
+        
+        remove: function(name) {
+                this.create(name,"",-1);
+        }
+    };
 
     // extend main object with main api interface
     i18n.init = init;

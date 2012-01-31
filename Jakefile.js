@@ -9,7 +9,7 @@ task('build', [], function(debug) {
     
     // a basic smoosh configuration object
     smoosh.config({
-      "VERSION": "1.2",
+      "VERSION": "1.2.1",
       "JAVASCRIPT": {
         "DIST_DIR": "./",
         "i18next": [

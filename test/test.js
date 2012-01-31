@@ -1,6 +1,7 @@
 asyncTest("inject resStore on init", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         dynamicLoad: false,
         useLocalStorage: false,
@@ -18,9 +19,52 @@ asyncTest("inject resStore on init", function() {
     });
 });
 
+asyncTest("lowercase lng will be uppercased by default", function() {
+    $.i18n.init({
+        lng: 'en-us',
+        lowerCaseLng: false,
+        ns: 'translation',
+        dynamicLoad: false,
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        equals(t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+        equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+        equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+        start();
+    });
+});
+
+asyncTest("lowercase lng will work if option set", function() {
+    $.i18n.init({
+        lng: 'en-us',
+        lowerCaseLng: true,
+        ns: 'translation',
+        dynamicLoad: false,
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-us': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        equals(t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+        equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+        equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+        start();
+    });
+});
+
 asyncTest("load one namespace", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'ns.special',
         dynamicLoad: false,
         useLocalStorage: false,
@@ -37,6 +81,7 @@ asyncTest("load one namespace", function() {
 asyncTest("load two namespaces", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
         dynamicLoad: false,
         useLocalStorage: false,
@@ -70,6 +115,7 @@ asyncTest("load non-static (dynamcic) route", function() {
 
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
         dynamicLoad: true,
@@ -89,6 +135,7 @@ asyncTest("load non-static (dynamcic) route", function() {
 asyncTest("extended functions", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -122,6 +169,7 @@ asyncTest("extended functions", function() {
 asyncTest("extended plural support", function() {
     $.i18n.init({
         lng: 'sl',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -150,6 +198,7 @@ asyncTest("extended plural support", function() {
 asyncTest("extended plural support with zero", function() {
     $.i18n.init({
         lng: 'ar',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -184,6 +233,7 @@ asyncTest("extended plural support with zero", function() {
 asyncTest("context support", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -209,6 +259,7 @@ asyncTest("context support", function() {
 asyncTest("context support with plurals", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -246,6 +297,7 @@ asyncTest("jquery shortcut", function() {
 
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {         
@@ -259,6 +311,7 @@ asyncTest("jquery shortcut", function() {
 asyncTest("basic binding (.i18n()) test", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {         
@@ -280,6 +333,7 @@ asyncTest("basic binding (.i18n()) test", function() {
 asyncTest("extended binding (.i18n()) test", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {         
@@ -302,6 +356,7 @@ asyncTest("extended binding (.i18n()) test", function() {
 asyncTest("switching lng", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {          
@@ -327,6 +382,7 @@ asyncTest("auto upload missing resources", function() {
 
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         sendMissing: true,
         useLocalStorage: false,
