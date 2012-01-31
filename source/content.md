@@ -3,8 +3,8 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.2.zip">i18next v1.2</a> 
-    <a class="button" href="public/downloads/sample-1.2.zip">sample</a> 
+    <a class="button" href="public/downloads/i18next-1.2.1.zip">i18next v1.2.1</a> 
+    <a class="button" href="public/downloads/sample-1.2.1.zip">sample</a> 
 </section>
 
 # Introduction
@@ -65,6 +65,8 @@ To change the language:
         // will load needed resources if not provided on init 
         // and set the currentLanguage
     });
+
+You can also switch the language via querystring `?setLng=de-DE`.
 
 If no resource string is found in the specific language (en-US) it will be looked up in _en_ befor taken from fallback language. 
 If the key is not in the fallback language the key or a optional defaultValue will be displayed:
@@ -356,6 +358,12 @@ Just init i18n with the according options (you shouldn't use this option in prod
 - [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.
 
 ## Release Notes
+
+### v1.2.1
+
+- extended detectLng: switch via qs _setLng=_ or cookie _i18next_
+- assert county in locale will be uppercased `en-us` -> `en-US`
+- provide option to have locale always lowercased _option lowerCaseLng_
 
 ### v1.2
 

@@ -33,8 +33,8 @@
 <p><Download the latest source or fork the project from github:</p>
 
 <p><section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.2.zip">i18next v1.2</a> 
-    <a class="button" href="public/downloads/sample-1.2.zip">sample</a> 
+    <a class="button" href="public/downloads/i18next-1.2.1.zip">i18next v1.2.1</a> 
+    <a class="button" href="public/downloads/sample-1.2.1.zip">sample</a> 
 </section></p>
 
 <h1>Introduction</h1>
@@ -83,6 +83,8 @@ where always some features i missed.</p>
 <p>To change the language:</p>
 
 <pre><code><span class="pln">$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">setLng</span><span class="pun">(</span><span class="str">'de-DE'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">t</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="com">// will load needed resources if not provided on init </span><span class="pln"><br />&nbsp; &nbsp; </span><span class="com">// and set the currentLanguage</span><span class="pln"><br /></span><span class="pun">});</span><span class="pln"><br /></span></code></pre>
+
+<p>You can also switch the language via querystring <code>?setLng=de-DE</code>.</p>
 
 <p>If no resource string is found in the specific language (en-US) it will be looked up in <em>en</em> befor taken from fallback language. 
 If the key is not in the fallback language the key or a optional defaultValue will be displayed:</p>
@@ -203,6 +205,14 @@ seperated by a + which should be a space on serverside).</p>
 </ul>
 
 <h2>Release Notes</h2>
+
+<h3>v1.2.1</h3>
+
+<ul>
+<li>extended detectLng: switch via qs <em>setLng=</em> or cookie <em>i18next</em></li>
+<li>assert county in locale will be uppercased <code>en-us</code> -> <code>en-US</code></li>
+<li>provide option to have locale always lowercased <em>option lowerCaseLng</em></li>
+</ul>
 
 <h3>v1.2</h3>
 
