@@ -299,9 +299,9 @@
         }
 
         if (!detectedLng && navigator) {
-            detectedLng.lng =  (navigator.language) ? navigator.language : navigator.userLanguage;
+            detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
         } else {
-            detectedLng.lng =  o.fallbackLng;
+            detectedLng =  o.fallbackLng;
         }
 
         return detectedLng;
