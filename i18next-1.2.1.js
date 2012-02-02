@@ -300,7 +300,9 @@
 
         if (!detectedLng && navigator) {
             detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
-        } else {
+        }
+        
+        if (!detectedLng) {
             detectedLng =  o.fallbackLng;
         }
 
