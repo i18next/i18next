@@ -3,8 +3,8 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.2.1.zip">i18next v1.2.1</a> 
-    <a class="button" href="public/downloads/sample-1.2.1.zip">sample</a> 
+    <a class="button" href="public/downloads/i18next-1.2.3.zip">i18next v1.2.3</a> 
+    <a class="button" href="public/downloads/sample-1.2.3.zip">sample</a> 
 </section>
 
 # Introduction
@@ -359,11 +359,12 @@ Just init i18n with the according options (you shouldn't use this option in prod
 
 ## Release Notes
 
-### v1.2.1
+### v1.2.3
 
 - extended detectLng: switch via qs _setLng=_ or cookie _i18next_
 - assert county in locale will be uppercased `en-us` -> `en-US`
 - provide option to have locale always lowercased _option lowerCaseLng_
+- set lng cookie when set in init function
 
 ### v1.2
 
