@@ -51,7 +51,34 @@
         extend: $ ? $.extend : undefined,
         each: $ ? $.each : undefined,
         ajax: $ ? $.ajax : undefined,
-        detectLanguage: detectLanguage
+        detectLanguage: detectLanguage,
+        cookie: {
+            create: function(name,value,minutes) {
+                    var expires;
+                    if (minutes) {
+                            var date = new Date();
+                            date.setTime(date.getTime()+(minutes*60*1000));
+                            expires = "; expires="+date.toGMTString();
+                    }
+                    else expires = "";
+                    document.cookie = name+"="+value+expires+"; path=/";
+            },
+            
+            read: function(name) {
+                    var nameEQ = name + "=";
+                    var ca = document.cookie.split(';');
+                    for(var i=0;i < ca.length;i++) {
+                            var c = ca[i];
+                            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+                    }
+                    return null;
+            },
+            
+            remove: function(name) {
+                    this.create(name,"",-1);
+            }
+        }
     };
 
     var resStore = false
@@ -78,7 +105,7 @@
             o.lng = f.detectLanguage(); 
         } else {
             // set cookie with lng set (detectLanguage will set cookie on need)
-            cookie.create('i18next', o.lng);
+            f.cookie.create('i18next', o.lng);
         }
 
         languages = [];
@@ -294,11 +321,11 @@
             detectedLng = qsParm.setLng;
 
             // set cookie
-            cookie.create('i18next', detectedLng);
+            f.cookie.create('i18next', detectedLng);
         }
 
         if (!detectedLng) {
-            var c = cookie.read('i18next');
+            var c = f.cookie.read('i18next');
             if (c) detectedLng = c;
         }
 
@@ -477,35 +504,6 @@
     function lng() {
         return currentLng;
     }
-
-    var cookie = {
-    
-        create: function(name,value,minutes) {
-                var expires;
-                if (minutes) {
-                        var date = new Date();
-                        date.setTime(date.getTime()+(minutes*60*1000));
-                        expires = "; expires="+date.toGMTString();
-                }
-                else expires = "";
-                document.cookie = name+"="+value+expires+"; path=/";
-        },
-        
-        read: function(name) {
-                var nameEQ = name + "=";
-                var ca = document.cookie.split(';');
-                for(var i=0;i < ca.length;i++) {
-                        var c = ca[i];
-                        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
-                }
-                return null;
-        },
-        
-        remove: function(name) {
-                this.create(name,"",-1);
-        }
-    };
 
     // extend main object with main api interface
     i18n.init = init;
