@@ -74,7 +74,12 @@
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
-        if(!o.lng) { o.lng = f.detectLanguage(); }
+        if (!o.lng) { 
+            o.lng = f.detectLanguage(); 
+        } else {
+            // set cookie with lng set (detectLanguage will set cookie on need)
+            cookie.create('i18next', o.lng);
+        }
 
         languages = [];
         if (o.lng.indexOf('-') === 2 && o.lng.length === 5) {
@@ -288,9 +293,8 @@
         if (qsParm.setLng) {
             detectedLng = qsParm.setLng;
 
-            if (!cookie.read('i18next')) {
-                cookie.create('i18next', detectedLng);
-            }
+            // set cookie
+            cookie.create('i18next', detectedLng);
         }
 
         if (!detectedLng) {
@@ -300,7 +304,9 @@
 
         if (!detectedLng && navigator) {
             detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
-        } else {
+        }
+        
+        if (!detectedLng) {
             detectedLng =  o.fallbackLng;
         }
 
