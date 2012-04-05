@@ -3,8 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.2.3.zip">i18next v1.2.3</a> 
-    <a class="button" href="public/downloads/sample-1.2.3.zip">sample</a> 
+    <a class="button" href="public/downloads/i18next-1.2.4.zip">i18next v1.2.4</a> 
 </section>
 
 # Introduction
@@ -358,6 +357,10 @@ Just init i18n with the according options (you shouldn't use this option in prod
 - [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.
 
 ## Release Notes
+
+### v1.2.4
+- added indexOf for non ECMA-262 standard compliant browsers (IE < 9)
+- calling i28n() on element with data-i18n attribute will localize it now (i18n now not only works on container elements child)
 
 ### v1.2.3
 
