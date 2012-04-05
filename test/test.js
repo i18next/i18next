@@ -1,6 +1,7 @@
 asyncTest("inject resStore on init", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         dynamicLoad: false,
         useLocalStorage: false,
@@ -18,9 +19,52 @@ asyncTest("inject resStore on init", function() {
     });
 });
 
+asyncTest("lowercase lng will be uppercased by default", function() {
+    $.i18n.init({
+        lng: 'en-us',
+        lowerCaseLng: false,
+        ns: 'translation',
+        dynamicLoad: false,
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        equals(t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+        equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+        equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+        start();
+    });
+});
+
+asyncTest("lowercase lng will work if option set", function() {
+    $.i18n.init({
+        lng: 'en-us',
+        lowerCaseLng: true,
+        ns: 'translation',
+        dynamicLoad: false,
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-us': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        equals(t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+        equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+        equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+        start();
+    });
+});
+
 asyncTest("load one namespace", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'ns.special',
         dynamicLoad: false,
         useLocalStorage: false,
@@ -37,6 +81,7 @@ asyncTest("load one namespace", function() {
 asyncTest("load two namespaces", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'},
         dynamicLoad: false,
         useLocalStorage: false,
@@ -70,6 +115,7 @@ asyncTest("load non-static (dynamcic) route", function() {
 
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
         dynamicLoad: true,
@@ -89,6 +135,7 @@ asyncTest("load non-static (dynamcic) route", function() {
 asyncTest("extended functions", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -122,6 +169,7 @@ asyncTest("extended functions", function() {
 asyncTest("extended plural support", function() {
     $.i18n.init({
         lng: 'sl',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -150,6 +198,7 @@ asyncTest("extended plural support", function() {
 asyncTest("extended plural support with zero", function() {
     $.i18n.init({
         lng: 'ar',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {
@@ -181,6 +230,65 @@ asyncTest("extended plural support with zero", function() {
     });
 });
 
+asyncTest("context support", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        lowerCaseLng: false,
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { } },
+            en: { translation: { 
+                    friend_context: 'A friend',
+                    friend_context_male: 'A boyfriend',
+                    friend_context_female: 'A girlfriend'
+                } 
+            },            
+            'en-US': { translation: { } }
+        }
+    }, function(t) {
+        equals(t('friend_context'), 'A friend', 'call without context');
+        equals(t('friend_context', {context: ''}), 'A friend', 'call with empty context');
+        equals(t('friend_context', {context: 'male'}), 'A boyfriend', 'call with context = male');
+        equals(t('friend_context', {context: 'female'}), 'A girlfriend', 'call with context = female');
+
+        start();
+    });
+});
+
+asyncTest("context support with plurals", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        lowerCaseLng: false,
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { } },
+            en: { translation: { 
+                    friend_context: '__count__ friend',
+                    friend_context_male: '__count__ boyfriend',
+                    friend_context_female: '__count__ girlfriend',
+                    friend_context_plural: '__count__ friends',
+                    friend_context_male_plural: '__count__ boyfriends',
+                    friend_context_female_plural: '__count__ girlfriends'
+                } 
+            },            
+            'en-US': { translation: { } }
+        }
+    }, function(t) {
+        equals(t('friend_context', { count: 1 }), '1 friend', 'call without context and count = 1');
+        equals(t('friend_context', {context: '', count: 1 }), '1 friend', 'call with empty context and count = 1');
+        equals(t('friend_context', {context: 'male', count: 1 }), '1 boyfriend', 'call with context = male and count = 1');
+        equals(t('friend_context', {context: 'female', count: 1 }), '1 girlfriend', 'call with context = female and count = 1');
+        
+        equals(t('friend_context', { count: 10 }), '10 friends', 'call without context and count = 10');
+        equals(t('friend_context', {context: '', count: 10 }), '10 friends', 'call with empty context and count = 10');
+        equals(t('friend_context', {context: 'male', count: 10 }), '10 boyfriends', 'call with context = male and count = 10');
+        equals(t('friend_context', {context: 'female', count: 10 }), '10 girlfriends', 'call with context = female and count = 10');
+        start();
+    });
+});
+
 asyncTest("jquery shortcut", function() {
     var testJqueryShortcut = function() {
         equals($.t('simpleTest_en-US'),'ok_from_en-US', 'via jquery shortcut');
@@ -189,6 +297,7 @@ asyncTest("jquery shortcut", function() {
 
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {         
@@ -202,6 +311,7 @@ asyncTest("jquery shortcut", function() {
 asyncTest("basic binding (.i18n()) test", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {         
@@ -244,6 +354,7 @@ asyncTest("binding on object itself (.i18n()) test", function() {
 asyncTest("extended binding (.i18n()) test", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {         
@@ -266,6 +377,7 @@ asyncTest("extended binding (.i18n()) test", function() {
 asyncTest("switching lng", function() {
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         useLocalStorage: false,
         resStore: {          
@@ -291,6 +403,7 @@ asyncTest("auto upload missing resources", function() {
 
     $.i18n.init({
         lng: 'en-US',
+        lowerCaseLng: false,
         ns: 'translation',
         sendMissing: true,
         useLocalStorage: false,

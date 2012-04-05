@@ -54,6 +54,7 @@
     //defaults
     var o = {
         lng: false,
+        lowerCaseLng: false,
         fallbackLng: 'dev',
         ns: 'translation',
         nsseparator: ':',
@@ -74,6 +75,7 @@
         reuseSuffix: ')',
         pluralSuffix: '_plural',
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
+        pcontextNotFound: ['context_not_found', Math.random()].join(''),
         setJqueryExt: true
     };
 
@@ -83,7 +85,34 @@
         extend: $ ? $.extend : undefined,
         each: $ ? $.each : undefined,
         ajax: $ ? $.ajax : undefined,
-        detectLanguage: detectLanguage
+        detectLanguage: detectLanguage,
+        cookie: {
+            create: function(name,value,minutes) {
+                    var expires;
+                    if (minutes) {
+                            var date = new Date();
+                            date.setTime(date.getTime()+(minutes*60*1000));
+                            expires = "; expires="+date.toGMTString();
+                    }
+                    else expires = "";
+                    document.cookie = name+"="+value+expires+"; path=/";
+            },
+            
+            read: function(name) {
+                    var nameEQ = name + "=";
+                    var ca = document.cookie.split(';');
+                    for(var i=0;i < ca.length;i++) {
+                            var c = ca[i];
+                            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+                    }
+                    return null;
+            },
+            
+            remove: function(name) {
+                    this.create(name,"",-1);
+            }
+        }
     };
 
     var resStore = false
@@ -106,12 +135,29 @@
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
-        if(!o.lng) { o.lng = f.detectLanguage(); }
-        currentLng = o.lng;
+        if (!o.lng) { 
+            o.lng = f.detectLanguage(); 
+        } else {
+            // set cookie with lng set (detectLanguage will set cookie on need)
+            f.cookie.create('i18next', o.lng);
+        }
+
         languages = [];
-        if (currentLng) languages.push(currentLng);
-        if (currentLng.length === 5) { languages.push(currentLng.substr(0, 2)); }
+        if (o.lng.indexOf('-') === 2 && o.lng.length === 5) {
+            var parts = o.lng.split('-');
+
+            o.lng = o.lowerCaseLng ? 
+                parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+
+            languages.push(o.lng);
+            languages.push(o.lng.substr(0, 2));
+        } else {
+            languages.push(o.lng);
+        }
+
         if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
+        currentLng = o.lng;
 
         // return immidiatly if res are passed in
         if (o.resStore) {
@@ -211,6 +257,10 @@
         return translated;
     }
 
+    function hasContext(options){
+        return (options.context && typeof options.context == 'string');
+    }
+
     function needsPlural(options){
         return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
     }
@@ -226,7 +276,9 @@
     */
     function _translate(key, options){
         options = options || {};
-        var notfound = options.defaultValue || key;
+
+        var optionsSansCount, translated
+          , notfound = options.defaultValue || key;
 
         if (!resStore) { return notfound; } // No resStore to translate from
 
@@ -237,14 +289,26 @@
             key = parts[1];
         }
 
+        if (hasContext(options)) {
+            optionsSansCount = f.extend({},options);
+            delete optionsSansCount.context;
+            optionsSansCount.defaultValue = o.contextNotFound;
+            var contextKey = key + '_' +options.context;
+            
+            translated = translate(contextKey, optionsSansCount);
+            if (translated != o.contextNotFound) {
+                return applyReplacement(translated,{context:options.context});//apply replacement for count only
+            }// else continue translation with original/singular key
+        }
+
         if (needsPlural(options)) {
-            var optionsSansCount = f.extend({},options);
+            optionsSansCount = f.extend({},options);
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
             var pluralKey = key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
             if (pluralExtension !== 'other') { pluralKey = pluralKey + '_' + pluralExtension; }
-            var translated = translate(pluralKey,optionsSansCount);
+            translated = translate(pluralKey, optionsSansCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated,{count:options.count});//apply replacement for count only
             }// else continue translation with original/singular key
@@ -278,11 +342,43 @@
     }
 
     function detectLanguage() {
-        if (navigator) {
-            return (navigator.language) ? navigator.language : navigator.userLanguage;
-        } else {
-            return o.fallbackLng;
+        var detectedLng;
+
+        // get from qs
+        var qsParm = [];
+        (function() {
+            var query = window.location.search.substring(1);
+            var parms = query.split('&');
+            for (var i=0; i<parms.length; i++) {
+                var pos = parms[i].indexOf('=');
+                if (pos > 0) {
+                    var key = parms[i].substring(0,pos);
+                    var val = parms[i].substring(pos+1);
+                    qsParm[key] = val;
+                }
+            }
+        })();
+        if (qsParm.setLng) {
+            detectedLng = qsParm.setLng;
+
+            // set cookie
+            f.cookie.create('i18next', detectedLng);
         }
+
+        if (!detectedLng) {
+            var c = f.cookie.read('i18next');
+            if (c) detectedLng = c;
+        }
+
+        if (!detectedLng && navigator) {
+            detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
+        }
+        
+        if (!detectedLng) {
+            detectedLng =  o.fallbackLng;
+        }
+
+        return detectedLng;
     }
 
     var sync = {
