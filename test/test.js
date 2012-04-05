@@ -220,6 +220,27 @@ asyncTest("basic binding (.i18n()) test", function() {
     });
 });
 
+asyncTest("binding on object itself (.i18n()) test", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {         
+            'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } }
+        }
+    }, function(t) {
+        // given
+        $('#qunit-fixture').append('<button id="testBtn" data-i18n="simpleTest"></button>');
+
+        // when
+        $('#testBtn').i18n();
+
+        // then
+        equals($('#testBtn').text(),'ok_from_en-US', 'set text via fn .i18n()');
+        start();
+    });
+});
+
 asyncTest("extended binding (.i18n()) test", function() {
     $.i18n.init({
         lng: 'en-US',

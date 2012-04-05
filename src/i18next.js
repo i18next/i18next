@@ -1,5 +1,39 @@
 (function() {
 
+    // add indexOf to non ECMA-262 standard compliant browsers
+    if (!Array.prototype.indexOf) {  
+        Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {  
+            "use strict";  
+            if (this == null) {  
+                throw new TypeError();  
+            }  
+            var t = Object(this);  
+            var len = t.length >>> 0;  
+            if (len === 0) {  
+                return -1;  
+            }  
+            var n = 0;  
+            if (arguments.length > 0) {  
+                n = Number(arguments[1]);  
+                if (n != n) { // shortcut for verifying if it's NaN  
+                    n = 0;  
+                } else if (n != 0 && n != Infinity && n != -Infinity) {  
+                    n = (n > 0 || -1) * Math.floor(Math.abs(n));  
+                }  
+            }  
+            if (n >= len) {  
+                return -1;  
+            }  
+            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);  
+            for (; k < len; k++) {  
+                if (k in t && t[k] === searchElement) {  
+                    return k;  
+                }  
+            }  
+            return -1;  
+        }
+    }  
+
     var root = this
       , $ = root.jQuery
       , i18n = {};
@@ -125,25 +159,32 @@
             }
         }
 
+        function localize(ele) {
+            var key = ele.attr('data-i18n');
+            if (!key) return;
+
+            if (key.indexOf(';') <= key.length-1) {
+                var keys = key.split(';');
+
+                $.each(keys, function(m, k) {
+                    parse(ele, k);
+                });
+
+            } else {
+                parse(ele, key);
+            }
+        }
+
         // fn
         $.fn.i18n = function (options) {
             return this.each(function () {
+                // localize element itself
+                localize($(this));
 
+                // localize childs
                 var elements =  $(this).find('[data-i18n]');
-                elements.each(function () {
-                    var ele = $(this)
-                      , key = ele.attr('data-i18n');
-
-                    if (key.indexOf(';') <= key.length-1) {
-                        var keys = key.split(';');
-
-                        $.each(keys, function(m, k) {
-                            parse(ele, k);
-                        });
-
-                    } else {
-                        parse(ele, key);
-                    }
+                elements.each(function() { 
+                    localize($(this));
                 });
             });
         };

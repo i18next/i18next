@@ -34,6 +34,8 @@
         <li><a href="#" data-i18n="nav.2"></a></li>
     </ul>
 
+    <button id="btn" data-i18n="ns.common:add"></button>
+
     <h5>extended usage of 'data-i18n' - apply to other attributes</h5>
     <div id="extendedAttr">
         <input data-i18n="[placeholder]ns.common:attr.placeholder;" type="text"></input>
@@ -56,6 +58,7 @@
         $('#nesting').text($.t('app.district'));
 
         $('.nav').i18n();
+        $('#btn').i18n();
         $('#extendedAttr').i18n();
     });
 
