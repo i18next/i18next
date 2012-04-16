@@ -315,12 +315,12 @@
         }
 
         var found;
+        var keys = key.split(o.keyseparator);
         for (var i = 0, len = languages.length; i < len; i++ ) {
             if (found) break;
 
             var l = languages[i];
 
-            var keys = key.split(o.keyseparator);
             var x = 0;
             var value = resStore[l][ns];
             while (keys[x]) {
