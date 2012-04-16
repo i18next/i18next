@@ -3,6 +3,7 @@ $ cat .gitignore
 # Can ignore specific files
 .settings.xml
 .monitor
+.DS_Store
 
 # Use wildcards as well
 *~

@@ -236,11 +236,11 @@
         };
     }
 
-    function applyReplacement(string,replacementHash){
+    function applyReplacement(str,replacementHash){
         f.each(replacementHash,function(key,value){
-            string = string.replace([o.interpolationPrefix,key,o.interpolationSuffix].join(''),value);
+            str = str.replace([o.interpolationPrefix,key,o.interpolationSuffix].join(''),value);
         });
-        return string;
+        return str;
     }
 
     function applyReuse(translated,options){
