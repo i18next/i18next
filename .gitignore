@@ -6,6 +6,7 @@ $ cat .gitignore
 public/css/main.css
 public/js/client.js
 public/js/client.min.js
+.DS_Store
 
 # Use wildcards as well
 *~
