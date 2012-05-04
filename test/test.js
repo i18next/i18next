@@ -5,6 +5,7 @@ asyncTest("inject resStore on init", function() {
         ns: 'translation',
         dynamicLoad: false,
         useLocalStorage: false,
+        debug: true,
         resStore: {
             dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
             en: { translation: { simpleTest_en: 'ok_from_en' } },            
@@ -15,6 +16,27 @@ asyncTest("inject resStore on init", function() {
         equals(t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
         equals(t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
 
+        start();
+    });
+});
+
+asyncTest("accessing an invalid key which returns an object won't fail silently", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        lowerCaseLng: false,
+        ns: 'translation',
+        dynamicLoad: false,
+        useLocalStorage: false,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-US': { translation: { 
+                'simpleTest_en-US': 'ok_from_en-US',
+                'nested': { 'nested' : 'nested' }
+            } }
+        }
+    }, function(t) {
+        equals(t('nested'),'key \'translation:nested (en-US)\' returned a object instead of string.', 'access nested key object');
         start();
     });
 });

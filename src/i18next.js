@@ -51,7 +51,7 @@
         }
     }
 
-    //defaults
+    // defaults
     var o = {
         lng: undefined,
         lowerCaseLng: false,
@@ -59,6 +59,7 @@
         ns: 'translation',
         nsseparator: ':',
         keyseparator: '.',
+        debug: false,
         
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
@@ -87,6 +88,9 @@
         each: $ ? $.each : undefined,
         ajax: $ ? $.ajax : undefined,
         detectLanguage: detectLanguage,
+        log: function(str) {
+            if (o.debug) console.log(str);
+        },
         cookie: {
             create: function(name,value,minutes) {
                     var expires;
@@ -160,6 +164,7 @@
 
         if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
         currentLng = o.lng;
+        f.log('currentLng set to: ' + currentLng);
 
         // add JQuery extensions
         if ($ && o.setJqueryExt) addJqueryFunct();
@@ -172,7 +177,7 @@
         }
 
         // else load them
-        sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
+        i18n.sync.load(languages, o, function(err, store) {
             resStore = store;
             if (cb) cb(translate);
         });
@@ -330,6 +335,11 @@
                 x++;
             }
             if (value) {
+                if (typeof value !== 'string') {
+                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
+                            'returned a object instead of string.';
+                    f.log(value);
+                }
                 value = applyReplacement(value, options);
                 value = applyReuse(value, options);
                 found = value;
@@ -392,8 +402,8 @@
 
     var sync = {
 
-        load: function(lngs, ns, useLocalStorage, dynamicLoad, cb) {
-            if (useLocalStorage) {
+        load: function(lngs, options, cb) {
+            if (options.useLocalStorage) {
                 sync._loadLocal(lngs, function(err, store) {
                     var missingLngs = [];
                     for (var i = 0, len = lngs.length; i < len; i++) {
@@ -401,7 +411,7 @@
                     }
 
                     if (missingLngs.length > 0) {
-                        sync._fetch(missingLngs, ns, dynamicLoad, function(err, fetched){
+                        sync._fetch(missingLngs, options, function(err, fetched){
                             f.extend(store, fetched);
                             sync._storeLocal(fetched);
 
@@ -412,7 +422,7 @@
                     }
                 });
             } else {
-                sync._fetch(lngs, ns, dynamicLoad, function(err, store){
+                sync._fetch(lngs, options, function(err, store){
                     cb(null, store);
                 });
             }
@@ -447,51 +457,58 @@
             return;
         },
 
-        _fetch: function(lngs, ns, dynamicLoad, cb) {
-            var store = {};
+        _fetch: function(lngs, options, cb) {
+            var ns = options.ns
+              , store = {};
             
-            if (!dynamicLoad) {
-
-                var todo = ns.namespaces.length * lngs.length;
+            if (!options.dynamicLoad) {
+                var todo = ns.namespaces.length * lngs.length
+                  , errors;
 
                 // load each file individual
                 f.each(ns.namespaces, function(nsIndex, nsValue) {
                     f.each(lngs, function(lngIndex, lngValue) {
-                        sync._fetchOne(lngValue, nsValue, function(err, data) { 
+                        sync._fetchOne(lngValue, nsValue, function(err, data) {
+                            if (err) {
+                                errors = errors || [];
+                                errors.push(err);
+                            }
                             store[lngValue] = store[lngValue] || {};
                             store[lngValue][nsValue] = data;
 
                             todo--; // wait for all done befor callback
-                            if (todo === 0) cb(null, store);
+                            if (todo === 0) cb(errors, store);
                         });
                     });
                 });
-
-
             } else {
-
+                var url = applyReplacement(o.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
                 // load all needed stuff once
                 f.ajax({
-                    url: applyReplacement(o.resGetPath, {lng: lngs.join('+'), ns: ns.namespaces.join('+')}),
-                    success: function(data, status, xhr){
+                    url: url,
+                    success: function(data, status, xhr) {
+                        f.log('loaded: ' + url);
                         cb(null, data);
                     },
-                    error : function(xhr, status, error){
+                    error : function(xhr, status, error) {
+                        f.log('failed loading: ' + url);
                         cb('failed loading resource.json error: ' + error);
                     },
                     dataType: "json"
-                });
-                
+                });         
             }
         },
 
         _fetchOne: function(lng, ns, done) {
+            var url = applyReplacement(o.resGetPath, { lng: lng, ns: ns });
             f.ajax({
-                url: applyReplacement(o.resGetPath, {lng: lng, ns: ns}),
-                success: function(data, status, xhr){
+                url: url,
+                success: function(data, status, xhr) {
+                    f.log('loaded: ' + url);
                     done(null, data);
                 },
-                error : function(xhr, status, error){
+                error : function(xhr, status, error) {
+                    f.log('failed loading: ' + url);
                     done(error, {});
                 },
                 dataType: "json"
@@ -502,14 +519,18 @@
             var payload = {};
             payload[key] = defaultValue;
 
+            var url = applyReplacement(o.resPostPath, { lng: o.fallbackLng, ns: ns });
             f.ajax({
-                url: applyReplacement(o.resPostPath, {lng: o.fallbackLng, ns: ns}),
+                url: url,
                 type: 'POST',
                 data: payload,
                 success: function(data, status, xhr) {
+                    f.log('posted missing key \'' + key + '\' to: ' + url);
                     resStore[o.fallbackLng][ns][key] = defaultValue;
                 },
-                error : function(xhr, status, error) {},
+                error : function(xhr, status, error) {
+                    f.log('failed posting missing key \'' + key + '\' to: ' + url);
+                },
                 dataType: "json"
             });
         }
@@ -552,7 +573,7 @@
 
     };
 
-    // extend main object with main api interface
+    // public api interface
     i18n.init = init;
     i18n.setLng = setLng;
     i18n.t = translate;
