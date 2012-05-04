@@ -53,7 +53,7 @@
 
     //defaults
     var o = {
-        lng: false,
+        lng: undefined,
         lowerCaseLng: false,
         fallbackLng: 'dev',
         ns: 'translation',
@@ -63,7 +63,7 @@
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
 
-        resStore: false,
+        resStore: undefined,
         useLocalStorage: true,
 
         dynamicLoad: false,
@@ -75,7 +75,8 @@
         reuseSuffix: ')',
         pluralSuffix: '_plural',
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
-        pcontextNotFound: ['context_not_found', Math.random()].join(''),
+        contextNotFound: ['context_not_found', Math.random()].join(''),
+
         setJqueryExt: true
     };
 
@@ -115,8 +116,8 @@
         }
     };
 
-    var resStore = false
-      , currentLng = false
+    var resStore
+      , currentLng
       , replacementCounter = 0
       , languages = [];
 
@@ -128,9 +129,10 @@
         }
         options = options || {};
         
+        // override defaults with passed in options
         f.extend(o, options);
 
-        // namespace
+        // create namespace object if namespace is passed in as string
         if (typeof o.ns == 'string') {
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
@@ -138,7 +140,7 @@
         if (!o.lng) { 
             o.lng = f.detectLanguage(); 
         } else {
-            // set cookie with lng set (detectLanguage will set cookie on need)
+            // set cookie with lng set (as detectLanguage will set cookie on need)
             f.cookie.create('i18next', o.lng);
         }
 
@@ -159,10 +161,12 @@
         if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
         currentLng = o.lng;
 
+        // add JQuery extensions
+        if ($ && o.setJqueryExt) addJqueryFunct();
+
         // return immidiatly if res are passed in
         if (o.resStore) {
             resStore = o.resStore;
-            if ($ && o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
             return;
         }
@@ -170,7 +174,6 @@
         // else load them
         sync.load(languages, o.ns, o.useLocalStorage, o.dynamicLoad, function(err, store) {
             resStore = store;
-            if ($ && o.setJqueryExt) addJqueryFunct();
             if (cb) cb(translate);
         });
     }
@@ -223,7 +226,7 @@
 
         // fn
         $.fn.i18n = function (options) {
-            return this.each(function () {
+            return this.each(function() {
                 // localize element itself
                 localize($(this));
 
@@ -236,32 +239,32 @@
         };
     }
 
-    function applyReplacement(str,replacementHash){
-        f.each(replacementHash,function(key,value){
-            str = str.replace([o.interpolationPrefix,key,o.interpolationSuffix].join(''),value);
+    function applyReplacement(str, replacementHash) {
+        f.each(replacementHash, function(key, value) {
+            str = str.replace([o.interpolationPrefix, key, o.interpolationSuffix].join(''), value);
         });
         return str;
     }
 
-    function applyReuse(translated,options){
-        while (translated.indexOf(o.reusePrefix) != -1){
+    function applyReuse(translated, options){
+        while (translated.indexOf(o.reusePrefix) != -1) {
             replacementCounter++;
-            if(replacementCounter > o.maxRecursion){break;} // safety net for too much recursion
+            if (replacementCounter > o.maxRecursion) { break; } // safety net for too much recursion
             var index_of_opening = translated.indexOf(o.reusePrefix);
-            var index_of_end_of_closing = translated.indexOf(o.reuseSuffix,index_of_opening) + o.reuseSuffix.length;
-            var token = translated.substring(index_of_opening,index_of_end_of_closing);
-            var token_sans_symbols = token.replace(o.reusePrefix,"").replace(o.reuseSuffix,"");
+            var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
+            var token = translated.substring(index_of_opening, index_of_end_of_closing);
+            var token_sans_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
             var translated_token = _translate(token_sans_symbols,options);
             translated = translated.replace(token,translated_token);
         }
         return translated;
     }
 
-    function hasContext(options){
+    function hasContext(options) {
         return (options.context && typeof options.context == 'string');
     }
 
-    function needsPlural(options){
+    function needsPlural(options) {
         return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
     }
 
@@ -270,17 +273,13 @@
         return _translate(key, options);
     }
 
-    /*
-    options.defaultValue
-    options.count
-    */
     function _translate(key, options){
         options = options || {};
 
         var optionsSansCount, translated
           , notfound = options.defaultValue || key;
 
-        if (!resStore) { return notfound; } // No resStore to translate from
+        if (!resStore) { return notfound; } // no resStore to translate from
 
         var ns = o.ns.defaultNs;
         if (key.indexOf(o.nsseparator) > -1) {
@@ -290,28 +289,31 @@
         }
 
         if (hasContext(options)) {
-            optionsSansCount = f.extend({},options);
+            optionsSansCount = f.extend({}, options);
             delete optionsSansCount.context;
             optionsSansCount.defaultValue = o.contextNotFound;
-            var contextKey = key + '_' +options.context;
+
+            var contextKey = key + '_' + options.context;
             
             translated = translate(contextKey, optionsSansCount);
             if (translated != o.contextNotFound) {
-                return applyReplacement(translated,{context:options.context});//apply replacement for count only
-            }// else continue translation with original/singular key
+                return applyReplacement(translated, { context: options.context }); // apply replacement for context only
+            } // else continue translation with original/nonContext key
         }
 
         if (needsPlural(options)) {
-            optionsSansCount = f.extend({},options);
+            optionsSansCount = f.extend({}, options);
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
+
             var pluralKey = key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
             if (pluralExtension !== 'other') { pluralKey = pluralKey + '_' + pluralExtension; }
+            
             translated = translate(pluralKey, optionsSansCount);
             if (translated != o.pluralNotFound) {
-                return applyReplacement(translated,{count:options.count});//apply replacement for count only
-            }// else continue translation with original/singular key
+                return applyReplacement(translated, { count: options.count }); // apply replacement for count only
+            } // else continue translation with original/singular key
         }
 
         var found;
@@ -365,20 +367,27 @@
             f.cookie.create('i18next', detectedLng);
         }
 
+        // get from cookie
         if (!detectedLng) {
             var c = f.cookie.read('i18next');
             if (c) detectedLng = c;
         }
 
+        // get from navigator
         if (!detectedLng && navigator) {
             detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
         }
         
+        // no luck so use fallback
         if (!detectedLng) {
             detectedLng =  o.fallbackLng;
         }
 
         return detectedLng;
+    }
+
+    function lng() {
+        return currentLng;
     }
 
     var sync = {
@@ -518,6 +527,7 @@
             }
         },
 
+        // for demonstration only sl and ar is added but you can add your own pluralExtensions
         addRule: function(lng, fc) {
             pluralExtensions.rules[lng] = fc;    
         },
@@ -541,10 +551,6 @@
         }
 
     };
-
-    function lng() {
-        return currentLng;
-    }
 
     // extend main object with main api interface
     i18n.init = init;
