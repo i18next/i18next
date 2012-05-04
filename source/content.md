@@ -3,7 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.2.6.zip">i18next v1.2.6</a> 
+    <a class="button" href="public/downloads/i18next-1.3.0.zip">i18next v1.3.0</a> 
 </section>
 
 # Introduction
