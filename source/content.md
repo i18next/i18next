@@ -3,13 +3,12 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.2.5.zip">i18next v1.2.5</a> 
+    <a class="button" href="public/downloads/i18next-1.2.6.zip">i18next v1.2.6</a> 
 </section>
 
 # Introduction
 
-There are a lot of great javascripts modules around to bring translation to clientside web, but there 
-where always some features i missed.
+There are a lot of great javascripts modules around to bring translation to clientside web, but there where always some features i missed.
 
 Mostly:
 
@@ -357,6 +356,11 @@ Just init i18n with the according options (you shouldn't use this option in prod
 - [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.
 
 ## Release Notes
+
+### v1.2.6
+- close [issue #8(https://github.com/jamuhl/i18next/issues/8)]: Fail silently when trying to access a path with children
+- cleanup
+- debug flag (options.debug -> write infos/errors to console)
 
 ### v1.2.5
 - fix for IE8
