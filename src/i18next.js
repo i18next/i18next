@@ -191,7 +191,7 @@
         // $.t shortcut
         $.t = $.t || translate;
 
-        function parse(ele, key) {
+        function parse(ele, key, options) {
             if (key.length === 0) return;
 
             var attr = 'text';
@@ -206,14 +206,17 @@
                 key = key.substr(0, key.length-2);
             }
 
+            var optionsToUse;
             if (attr === 'text') {
-                ele.text($.t(key, { defaultValue: ele.text() }));
+                optionsToUse = $.extend({ defaultValue: ele.text() }, options);
+                ele.text($.t(key, optionsToUse));
             } else {
-                ele.attr(attr, $.t(key, { defaultValue: ele.attr(attr) }));
+                optionsToUse = $.extend({ defaultValue: ele.attr(attr) }, options);
+                ele.attr(attr, $.t(key, optionsToUse));
             }
         }
 
-        function localize(ele) {
+        function localize(ele, options) {
             var key = ele.attr('data-i18n');
             if (!key) return;
 
@@ -221,11 +224,11 @@
                 var keys = key.split(';');
 
                 $.each(keys, function(m, k) {
-                    parse(ele, k);
+                    parse(ele, k, options);
                 });
 
             } else {
-                parse(ele, key);
+                parse(ele, key, options);
             }
         }
 
@@ -233,20 +236,24 @@
         $.fn.i18n = function (options) {
             return this.each(function() {
                 // localize element itself
-                localize($(this));
+                localize($(this), options);
 
                 // localize childs
                 var elements =  $(this).find('[data-i18n]');
                 elements.each(function() { 
-                    localize($(this));
+                    localize($(this), options);
                 });
             });
         };
     }
 
-    function applyReplacement(str, replacementHash) {
+    function applyReplacement(str, replacementHash, nestedKey) {
         f.each(replacementHash, function(key, value) {
-            str = str.replace([o.interpolationPrefix, key, o.interpolationSuffix].join(''), value);
+            if (typeof value === 'object') {
+                str = applyReplacement(str, value, key);
+            } else {
+                str = str.replace([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), value);
+            }
         });
         return str;
     }
