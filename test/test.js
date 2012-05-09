@@ -418,6 +418,28 @@ asyncTest("basic binding (.i18n()) test with options", function() {
     });
 });
 
+asyncTest("binding (.i18n()) test with nested options", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        lowerCaseLng: false,
+        ns: 'translation',
+        useLocalStorage: false,
+        resStore: {
+            'en-US': { translation: { 'simpleTest': '__rootoption.first__ and then __rootoption.second__' } }
+        }
+    }, function(t) {
+        // given
+        $('#qunit-fixture').append('<button id="testBtn" data-i18n="simpleTest"></button>');
+
+        // when
+        $('#qunit-fixture').i18n({"rootoption":{"first":"ok_first_nested", "second":"ok_second_nested"}});
+
+        // then
+        equals($('#testBtn').text(),'ok_first_nested and then ok_second_nested', 'set text via fn .i18n(nested.options)');
+        start();
+    });
+});
+
 asyncTest("switching lng", function() {
     $.i18n.init({
         lng: 'en-US',
