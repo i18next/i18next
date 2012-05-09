@@ -247,9 +247,13 @@
         };
     }
 
-    function applyReplacement(str, replacementHash) {
+    function applyReplacement(str, replacementHash, nestedKey) {
         f.each(replacementHash, function(key, value) {
-            str = str.replace([o.interpolationPrefix, key, o.interpolationSuffix].join(''), value);
+            if (typeof value === 'object') {
+                str = applyReplacement(str, value, key);
+            } else {
+                str = str.replace([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), value);
+            }
         });
         return str;
     }
