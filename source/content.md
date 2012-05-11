@@ -101,6 +101,8 @@ Every child element with an _data-i18n_ attribute will be translated with given 
         , resGetPath: 'myFolder/__lng__/__ns__.json' // defaults to 'locales/__lng__/__ns__.json' where ns = translation (default)
         , useLocalStorage: false                     // defaults to true
         , resStore: {...}                            // if you don't want your resources to be loaded you can provide the resources
+
+        , debug: true                                // last but not least get some information if things go wrong
     });
 
 
