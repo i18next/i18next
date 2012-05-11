@@ -33,7 +33,7 @@
 <p><Download the latest source or fork the project from github:</p>
 
 <p><section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.0.zip">i18next v1.3.0</a> 
+    <a class="button" href="public/downloads/i18next-1.3.1.zip">i18next v1.3.1</a> 
 </section></p>
 
 <h1>Introduction</h1>
@@ -138,7 +138,7 @@ on runtime or feel free to fork the project and send a pull request.</p>
 
 <p>You can find the plural rules on <a href="http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html">unicode.org</a>.</p>
 
-<h3>NEW v1.2: translation contexts</h3>
+<h3>translation contexts</h3>
 
 <p>You can provide a translation key in form <code>[key]_[yourContext]</code>. By passing in <em>context</em> through options i18next 
 can choose correct form:</p>
@@ -157,13 +157,18 @@ can choose correct form:</p>
 
 <h3>extended use of the jquery function</h3>
 
+<p>You can pass in options like in value insert, plural or context usage, just pass in you're options:</p>
+
+<pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">'.nav'</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">({</span><span class="pln">context</span><span class="pun">:</span><span class="pln"> </span><span class="str">'female'</span><span class="pun">,</span><span class="pln"> count</span><span class="pun">:</span><span class="pln"> </span><span class="lit">10</span><span class="pun">})</span><span class="pln"> </span><span class="com">// in direct usage via $.t('key', {options})</span><span class="pln"><br /></span></code></pre>
+
+<p>In addition you can set multiple attibutes like:</p>
+
 <pre><code><span class="com">// given resource</span><span class="pln"><br /></span><span class="str">"attr"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"placeholderText"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"search..."</span><span class="pun">,</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"hoverText"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"don't have fear click me!"</span><span class="pun">,</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="str">"btnText"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"search"</span><span class="pln"><br /></span><span class="pun">}</span><span class="pln"><br /><br /></span><span class="com">// given html</span><span class="pln"><br /></span><span class="pun">&lt;</span><span class="pln">form id</span><span class="pun">=</span><span class="str">"form"</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">&lt;</span><span class="pln">input type</span><span class="pun">=</span><span class="str">"text"</span><span class="pln"> data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"[placeholder]attr.placeholderText"</span><span class="pun">&gt;&lt;/</span><span class="pln">input</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="com">// the placeholder text will be set to 'search...'</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">&lt;</span><span class="pln">button data</span><span class="pun">-</span><span class="pln">i18n</span><span class="pun">=</span><span class="str">"[title]attr.hoverText;attr.btnText"</span><span class="pun">&gt;&lt;/</span><span class="pln">button</span><span class="pun">&gt;</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="com">// the button's text will be 'search' and on hover you should see 'don't have fear click me!'</span><span class="pln"><br /></span><span class="pun">&lt;</span><span class="str">/form&gt;<br /><br />/</span><span class="pun">/</span><span class="pln"> just </span><span class="kwd">do</span><span class="pln"> to translate all elements having attribute _data</span><span class="pun">-</span><span class="pln">i18n_<br />$</span><span class="pun">(</span><span class="str">'.nav'</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span><span class="pln"><br /></span></code></pre>
 
 <p>You can set multiple attributes from wihin the <strong>data-i18n</strong> attribute by specifing the attribute by enclosing 
 it with <strong>[...]</strong> followed by the translation key and seperated by <strong>';'</strong>.</p>
 
-<p>When not setting a specific attribute (like on the button in above sample -> attr.btnText) i18next will set the 
-text of given element.</p>
+<p>When not setting a specific attribute (like on the button in above sample -> attr.btnText) i18next will set the text of given element.</p>
 
 <h3>dynamic (non-static) resouce route</h3>
 
@@ -204,9 +209,10 @@ seperated by a + which should be a space on serverside).</p>
 
 <h2>Release Notes</h2>
 
-<h3>v1.2.6</h3>
+<h3>v1.3.1</h3>
 
 <ul>
+<li>pass options to selector.i18n() thanks to <a href="https://github.com/jamuhl/i18next/pull/10">@hugojosefson</a></li>
 <li>close [issue #8(https://github.com/jamuhl/i18next/issues/8)]: Fail silently when trying to access a path with children</li>
 <li>cleanup</li>
 <li>debug flag (options.debug -> write infos/errors to console)</li>

@@ -3,7 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.0.zip">i18next v1.3.0</a> 
+    <a class="button" href="public/downloads/i18next-1.3.1.zip">i18next v1.3.1</a> 
 </section>
 
 # Introduction
@@ -224,7 +224,7 @@ on runtime or feel free to fork the project and send a pull request.
 
 You can find the plural rules on [unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
-### NEW v1.2: translation contexts
+### translation contexts
 
 You can provide a translation key in form `[key]_[yourContext]`. By passing in _context_ through options i18next 
 can choose correct form:
@@ -274,6 +274,12 @@ You can even use context and plurals in combination:
 
 ### extended use of the jquery function
 
+You can pass in options like in value insert, plural or context usage, just pass in you're options:
+
+    $('.nav').i18n({context: 'female', count: 10}) // in direct usage via $.t('key', {options})
+
+In addition you can set multiple attibutes like:
+
     // given resource
     "attr": {
         "placeholderText": "search...",
@@ -295,8 +301,7 @@ You can even use context and plurals in combination:
 You can set multiple attributes from wihin the __data-i18n__ attribute by specifing the attribute by enclosing 
 it with __[...]__ followed by the translation key and seperated by __';'__.
 
-When not setting a specific attribute (like on the button in above sample -> attr.btnText) i18next will set the 
-text of given element.
+When not setting a specific attribute (like on the button in above sample -> attr.btnText) i18next will set the text of given element.
 
 ### dynamic (non-static) resouce route
 
@@ -357,7 +362,9 @@ Just init i18n with the according options (you shouldn't use this option in prod
 
 ## Release Notes
 
-### v1.2.6
+
+### v1.3.1
+- pass options to selector.i18n() thanks to [@hugojosefson](https://github.com/jamuhl/i18next/pull/10)
 - close [issue #8(https://github.com/jamuhl/i18next/issues/8)]: Fail silently when trying to access a path with children
 - cleanup
 - debug flag (options.debug -> write infos/errors to console)
