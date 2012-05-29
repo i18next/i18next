@@ -173,7 +173,8 @@ asyncTest("extended functions", function() {
                     nesting3: '3',
                     pluralTest: 'no plural',
                     pluralTest_plural: 'plural',
-                    interpolationTest: 'added __toAdd__'
+                    interpolationTest: 'added __toAdd__',
+                    interpolationTest2: 'added __toAdd__ __toAdd__ twice'
                 } 
             }
         }
@@ -183,6 +184,7 @@ asyncTest("extended functions", function() {
         equals(t('pluralTest', {count: 1}), 'no plural', 'call plural with count = 1');
         equals(t('pluralTest', {count: 2}), 'plural', 'call plural with count = 2');
         equals(t('interpolationTest', {toAdd: 'something'}), 'added something', 'insert variable into resource');
+        equals(t('interpolationTest2', {toAdd: 'something'}), 'added something something twice', 'insert variable into resource');
 
         start();
     });
