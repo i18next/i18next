@@ -252,7 +252,7 @@
             if (typeof value === 'object') {
                 str = applyReplacement(str, value, key);
             } else {
-                str = str.replace([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), value);
+                str = str.replace(new RegExp([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), 'g'), value);
             }
         });
         return str;
