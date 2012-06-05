@@ -78,7 +78,9 @@
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
         contextNotFound: ['context_not_found', Math.random()].join(''),
 
-        setJqueryExt: true
+        setJqueryExt: true,
+        
+        asyncReq: true
     };
 
     // move dependent functions to a container so that
@@ -501,7 +503,8 @@
                         f.log('failed loading: ' + url);
                         cb('failed loading resource.json error: ' + error);
                     },
-                    dataType: "json"
+                    dataType: "json",
+                    async : o.asyncReq
                 });         
             }
         },
@@ -518,7 +521,8 @@
                     f.log('failed loading: ' + url);
                     done(error, {});
                 },
-                dataType: "json"
+                dataType: "json",
+                async : o.asyncReq
             });
         },
 
@@ -538,7 +542,8 @@
                 error : function(xhr, status, error) {
                     f.log('failed posting missing key \'' + key + '\' to: ' + url);
                 },
-                dataType: "json"
+                dataType: "json",
+                async : o.asyncReq
             });
         }
     };

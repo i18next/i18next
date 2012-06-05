@@ -491,3 +491,26 @@ asyncTest("auto upload missing resources", function() {
         start();
     });
 });
+
+asyncTest("synchronous init", function() {
+    $.i18n.init({
+        lng: 'en-US',
+        lowerCaseLng: false,
+        ns: 'translation',
+        dynamicLoad: false,
+        useLocalStorage: false,
+        debug: true,
+        resStore: {
+            dev: { translation: { simpleTest_dev: 'ok_from_dev' } },
+            en: { translation: { simpleTest_en: 'ok_from_en' } },            
+            'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
+        },
+        asyncReq: false
+    }, function(t) { //do nothing here
+    });
+    equals($.t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');
+    equals($.t('simpleTest_en'),'ok_from_en', 'from unspecific lng with namespace given');
+    equals($.t('simpleTest_dev'),'ok_from_dev', 'from fallback lng with namespace given');
+
+    start();
+});
