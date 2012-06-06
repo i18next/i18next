@@ -33,7 +33,7 @@
 <p><Download the latest source or fork the project from github:</p>
 
 <p><section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.1.zip">i18next v1.3.1</a> 
+    <a class="button" href="public/downloads/i18next-1.3.2.zip">i18next v1.3.2</a> 
 </section></p>
 
 <h1>Introduction</h1>
@@ -73,6 +73,8 @@
 <p>Init and use the module:</p>
 
 <pre><code><span class="pln">$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">({},</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">t</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// will init i18n with default settings and set language from navigator</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> appName </span><span class="pun">=</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'app.name'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; i18n</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> creator </span><span class="pun">=</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'creator.firstname'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="str">' '</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'creator.lastname'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; Jan Mühlemann</span><span class="pln"><br /></span><span class="pun">});</span><span class="pln"><br /></span></code></pre>
+
+<p>If you really need to init i18next not async you could pass in <code>getAsync = false</code> in options. Default will be async.</p>
 
 <p>After initialisation you can use <strong>$.t()</strong> instead of setting translation in the init callback:</p>
 
@@ -208,6 +210,13 @@ seperated by a + which should be a space on serverside).</p>
 </ul>
 
 <h2>Release Notes</h2>
+
+<h3>v1.3.1</h3>
+
+<ul>
+<li>options to init i18next sync (options -> getAsync = false)</li>
+<li>replace all occurence of replacement string</li>
+</ul>
 
 <h3>v1.3.1</h3>
 

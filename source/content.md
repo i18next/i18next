@@ -3,7 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.1.zip">i18next v1.3.1</a> 
+    <a class="button" href="public/downloads/i18next-1.3.2.zip">i18next v1.3.2</a> 
 </section>
 
 # Introduction
@@ -52,6 +52,8 @@ Init and use the module:
         var appName = t('app.name'); // -> i18n
         var creator = t('creator.firstname') + ' ' + t('creator.lastname'); // -> Jan Mühlemann
     });
+
+If you really need to init i18next not async you could pass in `getAsync = false` in options. Default will be async.
 
 After initialisation you can use __$.t()__ instead of setting translation in the init callback:
 
@@ -364,6 +366,9 @@ Just init i18n with the according options (you shouldn't use this option in prod
 
 ## Release Notes
 
+### v1.3.1
+- options to init i18next sync (options -> getAsync = false)
+- replace all occurence of replacement string
 
 ### v1.3.1
 - pass options to selector.i18n() thanks to [@hugojosefson](https://github.com/jamuhl/i18next/pull/10)
