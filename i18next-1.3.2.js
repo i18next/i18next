@@ -64,6 +64,9 @@
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
 
+        getAsync: true,
+        postAsync: true,
+
         resStore: undefined,
         useLocalStorage: true,
 
@@ -501,7 +504,8 @@
                         f.log('failed loading: ' + url);
                         cb('failed loading resource.json error: ' + error);
                     },
-                    dataType: "json"
+                    dataType: "json",
+                    async : o.getAsync
                 });         
             }
         },
@@ -518,7 +522,8 @@
                     f.log('failed loading: ' + url);
                     done(error, {});
                 },
-                dataType: "json"
+                dataType: "json",
+                async : o.getAsync
             });
         },
 
@@ -538,7 +543,8 @@
                 error : function(xhr, status, error) {
                     f.log('failed posting missing key \'' + key + '\' to: ' + url);
                 },
-                dataType: "json"
+                dataType: "json",
+                async : o.postAsync
             });
         }
     };

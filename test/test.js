@@ -505,7 +505,7 @@ asyncTest("synchronous init", function() {
             en: { translation: { simpleTest_en: 'ok_from_en' } },            
             'en-US': { translation: { 'simpleTest_en-US': 'ok_from_en-US' } }
         },
-        asyncReq: false
+        getAsync: false
     }, function(t) { //do nothing here
     });
     equals($.t('simpleTest_en-US'),'ok_from_en-US', 'from specific lng with namespace given');

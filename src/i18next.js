@@ -64,6 +64,9 @@
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
 
+        getAsync: true,
+        postAsync: true,
+
         resStore: undefined,
         useLocalStorage: true,
 
@@ -78,9 +81,7 @@
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
         contextNotFound: ['context_not_found', Math.random()].join(''),
 
-        setJqueryExt: true,
-        
-        asyncReq: true
+        setJqueryExt: true
     };
 
     // move dependent functions to a container so that
@@ -504,7 +505,7 @@
                         cb('failed loading resource.json error: ' + error);
                     },
                     dataType: "json",
-                    async : o.asyncReq
+                    async : o.getAsync
                 });         
             }
         },
@@ -522,7 +523,7 @@
                     done(error, {});
                 },
                 dataType: "json",
-                async : o.asyncReq
+                async : o.getAsync
             });
         },
 
@@ -543,7 +544,7 @@
                     f.log('failed posting missing key \'' + key + '\' to: ' + url);
                 },
                 dataType: "json",
-                async : o.asyncReq
+                async : o.postAsync
             });
         }
     };
