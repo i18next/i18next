@@ -14,6 +14,7 @@ describe('i18next', function() {
       sendMissing: false,
       resStore: false,
       getAsync: true,
+      returnObjectTrees: false,
       debug: true
     };
   });
@@ -211,6 +212,14 @@ describe('i18next', function() {
 
   });
 
+/* ################################################################################
+###################################################################################
+##########
+##########  BASIC FUNCTIONS
+##########
+###################################################################################
+#################################################################################*/
+
   describe('basic functionality', function() {
 
     describe('setting language', function() {
@@ -271,6 +280,14 @@ describe('i18next', function() {
 
   });
 
+/* ################################################################################
+###################################################################################
+##########
+##########  TRANSLATION FUNCTIONS
+##########
+###################################################################################
+#################################################################################*/
+
   describe('translation functionality', function() {
 
     describe('accessing nested values', function() {
@@ -285,6 +302,48 @@ describe('i18next', function() {
 
       it('it should not fail silently on accessing a objectTree', function() {
         expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned a object instead of string.');
+      });
+
+      describe('optional return an objectTree for UI components,...', function() {
+
+        describe('with init flag', function() {
+
+          var resStore = {
+            dev: { translation: {  } },
+            en: { translation: {  } },            
+            'en-US': { 
+              translation: {                      
+                test: { res: 'added __replace__' }
+              } 
+            }
+          };
+          
+          beforeEach(function(done) {
+            i18n.init( $.extend(opts, { 
+              returnObjectTrees: true,
+              resStore: resStore }
+              ), function(t) { done(); });
+          });
+
+          it('it should return objectTree applying options', function() {
+            expect(i18n.t('test', { replace: 'two' })).to.eql({ 'res': 'added two' });
+          });
+
+        });
+
+        describe('with flag in options', function() {
+
+          beforeEach(function(done) {
+            i18n.init($.extend(opts, { returnObjectTrees: false }),
+              function(t) { done(); } );
+          });
+
+          it('it should return objectTree', function() {
+            expect(i18n.t('test', { returnObjectTrees: true })).to.eql({ 'simple_en-US': 'ok_from_en-US' });
+          });
+
+        });
+
       });
 
     });
@@ -463,7 +522,53 @@ describe('i18next', function() {
 
   });
 
+/* ################################################################################
+###################################################################################
+##########
+##########  JQUERY STUFF
+##########
+###################################################################################
+#################################################################################*/
+
   describe('jQuery integration / specials', function() {
+
+    describe('initialise - use deferrer instead of callback', function() {
+
+      describe('with passed in resource set', function() {
+
+        var resStore = {
+          dev: { translation: { 'simple_dev': 'ok_from_dev' } },
+          en: { translation: { 'simple_en': 'ok_from_en' } },            
+          'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init( $.extend(opts, { resStore: resStore })).done(function(t) { done(); });
+        });
+
+        it('it should provide passed in resources for translation', function() {
+          expect($.t('simple_en-US')).to.be('ok_from_en-US');
+          expect($.t('simple_en')).to.be('ok_from_en');
+          expect($.t('simple_dev')).to.be('ok_from_dev');
+        });
+
+      });
+
+      describe('loading from server', function() {
+
+        beforeEach(function(done) {
+          i18n.init(opts).done(function() { done(); });
+        });
+
+        it('it should provide loaded resources for translation', function() {
+          expect($.t('simple_en-US')).to.be('ok_from_en-US');
+          expect($.t('simple_en')).to.be('ok_from_en');
+          expect($.t('simple_dev')).to.be('ok_from_dev');
+        });
+
+      });
+
+    });
 
     describe('use translation function shortcut $.t', function() {
 

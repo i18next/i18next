@@ -55,6 +55,7 @@
     var o = {
         lng: undefined,
         lowerCaseLng: false,
+        returnObjectTrees: false,
         fallbackLng: 'dev',
         ns: 'translation',
         nsseparator: ':',
@@ -172,18 +173,28 @@
         // add JQuery extensions
         if ($ && o.setJqueryExt) addJqueryFunct();
 
+        // jQuery deferred
+        var deferred;
+        if ($ && $.Deferred) {
+            deferred = $.Deferred();
+        }
+
         // return immidiatly if res are passed in
         if (o.resStore) {
             resStore = o.resStore;
             if (cb) cb(translate);
-            return;
+            if (deferred) deferred.resolve();
+            return deferred;
         }
 
         // else load them
         i18n.sync.load(languages, o, function(err, store) {
             resStore = store;
             if (cb) cb(translate);
+            if (deferred) deferred.resolve();
         });
+
+        return deferred;
     }
 
     function setLng(lng, cb) {
@@ -346,12 +357,20 @@
             }
             if (value) {
                 if (typeof value !== 'string') {
-                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
-                            'returned a object instead of string.';
-                    f.log(value);
+                    if (!o.returnObjectTrees && !options.returnObjectTrees) {
+                        value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
+                                'returned a object instead of string.';
+                        f.log(value);
+                    } else {
+                        for (var m in value) {
+                            // apply translation on childs
+                            value[m] = _translate(key + '.' + m, options);
+                        }
+                    }
+                } else {
+                    value = applyReplacement(value, options);
+                    value = applyReuse(value, options);
                 }
-                value = applyReplacement(value, options);
-                value = applyReuse(value, options);
                 found = value;
             }
         }
