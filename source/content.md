@@ -3,7 +3,7 @@
 <Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.2.zip">i18next v1.3.2</a> 
+    <a class="button" href="public/downloads/i18next-1.3.3.zip">i18next v1.3.3</a> 
 </section>
 
 # Introduction
@@ -48,9 +48,15 @@ Add your resourcefile under /locales/en-US/translation.json
 
 Init and use the module:
 
-    $.i18n.init({}, function(t) { // will init i18n with default settings and set language from navigator
+    $.i18n.init(function(t) { // will init i18n with default settings and set language from navigator
         var appName = t('app.name'); // -> i18n
         var creator = t('creator.firstname') + ' ' + t('creator.lastname'); // -> Jan Mühlemann
+    });
+
+    // or use jquery promises
+    $.i18n.init().done(function() {
+        var appName = $.t('app.name'); // -> i18n
+        var creator = $.t('creator.firstname') + ' ' + $.t('creator.lastname'); // -> Jan Mühlemann
     });
 
 If you really need to init i18next not async you could pass in `getAsync = false` in options. Default will be async.
@@ -106,6 +112,18 @@ Every child element with an _data-i18n_ attribute will be translated with given 
 
         , debug: true                                // last but not least get some information if things go wrong
     });
+
+# Getting an objectTree instead of a string
+
+If you need an objectTree for usage in your template engine or some UI component you could:
+
+    // a) set init option
+    $.i18n.init({ returnObjectTrees: true });
+
+    // b) pass option to translate function
+    $.i18n.t('someRoot', { returnObjectTrees: true })
+
+This will return a object with all it's children having their extendend options like plural, context, ... applied.
 
 
 # Extended Samples
@@ -366,7 +384,12 @@ Just init i18n with the according options (you shouldn't use this option in prod
 
 ## Release Notes
 
-### v1.3.1
+### v1.3.3
+- optional return an objectTree from translation
+- use jquery promises or callback in initialisation
+- rewrote all tests with mocha.js
+
+### v1.3.2
 - options to init i18next sync (options -> getAsync = false)
 - replace all occurence of replacement string
 

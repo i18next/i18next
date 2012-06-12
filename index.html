@@ -33,7 +33,7 @@
 <p><Download the latest source or fork the project from github:</p>
 
 <p><section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.2.zip">i18next v1.3.2</a> 
+    <a class="button" href="public/downloads/i18next-1.3.3.zip">i18next v1.3.3</a> 
 </section></p>
 
 <h1>Introduction</h1>
@@ -72,7 +72,7 @@
 
 <p>Init and use the module:</p>
 
-<pre><code><span class="pln">$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">({},</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">t</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// will init i18n with default settings and set language from navigator</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> appName </span><span class="pun">=</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'app.name'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; i18n</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> creator </span><span class="pun">=</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'creator.firstname'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="str">' '</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'creator.lastname'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; Jan Mühlemann</span><span class="pln"><br /></span><span class="pun">});</span><span class="pln"><br /></span></code></pre>
+<pre><code><span class="pln">$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">t</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// will init i18n with default settings and set language from navigator</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> appName </span><span class="pun">=</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'app.name'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; i18n</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> creator </span><span class="pun">=</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'creator.firstname'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="str">' '</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> t</span><span class="pun">(</span><span class="str">'creator.lastname'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; Jan Mühlemann</span><span class="pln"><br /></span><span class="pun">});</span><span class="pln"><br /><br /></span><span class="com">// or use jquery promises</span><span class="pln"><br />$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">().</span><span class="kwd">done</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> appName </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">'app.name'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; i18n</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> creator </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">'creator.firstname'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="str">' '</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">'creator.lastname'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// -&gt; Jan Mühlemann</span><span class="pln"><br /></span><span class="pun">});</span><span class="pln"><br /></span></code></pre>
 
 <p>If you really need to init i18next not async you could pass in <code>getAsync = false</code> in options. Default will be async.</p>
 
@@ -100,6 +100,14 @@ If the key is not in the fallback language the key or a optional defaultValue wi
 <h3>Basic options for init</h3>
 
 <pre><code><span class="pln">$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">({</span><span class="pln"><br />&nbsp; &nbsp; &nbsp; lng</span><span class="pun">:</span><span class="pln"> </span><span class="str">'en-US'</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// defaults to get from navigator</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">,</span><span class="pln"> fallbackLng</span><span class="pun">:</span><span class="pln"> </span><span class="str">'en'</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="com">// defaults to 'dev'</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">,</span><span class="pln"> ns</span><span class="pun">:</span><span class="pln"> </span><span class="str">'myNamespace'</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="com">// defaults to 'tranalation'</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">,</span><span class="pln"> resGetPath</span><span class="pun">:</span><span class="pln"> </span><span class="str">'myFolder/__lng__/__ns__.json'</span><span class="pln"> </span><span class="com">// defaults to 'locales/__lng__/__ns__.json' where ns = translation (default)</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">,</span><span class="pln"> useLocalStorage</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// defaults to true</span><span class="pln"><br />&nbsp; &nbsp; </span><span class="pun">,</span><span class="pln"> resStore</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{...}</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="com">// if you don't want your resources to be loaded you can provide the resources</span><span class="pln"><br /><br />&nbsp; &nbsp; </span><span class="pun">,</span><span class="pln"> debug</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pln"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="com">// last but not least get some information if things go wrong</span><span class="pln"><br /></span><span class="pun">});</span><span class="pln"><br /></span></code></pre>
+
+<h1>Getting an objectTree instead of a string</h1>
+
+<p>If you need an objectTree for usage in your template engine or some UI component you could:</p>
+
+<pre><code><span class="com">// a) set init option</span><span class="pln"><br />$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">({</span><span class="pln"> returnObjectTrees</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pln"> </span><span class="pun">});</span><span class="pln"><br /><br /></span><span class="com">// b) pass option to translate function</span><span class="pln"><br />$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">'someRoot'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> returnObjectTrees</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pln"> </span><span class="pun">})</span><span class="pln"><br /></span></code></pre>
+
+<p>This will return a object with all it's children having their extendend options like plural, context, ... applied.</p>
 
 <h1>Extended Samples</h1>
 
@@ -211,7 +219,15 @@ seperated by a + which should be a space on serverside).</p>
 
 <h2>Release Notes</h2>
 
-<h3>v1.3.1</h3>
+<h3>v1.3.3</h3>
+
+<ul>
+<li>optional return an objectTree from translation</li>
+<li>use jquery promises or callback in initialisation</li>
+<li>rewrote all tests with mocha.js</li>
+</ul>
+
+<h3>v1.3.2</h3>
 
 <ul>
 <li>options to init i18next sync (options -> getAsync = false)</li>
