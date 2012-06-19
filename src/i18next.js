@@ -83,7 +83,7 @@
         contextNotFound: ['context_not_found', Math.random()].join(''),
 
         setJqueryExt: true,
-        useDataOptions: false
+        useDataAttrOptions: false
     };
 
     // move dependent functions to a container so that
@@ -235,7 +235,7 @@
             var key = ele.attr('data-i18n');
             if (!key) return;
 
-            if (!options && o.useDataOptions === true) {
+            if (!options && o.useDataAttrOptions === true) {
                 options = ele.data("i18n-options");
             }
             options = options || {};
@@ -251,7 +251,7 @@
                 parse(ele, k, options);
             }
 
-            if (o.useDataOptions === true) ele.data("i18n-options", options);
+            if (o.useDataAttrOptions === true) ele.data("i18n-options", options);
         }
 
         // fn
