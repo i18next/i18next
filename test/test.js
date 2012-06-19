@@ -662,6 +662,28 @@ describe('i18next', function() {
           
         });
 
+        describe('extended - render inner html', function() {
+
+          var resStore = {
+            dev: { translation: {  } },
+            en: { translation: {  } },            
+            'en-US': { translation: { 'simpleTest': '<div id="inner">test</div>' } }
+          };
+          
+          beforeEach(function(done) {
+            setFixtures('<div id="container" data-i18n="[html]simpleTest"></div>');
+
+            i18n.init( $.extend(opts, { resStore: resStore }),
+              function(t) {  done(); });
+          });
+
+          it('it should set inner html', function() {
+            $('#container').i18n(); console.log($('#container').html());
+            expect($('#inner').html()).to.be('test');
+          });
+          
+        });
+
 
         describe('extended - read options from data attribute', function() {
 
@@ -676,7 +698,7 @@ describe('i18next', function() {
 
             i18n.init( $.extend(opts, { 
               resStore: resStore,
-              useDataOptions: true
+              useDataAttrOptions: true
             }),
               function(t) {
                 $('#container').i18n({ replace: 'replaced' });
@@ -685,7 +707,7 @@ describe('i18next', function() {
               });
           });
 
-          it('it should set text with passed in options', function() {
+          it('it should set text with attributes options', function() {
             $('#container').i18n(); // without option
             expect($('#testBtn').text()).to.be('replaced ok_from_en-US');
           });

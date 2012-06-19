@@ -222,7 +222,11 @@
             }
 
             var optionsToUse;
-            if (attr === 'text') {
+            if (attr === 'html') {
+                optionsToUse = $.extend({ defaultValue: ele.html() }, options);
+                ele.html($.t(key, optionsToUse));
+            } 
+            else if (attr === 'text') {
                 optionsToUse = $.extend({ defaultValue: ele.text() }, options);
                 ele.text($.t(key, optionsToUse));
             } else {
