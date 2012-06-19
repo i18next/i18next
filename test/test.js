@@ -662,6 +662,36 @@ describe('i18next', function() {
           
         });
 
+
+        describe('extended - read options from data attribute', function() {
+
+          var resStore = {
+            dev: { translation: {  } },
+            en: { translation: {  } },            
+            'en-US': { translation: { 'simpleTest': '__replace__ ok_from_en-US' } }
+          };
+          
+          beforeEach(function(done) {
+            setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+
+            i18n.init( $.extend(opts, { 
+              resStore: resStore,
+              useDataOptions: true
+            }),
+              function(t) {
+                $('#container').i18n({ replace: 'replaced' });
+                $('#testBtn').text('');
+                done(); 
+              });
+          });
+
+          it('it should set text with passed in options', function() {
+            $('#container').i18n(); // without option
+            expect($('#testBtn').text()).to.be('replaced ok_from_en-US');
+          });
+          
+        });
+
     });
 
   });

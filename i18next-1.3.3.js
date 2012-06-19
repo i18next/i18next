@@ -232,20 +232,18 @@
 
         function localize(ele, options) {
             var key = ele.attr('data-i18n');
-            var optionsToUse = options || ele.data("i18n-options") || {}
             if (!key) return;
 
             if (key.indexOf(';') <= key.length-1) {
                 var keys = key.split(';');
 
                 $.each(keys, function(m, k) {
-                    parse(ele, k, optionsToUse);
+                    parse(ele, k, options);
                 });
 
             } else {
-                parse(ele, key, optionsToUse);
+                parse(ele, key, options);
             }
-            ele.data("i18n-options", optionsToUse)
         }
 
         // fn
