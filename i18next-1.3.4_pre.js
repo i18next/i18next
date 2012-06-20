@@ -83,7 +83,8 @@
         contextNotFound: ['context_not_found', Math.random()].join(''),
 
         setJqueryExt: true,
-        useDataAttrOptions: false
+        useDataAttrOptions: false,
+        cookieExpirationTime: undefined
     };
 
     // move dependent functions to a container so that
@@ -147,10 +148,10 @@
         }
 
         if (!o.lng) { 
-            o.lng = f.detectLanguage(); 
+            o.lng = f.detectLanguage(o.cookieExpirationTime); 
         } else {
             // set cookie with lng set (as detectLanguage will set cookie on need)
-            f.cookie.create('i18next', o.lng);
+            f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
         }
 
         languages = [];
@@ -394,7 +395,7 @@
         return (found) ? found : notfound;
     }
 
-    function detectLanguage() {
+    function detectLanguage(cookieExpirationTime) {
         var detectedLng;
 
         // get from qs
@@ -415,7 +416,7 @@
             detectedLng = qsParm.setLng;
 
             // set cookie
-            f.cookie.create('i18next', detectedLng);
+            f.cookie.create('i18next', detectedLng, cookieExpirationTime);
         }
 
         // get from cookie
