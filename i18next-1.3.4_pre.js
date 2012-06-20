@@ -147,11 +147,13 @@
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
-        if (!o.lng) { 
-            o.lng = f.detectLanguage(o.cookieExpirationTime); 
-        } else {
+        if (!o.lng) o.lng = f.detectLanguage(); 
+        if (o.lng) {
             // set cookie with lng set (as detectLanguage will set cookie on need)
             f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
+        } else {
+            o.lng =  o.fallbackLng;
+            f.cookie.remove('i18next');
         }
 
         languages = [];
@@ -395,7 +397,7 @@
         return (found) ? found : notfound;
     }
 
-    function detectLanguage(cookieExpirationTime) {
+    function detectLanguage() {
         var detectedLng;
 
         // get from qs
@@ -414,9 +416,6 @@
         })();
         if (qsParm.setLng) {
             detectedLng = qsParm.setLng;
-
-            // set cookie
-            f.cookie.create('i18next', detectedLng, cookieExpirationTime);
         }
 
         // get from cookie
@@ -430,11 +429,6 @@
             detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
         }
         
-        // no luck so use fallback
-        if (!detectedLng) {
-            detectedLng =  o.fallbackLng;
-        }
-
         return detectedLng;
     }
 

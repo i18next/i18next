@@ -83,7 +83,8 @@
         contextNotFound: ['context_not_found', Math.random()].join(''),
 
         setJqueryExt: true,
-        useDataAttrOptions: false
+        useDataAttrOptions: false,
+        cookieExpirationTime: undefined
     };
 
     // move dependent functions to a container so that
@@ -146,11 +147,13 @@
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
 
-        if (!o.lng) { 
-            o.lng = f.detectLanguage(); 
-        } else {
+        if (!o.lng) o.lng = f.detectLanguage(); 
+        if (o.lng) {
             // set cookie with lng set (as detectLanguage will set cookie on need)
-            f.cookie.create('i18next', o.lng);
+            f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
+        } else {
+            o.lng =  o.fallbackLng;
+            f.cookie.remove('i18next');
         }
 
         languages = [];
@@ -413,9 +416,6 @@
         })();
         if (qsParm.setLng) {
             detectedLng = qsParm.setLng;
-
-            // set cookie
-            f.cookie.create('i18next', detectedLng);
         }
 
         // get from cookie
@@ -429,11 +429,6 @@
             detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
         }
         
-        // no luck so use fallback
-        if (!detectedLng) {
-            detectedLng =  o.fallbackLng;
-        }
-
         return detectedLng;
     }
 
