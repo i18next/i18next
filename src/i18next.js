@@ -73,6 +73,7 @@
 
         dynamicLoad: false,
         sendMissing: false,
+        sendType: 'POST',
 
         interpolationPrefix: '__',
         interpolationSuffix: '__',
@@ -560,7 +561,7 @@
             var url = applyReplacement(o.resPostPath, { lng: o.fallbackLng, ns: ns });
             f.ajax({
                 url: url,
-                type: 'POST',
+                type: o.sendType,
                 data: payload,
                 success: function(data, status, xhr) {
                     f.log('posted missing key \'' + key + '\' to: ' + url);
