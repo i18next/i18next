@@ -1,9 +1,9 @@
 ### Grab the sources
 
-<Download the latest source or fork the project from github:
+Download the latest source or fork the project from github:
 
 <section id="download"> 
-    <a class="button" href="public/downloads/i18next-1.3.3.zip">i18next v1.3.3</a> 
+    <a class="button" href="public/downloads/i18next-1.3.4.zip">i18next v1.3.4</a> 
 </section>
 
 # Introduction
@@ -383,6 +383,11 @@ Just init i18n with the according options (you shouldn't use this option in prod
 - [jsperanto](https://github.com/jpjoyal/jsperanto). Simple translation for your javascripts, yummy with your favorite templates engine like EJS.
 
 ## Release Notes
+
+### v1.3.4
+- set type of ajax request to GET (options sendType: default POST)
+- set cookie expiration (options cookieExpirationTime: in minutes)
+- read / cache translation options (context, count, ...) in data-attribute (options useDataAttrOptions: default false)
 
 ### v1.3.3
 - optional return an objectTree from translation
