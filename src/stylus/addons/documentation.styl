@@ -1,0 +1,51 @@
+.documentation
+	code
+		font-size: 10px
+
+	.hero-unit
+		padding: 20px 60px
+
+		h1, h2, h3
+			border: none
+			padding: 0
+
+		.doc-links
+			.span4
+				margin: 0
+
+			.doc-link
+				a
+					display: block
+					border: solid 1px lighten($ultralightGray, 10)
+					border-right: solid 1px $ultralightGray
+					background: linear-gradient(top, lighten($ultralightGray, 10), $ultralightGray)
+					text-align: center
+					padding: 20px 10px
+					color: $headerTextGray
+					font-size: 14px
+
+					&:hover
+						background: linear-gradient(top, $lightGray, lighten($lightGray, 10))
+						text-decoration: none
+
+				a.first
+					border-radius: left 5px
+
+				a.last
+					border-radius: right 5px			
+
+	
+	h2, h3
+		color: $headerTextGray
+		//background: lighten($ultralightGray, 10)
+		border-left: solid 3px lighten($ultralightGray, 10)
+		border-bottom: solid 1px lighten($ultralightGray, 10)
+		padding: 6px 10px 6px 15px
+		margin: 20px 0 10px 0
+
+		&:first-child
+			margin: 0 0 10px 0
+
+	h2
+		padding: 10px 10px 10px 15px
+		border-left: solid 3px $ultralightGray

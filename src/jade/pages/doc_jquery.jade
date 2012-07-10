@@ -1,0 +1,116 @@
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: Initialisation
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        h2 Using JQuery
+
+        p 
+        | By default i18next will extend jquery by appending i18n to $ and providing a 
+        | $.fn to translate dom elements marked with the data-i18n attribute.
+
+        pre
+          code
+            | // with options
+            | $.i18n.init({ lng: "en-US" });
+            | // "later"
+            | var x = $.t("key");
+
+        h3 JQuery deferred instead of callback
+
+        .row-fluid
+          .span4
+            h4.feature-title Use deferred:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init(opts).done(function() {
+                  |   var x = $.t("key");
+                  | })
+
+        h3 using the selector function
+
+        .row-fluid
+          .span4
+            h4.feature-title Usage:
+
+            pre
+              code
+                | $(mySelector).i18n(options);
+
+            .alert.alert-info.feature-description
+                p 
+                  | You can pass in same options as in the translation function. For 
+                  | more information about the options go to the 
+                  a(href='/pages/doc_features') features page.
+                p
+                  | Alternatively by setting init option or translation option 'useDataAttrOptions = true' 
+                  | the Options for translation will be read and cached in the elements data-i18n-options attribute.
+
+          .span8
+            .feature
+              :markdown
+                Replace text of one element:
+                  
+                    <a id="btn1" href="#" data-i18n="key.to.set.text"></a>
+
+              pre
+                code
+                  | $("#btn1").i18n();
+
+
+              .alert.alert-info.feature-description
+                p The button will get it's text attribute set depending on it's key.
+                p Like in the translation function '$.t(key)' you can prepand namespace with 'myNamespace:'
+            
+            .feature
+              :markdown
+                Replace on elements children:
+
+                    <ul class="nav">
+                      <li><a href="#" data-i18n="nav.home"></a></li>
+                      <li><a href="#" data-i18n="nav.page1"></a></li>
+                      <li><a href="#" data-i18n="nav.page2"></a></li>
+                    </ul>
+
+              pre
+                code
+                  | $(".nav").i18n();
+
+
+              .alert.alert-info.feature-description
+                p Every li element will get it's text attribute set depending on it's key.
+
+
+            .feature
+              :markdown
+                Replace other attributes or innerHtml:
+                  
+                    <a id="btn1" href="#" data-i18n="[title]key.for.title;key.for.text"></a>
+
+              pre
+                code
+                  | $("#btn1").i18n();
+
+
+              .alert.alert-info.feature-description
+                p Just provide the attribute to set in '[]' and seperate multiple attributes via ';'.
+                p You can even set the innerHtml by prepending '[html]'.
+
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><link href="/public/css/index.css" rel="stylesheet"><!-- HTML5 shim, for IE6-8 support of HTML5 elements--><!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!--[if lt IE 8]><link href="/public/css/font-awesome-ie7-2.0.css" rel="stylesheet" type="text/css"><![endif]--></head><body><header class="header"><div class="header-inner"><div class="navbar navbar-fixed-top"><div class="navbar-inner"><div class="container"><!--.btn-navbar is used as the toggle for collapsed navbar content--><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><!-- Be sure to leave the brand out there if you want it shown--><a href="/" class="brand">i18next</a><ul class="nav"><li><a href="/index.html">Home</a></li><li><a href="/pages/doc_features.html">Documentation</a></li></ul><!-- Everything you want hidden at 940px or less, place within here--><div class="nav-collapse"><ul class="nav pull-right"><li><a href="/pages/releasenotes.html"><i class="icon-file"></i> releasenotes</a></li><li><a href="/pages/test.html"><i class="icon-check"></i> tests</a></li><li><a href="https://github.com/jamuhl/i18next"><i class="icon-github"></i> fork me</a></li></ul></div></div></div></div></div></header><div class="main"><div class="main-inner"><div class="container"><div class="content-container"> <div class="hero-unit"><h2>Release Notes</h2></div><h3>v1.3.4</h3>
+
+<ul><li>set type of ajax request to GET (options sendType: default POST)</li><li>set cookie expiration (options cookieExpirationTime: in minutes)</li><li>read / cache translation options (context, count, ...) in data-attribute (options useDataAttrOptions: default false)</li></ul>
+
+<h3>v1.3.3</h3>
+
+<ul><li>optional return an objectTree from translation</li><li>use jquery promises or callback in initialisation</li><li>rewrote all tests with mocha.js</li></ul>
+
+<h3>v1.3.2</h3>
+
+<ul><li>options to init i18next sync (options -&gt; getAsync = false)</li><li>replace all occurence of replacement string</li></ul>
+
+<h3>v1.3.1</h3>
+
+<ul><li>pass options to selector.i18n() thanks to <a href="https://github.com/jamuhl/i18next/pull/10">@hugojosefson</a></li><li>close [issue #8(https://github.com/jamuhl/i18next/issues/8)]: Fail silently when trying to access a path with children</li><li>cleanup</li><li>debug flag (options.debug -&gt; write infos/errors to console)</li></ul>
+
+<h3>v1.2.5</h3>
+
+<ul><li>fix for IE8</li></ul>
+
+<h3>v1.2.4</h3>
+
+<ul><li>added indexOf for non ECMA-262 standard compliant browsers (IE &lt; 9)</li><li>calling i28n() on element with data-i18n attribute will localize it now (i18n now not only works on container elements child)</li></ul>
+
+<h3>v1.2.3</h3>
+
+<ul><li>extended detectLng: switch via qs <em>setLng=</em> or cookie <em>i18next</em></li><li>assert county in locale will be uppercased <code>en-us</code> -&gt; <code>en-US</code></li><li>provide option to have locale always lowercased <em>option lowerCaseLng</em></li><li>set lng cookie when set in init function</li></ul>
+
+<h3>v1.2</h3>
+
+<ul><li>support for translation context</li><li>fixed zero count in plurals</li><li>init without options, callback</li></ul>
+
+<h3>v1.1</h3>
+
+<ul><li>support for multiple plural forms</li><li>common.js enabled (for node.js serverside)</li><li>changes to be less dependent on jquery (override it&#39;s functions, add to root if no jquery)</li><li>enable it on serverside with node.js <a href="https://github.com/jamuhl/i18next-node">i18next-node</a></li></ul>
+
+<h3>v1.0</h3>
+
+<ul><li>support for other attribute translation via <em>data-i18n</em> attribute</li><li>bug fixes</li><li>tests with qunit and sinon</li></ul>
+
+<h3>v0.9</h3>
+
+<ul><li>multi-namespace support</li><li>loading static files or dynamic route</li><li>jquery function for <em>data-i18n</em> attibute</li><li>post missing translations to the server</li><li>graceful fallback en-US -&gt; en -&gt; fallbackLng</li><li>localstorage support</li><li>support for pluralized strings</li><li>insertion of variables into translations</li><li>translation nesting</li></ul></div></div></div></div><div class="extra"><div class="extra-inner"><div class="container"><div class="row"><div class="span4"><h4>about me</h4><ul><li><a href="https://github.com/jamuhl"><i class="icon-github"></i> github</a></li><li><a href="https://twitter.com/jamuhl"><i class="icon-twitter"></i> twitter</a></li></ul></div><div class="span4"><h4>help</h4><ul><li><a href="https://github.com/jamuhl/i18next/issues"> 
+issues (<i class="icon-github"></i>)</a></li></ul></div><div class="span4"><h4>legal</h4><ul><li><a href="https://github.com/jamuhl/i18next/blob/master/license">license</a></li></ul></div></div></div></div></div><footer class="footer"><div class="footer-inner"><div class="container"><div class="row"><div class="span12">i18next is freely distributable under the terms of the MIT license.</div></div></div></div></footer></body></html>

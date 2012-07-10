@@ -1,0 +1,194 @@
+body 
+    background: lighten($ultradarkGray, 8)
+    font: 13px/1.7em 'Open Sans'
+    color: #999
+
+    
+p  
+    font: 13px/1.7em 'Open Sans'    
+   
+input,
+button,
+select,
+textarea 
+  font-family: 'Open Sans'
+
+.alert .close
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif
+    font-size: 20px
+
+.dropdown .dropdown-menu 
+    -webkit-border-radius: 6px
+    -moz-border-radius: 6px
+    border-radius: 6px
+
+.btn-icon-only 
+    padding-right: 3px
+    padding-left: 3px
+
+
+
+
+/*------------------------------------------------------------------
+[2. Navbar / .navbar]
+*/
+
+.brand
+    padding: 4px 20px
+
+.navbar .container 
+    position: relative
+
+.navbar-inner 
+    padding: 7px 0
+    background: #292929  
+    border-bottom: 1px solid #121212     
+    border-radius: 0
+
+.navbar-fixed-top 
+    position: static
+
+.navbar .nav a 
+    font-size: 11px
+
+.navbar .brand 
+    font-weight: 600
+    position: relative
+    top: 2px
+
+/*------------------------------------------------------------------
+[4. Main / .main]
+*/
+
+.main 
+    padding: 2em 0
+    background: linear-gradient(top, #E9E9E9, darken(#E9E9E9, 10))
+
+.content-container
+    //width: 380px 
+    display: block
+    width: auto
+    background: #f9f9f9   
+    //border: 1px solid #d5d5d5   
+    border-radius: 5px
+    box-shadow:  0px 0px 2px darken(#E9E9E9, 20)
+    padding: 20px
+
+    h1
+        margin-bottom: .4em
+        color: #444
+
+
+/*------------------------------------------------------------------
+[5. Extra / .extra]
+*/
+
+.extra 
+    border-top: 1px solid #585858
+    border-bottom: 1px solid #000
+
+.extra-inner 
+    padding: 20px 0 
+    font-size: 11px
+    color: #BBB
+    background: #1A1A1A
+
+.extra a 
+    color: #666
+
+.extra h4 
+    margin-bottom: 1em    
+    font-weight: 400
+
+.extra ul 
+    padding: 0
+    margin: 0
+
+.extra li 
+    margin-bottom: .6em
+    list-style: none
+
+/*------------------------------------------------------------------
+[6. Footer/ .footer]
+*/
+
+.footer 
+    margin-top: 0
+    border-top: 1px solid #292929
+
+.footer-inner 
+    padding: 15px 0   
+    font-size: 12px
+    background: #111
+    color: #999
+    text-align: right
+
+.footer a 
+    color: #999
+
+.footer a:hover 
+    color: #FFF
+    text-decoration: none
+
+/*------------------------------------------------------------------
+[6. Widget / .widget]
+*/
+
+.widget 
+    position: relative
+    clear: both
+    width: auto  
+    margin-bottom: 2em     
+    overflow: hidden
+  
+.widget-header 
+    position: relative 
+    height: 40px
+    line-height: 40px 
+    background: linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%)
+    border: 1px solid #D5D5D5
+    border-radius: top 5px 
+    -webkit-background-clip: padding-box
+ 
+    h3   
+        position: relative
+        top: 2px
+        left: 10px
+        display: inline-block
+        margin-right: 3em
+        font-size: 14px
+        font-weight: 800
+        color: #555
+        line-height: 18px
+        text-shadow: 1px 1px 2px rgba(255,255,255,.5)
+      
+.widget-header [class^="icon-"], .widget-header [class*=" icon-"]   
+    display: inline-block
+    margin-left: 13px
+    margin-right: -2px
+    font-size: 16px
+    color: #555
+    vertical-align: middle
+    
+.widget-content 
+    padding: 20px 15px 15px 
+    background: #FFF
+    border: 1px solid #D5D5D5
+    border-radius: 5px
+
+.widget-header+.widget-content 
+    border-top: none
+    border-radius: top 0 
+
+/* Widget Content Clearfix */   
+.widget-content:before,
+.widget-content:after 
+    content: ""
+    display: table
+
+.widget-content:after 
+    clear: both
+
+/* For IE 6/7 (trigger hasLayout) */
+.widget-content 
+    zoom: 1

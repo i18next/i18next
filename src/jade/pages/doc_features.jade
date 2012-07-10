@@ -1,0 +1,227 @@
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: Initialisation
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        h2 Enhanced Features
+
+        h3 translation options
+
+        .row-fluid
+          .span4
+            h4.feature-title nested resources
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {
+                  |   dev: { translation: { nesting1: '1 $t(nesting2)' } },
+                  |   en: { translation: { nesting2: '2 $t(nesting3)' } },            
+                  |   'en-US': { translation: {  nesting3: '3' } }
+                  | };
+                  | 
+                  | i18n.t("nesting1"); // -> 1 2 3
+
+              .alert.alert-info.feature-description
+                p Will return '1 2 3'.
+                p All other options like plurals, ... will work as expected
+
+        .row-fluid
+          .span4
+            h4.feature-title replacing variables
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {           
+                  |   'en-US': { translation: {  key: '__myVar__ is important' } }
+                  | };
+                  | 
+                  | i18n.t("key", { myVar: "variables" }); // -> variables are important
+
+              .alert.alert-info.feature-description
+                p Will return 'variables are important'.
+                p You can even have hierarchical variables in form __some.child__.
+
+
+        .row-fluid
+          .span4
+            h4.feature-title simple plural
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {           
+                  |   'en-US': { 
+                  |     translation: {  
+                  |       key: '__count__  child',
+                  |       key_plural: '__count__  children' 
+                  |     } 
+                  |   }
+                  | };
+                  | 
+                  | i18n.t("key", { count: 0 }); // -> 0 children
+                  | i18n.t("key", { count: 1 }); // -> 1 child
+                  | i18n.t("key", { count: 5 }); // -> 5 children
+
+              .alert.alert-info.feature-description
+                p The variable __count__ is optional.
+
+        .row-fluid
+          .span4
+            h4.feature-title multiple plural forms
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources in arabic
+                  | {           
+                  |   'ar': { 
+                  |     translation: {  
+                  |       key: 'singular',
+                  |       key_plural_zero: 'zero',
+                  |       key_plural_two: 'two',
+                  |       key_plural_few: 'few',
+                  |       key_plural_many: 'many',
+                  |       key_plural: 'plural'
+                  |     } 
+                  |   }
+                  | };
+                  | 
+                  | i18n.t("key", { count:   0 }); // -> zero
+                  | i18n.t("key", { count:   1 }); // -> singular
+                  | i18n.t("key", { count:   2 }); // -> two
+                  | i18n.t("key", { count:   3 }); // -> few
+                  | i18n.t("key", { count:   4 }); // -> few
+                  | i18n.t("key", { count: 104 }); // -> few
+                  | i18n.t("key", { count:  11 }); // -> many
+                  | i18n.t("key", { count:  99 }); // -> many
+                  | i18n.t("key", { count: 199 }); // -> many
+                  | i18n.t("key", { count: 100 }); // -> plural
+
+              .alert.alert-info.feature-description
+                p What did you expect ;).
+                p
+                  span.badge.badge-info Hint:
+                  |  i18next provides the functionality only for 'ar' and 'sl'. 
+                p
+                  | But you can add rules via 'i18n.pluralExtension.addRule(lng, fc(n))'
+                  pre
+                    code
+                      | // sample fc for "sl"
+                      | function (n) {
+                      |    return n % 100 === 1 ? 'one' : n % 100 === 2 ? 'two' : n % 100 === 3 || n % 100 === 4 ? 'few' : 'other';
+                      |  }
+                  | Definitions can be found 
+                  a(href="http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html", target="_new") here.
+
+        .row-fluid
+          .span4
+            h4.feature-title use translation contexts
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {           
+                  |   'en-US': { 
+                  |     translation: {  
+                  |       friend: 'A friend',
+                  |       friendt_male: 'A boyfriend',
+                  |       friend_female: 'A girlfriend' 
+                  |     } 
+                  |   }
+                  | };
+                  | 
+                  | i18n.t("friend", { count: 0 }); // -> A friend
+                  | i18n.t("friend", { context: 'male' }); // -> A boyfriend
+                  | i18n.t("friend", { context: 'female' }); // -> A girlfriend
+
+              .alert.alert-info.feature-description
+                p This feature can be combined with plurals.
+                p eg. key: friend_male_plural: '__count__ boyfriends'
+
+        .row-fluid
+          .span4
+            h4.feature-title return an objectTree
+            p This might be helpful if you need resources for a plugin or library like moment.js.
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {           
+                  |   'en-US': { 
+                  |     translation: {  
+                  |       tree: { res: 'added' }
+                  |   }
+                  | };
+                  | 
+                  | i18n.t("tree", { returnObjectTrees: true }); // -> { res: 'added' }
+
+              .alert.alert-info.feature-description
+                p 
+                p
+                  span.badge.badge-info Hint:
+                  |  All other features (variables, plurals,...) will be applied befor returning tree.
+                p You can turn on this globally by setting the option in i18n.init({ returnObjectTrees: true }).
+
+
+        h3 send missing resources to server
+
+        .row-fluid
+          .span4
+            h4.feature-title Turn it on:
+
+          .span8
+            .feature
+              pre
+                code 
+                  | i18n.init({ sendMissing: true });
+
+              .alert.alert-info.feature-description
+                p All keys unable to resolve will be send to: 'locales/add/dev/translation'
+
+        .row-fluid
+          .span4
+            h4.feature-title Additional Options:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { 
+                  |   // change path
+                  |   resPostPath: 'locales/add/__lng__/__ns__';
+                  | 
+                  |   // change sendType
+                  |   sendType: 'POST|GET'; // default: POST
+                  | 
+                  |   // change async / sync
+                  |   postAsync: true|false; // default: true
+                  | 
+                  | i18n.init(option);
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

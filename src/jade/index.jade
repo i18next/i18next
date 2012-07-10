@@ -1,0 +1,138 @@
+!!! 5
+html(lang="en")
+  head
+    include includes/layout/head
+
+  body
+    include includes/layout/header
+          
+    include includes/layout/content
+      .row-fluid
+        .span8
+          .hero-unit
+            h2 
+              | i18next
+              small  - translation made easy
+            p i18next is a full-featured javascript library for translating your webapplication.
+
+        .span4.downloads
+          a.btn.btn-large.btn-warning(href='/public/download/versions/i18next-1.3.4.min.js') 
+            i.icon-download-alt
+            |  Production (min)
+          a.btn(href='/public/download/versions/i18next-1.3.4.min.js')
+            i.icon-download-alt
+            |  Development (full)
+          p node.js:
+          pre
+            code
+              | npm install i18next
+          .alert.alert-info.feature-description
+              a(href='http://jamuhl.github.com/i18next-node/')
+                i.icon-external-link
+                |  more information (npm module)
+
+      .row-fluid
+        .span4
+          .features
+            h4.feature-title Benefits
+            ol.alert.alert-success
+              li 
+                i.icon-ok
+                |  support for variables
+              li 
+                i.icon-ok
+                |  support for nesting
+              li 
+                i.icon-ok
+                |  support for context
+              li 
+                i.icon-ok
+                |  support for multiple plural forms
+              li 
+                i.icon-ok
+                |  detect language
+              li 
+                i.icon-ok
+                |  graceful translation lookup
+              li 
+                i.icon-ok
+                |  jquery function
+              li 
+                i.icon-ok
+                |  get string or object tree
+              li 
+                i.icon-ok
+                |  get resourcefiles from server
+              li
+                i.icon-ok
+                |  post missing resources to server
+              li
+                i.icon-ok
+                |  highly configurable
+              li
+                br
+                a(href='https://github.com/jamuhl/i18next/issues', target='_new')
+                  i.icon-search
+                  |  something missing?
+                
+        .span8
+          h4.feature-title Documentation
+
+          .alert.alert-info.feature-description
+            strong
+              i.icon-book
+              |  Documentation: 
+            ul.unstyled
+              li: a(href='/pages/doc_init.html') Initialisation Options
+              li: a(href='/pages/doc_features.html') Features
+              li: a(href='/pages/doc_jquery.html') JQuery Integration
+
+          br
+
+          .feature
+            h4.feature-title Usage Sample
+              :markdown
+                page source:
+
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <script type="text/javascript" src="[PATH]/jquery.js" />
+                        <script type="text/javascript" src="[PATH]/i18next.js" />
+                      </head>
+                      <body>
+                        <ul class="nav">
+                          <li><a href="#" data-i18n="nav.home"></a></li>
+                          <li><a href="#" data-i18n="nav.page1"></a></li>
+                          <li><a href="#" data-i18n="nav.page2"></a></li>
+                        </ul>
+                      </body>
+                    </html>
+
+                  loaded resource file (JSON):
+
+                    {
+                      "app": {
+                        "name": "i18next"
+                      },
+                      "nav": {
+                        "home": "Home",
+                        "page1": "Page One",
+                        "page2": "Page Two"
+                      }
+                    }
+
+                  javascript code:
+
+                    i18n.init(function(t) {
+                      // translate nav
+                      $(".nav").i18n();
+
+                      // programatical access
+                      var appName = t("app.name");
+                    });
+    include includes/layout/extra
+      
+    include includes/layout/footer
+    
+    include includes/layout/endscripts

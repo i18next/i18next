@@ -1,0 +1,35 @@
+header.header
+  .header-inner
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+
+          //.btn-navbar is used as the toggle for collapsed navbar content
+          a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+     
+          // Be sure to leave the brand out there if you want it shown
+          a.brand(href='/') i18next
+
+          ul.nav
+            li: a(href="/index.html") Home
+            li: a(href="/pages/doc_features.html") Documentation
+
+          // Everything you want hidden at 940px or less, place within here
+          .nav-collapse
+
+            ul.nav.pull-right
+              li
+                a(href='/pages/releasenotes.html')
+                  i.icon-file
+                  |  releasenotes
+              li
+                a(href='/pages/test.html')
+                  i.icon-check
+                  |  tests
+              li
+                a(href='https://github.com/jamuhl/i18next')
+                  i.icon-github
+                  |  fork me

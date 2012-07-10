@@ -1,0 +1,312 @@
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: Initialisation
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        //- ************************************************
+        //- * INITIALISATION
+        //- * 
+        h2 Initialisation
+
+        pre
+          code
+            | i18n.init();
+        pre
+          code
+            | // with options
+            | i18n.init({ lng: "en-US" });
+            | // "later"
+            | var x = i18n.t("key");
+            | 
+            | // with callback
+            | i18n.init(function(t) { 
+            |   var x = t("key");
+            | });
+            | 
+            | // with both
+            | i18n.init({ lng: "en-US" }, function(t) { 
+            |   var x = t("key");
+            | });
+
+        //- ************************************************
+        //- * Options
+        //- * 
+        h3 Basic Options
+
+        .row-fluid
+          .span4
+            h4.feature-title Set language on init:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ lng: 'en-US' });
+              .alert.alert-info.feature-description
+                p Resources will be resolved in this order:
+                  ol
+                    li 1) try languageCode plus countryCode, eg. 'en-US'
+                    li 2) alternative look it up in languageCode only, eg. 'en'
+                    li 3) finally look it up in definded fallback language, default: 'dev'
+              
+              .alert.alert-info.feature-description
+                p If language is not set explicitly i18next tries to detect the user language by:
+                  ol
+                    li 1) querystring parameter (?setLng=en-US)
+                    li 2) cookie (i18next)
+                    li 3) language set in navigator
+
+              .alert.alert-info.feature-description
+                p 
+                  h5.alert-heading Change language programatically:
+                  | Call function i18next.setLng(lng, callback).
+
+        .row-fluid
+          .span4
+            h4.feature-title Set fallback language:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ fallbackLng: 'en' });
+              .alert.alert-info.feature-description
+                p 
+                  | If not set it will default to 'dev'. If turned on, all missing key/values will be 
+                  | sent to this language.
+                p 
+                  span.badge.badge-info Production Hint:
+                  |  set fallback language to some meaningful language, eg. 'en'
+
+        .row-fluid
+          .span4
+            h4.feature-title Caching with localStorage:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ useLocalStorage: true | false });
+              .alert.alert-info.feature-description
+                p 
+                  span.badge.badge-info Development Hint:
+                  |  caching is turned on by default. You might want to turn it of during development.
+
+        .row-fluid
+          .span4
+            h4.feature-title Debug output:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ debug: true });
+              .alert.alert-info.feature-description
+                p If something went wrong you might find some helpful information on console log.
+
+        //- ************************************************
+        //- * Resource Loading
+        //- * 
+        h2 Resource Loading
+
+        h3 init callback when loaded
+
+        .row-fluid
+          .span4
+            pre
+              code
+                | i18n.init(callback);
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init(function(t) { 
+                  |   var appName = t("key");
+                  | });
+              .alert.alert-info.feature-description
+                p 
+                  | after callback is called you can use the translation function
+                  strong  't' 
+                  | to access your resources in given language.
+
+        h3 options to load resources
+
+        .row-fluid
+          .span4
+            h4.feature-title Pass in resource store:
+
+          .span8
+            .feature
+              pre
+                code
+                  | // tree: lng -> namespace -> key -> nested key
+                  | var resources = {
+                  |   dev: { translation: { 'key': 'value' } },
+                  |   en: { translation: { 'key': 'value' } },            
+                  |   'en-US': { translation: { 'key': 'value' } }
+                  | };
+                  | 
+                  | i18n.init({ resStore: resources });
+
+              .alert.alert-info.feature-description
+                p As you provide the resources the callbacks will fire immediatly and no external resources will be loaded!
+
+        .row-fluid
+          .span4
+            h4.feature-title Set static route to load resources from:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { resGetPath: 'locales/__lng__/__ns__.json' };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p Will load 'locales/en-US/translation.json'.
+                p 
+                  | If language is set to
+                  strong  'en-US' 
+                  | following resource files will be loaded one-by-one:
+                  ul
+                    li en-US
+                    li en
+                    li dev (default fallback language)
+                p 
+                  span.badge.badge-info Hint:
+                  |  to lowercase countryCode in requests, eg. to 'en-us' 
+                  | set option 
+                  strong lowerCaseLng = true
+
+              pre
+                code
+                  | var option = { resGetPath: 'locales/__ns__-__lng__.json' };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p Will load 'locales/translation-en-US.json'.
+
+        .row-fluid
+          .span4
+            h4.feature-title Load resource dynamically generated on server:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { 
+                  |   resGetPath: 'resources.json?lng=__lng__&ns=__ns__',
+                  |   dynamicLoad: true 
+                  | };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p 
+                  | Will request 'resources.json?lng=en-US+en+dev&ns=translation'. You will have to assert 
+                  | that the server returns the complete JSON resource Store.
+                p 
+                  | If language is set to
+                  strong  'en-US' 
+                  | following resources will be loaded in one request:
+                  ul
+                    li en-US
+                    li en
+                    li dev (default fallback language)
+
+        .row-fluid
+          .span4
+            h4.feature-title Change namespace:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { ns: 'resource' };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p 
+                  | Will load:
+                  ol
+                    li 'locales/en-US/resource.json'
+                    li 'locales/en/resource.json'
+                    li 'locales/dev/resource.json'
+
+                p (Default namespace is 'translation'.)
+
+        .row-fluid
+          .span4
+            h4.feature-title Multiple namespace:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { 
+                  | ns: { 
+                  |     namespaces: ['app', 'buttons'], 
+                  |     defaultNs: 'app'
+                  |   } 
+                  | };
+                  | 
+                  | i18n.init(option, function(t) {
+                  |   // access default namespace
+                  |   var x = t("any.key.from.app")
+                  | 
+                  |   // to access another namespace prepend [ns]:
+                  |   var y = t("buttons:any.key.from.buttons") 
+                  | });
+
+              .alert.alert-info.feature-description
+                p 
+                  | Will load:
+                  ol
+                    li 'locales/en-US/app.json'
+                    li 'locales/en/app.json'
+                    li 'locales/dev/app.json'
+                    li 'locales/en-US/buttons.json'
+                    li 'locales/en/buttons.json'
+                    li 'locales/dev/buttons.json' 
+
+
+        .row-fluid
+          .span4
+            h4.feature-title Load resource synchron:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { 
+                  |   getAsync: true 
+                  | };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p 
+                  | Requests for resources will now be called synchronous.
+                p
+                  span.badge.badge-info Hint:
+                  |  The init function will now be blocking until all resources are loaded!!!
+
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

@@ -1,0 +1,23 @@
+// GRADIENT MIXINS
+// --------------------------------------------------
+
+// Grays
+// -------------------------
+shortcut-gradient(d = top)
+    gradient(d, $shortcut, #E9E9E9)
+
+table-gradient(d = top)
+    gradient(d, #FAFAFA, #E9E9E9)
+
+widget-gradient(d = top)
+    gradient(d, #FAFAFA, #E9E9E9)
+
+subnav-gradient(d = top)
+    gradient(d, #414141, #323232)
+
+
+// Helper Function
+// -------------------------
+gradient(d = top, stop1, stop2)
+    background: stop2
+    background: linear-gradient(d, stop1, stop2)
