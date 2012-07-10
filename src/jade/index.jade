@@ -1,3 +1,4 @@
+- var path = ''
 !!! 5
 html(lang="en")
   head
@@ -16,10 +17,10 @@ html(lang="en")
             p i18next is a full-featured javascript library for translating your webapplication.
 
         .span4.downloads
-          a.btn.btn-large.btn-warning(href='/public/download/versions/i18next-1.3.4.min.js') 
+          a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18next-1.3.4.min.js', download='download') 
             i.icon-download-alt
             |  Production (min)
-          a.btn(href='/public/download/versions/i18next-1.3.4.min.js')
+          a.btn(href='#{path}public/download/versions/i18next-1.3.4.min.js', download='download')
             i.icon-download-alt
             |  Development (full)
           p node.js:
@@ -27,7 +28,7 @@ html(lang="en")
             code
               | npm install i18next
           .alert.alert-info.feature-description
-              a(href='http://jamuhl.github.com/i18next-node/')
+              a(href='http://jamuhl.github.com/i18next-node/', target='_new')
                 i.icon-external-link
                 |  more information (npm module)
 
@@ -83,9 +84,9 @@ html(lang="en")
               i.icon-book
               |  Documentation: 
             ul.unstyled
-              li: a(href='/pages/doc_init.html') Initialisation Options
-              li: a(href='/pages/doc_features.html') Features
-              li: a(href='/pages/doc_jquery.html') JQuery Integration
+              li: a(href='#{path}pages/doc_init.html') Initialisation Options
+              li: a(href='#{path}pages/doc_features.html') Features
+              li: a(href='#{path}pages/doc_jquery.html') JQuery Integration
 
           br
 

@@ -11,22 +11,22 @@ header.header
             span.icon-bar
      
           // Be sure to leave the brand out there if you want it shown
-          a.brand(href='/') i18next
+          a.brand(href='#{path}/') i18next
 
           ul.nav
-            li: a(href="/index.html") Home
-            li: a(href="/pages/doc_features.html") Documentation
+            li: a(href="#{path}index.html") Home
+            li: a(href="#{path}pages/doc_features.html") Documentation
 
           // Everything you want hidden at 940px or less, place within here
           .nav-collapse
 
             ul.nav.pull-right
               li
-                a(href='/pages/releasenotes.html')
+                a(href='#{path}pages/releasenotes.html')
                   i.icon-file
                   |  releasenotes
               li
-                a(href='/pages/test.html')
+                a(href='#{path}pages/test.html')
                   i.icon-check
                   |  tests
               li

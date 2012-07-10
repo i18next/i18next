@@ -1,3 +1,4 @@
+- var path = '../'
 !!! 5
 html(lang="en")
   head
@@ -53,7 +54,7 @@ html(lang="en")
                 p 
                   | You can pass in same options as in the translation function. For 
                   | more information about the options go to the 
-                  a(href='/pages/doc_features') features page.
+                  a(href='#{path}pages/doc_features') features page.
                 p
                   | Alternatively by setting init option or translation option 'useDataAttrOptions = true' 
                   | the Options for translation will be read and cached in the elements data-i18n-options attribute.
