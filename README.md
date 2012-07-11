@@ -8,6 +8,8 @@ Project goal is to provide a easy way to translate a website on clientside:
 - post missing key-value pairs to server (for easy development -> just translate the new keys)
 - search for key _en-US_ first, than in _en_, than in fallback language (or de-DE, de , fallback)
 
+check out the [documentation](http://jamuhl.github.com/i18next/)
+
 # Usage
 
 Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('ns.special' and 'ns.common'):
