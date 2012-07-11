@@ -4,7 +4,7 @@ html(lang="en")
   head
     include ../includes/layout/head
 
-    title i18next Documentation: Initialisation
+    title i18next Documentation: Features
 
   body
     include ../includes/layout/header
@@ -16,6 +16,27 @@ html(lang="en")
         h2 Enhanced Features
 
         h3 translation options
+
+        .row-fluid
+          .span4
+            h4.feature-title providing a default value
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {           
+                  |   'en-US': { translation: { // key not found } }
+                  | };
+                  | 
+                  | i18n.t("key", { defaultValue: "my text" }); // -> my text
+
+              .alert.alert-info.feature-description
+                p 
+                  | If a resource key isn't resolvable (en-US -> en -> fallbackLng) than normally the key would be returned 
+                  | as string value. You can provide a better default by passing in option defaultValue.
+                p The default value will be send in sendMissing resources, too.
 
         .row-fluid
           .span4
@@ -37,6 +58,12 @@ html(lang="en")
               .alert.alert-info.feature-description
                 p Will return '1 2 3'.
                 p All other options like plurals, ... will work as expected
+                p
+                  span.badge.badge-info Hint:
+                  |  You can change pre-/suffix by setting options on init:
+                  ul
+                    li reusePrefix = '$t(',
+                    li reuseSuffix = ')',
 
         .row-fluid
           .span4
@@ -56,6 +83,12 @@ html(lang="en")
               .alert.alert-info.feature-description
                 p Will return 'variables are important'.
                 p You can even have hierarchical variables in form __some.child__.
+                p
+                  span.badge.badge-info Hint:
+                  |  You can change pre-/suffix by setting options on init:
+                  ul
+                    li interpolationPrefix = '__',
+                    li interpolationSuffix = '__',
 
 
         .row-fluid

@@ -1,0 +1,10 @@
+{
+    "nav": {
+        "home": "home",
+        "1": "link 1",
+        "2": "link 2"
+    },
+    "btn": {
+    	"hoverMe": "hover me!"
+    }
+}

@@ -4,7 +4,7 @@ html(lang="en")
   head
     include ../includes/layout/head
 
-    title i18next Documentation: Initialisation
+    title i18next Documentation: JQuery Integration
 
   body
     include ../includes/layout/header
@@ -58,6 +58,12 @@ html(lang="en")
                 p
                   | Alternatively by setting init option or translation option 'useDataAttrOptions = true' 
                   | the Options for translation will be read and cached in the elements data-i18n-options attribute.
+                p
+                  span.badge.badge-info Hint:
+                  |  You can deactivate this features by setting options on init:
+                  ul
+                    li setJqueryExt = false
+                    li (will deactivate $.t too!)
 
           .span8
             .feature
