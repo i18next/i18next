@@ -10,7 +10,7 @@ html(lang="en")
     script(src="#{path}public/test/mocha.js", type="text/javascript")
 
     script
-      mocha.setup({ui: 'bdd', globals: ['XMLHttpRequest']}) // sinon
+      mocha.setup({ui: 'bdd', globals: ['XMLHttpRequest', '_gat', 'gaGlobal']}) // sinon
 
     script(src="#{path}public/test/jsfixtures.js", type="text/javascript")
     script(src="#{path}public/download/latest/i18next.js", type="text/javascript")
