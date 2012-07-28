@@ -338,7 +338,7 @@
             delete optionsSansCount.context;
             optionsSansCount.defaultValue = o.contextNotFound;
 
-            var contextKey = key + '_' + options.context;
+            var contextKey = ns + ':' + key + '_' + options.context;
             
             translated = translate(contextKey, optionsSansCount);
             if (translated != o.contextNotFound) {
@@ -351,7 +351,7 @@
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
 
-            var pluralKey = key + o.pluralSuffix;
+            var pluralKey = ns + ':' + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
             if (pluralExtension !== 'other') { pluralKey = pluralKey + '_' + pluralExtension; }
             

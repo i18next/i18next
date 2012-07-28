@@ -430,10 +430,15 @@ describe('i18next', function() {
 
       describe('basic usage - singular and plural form', function() {
         var resStore = {
-          dev: { translation: {  } },
-          en: { translation: {  } },            
+          dev: { 'ns.2': {                      
+                pluralTest: 'singular from ns.2',
+                pluralTest_plural: 'plural from ns.2',
+                pluralTestWithCount: '__count__ item from ns.2',
+                pluralTestWithCount_plural: '__count__ items from ns.2'
+            }},
+          en: { },            
           'en-US': { 
-            translation: {                      
+            'ns.1': {                      
                 pluralTest: 'singular',
                 pluralTest_plural: 'plural',
                 pluralTestWithCount: '__count__ item',
@@ -443,7 +448,10 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init( $.extend(opts, { 
+              resStore: resStore,
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+            }),
             function(t) { done(); });
         });
 
@@ -455,6 +463,16 @@ describe('i18next', function() {
 
           expect(i18n.t('pluralTestWithCount', {count: 1})).to.be('1 item');
           expect(i18n.t('pluralTestWithCount', {count: 7})).to.be('7 items');
+        });
+
+        it('it should provide correct plural or singular form for second namespace', function() {
+          expect(i18n.t('ns.2:pluralTest', {count: 0})).to.be('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', {count: 1})).to.be('singular from ns.2');
+          expect(i18n.t('ns.2:pluralTest', {count: 2})).to.be('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', {count: 7})).to.be('plural from ns.2');
+
+          expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 items from ns.2');
         });
       });
 
@@ -498,8 +516,13 @@ describe('i18next', function() {
 
       describe('basic usage', function() {
         var resStore = {
-            dev: { translation: { } },
-            en: { translation: { 
+            dev: { 'ns.2': { 
+                friend_context: 'A friend from ns2',
+                friend_context_male: 'A boyfriend from ns2',
+                friend_context_female: 'A girlfriend from ns2'
+              }
+            },
+            en: { 'ns.1': { 
                 friend_context: 'A friend',
                 friend_context_male: 'A boyfriend',
                 friend_context_female: 'A girlfriend'
@@ -507,9 +530,12 @@ describe('i18next', function() {
             },            
             'en-US': { translation: { } }
         };
-        
+
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init( $.extend(opts, { 
+              resStore: resStore, 
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+            }),
             function(t) { done(); });
         });
 
@@ -518,6 +544,13 @@ describe('i18next', function() {
           expect(i18n.t('friend_context', {context: ''})).to.be('A friend');
           expect(i18n.t('friend_context', {context: 'male'})).to.be('A boyfriend');
           expect(i18n.t('friend_context', {context: 'female'})).to.be('A girlfriend');
+        });
+
+        it('it should provide correct context form for second namespace', function() {
+          expect(i18n.t('ns.2:friend_context')).to.be('A friend from ns2');
+          expect(i18n.t('ns.2:friend_context', {context: ''})).to.be('A friend from ns2');
+          expect(i18n.t('ns.2:friend_context', {context: 'male'})).to.be('A boyfriend from ns2');
+          expect(i18n.t('ns.2:friend_context', {context: 'female'})).to.be('A girlfriend from ns2');
         });
       });
 
