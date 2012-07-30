@@ -6,6 +6,7 @@ describe('i18next', function() {
   beforeEach(function() {
     opts = {
       lng: 'en-US',
+      preload: [],
       lowerCaseLng: false,
       ns: 'translation',
       resGetPath: 'locales/__lng__/__ns__.json',
@@ -15,7 +16,7 @@ describe('i18next', function() {
       resStore: false,
       getAsync: true,
       returnObjectTrees: false,
-      debug: true
+      debug: false
     };
   });
 
@@ -90,6 +91,41 @@ describe('i18next', function() {
     });
 
     describe('advanced initialisation options', function() {
+
+      describe('preloading multiple languages', function() {
+
+        var spy; 
+
+        beforeEach(function(done) {
+          spy = sinon.spy(i18n.sync, '_fetchOne');
+          i18n.init($.extend(opts, { 
+              preload: ['fr', 'de-DE'] }),
+            function(t) { done(); });
+        });
+
+        afterEach(function() {
+          spy.restore();
+        });
+
+        it('it should load additional languages', function() {
+          expect(spy.callCount).to.be(6); // en-US, en, de-DE, de, fr, dev
+        });
+
+        describe('changing the language', function() {
+
+          beforeEach(function(done) {
+            spy.reset();
+            i18n.setLng('de-DE',
+              function(t) { done(); });
+          });
+
+          it('it should reload the preloaded languages', function() {
+            expect(spy.callCount).to.be(4); // de-DE, de, fr, dev
+          });
+
+        });
+
+      });
 
       describe('with synchronous flag', function() {
 
@@ -244,6 +280,30 @@ describe('i18next', function() {
       });
 
     });
+
+    describe('preloading multiple languages', function() {
+
+        var spy; 
+
+        beforeEach(function(done) {
+          spy = sinon.spy(i18n.sync, '_fetchOne');
+          i18n.init(opts, function(t) { done(); });
+        });
+
+        afterEach(function() {
+          spy.restore();
+        });
+
+        it('it should preload resources for languages', function(done) {
+          spy.reset();
+          i18n.preload('de-DE', function(t) {
+              expect(spy.callCount).to.be(5); // en-US, en, de-DE, de, dev
+              done();
+          });
+
+        });
+
+      });
 
     describe('post missing resources', function() {
 
@@ -585,6 +645,29 @@ describe('i18next', function() {
           expect(i18n.t('friend_context', {context: 'male', count: 10 })).to.be('10 boyfriends');
           expect(i18n.t('friend_context', {context: 'female', count: 10 })).to.be('10 girlfriends');
         });
+
+      });
+
+    });
+
+    describe('with passed in languages different from set one', function() {
+
+      beforeEach(function(done) {
+        i18n.init($.extend(opts, { 
+            preload: ['de-DE'] }),
+          function(t) { done(); });
+      });
+
+      it('it should provide translation for passed in language', function() {
+        expect(i18n.t('simple_de', { lng: 'de-DE' })).to.be('ok_from_de');
+      });
+
+      describe('with language not preloaded', function() {
+
+        it('it should provide translation for passed in language after loading file sync', function() {
+          expect(i18n.t('simple_fr', { lng: 'fr' })).to.be('ok_from_fr');
+        });
+
       });
 
     });
@@ -747,7 +830,7 @@ describe('i18next', function() {
           });
 
           it('it should set inner html', function() {
-            $('#container').i18n(); console.log($('#container').html());
+            $('#container').i18n();
             expect($('#inner').html()).to.be('test');
           });
           
