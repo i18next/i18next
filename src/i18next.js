@@ -413,7 +413,7 @@
             var l = lngs[i];
 
             var x = 0;
-            var value = resStore[l][ns];
+            var value = resStore[l] && resStore[l][ns];
             while (keys[x]) {
                 value = value && value[keys[x]];
                 x++;
