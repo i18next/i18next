@@ -43,6 +43,8 @@
     // global object or to jquery.
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = i18n;
+    } else if (typeof define === 'function' && define.amd) {
+        define(i18n);
     } else {
         if ($) {
             $.i18n = $.i18n || i18n;
@@ -54,6 +56,7 @@
     // defaults
     var o = {
         lng: undefined,
+        preload: [],
         lowerCaseLng: false,
         returnObjectTrees: false,
         fallbackLng: 'dev',
@@ -73,6 +76,7 @@
 
         dynamicLoad: false,
         sendMissing: false,
+        sendMissingTo: 'fallback', // current | all
         sendType: 'POST',
 
         interpolationPrefix: '__',
@@ -100,34 +104,53 @@
         },
         cookie: {
             create: function(name,value,minutes) {
-                    var expires;
-                    if (minutes) {
-                            var date = new Date();
-                            date.setTime(date.getTime()+(minutes*60*1000));
-                            expires = "; expires="+date.toGMTString();
-                    }
-                    else expires = "";
-                    document.cookie = name+"="+value+expires+"; path=/";
+                var expires;
+                if (minutes) {
+                    var date = new Date();
+                    date.setTime(date.getTime()+(minutes*60*1000));
+                    expires = "; expires="+date.toGMTString();
+                }
+                else expires = "";
+                document.cookie = name+"="+value+expires+"; path=/";
             },
             
             read: function(name) {
-                    var nameEQ = name + "=";
-                    var ca = document.cookie.split(';');
-                    for(var i=0;i < ca.length;i++) {
-                            var c = ca[i];
-                            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
-                    }
-                    return null;
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0;i < ca.length;i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+                }
+                return null;
             },
             
             remove: function(name) {
                     this.create(name,"",-1);
             }
+        },
+        toLanguages: function(lng) {
+            var languages = [];
+            if (lng.indexOf('-') === 2 && lng.length === 5) {
+                var parts = lng.split('-');
+
+                lng = o.lowerCaseLng ? 
+                    parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                    parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+
+                languages.push(lng);
+                languages.push(lng.substr(0, 2));
+            } else {
+                languages.push(lng);
+            }
+
+            if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
+
+            return languages;
         }
     };
 
-    var resStore
+    var resStore = {}
       , currentLng
       , replacementCounter = 0
       , languages = [];
@@ -157,22 +180,8 @@
             f.cookie.remove('i18next');
         }
 
-        languages = [];
-        if (o.lng.indexOf('-') === 2 && o.lng.length === 5) {
-            var parts = o.lng.split('-');
-
-            o.lng = o.lowerCaseLng ? 
-                parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
-                parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
-
-            languages.push(o.lng);
-            languages.push(o.lng.substr(0, 2));
-        } else {
-            languages.push(o.lng);
-        }
-
-        if (languages.indexOf(o.fallbackLng) === -1) languages.push(o.fallbackLng);
-        currentLng = o.lng;
+        languages = f.toLanguages(o.lng);
+        currentLng = languages[0];
         f.log('currentLng set to: ' + currentLng);
 
         // add JQuery extensions
@@ -192,9 +201,22 @@
             return deferred;
         }
 
+        // languages to load
+        var lngsToLoad = f.toLanguages(o.lng);
+        if (typeof o.preload === 'string') o.preload = [o.preload];
+        for (var i = 0, l = o.preload.length; i < l; i++) {
+            var pres = f.toLanguages(o.preload[i]);
+            for (var y = 0, len = pres.length; y < len; y++) {
+                if (lngsToLoad.indexOf(pres[y]) < 0) {
+                    lngsToLoad.push(pres[y]);
+                }
+            }
+        }
+
         // else load them
-        i18n.sync.load(languages, o, function(err, store) {
+        i18n.sync.load(lngsToLoad, o, function(err, store) {
             resStore = store;
+
             if (cb) cb(translate);
             if (deferred) deferred.resolve();
         });
@@ -202,8 +224,18 @@
         return deferred;
     }
 
+    function preload(lngs, cb) {
+        if (typeof lngs === 'string') lngs = [lngs];
+        for (var i = 0, l = lngs.length; i < l; i++) {
+            if (o.preload.indexOf(lngs[i]) < 0) {
+                o.preload.push(lngs[i]);
+            }
+        }
+        return init(cb);
+    }
+
     function setLng(lng, cb) {
-        init({lng: lng}, cb);
+        return init({lng: lng}, cb);
     }
 
     function addJqueryFunct() {
@@ -319,7 +351,22 @@
         options = options || {};
 
         var optionsSansCount, translated
-          , notfound = options.defaultValue || key;
+          , notfound = options.defaultValue || key
+          , lngs = languages;
+
+        if (options.lng) {
+            lngs = f.toLanguages(options.lng);
+
+            if (!resStore[lngs[0]]) {
+                var oldAsync = o.getAsync;
+                o.getAsync = false;
+
+                i18n.sync.load(lngs, o, function(err, store) {
+                    f.extend(resStore, store);
+                    o.getAsync = oldAsync;
+                });
+            }
+        }
 
         if (!resStore) { return notfound; } // no resStore to translate from
 
@@ -335,7 +382,7 @@
             delete optionsSansCount.context;
             optionsSansCount.defaultValue = o.contextNotFound;
 
-            var contextKey = key + '_' + options.context;
+            var contextKey = ns + ':' + key + '_' + options.context;
             
             translated = translate(contextKey, optionsSansCount);
             if (translated != o.contextNotFound) {
@@ -348,7 +395,7 @@
             delete optionsSansCount.count;
             optionsSansCount.defaultValue = o.pluralNotFound;
 
-            var pluralKey = key + o.pluralSuffix;
+            var pluralKey = ns + ':' + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
             if (pluralExtension !== 'other') { pluralKey = pluralKey + '_' + pluralExtension; }
             
@@ -360,10 +407,10 @@
 
         var found;
         var keys = key.split(o.keyseparator);
-        for (var i = 0, len = languages.length; i < len; i++ ) {
+        for (var i = 0, len = lngs.length; i < len; i++ ) {
             if (found) break;
 
-            var l = languages[i];
+            var l = lngs[i];
 
             var x = 0;
             var value = resStore[l][ns];
@@ -392,7 +439,11 @@
         }
 
         if (!found && o.sendMissing) {
-            sync.postMissing(ns, key, notfound);
+            if (options.lng) {
+                sync.postMissing(options.lng, ns, key, notfound, lngs);
+            } else {
+                sync.postMissing(o.lng, ns, key, notfound, lngs);
+            }
         }
 
         return (found) ? found : notfound;
@@ -554,25 +605,39 @@
             });
         },
 
-        postMissing: function(ns, key, defaultValue) {
+        postMissing: function(lng, ns, key, defaultValue, lngs) {
             var payload = {};
             payload[key] = defaultValue;
 
-            var url = applyReplacement(o.resPostPath, { lng: o.fallbackLng, ns: ns });
-            f.ajax({
-                url: url,
-                type: o.sendType,
-                data: payload,
-                success: function(data, status, xhr) {
-                    f.log('posted missing key \'' + key + '\' to: ' + url);
-                    resStore[o.fallbackLng][ns][key] = defaultValue;
-                },
-                error : function(xhr, status, error) {
-                    f.log('failed posting missing key \'' + key + '\' to: ' + url);
-                },
-                dataType: "json",
-                async : o.postAsync
-            });
+            var urls = [];
+
+            if (o.sendMissingTo === 'fallback') {
+                urls.push({lng: o.fallbackLng, url: applyReplacement(o.resPostPath, { lng: o.fallbackLng, ns: ns })});
+            } else if (o.sendMissingTo === 'current') {
+                urls.push({lng: lng, url: applyReplacement(o.resPostPath, { lng: lng, ns: ns })});
+            } else if (o.sendMissingTo === 'all') {
+                for (var i = 0, l = lngs.length; i < l; i++) {
+                    urls.push({lng: lngs[i], url: applyReplacement(o.resPostPath, { lng: lngs[i], ns: ns })});
+                }
+            }
+
+            for (var y = 0, len = urls.length; y < len; y++) {
+                var item = urls[y];
+                f.ajax({
+                    url: item.url,
+                    type: o.sendType,
+                    data: payload,
+                    success: function(data, status, xhr) {
+                        f.log('posted missing key \'' + key + '\' to: ' + url);
+                        resStore[item.lng][ns][key] = defaultValue;
+                    },
+                    error : function(xhr, status, error) {
+                        f.log('failed posting missing key \'' + key + '\' to: ' + url);
+                    },
+                    dataType: "json",
+                    async : o.postAsync
+                });
+            }
         }
     };
 
@@ -616,6 +681,7 @@
     // public api interface
     i18n.init = init;
     i18n.setLng = setLng;
+    i18n.preload = preload;
     i18n.t = translate;
     i18n.translate = translate;
     i18n.detectLanguage = f.detectLanguage;
