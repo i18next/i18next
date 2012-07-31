@@ -218,6 +218,21 @@ html(lang="en")
                   |  All other features (variables, plurals,...) will be applied befor returning tree.
                 p You can turn on this globally by setting the option in i18n.init({ returnObjectTrees: true }).
 
+        .row-fluid
+          .span4
+            h4.feature-title access value in different language
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.t("my.key", { lng: "de-DE" }); // -> will get value in de-DE instead of en-US
+
+              .alert.alert-info.feature-description
+                p You should preload the additional languages on init!
+                p 
+                  span.badge.badge-info Hint:
+                  |  If the additional language wasn't preloaded it will be fetched synchronous.
 
         h3 send missing resources to server
 
@@ -248,11 +263,17 @@ html(lang="en")
                   | 
                   |   // change sendType
                   |   sendType: 'POST|GET'; // default: POST
+                  |   
+                  |   // send missing values to
+                  |   sendMissingTo: 'fallback|current|all'
                   | 
                   |   // change async / sync
                   |   postAsync: true|false; // default: true
                   | 
                   | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p You can send missing values to the fallbackLng, the current language or all languages (eg. 'en-US', 'en', 'fallback')
 
     include ../includes/layout/extra
       

@@ -6,6 +6,7 @@ describe('i18next', function() {
   beforeEach(function() {
     opts = {
       lng: 'en-US',
+      preload: [],
       lowerCaseLng: false,
       ns: 'translation',
       resGetPath: 'locales/__lng__/__ns__.json',
@@ -15,7 +16,7 @@ describe('i18next', function() {
       resStore: false,
       getAsync: true,
       returnObjectTrees: false,
-      debug: true
+      debug: false
     };
   });
 
@@ -90,6 +91,41 @@ describe('i18next', function() {
     });
 
     describe('advanced initialisation options', function() {
+
+      describe('preloading multiple languages', function() {
+
+        var spy; 
+
+        beforeEach(function(done) {
+          spy = sinon.spy(i18n.sync, '_fetchOne');
+          i18n.init($.extend(opts, { 
+              preload: ['fr', 'de-DE'] }),
+            function(t) { done(); });
+        });
+
+        afterEach(function() {
+          spy.restore();
+        });
+
+        it('it should load additional languages', function() {
+          expect(spy.callCount).to.be(6); // en-US, en, de-DE, de, fr, dev
+        });
+
+        describe('changing the language', function() {
+
+          beforeEach(function(done) {
+            spy.reset();
+            i18n.setLng('de-DE',
+              function(t) { done(); });
+          });
+
+          it('it should reload the preloaded languages', function() {
+            expect(spy.callCount).to.be(4); // de-DE, de, fr, dev
+          });
+
+        });
+
+      });
 
       describe('with synchronous flag', function() {
 
@@ -245,35 +281,95 @@ describe('i18next', function() {
 
     });
 
+    describe('preloading multiple languages', function() {
+
+        var spy; 
+
+        beforeEach(function(done) {
+          spy = sinon.spy(i18n.sync, '_fetchOne');
+          i18n.init(opts, function(t) { done(); });
+        });
+
+        afterEach(function() {
+          spy.restore();
+        });
+
+        it('it should preload resources for languages', function(done) {
+          spy.reset();
+          i18n.preload('de-DE', function(t) {
+              expect(spy.callCount).to.be(5); // en-US, en, de-DE, de, dev
+              done();
+          });
+
+        });
+
+      });
+
     describe('post missing resources', function() {
 
-      var server, stub; 
+      describe('to fallback', function() {
+        var server, stub; 
 
-      beforeEach(function(done) {
-        server = sinon.fakeServer.create();
-        stub = sinon.stub(i18n.functions, "ajax"); 
+        beforeEach(function(done) {
+          server = sinon.fakeServer.create();
+          stub = sinon.stub(i18n.functions, "ajax"); 
 
-        server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
+          server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
 
-        i18n.init( $.extend(opts, {
-          sendMissing: true,
-          resStore: {
-            'en-US': { translation: {  } },
-            'en': { translation: {  } },
-            'dev': { translation: {  } }
-          }
-        }), function(t) { done(); } );
+          i18n.init( $.extend(opts, {
+            sendMissing: true,
+            resStore: {
+              'en-US': { translation: {  } },
+              'en': { translation: {  } },
+              'dev': { translation: {  } }
+            }
+          }), function(t) { done(); } );
+        });
+
+        afterEach(function() {
+          server.restore();
+          stub.restore();
+        });
+
+        it('it should post missing resource to server', function() {
+          i18n.t('missing');
+          server.respond();
+          expect(stub.calledOnce).to.be(true);
+        });
+
       });
 
-      afterEach(function() {
-        server.restore();
-        stub.restore();
-      });
+      describe('to all', function() {
+        var server, stub; 
 
-      it('it should post missing resource to server', function() {
-        i18n.t('missing');
-        server.respond();
-        expect(stub.calledOnce).to.be(true);
+        beforeEach(function(done) {
+          server = sinon.fakeServer.create();
+          stub = sinon.stub(i18n.functions, "ajax"); 
+
+          server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
+
+          i18n.init( $.extend(opts, {
+            sendMissing: true,
+            sendMissingTo: 'all',
+            resStore: {
+              'en-US': { translation: {  } },
+              'en': { translation: {  } },
+              'dev': { translation: {  } }
+            }
+          }), function(t) { done(); } );
+        });
+
+        afterEach(function() {
+          server.restore();
+          stub.restore();
+        });
+
+        it('it should post missing resource for all lng to server', function() {
+          i18n.t('missing');
+          server.respond();
+          expect(stub.calledThrice).to.be(true);
+        });
+
       });
 
     });
@@ -394,10 +490,15 @@ describe('i18next', function() {
 
       describe('basic usage - singular and plural form', function() {
         var resStore = {
-          dev: { translation: {  } },
-          en: { translation: {  } },            
+          dev: { 'ns.2': {                      
+                pluralTest: 'singular from ns.2',
+                pluralTest_plural: 'plural from ns.2',
+                pluralTestWithCount: '__count__ item from ns.2',
+                pluralTestWithCount_plural: '__count__ items from ns.2'
+            }},
+          en: { },            
           'en-US': { 
-            translation: {                      
+            'ns.1': {                      
                 pluralTest: 'singular',
                 pluralTest_plural: 'plural',
                 pluralTestWithCount: '__count__ item',
@@ -407,7 +508,10 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init( $.extend(opts, { 
+              resStore: resStore,
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+            }),
             function(t) { done(); });
         });
 
@@ -419,6 +523,16 @@ describe('i18next', function() {
 
           expect(i18n.t('pluralTestWithCount', {count: 1})).to.be('1 item');
           expect(i18n.t('pluralTestWithCount', {count: 7})).to.be('7 items');
+        });
+
+        it('it should provide correct plural or singular form for second namespace', function() {
+          expect(i18n.t('ns.2:pluralTest', {count: 0})).to.be('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', {count: 1})).to.be('singular from ns.2');
+          expect(i18n.t('ns.2:pluralTest', {count: 2})).to.be('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', {count: 7})).to.be('plural from ns.2');
+
+          expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 items from ns.2');
         });
       });
 
@@ -462,8 +576,13 @@ describe('i18next', function() {
 
       describe('basic usage', function() {
         var resStore = {
-            dev: { translation: { } },
-            en: { translation: { 
+            dev: { 'ns.2': { 
+                friend_context: 'A friend from ns2',
+                friend_context_male: 'A boyfriend from ns2',
+                friend_context_female: 'A girlfriend from ns2'
+              }
+            },
+            en: { 'ns.1': { 
                 friend_context: 'A friend',
                 friend_context_male: 'A boyfriend',
                 friend_context_female: 'A girlfriend'
@@ -471,9 +590,12 @@ describe('i18next', function() {
             },            
             'en-US': { translation: { } }
         };
-        
+
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init( $.extend(opts, { 
+              resStore: resStore, 
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+            }),
             function(t) { done(); });
         });
 
@@ -482,6 +604,13 @@ describe('i18next', function() {
           expect(i18n.t('friend_context', {context: ''})).to.be('A friend');
           expect(i18n.t('friend_context', {context: 'male'})).to.be('A boyfriend');
           expect(i18n.t('friend_context', {context: 'female'})).to.be('A girlfriend');
+        });
+
+        it('it should provide correct context form for second namespace', function() {
+          expect(i18n.t('ns.2:friend_context')).to.be('A friend from ns2');
+          expect(i18n.t('ns.2:friend_context', {context: ''})).to.be('A friend from ns2');
+          expect(i18n.t('ns.2:friend_context', {context: 'male'})).to.be('A boyfriend from ns2');
+          expect(i18n.t('ns.2:friend_context', {context: 'female'})).to.be('A girlfriend from ns2');
         });
       });
 
@@ -516,6 +645,29 @@ describe('i18next', function() {
           expect(i18n.t('friend_context', {context: 'male', count: 10 })).to.be('10 boyfriends');
           expect(i18n.t('friend_context', {context: 'female', count: 10 })).to.be('10 girlfriends');
         });
+
+      });
+
+    });
+
+    describe('with passed in languages different from set one', function() {
+
+      beforeEach(function(done) {
+        i18n.init($.extend(opts, { 
+            preload: ['de-DE'] }),
+          function(t) { done(); });
+      });
+
+      it('it should provide translation for passed in language', function() {
+        expect(i18n.t('simple_de', { lng: 'de-DE' })).to.be('ok_from_de');
+      });
+
+      describe('with language not preloaded', function() {
+
+        it('it should provide translation for passed in language after loading file sync', function() {
+          expect(i18n.t('simple_fr', { lng: 'fr' })).to.be('ok_from_fr');
+        });
+
       });
 
     });
@@ -678,7 +830,7 @@ describe('i18next', function() {
           });
 
           it('it should set inner html', function() {
-            $('#container').i18n(); console.log($('#container').html());
+            $('#container').i18n();
             expect($('#inner').html()).to.be('test');
           });
           

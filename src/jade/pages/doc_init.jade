@@ -75,6 +75,23 @@ html(lang="en")
 
         .row-fluid
           .span4
+            h4.feature-title preload additional languages on init:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ preload: ['de-DE', 'fr'] });
+              .alert.alert-info.feature-description
+                p The additional languages will be preloaded.
+
+              .alert.alert-info.feature-description
+                p 
+                  h5.alert-heading Preload after init:
+                  | Call function i18next.preload([lngs], callback).
+
+        .row-fluid
+          .span4
             h4.feature-title Set fallback language:
 
           .span8
