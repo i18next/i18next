@@ -119,7 +119,12 @@ html(lang="en")
               .alert.alert-info.feature-description
                 p 
                   span.badge.badge-info Development Hint:
-                  |  caching is turned on by default. You might want to turn it of during development.
+                  |  caching is turned on by default. You might want to turn it off during development.
+                p 
+                  span.badge.badge-warning Warning:
+                  | if the resouces in a given language had been stored to localStorage they won't
+                  | be fetched / reloaded from online. So if they had been cached once and you add
+                  | new resources, they won't be reloaded until localStorage is cleaned.
 
         .row-fluid
           .span4
