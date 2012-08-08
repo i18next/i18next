@@ -262,7 +262,8 @@ textarea {
   border: none;
   padding: 0;
 }
-.documentation .hero-unit .doc-links .span4 {
+.documentation .hero-unit .doc-links .span4,
+.documentation .hero-unit .doc-links .span3 {
   margin: 0;
 }
 .documentation .hero-unit .doc-links .doc-link a {

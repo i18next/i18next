@@ -1,0 +1,67 @@
+- var path = '../'
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: Features
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        h2 Template helpers
+
+        h3 with handlebars
+
+        .row-fluid
+          .span4
+            h4.feature-title Basic handlebars helper
+
+          .span8
+            .feature
+              pre
+                code
+                  | Handlebars.registerHelper('t', function(i18n_key) {
+                  |   var result = i18next.t(i18n_key);
+                  | 
+                  |   return new Handlebars.SafeString(result);
+                  | });
+
+              .alert.alert-info.feature-description
+                p 
+                  h6 Usage in template
+                  pre
+                    code
+                      | span {{t "my.key" }}
+
+        .row-fluid
+          .span4
+            h4.feature-title Extended handlebars helper
+
+          .span8
+            .feature
+              pre
+                code
+                  | Handlebars.registerHelper('tr', function(context, options) { 
+                  |    var opts = i18n.functions.extend(options.hash, context);
+                  |    if (options.fn) opts.defaultValue = options.fn(context);
+                  | 
+                  |    var result = i18next.t(opts.key, opts);
+                  | 
+                  |    return new Handlebars.SafeString(result);
+                  | });
+
+              .alert.alert-info.feature-description
+                p 
+                  h6 Usage in template
+                  pre
+                    code
+                      | {{#tr this key="trans.sample.handlebarsExtended" add="from helper" }}
+                      | h6 Some Text
+                      | p some paragraph with variable __add__ __addFromContext__
+                      | {/tr}
+                  p the passed in options from helper will be merged with the one of the context (this)
