@@ -425,7 +425,7 @@
                 if (typeof value === 'string') {
                     value = applyReplacement(value, options);
                     value = applyReuse(value, options);
-                } else if (Object.prototype.toString.apply(value) === '[object Array]') {
+                } else if (Object.prototype.toString.apply(value) === '[object Array]' && !o.returnObjectTrees && !options.returnObjectTrees) {
                     value = value.join('\n');
                     value = applyReplacement(value, options);
                     value = applyReuse(value, options);
