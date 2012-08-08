@@ -324,6 +324,9 @@
     }
 
     function applyReuse(translated, options){
+        var opts = f.extend({}, options);
+        delete opts.postProcess;
+
         while (translated.indexOf(o.reusePrefix) != -1) {
             replacementCounter++;
             if (replacementCounter > o.maxRecursion) { break; } // safety net for too much recursion
@@ -331,8 +334,8 @@
             var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
             var token = translated.substring(index_of_opening, index_of_end_of_closing);
             var token_sans_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
-            var translated_token = _translate(token_sans_symbols,options);
-            translated = translated.replace(token,translated_token);
+            var translated_token = _translate(token_sans_symbols, opts);
+            translated = translated.replace(token, translated_token);
         }
         return translated;
     }
