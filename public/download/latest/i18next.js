@@ -422,7 +422,14 @@
                 x++;
             }
             if (value) {
-                if (typeof value !== 'string') {
+                if (typeof value === 'string') {
+                    value = applyReplacement(value, options);
+                    value = applyReuse(value, options);
+                } else if (Object.prototype.toString.apply(value) === '[object Array]') {
+                    value = value.join('\n');
+                    value = applyReplacement(value, options);
+                    value = applyReuse(value, options);
+                } else {
                     if (!o.returnObjectTrees && !options.returnObjectTrees) {
                         value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
                                 'returned a object instead of string.';
@@ -433,9 +440,6 @@
                             value[m] = _translate(key + '.' + m, options);
                         }
                     }
-                } else {
-                    value = applyReplacement(value, options);
-                    value = applyReuse(value, options);
                 }
                 found = value;
             }

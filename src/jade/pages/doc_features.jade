@@ -19,6 +19,33 @@ html(lang="en")
 
         .row-fluid
           .span4
+            h4.feature-title multiline in json
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources in arabic
+                  | {           
+                  |   'en-US': { 
+                  |     translation: {  
+                  |       key: [
+                  |         "line1",
+                  |         "line2",
+                  |         "line3",
+                  |       ] 
+                  |     } 
+                  |   }
+                  | };
+
+              .alert.alert-info.feature-description
+                p The translation will be joined with '\n'.
+                p
+                  span.badge.badge-info Hint:
+                  |  This might be useful in combination with post processing.
+
+        .row-fluid
+          .span4
             h4.feature-title providing a default value
 
           .span8
