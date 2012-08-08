@@ -72,7 +72,8 @@
         postAsync: true,
 
         resStore: undefined,
-        useLocalStorage: true,
+        useLocalStorage: false,
+        localStorageExpirationTime: 7*24*60*60*1000,
 
         dynamicLoad: false,
         sendMissing: false,
@@ -310,6 +311,8 @@
     }
 
     function applyReplacement(str, replacementHash, nestedKey) {
+        if (str.indexOf(o.interpolationPrefix) < 0) return str;
+
         f.each(replacementHash, function(key, value) {
             if (typeof value === 'object') {
                 str = applyReplacement(str, value, key);
@@ -446,6 +449,17 @@
             }
         }
 
+        if (found && options.postProcess) {
+            if (postProcessors[options.postProcess]) {
+                found = postProcessors[options.postProcess](found, key, options);
+            }
+        }
+
+        if (!found) {
+            notfound = applyReplacement(notfound, options);
+            notfound = applyReuse(notfound, options);
+        }
+
         return (found) ? found : notfound;
     }
 
@@ -492,7 +506,7 @@
 
         load: function(lngs, options, cb) {
             if (options.useLocalStorage) {
-                sync._loadLocal(lngs, function(err, store) {
+                sync._loadLocal(lngs, options, function(err, store) {
                     var missingLngs = [];
                     for (var i = 0, len = lngs.length; i < len; i++) {
                         if (!store[lngs[i]]) missingLngs.push(lngs[i]);
@@ -516,8 +530,9 @@
             }
         },
 
-        _loadLocal: function(lngs, cb) {
-            var store = {};
+        _loadLocal: function(lngs, options, cb) {
+            var store = {}
+              , nowMS = new Date().getTime();
 
             if(window.localStorage) {
 
@@ -527,7 +542,11 @@
                     var local = window.localStorage.getItem('res_' + lng);
 
                     if (local) {
-                        store[lng] = JSON.parse(local);
+                        local = JSON.parse(local);
+
+                        if (local.i18nStamp && local.i18nStamp + options.localStorageExpirationTime > nowMS) {
+                            store[lng] = local;
+                        }
                     }
 
                     todo--; // wait for all done befor callback
@@ -539,6 +558,7 @@
         _storeLocal: function(store) {
             if(window.localStorage) {
                 for (var m in store) {
+                    store[m].i18nStamp = new Date().getTime();
                     window.localStorage.setItem('res_' + m, JSON.stringify(store[m]));
                 }
             }
@@ -628,11 +648,11 @@
                     type: o.sendType,
                     data: payload,
                     success: function(data, status, xhr) {
-                        f.log('posted missing key \'' + key + '\' to: ' + url);
+                        f.log('posted missing key \'' + key + '\' to: ' + item.url);
                         resStore[item.lng][ns][key] = defaultValue;
                     },
                     error : function(xhr, status, error) {
-                        f.log('failed posting missing key \'' + key + '\' to: ' + url);
+                        f.log('failed posting missing key \'' + key + '\' to: ' + item.url);
                     },
                     dataType: "json",
                     async : o.postAsync
@@ -678,6 +698,11 @@
 
     };
 
+    var postProcessors = {};
+    var addPostProcessor = function(name, fc) {
+        postProcessors[name] = fc;
+    };
+
     // public api interface
     i18n.init = init;
     i18n.setLng = setLng;
@@ -689,6 +714,7 @@
     i18n.sync = sync;
     i18n.functions = f;
     i18n.lng = lng;
+    i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
 
 })();
