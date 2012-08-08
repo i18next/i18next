@@ -197,6 +197,66 @@ describe('i18next', function() {
 
       });
 
+      describe('using localStorage', function() {
+
+        var spy; 
+
+        before(function() {
+          window.localStorage.removeItem('res_en-US');
+          window.localStorage.removeItem('res_en');
+          window.localStorage.removeItem('res_dev');
+        });
+
+        beforeEach(function(done) {
+          spy = sinon.spy(i18n.sync, '_fetchOne');
+          i18n.init($.extend(opts, { 
+            useLocalStorage: true 
+          }), function(t) { done(); });
+        });
+
+        afterEach(function() {
+          spy.restore();
+        });
+
+        it('it should load language', function() {
+          expect(spy.callCount).to.be(3); // en-US, en, de-DE, de, fr, dev
+        });
+
+        describe('on later init', function() {
+
+          beforeEach(function(done) {
+            spy.reset();
+            i18n.init(function(t) { done(); });
+          });
+
+          it('it should not reload language', function() {
+            expect(spy.callCount).to.be(0); // de-DE, de, fr, dev
+          });
+
+          describe('on later init - after caching duration', function() {
+
+            beforeEach(function(done) {
+              spy.reset();
+
+              // exipred
+              var local = window.localStorage.getItem('res_en-US');
+              local = JSON.parse(local);
+              local.i18nStamp = 0;
+              window.localStorage.setItem('res_en-US', JSON.stringify(local));
+
+              i18n.init(function(t) { done(); });
+            });
+
+            it('it should reload language', function() {
+              expect(spy.callCount).to.be(1); // de-DE, de, fr, dev
+            });
+
+          });
+
+        });
+
+      });
+
       describe('with lowercase flag', function() {
 
         describe('default behaviour will uppercase specifc country part.', function() {
@@ -283,27 +343,54 @@ describe('i18next', function() {
 
     describe('preloading multiple languages', function() {
 
-        var spy; 
+      var spy; 
 
-        beforeEach(function(done) {
-          spy = sinon.spy(i18n.sync, '_fetchOne');
-          i18n.init(opts, function(t) { done(); });
-        });
+      beforeEach(function(done) {
+        spy = sinon.spy(i18n.sync, '_fetchOne');
+        i18n.init(opts, function(t) { done(); });
+      });
 
-        afterEach(function() {
-          spy.restore();
-        });
+      afterEach(function() {
+        spy.restore();
+      });
 
-        it('it should preload resources for languages', function(done) {
-          spy.reset();
-          i18n.preload('de-DE', function(t) {
-              expect(spy.callCount).to.be(5); // en-US, en, de-DE, de, dev
-              done();
-          });
-
+      it('it should preload resources for languages', function(done) {
+        spy.reset();
+        i18n.preload('de-DE', function(t) {
+            expect(spy.callCount).to.be(5); // en-US, en, de-DE, de, dev
+            done();
         });
 
       });
+
+    });
+
+    describe('postprocessing tranlation', function() {
+
+      describe('having a postprocessor', function() {
+
+        before(function(){
+          i18n.addPostProcessor('myProcessor', function(val, key, opts) {
+            return 'ok_from_postprocessor';
+          });
+        });
+
+        beforeEach(function(done) {
+          i18n.init( $.extend(opts, {
+            resStore: {
+              'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
+              'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
+            }
+          }), function(t) { done(); } );
+        });
+
+        it('it should postprocess the translation', function() {
+          expect(i18n.t('simpleTest', {postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
+        });
+
+      });
+
+    });
 
     describe('post missing resources', function() {
 
@@ -459,6 +546,10 @@ describe('i18next', function() {
       it('it should translate nested value', function() {
         expect(i18n.t('nesting1')).to.be('1 2 3');
       });
+
+      it('it should apply nested value on defaultValue', function() {
+        expect(i18n.t('nesting_default', {defaultValue: '0 $t(nesting1)'})).to.be('0 1 2 3');
+      });
     });
 
     describe('interpolation - replacing values inside a string', function() {
@@ -483,6 +574,10 @@ describe('i18next', function() {
         expect(i18n.t('interpolationTest1', {toAdd: 'something'})).to.be('added something');
         expect(i18n.t('interpolationTest2', {toAdd: 'something'})).to.be('added something something twice');
         expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2'}})).to.be('added 1 2');
+      });
+
+      it('it should replace passed in key/values on defaultValue', function() {
+        expect(i18n.t('interpolationTest4', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
       });
     });
 

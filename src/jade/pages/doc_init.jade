@@ -115,16 +115,18 @@ html(lang="en")
             .feature
               pre
                 code
-                  | i18n.init({ useLocalStorage: true | false });
+                  | i18n.init({ 
+                  |   useLocalStorage: true | false,
+                  |   localStorageExpirationTime: 86400000 // in ms, default 1 week
+                  | });
               .alert.alert-info.feature-description
                 p 
-                  span.badge.badge-info Development Hint:
-                  |  caching is turned on by default. You might want to turn it off during development.
+                  | Caching is turned off by default. You might want to turn it on for production.
                 p 
                   span.badge.badge-warning Warning:
-                  | if the resouces in a given language had been stored to localStorage they won't
-                  | be fetched / reloaded from online. So if they had been cached once and you add
-                  | new resources, they won't be reloaded until localStorage is cleaned.
+                  |  if the resouces in a given language had been stored to localStorage they won't
+                  | be fetched / reloaded from online until set localStorageExpirationTime expired. So if they had been cached once and you add
+                  | new resources, they won't be reloaded until expired.
 
         .row-fluid
           .span4

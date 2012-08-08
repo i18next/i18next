@@ -234,6 +234,37 @@ html(lang="en")
                   span.badge.badge-info Hint:
                   |  If the additional language wasn't preloaded it will be fetched synchronous.
 
+        h3 post processing translations
+
+        .row-fluid
+          .span4
+            h4.feature-title Adding a post processor
+            p eg. add a post processor parsing markdown.
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.addPostProcessor("myProcessorsName", function(value, key, options) {
+                  |   return 'some post processed data based on translated value';
+                  | });
+
+              .alert.alert-info.feature-description
+                p All keys unable to resolve will be send to: 'locales/add/dev/translation'
+
+        .row-fluid
+          .span4
+            h4.feature-title Using a post processor on translation
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.t("my.key", { postProcess: "myProcessorsName" }); 
+
+              .alert.alert-info.feature-description
+                p i18next will translate the key as usual. Then it passes the translation text to the post processor.
+
         h3 send missing resources to server
 
         .row-fluid
@@ -243,7 +274,7 @@ html(lang="en")
           .span8
             .feature
               pre
-                code 
+                code
                   | i18n.init({ sendMissing: true });
 
               .alert.alert-info.feature-description
