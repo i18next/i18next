@@ -583,7 +583,7 @@
                 // load each file individual
                 f.each(ns.namespaces, function(nsIndex, nsValue) {
                     f.each(lngs, function(lngIndex, lngValue) {
-                        sync._fetchOne(lngValue, nsValue, function(err, data) {
+                        sync._fetchOne(lngValue, nsValue, options, function(err, data) {
                             if (err) {
                                 errors = errors || [];
                                 errors.push(err);
@@ -597,7 +597,7 @@
                     });
                 });
             } else {
-                var url = applyReplacement(o.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
+                var url = applyReplacement(options.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
                 // load all needed stuff once
                 f.ajax({
                     url: url,
@@ -610,13 +610,13 @@
                         cb('failed loading resource.json error: ' + error);
                     },
                     dataType: "json",
-                    async : o.getAsync
+                    async : options.getAsync
                 });         
             }
         },
 
-        _fetchOne: function(lng, ns, done) {
-            var url = applyReplacement(o.resGetPath, { lng: lng, ns: ns });
+        _fetchOne: function(lng, ns, options, done) {
+            var url = applyReplacement(options.resGetPath, { lng: lng, ns: ns });
             f.ajax({
                 url: url,
                 success: function(data, status, xhr) {
@@ -628,7 +628,7 @@
                     done(error, {});
                 },
                 dataType: "json",
-                async : o.getAsync
+                async : options.getAsync
             });
         },
 
