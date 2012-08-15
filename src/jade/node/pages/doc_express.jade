@@ -1,0 +1,225 @@
+- var path = '../../'
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: JQuery Integration
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        h2 Using in combination with express
+
+        p 
+        | i18next will provide a middleware for express to use i18n inside your routes. In addition 
+        | you could set 18next to add an app helper to use translations inside the serverside templates.
+
+        h3 Express middleware
+
+        .row-fluid
+          .span4
+            h4.feature-title Register middleware:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var i18n = require("i18next");
+                  | 
+                  | i18n.init();
+                  | 
+                  | // Configuration block of express app
+                  | app.configure(function() {
+                  |     app.use(express.bodyParser());
+                  |     app.use(i18n.handle);
+                  |     app.use(app.router);
+                  | 
+                  |     // ...
+                  | });
+
+        .row-fluid
+          .span4
+            h4.feature-title Access i18n inside your route:
+
+          .span8
+            .feature
+              pre
+                code
+                  | app.get("/", function(req, res) {
+                  |   // current language
+                  |   var currentLng = req.locale;
+                  | 
+                  |   // access i18n
+                  |   var i18n = req.i18n;
+                  | 
+                  |   // translate
+                  |   var translation = i18n.t("my.key");
+                  |   res.send(translation);
+                  | });
+
+        h3 Usage inside serverside Template
+
+        .row-fluid
+          .span4
+            h4.feature-title Register app.locals (app.helper):
+
+          .span8
+            .feature
+              pre
+                code
+                  | var i18n = require("i18next");
+                  | 
+                  | i18n.init();
+                  | i18n.registerAppHelper(app);
+                  | 
+                  | // translate inside your template using t function (sample in jade)
+                  | body
+                  |   span= t("my.key")
+                  | 
+                  | // get language sample in jade
+                  | body
+                  |   span= i18n.lng()
+
+
+
+        h3 Serve i18next for clientside usage
+
+        .row-fluid
+          .span4
+            h4.feature-title Serve clientscript and register routes:
+            p: a(href='#{path}pages/doc_init.html') client api documetation
+
+          .span8
+            pre
+              code
+                | i18n.serveClientScript(app)      // grab i18next.js in browser
+                |   .serveDynamicResources(app)    // route which returns all resources in on response
+                |   .serveMissingKeyRoute(app)     // route to send missing keys
+                |   .serveChangeKeyRoute(app)      // route to post value changes
+                |   .serveRemoveKeyRoute(app);     // route to remove key/value
+
+            .alert.alert-info.feature-description
+                h6 Authentication:
+
+                p 
+                  | The 'postMissing', 'change' and 'remove' routes can be called with a second 
+                  | argument providing a function for authentifation, eg:
+
+                  pre
+                    code
+                      | i18n.serveChangeKeyRoute(app, function(req, res) { 
+                      |   return !req.user; 
+                      | });
+
+
+            .alert.alert-info.feature-description
+                p 
+                  | Now you can use i18next on the client like:
+
+                pre
+                  code
+                    | // add script
+                    | script(src="i18next/i18next.js", type="text/javascript")
+                    | 
+                    | // init i18next in script block
+                    | i18n.init([options], function() { 
+                    |   $('#appname').text(i18n.t("app.name"));
+                    | });
+                    | 
+                    | // to support the dynamic route in client add options
+                    | i18n.init({
+                    |   resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
+                    |   dynamicLoad: true
+                    | });
+                    | 
+                    | // to support posting of missing keys add option
+                    | i18n.init({
+                    |   sendMissing: true
+                    | });
+
+                p
+                  | For details read the 
+                  a(href='#{path}pages/doc_init.html') client api documetation.
+            
+        h3 Serve i18next-webtranslate
+
+        .row-fluid
+          .span4
+            h4.feature-title Serve i18next-webtranslate:
+
+          .span8
+            .alert.alert-info.feature-description
+              img(src='#{path}public/img/i18nextWT.png', style='width: 100%;')
+
+            pre
+              code
+                | // i18next-webtranslate depends on following routes
+                | i18n.serveChangeKeyRoute(app)
+                |     .serveRemoveKeyRoute(app);
+                | 
+                | // serve i18next-webtranslate
+                | i18next.serveWebTranslate(app, {
+                |   i18nextWTOptions: {
+                |     languages: ['en_US', 'de', 'fr', 'it'],
+                |     namespaces: ['ns.app', 'ns.common', 'ns.layout', 'ns.msg', 'ns.public'],
+                |     resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
+                |     resChangePath: 'locales/change/__lng__/__ns__',
+                |     resRemovePath: 'locales/remove/__lng__/__ns__',
+                |     fallbackLng: "en",
+                |     dynamicLoad: true
+                |   }
+                | });
+
+            .alert.alert-info.feature-description
+                h6 Authentication:
+
+                pre
+                  code
+                    | i18n.serveChangeKeyRoute(app, 
+                    |   i18nextWTOptions: {
+                    |     languages: ['en_US', 'de', 'fr', 'it'],
+                    |     // ....
+                    |   },
+                    |   authenticated: function(req, res) { 
+                    |     return !req.user; 
+                    |   }
+                    | );
+
+                h6 Additional languages:
+                p i18next-webtranslate comes with english and german translations.
+                pre
+                  code
+                    | i18n.serveChangeKeyRoute(app, 
+                    |   i18nextWTOptions: {
+                    |     languages: ['en_US', 'de', 'fr', 'it'],
+                    |     // ....
+                    |   },
+                    |   resourceSets: [{ 
+                    |     language: 'en',
+                    |     resources: {
+                    |       layout: {
+                    |          header: {
+                    |            language: 'english' // will be displayed in language switch
+                    |          }
+                    |        },
+                    |        editor: {
+                    |          // ...
+                    |        }
+                    |     }
+                    |   }]
+                    | );
+                p 
+                  | For updated list of needed resource keys have a look 
+                  a(href='https://github.com/jamuhl/i18next-webtranslate/blob/master/client/app/resources.js') here
+                  |.
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

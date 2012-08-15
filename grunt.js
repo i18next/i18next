@@ -16,7 +16,7 @@ module.exports = function(grunt) {
 
     // The clean task ensures all files are removed from the dist/ directory so
     // that no files linger from previous builds.
-    clean: ["index.html", "pages"],
+    clean: ["index.html", "pages", "node"],
 
     // The lint task will run the build configuration and the application
     // JavaScript through JSHint and report any errors.  You can change the
@@ -65,13 +65,20 @@ module.exports = function(grunt) {
       ],
       "pages": [
         "src/jade/pages/**/*.jade"
+      ],
+      "node": [
+        "src/jade/node/index.jade"
+      ],
+      "node/pages": [
+        "src/jade/node/pages/**/*.jade"
       ]
     },
 
     prettify: {
       "./": [
         "index.html",
-        "pages/**/*.html"
+        "pages/**/*.html",
+        "node/**/*.html"
       ]
     },
 
@@ -144,7 +151,8 @@ module.exports = function(grunt) {
       folders: {
           "/": "./",
           "public": "public",
-          "pages": "pages"
+          "pages": "pages",
+          "node": "node"
       }//,
 
       // debug: {

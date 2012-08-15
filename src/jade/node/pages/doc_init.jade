@@ -1,0 +1,348 @@
+- var path = '../../'
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: Initialisation
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        //- ************************************************
+        //- * INITIALISATION
+        //- * 
+        h2 Initialisation
+
+        pre
+          code
+            | var i18n = require("i18next");
+            | i18n.init();
+        pre
+          code
+            | // with options
+            | i18n.init({ lng: "en-US" });
+            | // "later"
+            | var x = i18n.t("key");
+            | 
+            | // with callback
+            | i18n.init(function(t) { 
+            |   var x = t("key");
+            | });
+            | 
+            | // with both
+            | i18n.init({ lng: "en-US" }, function(t) { 
+            |   var x = t("key");
+            | });
+
+        //- ************************************************
+        //- * Options
+        //- * 
+        h3 Basic Options
+
+        .row-fluid
+          .span4
+            h4.feature-title Set language on init:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ lng: 'en-US' });
+              .alert.alert-info.feature-description
+                p Resources will be resolved in this order:
+                  ol
+                    li 1) try languageCode plus countryCode, eg. 'en-US'
+                    li 2) alternative look it up in languageCode only, eg. 'en'
+                    li 3) finally look it up in definded fallback language, default: 'dev'
+              
+              .alert.alert-info.feature-description
+                p If language is not set explicitly i18next tries to detect the user language by:
+                  ol
+                    li 1) querystring parameter (?setLng=en-US)
+                    li 2) cookie (i18next)
+                    li 3) request header
+
+              .alert.alert-info.feature-description
+                p 
+                  h5.alert-heading Change language programatically:
+                  | Call function i18n.setLng(lng, callback).
+                  h5.alert-heading Read out current language:
+                  | Call function i18n.lng() returns current lng.
+
+        .row-fluid
+          .span4
+            h4.feature-title preload additional languages on init:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ preload: ['de-DE', 'fr'] });
+              .alert.alert-info.feature-description
+                p The additional languages will be preloaded.
+
+              .alert.alert-info.feature-description
+                p 
+                  h5.alert-heading Preload after init:
+                  | Call function i18n.preload([lngs], callback).
+
+        .row-fluid
+          .span4
+            h4.feature-title Set fallback language:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ fallbackLng: 'en' });
+              .alert.alert-info.feature-description
+                p 
+                  | If not set it will default to 'dev'. If turned on, all missing key/values will be 
+                  | sent to this language.
+                p 
+                  span.badge.badge-info Production Hint:
+                  |  set fallback language to some meaningful language, eg. 'en'
+
+        .row-fluid
+          .span4
+            h4.feature-title Debug output:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ debug: true });
+              .alert.alert-info.feature-description
+                p If something went wrong you might find some helpful information on console log.
+
+        //- ************************************************
+        //- * Resource Loading
+        //- * 
+        h2 Resource Loading
+
+        h3 init callback when loaded
+
+        .row-fluid
+          .span4
+            pre
+              code
+                | i18n.init(callback);
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init(function(t) { 
+                  |   var appName = t("key");
+                  | });
+              .alert.alert-info.feature-description
+                p 
+                  | after callback is called you can use the translation function
+                  strong  't' 
+                  | to access your resources in given language.
+
+        h3 options to load resources
+
+        .row-fluid
+          .span4
+            h4.feature-title Pass in resource store:
+
+          .span8
+            .feature
+              pre
+                code
+                  | // tree: lng -> namespace -> key -> nested key
+                  | var resources = {
+                  |   dev: { translation: { 'key': 'value' } },
+                  |   en: { translation: { 'key': 'value' } },            
+                  |   'en-US': { translation: { 'key': 'value' } }
+                  | };
+                  | 
+                  | i18n.init({ resStore: resources });
+
+              .alert.alert-info.feature-description
+                p As you provide the resources the callbacks will fire immediatly and no external resources will be loaded!
+
+        .row-fluid
+          .span4
+            h4.feature-title Set filepath to load resources from:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { resGetPath: 'locales/__lng__/__ns__.json' };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p Will load 'locales/en-US/translation.json'.
+                p 
+                  | If language is set to
+                  strong  'en-US' 
+                  | following resource files will be loaded one-by-one:
+                  ul
+                    li en-US
+                    li en
+                    li dev (default fallback language)
+                p 
+                  span.badge.badge-info Hint:
+                  |  to lowercase countryCode in requests, eg. to 'en-us' 
+                  | set option 
+                  strong lowerCaseLng = true
+
+              pre
+                code
+                  | var option = { resGetPath: 'locales/__ns__-__lng__.json' };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p Will load 'locales/translation-en-US.json'.
+
+        .row-fluid
+          .span4
+            h4.feature-title Change namespace (one):
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { ns: 'resource' };
+                  | 
+                  | i18n.init(option);
+
+              .alert.alert-info.feature-description
+                p 
+                  | Will load:
+                  ol
+                    li 'locales/en-US/resource.json'
+                    li 'locales/en/resource.json'
+                    li 'locales/dev/resource.json'
+
+                p (Default namespace is 'translation'.)
+
+        .row-fluid
+          .span4
+            h4.feature-title Multiple namespace:
+
+          .span8
+            .feature
+              pre
+                code
+                  | var option = { 
+                  |   ns: { 
+                  |     namespaces: ['app', 'buttons'], 
+                  |     defaultNs: 'app'
+                  |   } 
+                  | };
+                  | 
+                  | i18n.init(option, function(t) {
+                  |   // access default namespace
+                  |   var x = t("any.key.from.app")
+                  | 
+                  |   // to access another namespace prepend [ns]:
+                  |   var y = t("buttons:any.key.from.buttons") 
+                  | });
+
+              .alert.alert-info.feature-description
+                p 
+                  | Will load:
+                  ol
+                    li 'locales/en-US/app.json'
+                    li 'locales/en/app.json'
+                    li 'locales/dev/app.json'
+                    li 'locales/en-US/buttons.json'
+                    li 'locales/en/buttons.json'
+                    li 'locales/dev/buttons.json' 
+        
+        h3 Change Backend Implementation
+
+        .row-fluid
+          .span4
+            h4.feature-title Change out backend:
+            p default is filesystem
+
+            p Options are:
+            ul
+              li mongoDb
+              li redis
+
+          .span8
+            .feature
+              h4 mongoDb:
+              pre
+                code
+                  | npm install i18next.mongoDb
+                  | 
+                  | var i18nextMongoSync = require('i18next.mongoDb')
+                  | 
+                  | i18nMongoSync.connect({
+                  |     host: "localhost",
+                  |     port: 27017,
+                  |     dbName: "i18next"
+                  |     // resCollectionName: "resources"
+                  | }, function() {
+                  |     i18n.backend(i18nMongoSync);
+                  |     i18n.init();
+                  | });
+
+              h4 redis:
+              pre
+                code
+                  | npm install i18next.redis
+                  | 
+                  | var i18nextRedisSync = require('i18next.redis')
+                  | 
+                  | i18nMongoSync.connect({
+                  |     host: "localhost",
+                  |     port: 27017,
+                  |     database: 0
+                  |     // resCollectionName: "resources"
+                  | }, function() {
+                  |     i18n.backend(i18nRedisSync);
+                  |     i18n.init();
+                  | });
+
+              h4 additional backend functions
+              pre
+                code
+                  | // loading loadResourceSet(lng, ns, cb)
+                  | backend.loadResourceSet("en-US," "myNamespace", function(err, resourceSet) {
+                  |     // resources
+                  |     var res = resourcesSet.resources;
+                  | 
+                  |     // language
+                  |     var lng = resourcesSet.lng;
+                  | 
+                  |     // namespace
+                  |     var ns = resourcesSet.namespace;
+                  | }); 
+                  | 
+                  | // saving saveResourceSet(lng, ns, resouceSet, cb)
+                  | var resourceSet = {
+                  |     resources: { ... }
+                  | 
+                  |     // optional will be added anyway ;)
+                  |     lng: 'en-US',
+                  |     namespace: 'myNamespace'
+                  | };
+                  | backend.saveResourceSet("en-US", "myNamespace", resourceSet, function(err) {
+                  |     // handle err
+                  | });
+
+              .alert.alert-info.feature-description
+                p 
+                  | The additional backends where provided thanks to 
+                  a(href='https://github.com/adrai') adrai.
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

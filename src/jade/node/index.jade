@@ -1,0 +1,153 @@
+- var path = '../'
+!!! 5
+html(lang="en")
+  head
+    include includes/layout/head
+
+  body
+    include includes/layout/header
+          
+    include includes/layout/content
+      .row-fluid
+        .span8
+          .hero-unit
+            h2 
+              | i18next-node
+              small  - translation made easy
+            p i18next is a full-featured javascript library for translating your webapplication.
+
+        .span4.downloads
+          p node.js:
+          pre
+            code
+              | npm install i18next
+          .alert.alert-info.feature-description
+            h4 clientside usage:
+            a(href='#{path}index.html')
+              i.icon-external-link
+              |  more information (clientscript)
+
+      .row-fluid
+        .span4
+          .features
+            h4.feature-title Benefits
+            ol.alert.alert-success
+              li 
+                i.icon-ok
+                |  express middleware
+              li 
+                i.icon-ok
+                |  template function
+              li 
+                i.icon-ok
+                |  support for variables
+              li 
+                i.icon-ok
+                |  support for nesting
+              li 
+                i.icon-ok
+                |  support for context
+              li 
+                i.icon-ok
+                |  support for multiple plural forms
+              li 
+                i.icon-ok
+                |  detect language
+              li 
+                i.icon-ok
+                |  graceful translation lookup
+              li
+                i.icon-ok
+                |  highly configurable
+              li 
+                i.icon-ok
+                |  NEW: custom post processing
+              li 
+                i.icon-ok
+                |  NEW: translation ui
+              li
+                br
+                a(href='https://github.com/jamuhl/i18next/issues', target='_new')
+                  i.icon-search
+                  |  something missing?
+                
+        .span8
+          h4.feature-title Documentation
+
+          .alert.alert-info.feature-description
+            strong
+              i.icon-book
+              |  Documentation: 
+            ul.unstyled
+              li: a(href='#{path}node/pages/doc_init.html') Initialisation Options
+              li: a(href='#{path}node/pages/doc_features.html') Features
+              li: a(href='#{path}node/pages/doc_express.html') Express Integration
+              li: a(href='#{path}node/pages/doc_templates.html') Template Usage
+
+          br
+
+          .feature
+            h4.feature-title Usage Sample
+              :markdown
+                installation:
+
+                    npm install i18next
+
+                  Add your resourcefile under /locales/en-US/translation.json:
+
+                    {
+                      "app": {
+                        "name": "i18next"
+                      },
+                      "creator": {
+                        "firstname": "Jan",
+                        "lastname": "Mühlemann"
+                      }
+                    }
+
+                  init and translate:
+
+                    var i18n = require("i18next");
+
+                    i18n.init(function(t) {
+                      i18n.t("my.key")
+                    });
+
+          .feature
+            h4.feature-title Usage with express
+              :markdown
+
+                init i18next:
+
+                    var i18n = require("i18next");
+
+                    i18n.init(function(t) {
+                      i18n.t("my.key.toLookUp")
+                    });
+
+                  Register Handler:
+
+                    // Configuration block of express app
+                    app.configure(function() {
+                        app.use(express.bodyParser());
+                        app.use(i18n.handle);
+                        app.use(app.router);
+
+                        // ...
+                    });
+
+                  Register AppHelper so you can use the translate function inside template:
+
+                    i18n.registerAppHelper(app)
+
+                  template code (eg. jade):
+
+                    // sample in jade
+                    body
+                        span= t("my.key.toLookUp")
+
+    include includes/layout/extra
+      
+    include includes/layout/footer
+    
+    include includes/layout/endscripts

@@ -11,26 +11,25 @@ header.header
             span.icon-bar
      
           // Be sure to leave the brand out there if you want it shown
-          a.brand(href='#{path}') i18next
+          a.brand(href='#{path}node/index.html') i18next-node
 
           ul.nav
-            li: a(href="#{path}index.html") Home
-            li: a(href="#{path}pages/doc_features.html") Documentation
-            li: a(href="#{path}pages/sample.html") Sample
-            li: a(href="#{path}pages/ext_webtranslate.html") i18next-WebTranslate
+            li: a(href="#{path}node/index.html") Home
+            li: a(href="#{path}node/pages/doc_features.html") Documentation
+            li: a(href="https://github.com/jamuhl/i18next-node/tree/master/sample", target="_new") Sample
 
           // Everything you want hidden at 940px or less, place within here
           .nav-collapse
 
             ul.nav.pull-right
               li
-                a(href='#{path}pages/releasenotes.html')
+                a(href='#{path}node/pages/releasenotes.html')
                   i.icon-file
                   |  releasenotes
               li
-                a(href='#{path}pages/test.html')
+                a(href='http://travis-ci.org/jamuhl/i18next-node')
                   i.icon-check
-                  |  tests
+                  img(src='https://secure.travis-ci.org/jamuhl/i18next-node.png?branch=master')
               li
                 a(href='https://github.com/jamuhl/i18next')
                   i.icon-github

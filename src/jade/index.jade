@@ -17,18 +17,18 @@ html(lang="en")
             p i18next is a full-featured javascript library for translating your webapplication.
 
         .span4.downloads
-          a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18next-1.4.1.min.js', download='download') 
+          a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18next-1.5.0.min.js', download='i18next-1.5.0.min.js') 
             i.icon-download-alt
-            |  Production v1.4.1 (min)
-          a.btn(href='#{path}public/download/versions/i18next-1.4.1.js', download='download')
+            |  Production v1.5.0 (min)
+          a.btn(href='#{path}public/download/versions/i18next-1.5.0.js', download='i18next-1.5.0.js')
             i.icon-download-alt
-            |  Development v1.4.1 (full)
+            |  Development v1.5.0 (full)
           p node.js:
           pre
             code
               | npm install i18next
           .alert.alert-info.feature-description
-              a(href='http://jamuhl.github.com/i18next-node/', target='_new')
+              a(href='#{path}node/index.html')
                 i.icon-external-link
                 |  more information (npm module)
 
@@ -73,6 +73,9 @@ html(lang="en")
               li 
                 i.icon-ok
                 |  NEW: custom post processing
+              li 
+                i.icon-ok
+                |  NEW: translation ui
               li
                 br
                 a(href='https://github.com/jamuhl/i18next/issues', target='_new')
@@ -91,6 +94,15 @@ html(lang="en")
               li: a(href='#{path}pages/doc_features.html') Features
               li: a(href='#{path}pages/doc_jquery.html') JQuery Integration
               li: a(href='#{path}pages/doc_templates.html') Template helpers
+
+          h4.feature-title Extensions
+
+          .alert.alert-info.feature-description
+            strong
+              i.icon-cogs
+              |  Extensions: 
+            ul.unstyled
+              li: a(href='#{path}pages/ext_webtranslate.html') i18next-webtranslate
 
           br
 

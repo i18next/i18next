@@ -1,0 +1,149 @@
+- var path = '../'
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .row-fluid
+        .span8
+          .hero-unit
+            h2 
+              | i18next-webtranslate
+              small  - translation made easier
+            p 
+              | i18next-webtranslate is a UI to edit your resources:
+              img(src='#{path}public/img/i18nextWT.png', style='width: 100%; margin-top: 10px')
+
+        .span4.downloads
+          a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18nextWT-0.0.1.zip', download='i18nextWT-0.0.1.zip') 
+            i.icon-download-alt
+            |  Beta v0.0.1
+
+      .row-fluid
+        .span12
+          h2 Setup
+
+          .row-fluid
+            .span4
+              h4.feature-title Setup
+              p Simply serve a html file from your server.
+              p Example file is in the download!
+
+            .span8
+              .feature
+                :markdown
+                  markup:
+
+                      <!doctype html>
+                      <html lang="en">
+                      <head>
+                        <!-- Application styles -->
+                        <link rel="stylesheet" href="css/i18nextWT.css">
+                      </head>
+
+                      <body>
+                        <!-- Optional Header -->
+                        <div class="header">
+                          <div class="header-inner"></div>
+                        </div>
+
+                        <div class="main">
+                          <div class="main-inner"></div>
+                        </div>
+
+                        <!-- Optional Footer -->
+                        <div class="footer">
+                          <div class="footer-inner"></div>
+                        </div>
+
+                        <!-- Application source -->
+                        <script src="js/i18nextWT.js"></script>
+
+                        <!-- Initalization callback for configuration -->
+                        <script language="javascipt" type="text/javascript">
+                          i18nextWT_onready = function(wt) {
+
+                            wt.config(
+                              {
+                                languages: ["en-US", "de", "fr", "dev"],
+                                namespaces: ["ns.common", "ns.special"],
+                                resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
+                                resChangePath: "locales/change/__lng__/__ns__",
+                                resRemovePath: "locales/remove/__lng__/__ns__",
+                                fallbackLng: "dev",
+                                dynamicLoad: true
+                              }
+                            )
+
+                            wt.start();
+                          };
+                        </script>
+                      </body>
+                      </html>
+
+                .alert.alert-info.feature-description
+                  h6 Important hint:
+                  p Be sure your server serves following routes like you set them in options:
+                    ul
+                      li 
+                        strong resGetPath:
+                        p route from where resources are loaded (with dynamicLoad = true | false)
+                       li 
+                        strong resChangePath:
+                        p route to post changes to (serverside update)
+                      li 
+                        strong resGetPath:
+                        p route to post removing of key/value (serverside remove)
+
+          .row-fluid
+            .span4
+              h4.feature-title Add Additional languages
+
+            .span8
+              .feature
+                  p i18next-webtranslate comes with english and german translations.
+                  :markdown
+                    To add additional languages call in the __i18nextWT_onready__ callback:
+
+                        <!-- Initalization callback for configuration -->
+                        <script language="javascipt" type="text/javascript">
+                          i18nextWT_onready = function(wt) {
+
+                            wt.config(
+                              {
+                                languages: ["en-US", "de", "fr", "dev"],
+                                // ...
+                              }
+                            )
+
+                            wt.addResourceSet("en-US", {
+                             layout: {
+                                header: {
+                                  language: "english" // will be displayed in language switch
+                                }
+                              },
+                              editor: {
+                                // ...
+                              }
+                            });
+
+                            wt.start();
+                          };
+                        </script>
+
+                .alert.alert-info.feature-description
+                  p 
+                    | For updated list of needed resource keys have a look 
+                    a(href='https://github.com/jamuhl/i18next-webtranslate/blob/master/client/app/resources.js') here
+                    |.
+
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

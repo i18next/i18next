@@ -1,0 +1,176 @@
+- var path = '../../'
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+    title i18next Documentation: Features
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        include ../includes/doc_hero
+
+        h2 Template helpers / usage
+
+        h3 with jade
+
+        .row-fluid
+          .span4
+            h4.feature-title Basic usage
+
+          .span8
+            .feature
+              h6 Template:
+              pre
+                code
+                  | // set encoded content (text only)
+                  | p=t("my.key1")
+                  | p=t("myNamespace:my.key2", { count: 5, replaceMe: "something" })
+                  | 
+                  | // set without encoding (eg. html content)
+                  | .myClass!=t("my.key3")
+                  | !=t("my.key4", { context: "loggedIn" })
+                  |
+                  | // setting arguments
+                  | input(type="text", placeholder!=t('my.key5'))
+
+              .alert.alert-info.feature-description
+                p You can have html content written with multilines in JSON File
+                h6 JSON:
+                pre
+                  code
+                    | {
+                    |   "myhtml": [
+                    |      "&lt;p&gt;",
+                    |      "my paragraph",
+                    |      "&lt;/p&gt;"
+                    |   ]  
+                    | }
+                p i18next will join the array with '\n'.
+                p
+                  span.badge.badge-info Hint:
+                  |  functions like nesting or variable replacing are still full functional.
+
+        .row-fluid
+          .span4
+            h4.feature-title for mixins
+
+          .span8
+            .feature
+              h6 given JSON (eg. locales/en-US/translation.json):
+              pre
+                code
+                  | {
+                  |    "listWithHeader": {
+                  |      "title": "my title",
+                  |      "items": [
+                  |        "item 1 ...",
+                  |        "item 2 ..."
+                  |    ]
+                  |  },
+                  }
+              h6 Template:
+              pre
+                code
+                  | mixin ul(items)
+                  |   - each item in items
+                  |     li= item
+                  | 
+                  | mixin h4AndUl(entry)
+                  |   h4= entry.title
+                  |   ul
+                  |       mixin ul(enty.items)
+                  |
+                  | // use mixin
+                  | mixin h4AndUl(t('listWithHeader', {returnObjectTrees: true}))
+
+              .alert.alert-info.feature-description
+                p By using option returnObjectTrees i18next will return an object usefull in mixins.
+                p When using returnObjectTrees i18next won't join arrays so arrays can be used for lists.
+                p 
+                  span.badge.badge-info Hint:
+                  |  functions like nesting or variable replacing are still full functional.
+
+        .row-fluid
+          .span4
+            h4.feature-title Using markdown
+
+          .span8
+            .feature
+                h6 JSON:
+                pre
+                  code
+                    | // given resources with array
+                    | {           
+                    |   'en-US': { 
+                    |     translation: {  
+                    |       "markdownKey": [
+                    |         "### title",
+                    |         "a paragraph",
+                    |         "",
+                    |         "    // some code"
+                    |       ]
+                    |     } 
+                    |   }
+                    | };
+                h6 registered post processor:
+                pre
+                  code
+                    | // given registered post processor
+                    | i18n.addPostProcessor("markdown", function(val, key, opts) {
+                    |    return require("markdown").markdown.toHTML(val);
+                    | });
+                h6 Template:
+                pre
+                  code
+                    | !=t("markdownKey", { postProcess: "markdown" }) // -> will output parsed markdown
+
+                .alert.alert-info.feature-description
+                  p Post Processor will be called after regular translation.
+                  p 
+                    span.badge.badge-info Hint:
+                    |  functions like nesting or variable replacing are still full functional.
+
+        .row-fluid
+          .span4
+            h4.feature-title Using jade
+
+          .span8
+            .feature
+                h6 JSON:
+                pre
+                  code
+                    | // given resources with array
+                    | {           
+                    |   'en-US': { 
+                    |     translation: {  
+                    |       "jadeKey": [
+                    |         "h1 title",
+                    |         "p a paragraph",
+                    |         "p another paragraph",
+                    |         "    button with nested button"
+                    |       ]
+                    |     } 
+                    |   }
+                    | };
+                h6 registered post processor:
+                pre
+                  code
+                    | // given registered post processor
+                    | i18n.addPostProcessor("jade", function(val, key, opts) {
+                    |    return require("jade").compile(val, opts)();
+                    | });
+                h6 Template:
+                pre
+                  code
+                    | !=t("jadeKey", { postProcess: "jade" }) // -> will output parsed jade
+
+                .alert.alert-info.feature-description
+                  p Post Processor will be called after regular translation.
+                  p 
+                    span.badge.badge-info Hint:
+                    |  functions like nesting or variable replacing are still full functional.
+
