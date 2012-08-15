@@ -1,5 +1,6 @@
-### v1.4.2_beta
+### v1.5
 - pass options to sync._fetchOne, use options for fetching
+- support for i18next-webtranslate
 
 ### v1.4.1
 - post processor
