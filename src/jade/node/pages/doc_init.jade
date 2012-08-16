@@ -332,16 +332,7 @@ html(lang="en")
               pre
                 code
                   | // loading loadResourceSet(lng, ns, cb)
-                  | backend.fetchOne("en-US," "myNamespace", function(err, resourceSet) {
-                  |     // resources
-                  |     var res = resourcesSet;
-                  | 
-                  |     // language
-                  |     var lng = resourcesSet.lng;
-                  | 
-                  |     // namespace
-                  |     var ns = resourcesSet.namespace;
-                  | }); 
+                  | backend.fetchOne("en-US," "myNamespace", function(err, resourceSet) { ... }); 
                   | 
                   | // saving saveResourceSet(lng, ns, resouceSet, cb)
                   | var myResourceSet = {...};
