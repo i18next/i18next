@@ -314,9 +314,9 @@ html(lang="en")
               pre
                 code
                   | // loading loadResourceSet(lng, ns, cb)
-                  | backend.loadResourceSet("en-US," "myNamespace", function(err, resourceSet) {
+                  | backend.fetchOne("en-US," "myNamespace", function(err, resourceSet) {
                   |     // resources
-                  |     var res = resourcesSet.resources;
+                  |     var res = resourcesSet;
                   | 
                   |     // language
                   |     var lng = resourcesSet.lng;
@@ -326,14 +326,8 @@ html(lang="en")
                   | }); 
                   | 
                   | // saving saveResourceSet(lng, ns, resouceSet, cb)
-                  | var resourceSet = {
-                  |     resources: { ... }
-                  | 
-                  |     // optional will be added anyway ;)
-                  |     lng: 'en-US',
-                  |     namespace: 'myNamespace'
-                  | };
-                  | backend.saveResourceSet("en-US", "myNamespace", resourceSet, function(err) {
+                  | var myResourceSet = {...};
+                  | backend.saveResourceSet("en-US", "myNamespace", myResourceSet, function(err) {
                   |     // handle err
                   | });
 
