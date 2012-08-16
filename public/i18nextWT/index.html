@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>i18next - webtranslate</title>
+
+  <!-- Application root. -->
+  <base href="/">
+
+  <!-- Application styles. -->
+  <link rel="stylesheet" href="css/i18nextWT.css">
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-inner"></div>
+  </div>
+
+  <div class="main">
+    <div class="main-inner"></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-inner"></div>
+  </div>
+
+  <!-- Application source. -->
+  <script src="js/i18nextWT.js"></script>
+  <script language="javascipt" type="text/javascript">
+    i18nextWT_onready = function(wt) {
+
+      wt.config(
+        {
+          languages: ['de-CH', 'fr', 'it', 'dev'],
+          namespaces: ['ns.app', 'ns.common', 'ns.layout', 'ns.msg', 'ns.special'],
+          resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
+          resChangePath: 'locales/change/__lng__/__ns__',
+          resRemovePath: 'locales/remove/__lng__/__ns__',
+          fallbackLng: "dev",
+          dynamicLoad: true
+        }
+      )
+
+      wt.start();
+    };
+  </script>
+</body>
+</html>

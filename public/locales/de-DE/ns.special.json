@@ -1,0 +1,6 @@
+{
+    "app": {
+      "name": "i18n",
+      "insert": "du bist __youAre__"
+    }
+}

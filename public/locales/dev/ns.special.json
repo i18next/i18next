@@ -1,4 +1,13 @@
 {
+	"app": {
+		"a": {
+			"multiliner": [
+				"row1",
+				"row2",
+				"..."
+			]
+		}
+	},
     "nav": {
         "home": "home",
         "1": "link 1",
