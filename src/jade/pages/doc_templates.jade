@@ -14,7 +14,7 @@ html(lang="en")
       .documentation
         include ../includes/doc_hero
 
-        h2 Template helpers
+        h2 Template & Helpers
 
         h3 with handlebars
 
@@ -66,3 +66,32 @@ html(lang="en")
                       | p some paragraph with variable __add__ __addFromContext__
                       | {/tr}
                   p the passed in options from helper will be merged with the one of the context (this)
+
+        h3 JQuery UI
+        .row-fluid
+
+          .span4
+            h4.feature-title JQuery UI - Button & Dialog
+
+          .span8
+            .feature
+              .alert.alert-info.feature-description
+                p 
+                  a(href='https://github.com/jlgrall') jlgrall
+                  | provides a solution to use i18next data-attribute in combination with JQuery UI.
+
+                p for futher detail have a look at:
+                ul
+                  li
+                    a(href='https://github.com/jamuhl/i18next/issues/29')
+                      i.icon-comments-alt
+                      |  the discussion
+                  li
+                    a(href='https://gist.github.com/3353697')
+                      i.icon-github
+                      |  gist for dialog
+                  li
+                    a(href='https://gist.github.com/3352659')
+                      i.icon-github
+                      |  gist for button
+
