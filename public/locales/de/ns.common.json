@@ -1,0 +1,12 @@
+{
+	"app": {
+		"company": {
+		  "name": "Meine Firma"
+		}
+	},
+	"attr": {
+		"placeholder": "Übersetzer Platzhalter",
+		"title": "Übersetzter Titel"	
+	},
+	"add": "hinzufügen"
+}
