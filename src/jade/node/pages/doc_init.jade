@@ -273,6 +273,7 @@ html(lang="en")
             ul
               li mongoDb
               li redis
+              li couchDb
 
           .span8
             .feature
@@ -307,6 +308,23 @@ html(lang="en")
                   |     // resCollectionName: "resources"
                   | }, function() {
                   |     i18n.backend(i18nRedisSync);
+                  |     i18n.init();
+                  | });
+
+              h4 couchDb:
+              pre
+                code
+                  | npm install i18next.couchdb
+                  | 
+                  | var i18nextCouchSync = require('i18next.couchdb')
+                  | 
+                  | i18nextCouchSync.connect({
+                  |     host: "http://localhost",
+                  |     port: 5984,
+                  |     dbName: "i18next"
+                  |     // resCollectionName: "resources"
+                  | }, function() {
+                  |     i18n.backend(i18nextCouchSync);
                   |     i18n.init();
                   | });
 
