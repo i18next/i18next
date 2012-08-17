@@ -16,7 +16,8 @@ describe('i18next', function() {
       resStore: false,
       getAsync: true,
       returnObjectTrees: false,
-      debug: false
+      debug: false,
+      postProcess: ''
     };
   });
 
@@ -384,8 +385,26 @@ describe('i18next', function() {
           }), function(t) { done(); } );
         });
 
-        it('it should postprocess the translation', function() {
+        it('it should postprocess the translation by passing in postProcess name to t function', function() {
           expect(i18n.t('simpleTest', {postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
+        });
+
+        describe('or setting it as default on init', function() {
+
+          beforeEach(function(done) {
+            i18n.init( $.extend(opts, {
+              resStore: {
+                'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
+                'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
+              },
+              postProcess: 'myProcessor'
+            }), function(t) { done(); } );
+          });
+
+          it('it should postprocess the translation by default', function() {
+            expect(i18n.t('simpleTest')).to.be('ok_from_postprocessor');
+          });
+
         });
 
       });
@@ -570,32 +589,63 @@ describe('i18next', function() {
     });
 
     describe('interpolation - replacing values inside a string', function() {
-      var resStore = {
-        dev: { translation: {  } },
-        en: { translation: {  } },            
-        'en-US': { 
-          translation: {                      
-            interpolationTest1: 'added __toAdd__',
-            interpolationTest2: 'added __toAdd__ __toAdd__ twice',
-            interpolationTest3: 'added __child.one__ __child.two__'
-          } 
-        }
-      };
-      
-      beforeEach(function(done) {
-        i18n.init( $.extend(opts, { resStore: resStore }),
-          function(t) { done(); });
+
+      describe('default i18next way', function() {
+
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { 
+            translation: {                      
+              interpolationTest1: 'added __toAdd__',
+              interpolationTest2: 'added __toAdd__ __toAdd__ twice',
+              interpolationTest3: 'added __child.one__ __child.two__'
+            } 
+          }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init( $.extend(opts, { resStore: resStore }),
+            function(t) { done(); });
+        });
+
+        it('it should replace passed in key/values', function() {
+          expect(i18n.t('interpolationTest1', {toAdd: 'something'})).to.be('added something');
+          expect(i18n.t('interpolationTest2', {toAdd: 'something'})).to.be('added something something twice');
+          expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2'}})).to.be('added 1 2');
+        });
+
+        it('it should replace passed in key/values on defaultValue', function() {
+          expect(i18n.t('interpolationTest4', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
+        });
+
       });
 
-      it('it should replace passed in key/values', function() {
-        expect(i18n.t('interpolationTest1', {toAdd: 'something'})).to.be('added something');
-        expect(i18n.t('interpolationTest2', {toAdd: 'something'})).to.be('added something something twice');
-        expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2'}})).to.be('added 1 2');
+      describe('using sprintf', function() {
+
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { 
+            translation: {                      
+              interpolationTest1: 'The first 4 letters of the english alphabet are: %s, %s, %s and %s',
+              interpolationTest2: 'Hello %(users[0].name)s, %(users[1].name)s and %(users[2].name)s'
+            } 
+          }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init( $.extend(opts, { resStore: resStore }),
+            function(t) { done(); });
+        });
+
+        it('it should replace passed in key/values', function() {
+          expect(i18n.t('interpolationTest1', {postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd']})).to.be('The first 4 letters of the english alphabet are: a, b, c and d');
+          expect(i18n.t('interpolationTest2', {postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } })).to.be('Hello Dolly, Molly and Polly');
+        });
+        
       });
 
-      it('it should replace passed in key/values on defaultValue', function() {
-        expect(i18n.t('interpolationTest4', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
-      });
     });
 
     describe('plural usage', function() {
