@@ -1,14 +1,14 @@
 # Introduction
 
-Project goal is to provide a easy way to translate a website on clientside:
+Project goal is to provide an easy way to translate a website on clientside:
 
 - fetch resources from server
-- fetch each resource file individual (static) or all once via dynamicRoute
-- apply translation to html tags with attribute _data-i18n_
+- fetch each resource file individually (static) or all once via dynamicRoute
+- apply translation to HTML tags with the _data-i18n_ attribute
 - post missing key-value pairs to server (for easy development -> just translate the new keys)
-- search for key _en-US_ first, than in _en_, than in fallback language (or de-DE, de , fallback)
+- search for key _en-US_ first, then in _en_, then in fallback language (or de-DE, de , fallback)
 
-check out the [documentation](http://jamuhl.github.com/i18next/)
+Check out the [documentation](http://jamuhl.github.com/i18next/)
 
 # Usage
 
@@ -16,42 +16,42 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 
 	// given loaded and merged dictionaries in i18next.js to:
 	{
-	  "en_US": {
-	    "ns.special": {
-	      "app": {
-	        "name": "i18n"
-	        "insert": "you are __youAre__",
-            "child": "__count__ child",
-            "child_plural": "__count__ children"
-	      }
+	    "en_US": {
+	        "ns.special": {
+	            "app": {
+	                "name": "i18n",
+	                "insert": "you are __youAre__",
+	                "child": "__count__ child",
+	                "child_plural": "__count__ children"
+	            }
+	        },
+	        "ns.common": {}
 	    },
-	    "ns.common": {}
-	  },
-	  "en": {
-	    "ns.special": {
-	      "app": {
-	        "area": "Area 51"
-	      }
+	    "en": {
+	        "ns.special": {
+	            "app": {
+	                "area": "Area 51"
+	            }
+	        },
+	        "ns.common": {}
 	    },
-	    "ns.common": {}
-	  },
-	  "dev": {
-	    "ns.common": {
-	      "app": {
-	        "company": {
-	          "name": "my company"
+	    "dev": {
+	        "ns.common": {
+	            "app": {
+	                "company": {
+	                    "name": "my company"
+	                }
+	            },
+	            "add": "add"
+	        },
+	        "ns.special": {
+	            "nav": {
+	                "1": "link1",
+	                "2": "link2",
+	                "home": "home"
+	            }
 	        }
-	      },
-	      "add": "add"
-	    },
-	    "ns.special": {
-	    	"nav": {
-	    	  "home": "home",
-	          "1": "link1",
-	    	  "2": "link2"
-	    	}
 	    }
-	  }
 	}
 
 ## you can translate using `$.t(key, [options])`
@@ -73,9 +73,9 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 ### support for plurals
 
 	$.t('app.child', {count: 1}) // -> 1 child
-    $.t('app.child', {count: 3}) // -> 3 children
+	$.t('app.child', {count: 3}) // -> 3 children
 
-## or you can just `$('.mySelector').i18n()` assuming you have added attribute `data-i18n="key"` to your elements
+## or you can just `$('.mySelector').i18n()` assuming you have added the `data-i18n="key"` attribute to your elements
 
 	// given
 	<ul class="nav">
@@ -84,7 +84,7 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 		<li><a href="#" data-i18n="nav.2">link2</a></li>
 	</ul>
 
-	// just do to translate all elements having attribute _data-i18n_
+	// Run the following javascript to translate all elements having the _data-i18n_ attribute:
 	$.i18n.init({
 	    lng: 'en-US',
 	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
@@ -92,7 +92,7 @@ Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('
 	    $('.nav').i18n();
 	});
 
-For missing keys (if option addMissing is set to true) will be send to server with actual text as defaultValue.
+For missing keys (if the option 'addMissing' is set to true) will be send to server with actual text as defaultValue.
 
 # Sample usage
 
