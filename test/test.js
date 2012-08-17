@@ -653,11 +653,11 @@ describe('i18next', function() {
             dev: { translation: { } },
             ar: { translation: { 
                 key: 'singular',
-                key_plural_zero: 'zero',
-                key_plural_two: 'two',
-                key_plural_few: 'few',
-                key_plural_many: 'many',
-                key_plural: 'plural'
+                key_plural_0: 'zero',
+                key_plural_2: 'two',
+                key_plural_3: 'few',
+                key_plural_11: 'many',
+                key_plural_100: 'plural'
               } 
             },            
             'ar-??': { translation: { } }
