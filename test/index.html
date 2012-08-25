@@ -1,26 +1,25 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>Mocha Tests</title>
   <link rel="stylesheet" href="mocha.css" />
 
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.7.min.js"></script>
   <script src="sinon-1.3.4.js"></script>
   <script src="expect.js"></script>
   <script src="mocha.js"></script>
-  <script>mocha.setup('bdd')</script>
+  <script>mocha.setup({ui: 'bdd', globals: ['XMLHttpRequest']})</script>
   <script src="jsfixtures.js"></script>
-
-  <script type="text/javascript" src="../src/i18next.js"></script>
+  <script src="../src/i18next.js"></script>
 
   <script src="test.js"></script>
 
+
   <script>
     $(function(){
-      mocha
-        //.globals(['foo', 'bar']) // acceptable globals
-        .run()
-    })
+      mocha.run();
+    });
   </script>
 
 </head>
