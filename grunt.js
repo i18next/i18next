@@ -10,10 +10,10 @@ module.exports = function(grunt) {
   grunt.initConfig({
     meta: {
       version: version,
-      banner: '// Backbone.Marionette, v<%= meta.version %>\n' +
-        '// Copyright (c)<%= grunt.template.today("yyyy") %> Derick Bailey, Muted Solutions, LLC.\n' + 
+      banner: '// i18next, v<%= meta.version %>\n' +
+        '// Copyright (c)<%= grunt.template.today("yyyy") %> Jan Mühlemann.\n' + 
         '// Distributed under MIT license\n' + 
-        '// http://github.com/derickbailey/backbone.marionette'
+        '// http://i18next.com'
     },
 
     clean: ["bin"],
@@ -26,11 +26,11 @@ module.exports = function(grunt) {
       build: {
         src: ['<banner:meta.banner>', 'src/i18next.js'],
         dest: 'bin/i18next-latest.js'
-      }/*,
-      amd: {
-        src: ['<banner:meta.banner>', 'src/amd.js'],
-        dest: 'lib/amd/backbone.marionette.js'
-      }*/
+      },
+      spec: {
+        src: ['spec/spec.js'],
+        dest: 'test/test.js'
+      }
     },
 
     min: {
