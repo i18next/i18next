@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.5.n_pre';
+  var version = '1.5.5';
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
@@ -12,7 +12,7 @@ module.exports = function(grunt) {
     meta: {
       version: version,
       banner: '// i18next, v<%= meta.version %>\n' +
-        '// Copyright (c)<%= grunt.template.today("yyyy") %> Jan Mühlemann.\n' + 
+        '// Copyright (c)<%= grunt.template.today("yyyy") %> Jan Mühlemann (jamuhl).\n' + 
         '// Distributed under MIT license\n' + 
         '// http://i18next.com'
     },
