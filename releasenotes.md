@@ -2,6 +2,7 @@
 - __BREAKING__ added all plurals: suffixes will new be same as in gettext usage (number indexes key_plural_0|2|3|4|5|7|8|10|11|20|100), additional if needed signature of addRule has changed
 - added sprintf as postprocessor -> postProcess = 'sprintf' and sprintf = obj or array
 - set default postProcessor on init
+- redone build process with grunt
 
 ### v1.5.0
 - pass options to sync._fetchOne, use options for fetching
