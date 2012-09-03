@@ -3,6 +3,7 @@
 - added sprintf as postprocessor -> postProcess = 'sprintf' and sprintf = obj or array
 - set default postProcessor on init
 - redone build process with grunt
+- drop in replacement for jquery each, extend, ajax
 
 ### v1.5.0
 - pass options to sync._fetchOne, use options for fetching
