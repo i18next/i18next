@@ -14,7 +14,11 @@ html(lang="en")
       .documentation
         include ../includes/doc_hero
 
-        h2 Using JQuery
+        h2 Using with JQuery
+
+        .alert.alert-info
+          p There is no hard dependency on JQuery. If not used i18next will use drop in functions for ajax,...
+          p But if JQuery is loaded before i18next it can be optionally extended:
 
         p 
         | By default i18next will extend jquery by appending i18n to $ and providing a 

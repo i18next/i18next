@@ -15,6 +15,15 @@ html(lang="en")
         h2 Release Notes
 
       :markdown
+        ### v1.5.5
+        - __BREAKING__ added all plurals: suffixes will new be same as in gettext usage (number indexes key_plural_0|2|3|4|5|7|8|10|11|20|100), additional if needed signature of addRule has changed
+        - added sprintf as postprocessor -> postProcess = 'sprintf' and sprintf = obj or array
+        - set default postProcessor on init
+        - redone build process with grunt
+        - drop in replacement for jquery each, extend, ajax
+        - setting fallbackLng to false will stop loading and looking it up
+        - option to load only current or unspecific language files
+
         ### v1.4.1
         - post processor
         - __BREAKING:__ localStorage defaults to false

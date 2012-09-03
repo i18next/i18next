@@ -1,4 +1,5 @@
 - var path = ''
+- var version = '1.5.5'
 !!! 5
 html(lang="en")
   head
@@ -17,12 +18,12 @@ html(lang="en")
             p i18next is a full-featured i18n javascript library for translating your webapplication.
 
         .span4.downloads
-          a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18next-1.5.0.min.js', download='i18next-1.5.0.min.js') 
+          a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18next-#{version}.min.js', download='i18next-#{version}.min.js') 
             i.icon-download-alt
-            |  Production v1.5.0 (min)
-          a.btn(href='#{path}public/download/versions/i18next-1.5.0.js', download='i18next-1.5.0.js')
+            |  Production v#{version} (min)
+          a.btn(href='#{path}public/download/versions/i18next-#{version}.js', download='i18next-#{version}.js')
             i.icon-download-alt
-            |  Development v1.5.0 (full)
+            |  Development v#{version} (full)
           p node.js:
           pre
             code
@@ -40,6 +41,9 @@ html(lang="en")
               li 
                 i.icon-ok
                 |  support for variables
+              li 
+                i.icon-ok
+                |  NEW: sprintf supported
               li 
                 i.icon-ok
                 |  support for nesting
@@ -114,7 +118,7 @@ html(lang="en")
                     <!DOCTYPE html>
                     <html>
                       <head>
-                        <script type="text/javascript" src="[PATH]/jquery.js" />
+                        <script type="text/javascript" src="[PATH]/jquery.js" /> // optional
                         <script type="text/javascript" src="[PATH]/i18next.js" />
                       </head>
                       <body>

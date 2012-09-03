@@ -118,6 +118,34 @@ html(lang="en")
                     li interpolationPrefix = '__',
                     li interpolationSuffix = '__',
 
+        .row-fluid
+          .span4
+            h4.feature-title sprintf support
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resources
+                  | {           
+                  |   'en-US': { translation: {  
+                  |     key1: 'The first 4 letters of the english alphabet are: %s, %s, %s and %s',
+                  |     key2: 'Hello %(users[0].name)s, %(users[1].name)s and %(users[2].name)s'
+                  |   }}
+                  | };
+                  | 
+                  | i18n.t("key1", { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] });
+                  | i18n.t("key2", { postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } } );
+
+              .alert.alert-info.feature-description
+                p 
+                  | For more information about sprintf go 
+                  a(href='http://www.diveintojavascript.com/projects/javascript-sprintf', target='_blank') here.
+                p
+                  span.badge.badge-info Hint:
+                  |  You can set i18next to always postProcess with sprintf by init with option postProcess: 
+                  code i18n.init({ postProcess: 'sprintf' });
+
 
         .row-fluid
           .span4
@@ -157,11 +185,11 @@ html(lang="en")
                   |   'ar': { 
                   |     translation: {  
                   |       key: 'singular',
-                  |       key_plural_zero: 'zero',
-                  |       key_plural_two: 'two',
-                  |       key_plural_few: 'few',
-                  |       key_plural_many: 'many',
-                  |       key_plural: 'plural'
+                  |       key_plural_0: 'zero',
+                  |       key_plural_2: 'two',
+                  |       key_plural_3: 'few',
+                  |       key_plural_11: 'many',
+                  |       key_plural_100: 'plural'
                   |     } 
                   |   }
                   | };
@@ -181,17 +209,20 @@ html(lang="en")
                 p What did you expect ;).
                 p
                   span.badge.badge-info Hint:
-                  |  i18next provides the functionality only for 'ar' and 'sl'. 
+                  |  i18next provides the functionality for all languages. 
                 p
-                  | But you can add rules via 'i18n.pluralExtension.addRule(lng, fc(n))'
-                  pre
-                    code
-                      | // sample fc for "sl"
-                      | function (n) {
-                      |    return n % 100 === 1 ? 'one' : n % 100 === 2 ? 'two' : n % 100 === 3 || n % 100 === 4 ? 'few' : 'other';
-                      |  }
+                  | You can override the existing rules via 'i18n.pluralExtension.addRule(lng, obj)'
+                pre
+                  code
+                    | // sample for arabic
+                    | i18n.pluralExtension.addRule("ar", {
+                    |   "name": "Arabic", 
+                    |   "numbers": [ 0, 1, 2, 3, 11, 100 ],
+                    |   "plurals": function(n) { return Number(n === 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5); }
+                    | });
+                p
                   | Definitions can be found 
-                  a(href="http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html", target="_new") here.
+                  a(href="http://translate.sourceforge.net/wiki/l10n/pluralforms", target="_new") here.
 
         .row-fluid
           .span4
@@ -292,6 +323,10 @@ html(lang="en")
 
               .alert.alert-info.feature-description
                 p i18next will translate the key as usual. Then it passes the translation text to the post processor.
+                p
+                  span.badge.badge-info Hint:
+                  |  Alternatively you can set i18next to always postProcess with a specific postProcessor by init with option postProcess: 
+                  code i18n.init({ postProcess: 'myProcessorsName' });
 
         h3 send missing resources to server
 
