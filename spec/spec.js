@@ -16,7 +16,7 @@ describe('i18next', function() {
       resStore: false,
       getAsync: true,
       returnObjectTrees: false,
-      debug: false,
+      debug: true,
       postProcess: ''
     };
   });

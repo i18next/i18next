@@ -5,6 +5,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
+  grunt.loadTasks("buildtasks");
 
   // Project configuration.
   grunt.initConfig({
@@ -96,6 +97,17 @@ module.exports = function(grunt) {
         files: {
           "release/i18next-<%= meta.version %>.zip": "bin/*"
         }
+      }
+    },
+
+    server: {
+      index: "test/index.html",
+      files: { "test.js": "test/test.js" },
+
+      folders: {
+          "libs": "./test/libs",
+          "bin": "./bin",
+          "locales": "./test/locales"
       }
     }
 
