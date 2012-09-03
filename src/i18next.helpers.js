@@ -376,8 +376,8 @@ var f = {
                 parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
                 parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
 
-            languages.push(lng);
-            languages.push(lng.substr(0, 2));
+            if (o.load !== 'unspecific') languages.push(lng);
+            if (o.load !== 'current') languages.push(lng.substr(0, 2));
         } else {
             languages.push(lng);
         }

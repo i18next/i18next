@@ -6,6 +6,7 @@ describe('i18next', function() {
   beforeEach(function() {
     opts = {
       lng: 'en-US',
+      load: 'all',
       fallbackLng: 'dev',
       preload: [],
       lowerCaseLng: false,
@@ -94,6 +95,68 @@ describe('i18next', function() {
     });
   
     describe('advanced initialisation options', function() {
+  
+      describe('setting load', function() {
+  
+        describe('to current', function() {
+  
+          var spy; 
+  
+          beforeEach(function(done) {
+            spy = sinon.spy(i18n.sync, '_fetchOne');
+            i18n.init($.extend(opts, { 
+                load: 'current' }),
+              function(t) { done(); });
+          });
+  
+          afterEach(function() {
+            spy.restore();
+          });
+  
+          it('it should load only current and fallback language', function() {
+            expect(spy.callCount).to.be(2); // en-US, en
+          });
+  
+          it('it should provide loaded resources for translation', function() {
+            expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+            expect(i18n.t('simple_en')).not.to.be('ok_from_en');
+            expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+          });
+  
+        });
+  
+        describe('to unspecific', function() {
+  
+          var spy; 
+  
+          beforeEach(function(done) {
+            spy = sinon.spy(i18n.sync, '_fetchOne');
+            i18n.init($.extend(opts, { 
+                load: 'unspecific' }),
+              function(t) { done(); });
+          });
+  
+          afterEach(function() {
+            spy.restore();
+          });
+  
+          it('it should load only unspecific and fallback language', function() {
+            expect(spy.callCount).to.be(2); // en-US, en
+          });
+  
+          it('it should provide loaded resources for translation', function() {
+            expect(i18n.t('simple_en-US')).not.to.be('ok_from_en-US');
+            expect(i18n.t('simple_en')).to.be('ok_from_en');
+            expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+          });
+  
+          it('it should return unspecific language', function() {
+            expect(i18n.lng()).to.be('en');
+          });
+  
+        });
+  
+      });
   
       describe('with fallback language set to false', function() {
   

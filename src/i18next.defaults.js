@@ -1,6 +1,7 @@
 // defaults
 var o = {
     lng: undefined,
+    load: 'all',
     preload: [],
     lowerCaseLng: false,
     returnObjectTrees: false,

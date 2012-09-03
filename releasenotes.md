@@ -5,6 +5,7 @@
 - redone build process with grunt
 - drop in replacement for jquery each, extend, ajax
 - setting fallbackLng to false will stop loading and looking it up
+- option to load only current or unspecific language files
 
 ### v1.5.0
 - pass options to sync._fetchOne, use options for fetching
