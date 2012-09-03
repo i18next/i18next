@@ -109,6 +109,18 @@ module.exports = function(grunt) {
           "bin": "./bin",
           "locales": "./test/locales"
       }
+    },
+
+    watch: {
+      lib: {
+        files: "src/*.js",
+        tasks: "rig"
+      },
+
+      spec: {
+        files: "spec/*.js",
+        tasks: "rig"
+      }
     }
 
   });

@@ -70,6 +70,33 @@ describe('Initialisation', function() {
 
   describe('advanced initialisation options', function() {
 
+    describe('with fallback language set to false', function() {
+
+      var spy; 
+
+      beforeEach(function(done) {
+        spy = sinon.spy(i18n.sync, '_fetchOne');
+        i18n.init($.extend(opts, { 
+            fallbackLng: false }),
+          function(t) { done(); });
+      });
+
+      afterEach(function() {
+        spy.restore();
+      });
+
+      it('it should load only specific and unspecific languages', function() {
+        expect(spy.callCount).to.be(2); // en-US, en
+      });
+
+      it('it should provide loaded resources for translation', function() {
+        expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+        expect(i18n.t('simple_en')).to.be('ok_from_en');
+        expect(i18n.t('simple_dev')).not.to.be('ok_from_dev');
+      });
+
+    });
+
     describe('preloading multiple languages', function() {
 
       var spy; 

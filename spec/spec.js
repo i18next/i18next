@@ -6,6 +6,7 @@ describe('i18next', function() {
   beforeEach(function() {
     opts = {
       lng: 'en-US',
+      fallbackLng: 'dev',
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',
