@@ -1,7 +1,8 @@
 {
     "app": {
-      "name": "i18n",
+      "name": "i18next - translation made easy",
       "insert": "you are __youAre__",
+      "sprintf": "The first 4 letters of the english alphabet are: %s, %s, %s and %s",
       "child": "__count__ child",
       "child_plural": "__count__ children",
       "friend_context": "A friend",

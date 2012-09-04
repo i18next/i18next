@@ -1,6 +1,14 @@
 {
-    "app": {
-      "name": "i18n",
-      "insert": "du bist __youAre__"
-    }
+  "app": {
+    "name": "i18next - Übersetzung leicht gemacht",
+    "insert": "du bist __youAre__",
+    "sprintf": "Die ersten vier Buchstaben im Alphabet sind: %s, %s, %s und %s"
+  },
+  "html": {
+    "content": [
+      "<p>Reihe eins</p>",
+      "<p>Reihe zwei</p>",
+      "<p>Reihe drei</p>"
+    ]
+  }
 }

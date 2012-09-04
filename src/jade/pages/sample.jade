@@ -19,59 +19,341 @@ html(lang="en")
         p A little sample to see i18next in action.
 
       .documentation
-        h3 you can switch lng via ?setLng='lngTag'
-        a#en(href="?setLng=en-US") en-US
-        span  | 
-        a#de(href="?setLng=de-DE") de-DE
 
-        .feature
-          h3 translated via $.t('app.name')
-          span#appname
-          span  -  
-          span#apparea
-          br
-          button#add.btn hello
+        h3 switching current language
 
-        .feature
-          h4 with value insert $.t('app.insert', {youAre: 'great'})
-          span#insert
+        .row-fluid
+          .span4
+            h4.feature-title by querystring:
 
-        .feature
-          h4 with plural $.t('app.insert', {youAre: 'great'})
-          span#singular
-          span  - 
-          span#plural
+          .span8
+            .feature
+              .alert.alert-success.feature-description
+                a#en(href="?setLng=en-US") en-US
+                span  | 
+                a#de(href="?setLng=de-DE") de-DE
 
-        .feature
-          h4 nesting (with missing key in german)
-          span#nesting
-
-        .feature
-          h4 with translation context $.t('friend_context', {context: 'male || female'})
-          span#male
-          span  - 
-          span#female
-        
-        .feature
-          h3 set via attribute 'data-i18n' and $('.nav').i18n();
-
-          h4 basic text
-          ul.nav
-              li: a(href="#", data-i18n="nav.home")
-              li: a(href="#", data-i18n="nav.1")
-              li: a(href="#", data-i18n="nav.2")
+              .alert.alert-info.feature-description
+                  p Just add '?setLng=en-US' to the location href.
+                  p Alternatively you can set language by:
+                    ol
+                      li setting lng on init or setLng function
+                      li setting i18next cookie
+                      li or just let i18next get it from navigator object
 
 
-          button#btn.btn(data-i18n="ns.common:add")
 
-        .feature
-          h4 extended usage of 'data-i18n' - apply to other attributes
-          #extendedAttr
-              input(data-i18n="[placeholder]ns.common:attr.placeholder;", type="text")
-              br
-              button.btn(data-i18n="[title]ns.common:attr.title;btn.hoverMe;")
+        h3 basic translation
+
+        .row-fluid
+          .span4
+            h4.feature-title without or default namespace
+          
+          .span8
+            .alert.alert-success.feature-description
+              span#appname
+
+            .alert.alert-info.feature-description
+              :markdown
+                loaded resource file (JSON):
+
+                    {
+                      "app": {
+                        "name": "i18next"
+                      }
+                    }
+
+                  javascript code:
+
+                    i18n.t("app.name");
+
+        .row-fluid
+          .span4
+            h4.feature-title with namespace
+
+          .span8
+            .alert.alert-success.feature-description
+              span#add
+
+            .alert.alert-info.feature-description
+              :markdown
+                loaded resource file (namespace ns.common!):
+
+                    {
+                      "add": "add"
+                    }
+
+                  javascript code:
+
+                    i18n.t("ns.common:add");
 
 
+        h3 interpolation
+
+        .row-fluid
+          .span4
+            h4.feature-title i18next way
+          
+          .span8
+            .alert.alert-success.feature-description
+              span#insert
+
+            .alert.alert-info.feature-description
+              :markdown
+                loaded resource file (JSON):
+
+                    {
+                      "app": {
+                        "insert": "you are __youAre__"
+                      }
+                    }
+
+                  javascript code:
+
+                    i18n.t("app.insert", {youAre: "great"})
+
+          .row-fluid
+            .span4
+              h4.feature-title with sprintf
+            
+            .span8
+              .alert.alert-success.feature-description
+                span#sprintf
+
+              .alert.alert-info.feature-description
+                :markdown
+                  loaded resource file (JSON):
+
+                      {
+                        "app": {
+                          "sprintf": "The first 4 letters of the english alphabet are: %s, %s, %s and %s"
+                        }
+                      }
+
+                    javascript code:
+
+                      i18n.t("app.sprintf", { postProcess: "sprintf", sprintf: ["a", "b", "c", "d"] })
+
+
+        h3 plurals
+
+        .row-fluid
+          .span4
+            h4.feature-title plurals
+            p i18next supports all plural forms of the different languages (not only the simple ones).
+          
+          .span8
+            .alert.alert-success.feature-description
+              span#singular
+              span  - 
+              span#plural
+
+            .alert.alert-info.feature-description
+              :markdown
+                loaded resource file (JSON):
+
+                    {
+                      "app": {
+                        "child": "__count__ child",
+                        "child_plural": "__count__ children"
+                      }
+                    }
+
+                  javascript code:
+
+                    i18n.t("app.child", {count: 1}); // -> singular
+                    i18n.t("app.child", {count: 3}); // -> plural
+
+        h3 nesting
+
+        .row-fluid
+          .span4
+            h4.feature-title nesting of resource values
+            p eg. to build up a glossary.
+          
+          .span8
+            .alert.alert-success.feature-description
+              span#nesting
+
+            .alert.alert-info.feature-description
+              :markdown
+                loaded resource file (JSON):
+
+                    {
+                      "app": {
+                        "area": "Area 51",
+                        "district": "District 9 is more fun than $t(app.area)"
+                      }
+                    }
+
+                  javascript code:
+
+                    i18n.t("app.district");
+
+
+        h3 context
+
+        .row-fluid
+          .span4
+            h4.feature-title context
+            p eg. for gender specific translations
+          
+          .span8
+            .alert.alert-success.feature-description
+              p#neutral
+              p#male
+              p#female
+
+            .alert.alert-info.feature-description
+              :markdown
+                loaded resource file (JSON):
+
+                    {
+                      "app": {
+                        "friend_context": "A friend",
+                        "friend_context_male": "A boyfriend",
+                        "friend_context_female": "A girlfriend"
+                      }
+                    }
+
+                  javascript code:
+
+                    i18n.t("app.friend_context", {context: ""}); // -> A friend
+                    i18n.t("app.friend_context", {context: "male"}); // -> A boyfriend
+                    i18n.t("app.friend_context", {context: "female"}); // -> A girlfriend
+
+        h3 usage with jquery fc
+
+        .row-fluid
+          .span4
+            h4.feature-title setting text of elements:
+          
+          .span8
+            .feature
+              .alert.alert-success.feature-description
+                ul.nav
+                    li: a(href="#", data-i18n="nav.home")
+                    li: a(href="#", data-i18n="nav.page1")
+                    li: a(href="#", data-i18n="nav.page2")
+                
+              .alert.alert-info.feature-description
+                :markdown
+                  html snipplet:
+
+                      <ul class="nav">
+                        <li><a href="#" data-i18n="nav.home"></a></li>
+                        <li><a href="#" data-i18n="nav.page1"></a></li>
+                        <li><a href="#" data-i18n="nav.page2"></a></li>
+                      </ul>
+
+                    loaded resource file (JSON):
+
+                      {
+                        "nav": {
+                          "home": "home",
+                          "page1": "page one",
+                          "page2": "page two"
+                        }
+                      }
+
+                    javascript code:
+
+                      $(".nav").i18n();
+
+              .alert.alert-success.feature-description
+                button#btn.btn.btn-success(data-i18n="ns.common:add")
+
+              .alert.alert-info.feature-description
+                :markdown
+                  html snipplet:
+
+                      <button id="btn" data-i18n="ns.common:add"></button>
+
+                    loaded resource file (with namespace ns.common):
+
+                      {
+                        "add": "add"
+                      }
+
+                    javascript code:
+
+                      $("#btn").i18n();
+
+        .row-fluid
+          .span4
+            h4.feature-title setting other attributes of elements:
+            p You can set multiple attributes by seperating them with ';'
+          
+          .span8
+            .alert.alert-success.feature-description
+              #extendedAttr
+                  input(data-i18n="[placeholder]ns.common:attr.placeholder;", type="text")
+                  br
+                  button.btn.btn-success(data-i18n="[title]ns.common:attr.title;btn.hoverMe;")
+
+            .alert.alert-info.feature-description
+              p Just add attributes name to set inside brackets in front of key:
+              :markdown
+                html snipplet:
+
+                    <div id="extendedAttr">
+                      <input data-i18n="[placeholder]ns.common:attr.placeholder;" type="text"></input>
+                      <button data-i18n="[title]ns.common:attr.title;btn.hoverMe;"></button>
+
+                  javascript code:
+
+                    $("#extendedAttr").i18n();
+
+              p You can pass in options for plural, context, ...
+                code $(".mySelector").i18n(options);
+
+        .row-fluid
+          .span4
+            h4.feature-title setting inner html:
+          
+          .span8
+            .alert.alert-success.feature-description
+              #innerHtml(data-i18n="[html]html.content;")
+
+            .alert.alert-info.feature-description
+              p Just add attributes name to set inside brackets in front of key:
+              :markdown
+                html snipplet:
+
+                    <div id="innerHtml" data-i18n="[html]html.content;">
+
+                  loaded resource file (with namespace ns.common):
+
+                    {
+                      "html": {
+                        "content": [
+                          "<p>row one</p>",
+                          "<p>row two</p>",
+                          "<p>row three</p>"
+                        ]
+                      }
+                    }
+
+                  javascript code:
+
+                    $("#innerHtml").i18n();
+
+        h3 translation ui
+
+        .row-fluid
+          .span4
+            h4.feature-title i18next - webtranslate:
+
+          .span8
+            .feature
+              .alert.alert-success.feature-description
+                img(src='#{path}public/img/i18nextWT.png', style='width: 80%; margin-top: 10px')
+                p
+                  a(href="#{path}pages/demoWT.html", target="_new") demo
+
+              .alert.alert-info.feature-description
+                  p Documentation can be found 
+                    a(href="#{path}pages/ext_webtranslate.html", target="_new") here
 
     include ../includes/layout/extra
       
@@ -88,15 +370,17 @@ html(lang="en")
       }, function() {
           $('#add').text($.t('ns.common:add'));
           $('#appname').text($.t('app.name'));
-          $('#apparea').text($.t('app.area'));
-          $('#insert').text($.t('app.insert', {youAre: 'great'}))
+          $('#insert').text($.t('app.insert', {youAre: 'great'}));
+          $('#sprintf').text($.t("app.sprintf", { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] }));
           $('#singular').text($.t('app.child', {count: 1}))
           $('#plural').text($.t('app.child', {count: 3}))
           $('#nesting').text($.t('app.district'));
+          $('#neutral').text($.t('app.friend_context', {context: ''}))
           $('#male').text($.t('app.friend_context', {context: 'male'}))
           $('#female').text($.t('app.friend_context', {context: 'female'}))
 
           $('.nav').i18n();
           $('#btn').i18n();
           $('#extendedAttr').i18n();
+          $('#innerHtml').i18n();
       });

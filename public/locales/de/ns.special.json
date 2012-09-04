@@ -7,15 +7,29 @@
 				"..."
 			]
 		},
-      "name": "i18n",
-      "insert": "du bist __youAre__",
-      "child": "__count__ Kind",
-      "child_plural": "__count__ Kinder",
-      "friend_context": "Ein Freund",
-      "friend_context_male": "Ein Freund",
-      "friend_context_female": "Eine Freundin"
-    },
-    "btn": {
-    	"hoverMe": "Schweb über mir!"
-    }
+    "name": "i18next - Übersetzung leicht gemacht",
+    "insert": "du bist __youAre__",
+    "child": "__count__ Kind",
+    "child_plural": "__count__ Kinder",
+    "friend_context": "Ein Freund",
+    "friend_context_male": "Ein Freund",
+    "friend_context_female": "Eine Freundin",
+    "area": "Area 51",
+    "district": "District 9 ist spassiger als $t(app.area)"
+  },
+  "btn": {
+  	"hoverMe": "Schweb über mir!"
+  },
+  "nav": {
+    "home": "Startseite",
+    "page1": "Erste Seite",
+    "page2": "Zweite Seite"
+  },
+  "html": {
+    "content": [
+      "<p>row one</p>",
+      "<p>row two</p>",
+      "<p>row three</p>"
+    ]
+  }
 }

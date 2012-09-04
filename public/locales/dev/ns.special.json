@@ -10,8 +10,8 @@
 	},
     "nav": {
         "home": "home",
-        "1": "link 1",
-        "2": "link 2"
+        "page1": "page one",
+        "page2": "page two"
     },
     "btn": {
     	"hoverMe": "hover me!"
