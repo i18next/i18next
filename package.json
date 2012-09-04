@@ -10,7 +10,7 @@
   , "dependencies": { }
   , "devDependencies": {
       "grunt": "*"
-    , "grunt-rigger": "0.1.0"
+    , "grunt-rigger": "*"
     , "grunt-contrib": ">=0.1.0"
     , "express": ">= 0.0.1"
     , "async": ">= 0.1.18"
