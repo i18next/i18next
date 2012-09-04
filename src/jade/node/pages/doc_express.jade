@@ -63,6 +63,55 @@ html(lang="en")
                   |   res.send(translation);
                   | });
 
+        .row-fluid
+          .span4
+            a(name='seoroutes')
+            h4.feature-title SEO friendly routes:
+            p Ever wanted localized routes like:
+              ol
+                li 
+                  strong en: 
+                  |  /en/products/harddrives/overview
+
+                li 
+                  strong de: 
+                  |  /de/produkte/festplatten/uebersicht
+
+          .span8
+            .feature
+              .alert.alert-info.feature-description
+                p
+                  | Just add routes like: 
+                  code i18n.addRoute(route, languages, expressApp, verb, routeFunction)
+                  |  eg:
+
+              pre
+                code
+                  | i18n.init({ preload: ['de', 'en']}, function(t) {
+                  |   // after initialisation with preloading needed languages
+                  |   // you could add localizable routes:
+                  |   i18n.addRoute('/:lng/route.products/route.harddrives/route.overview', ['de', 'en'], app, 'get', function(req, res) {
+                  |     // res.send(...);
+                  |   });
+                  | });
+
+              .alert.alert-info.feature-description
+                p 
+                  | route parts starting with ':' will be added as params. Every other part will be 
+                  | looked up as key, eg.:
+                  ol
+                    li key 'route.products'
+                    li key 'route.harddrives'
+
+              .alert.alert-info.feature-description
+                p You can use this in combination with detecting the language from path:
+
+                pre
+                  code
+                    | i18n.init({ detectLngFromPath: 0 }); // default false
+
+                p This will get language from first part of the route, in the example /:lng/
+
         h3 Usage inside serverside Template
 
         .row-fluid

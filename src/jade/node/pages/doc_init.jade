@@ -60,6 +60,20 @@ html(lang="en")
                     li 1) try languageCode plus countryCode, eg. 'en-US'
                     li 2) alternative look it up in languageCode only, eg. 'en'
                     li 3) finally look it up in definded fallback language, default: 'dev'
+
+              .alert.alert-info.feature-description
+                p 
+                  h5.alert-heading Change language programatically:
+                  | Call function i18n.setLng(lng, callback).
+                  h5.alert-heading Read out current language:
+                  | Call function i18n.lng() returns current lng.
+
+        .row-fluid
+          .span4
+            h4.feature-title language detection:
+
+          .span8
+            .feature
               
               .alert.alert-info.feature-description
                 p If language is not set explicitly i18next tries to detect the user language by:
@@ -69,11 +83,17 @@ html(lang="en")
                     li 3) request header
 
               .alert.alert-info.feature-description
-                p 
-                  h5.alert-heading Change language programatically:
-                  | Call function i18n.setLng(lng, callback).
-                  h5.alert-heading Read out current language:
-                  | Call function i18n.lng() returns current lng.
+                p Alternatively you can init i18next to set language from requested route:
+
+                pre
+                  code
+                    | i18n.init({ detectLngFromPath: 0 }); // default false
+
+                p Just set the value to the index where the language value is, eg.:
+                  ol
+                    li detectLngFromPath = 0 --> /en-US/myPage
+                    li detectLngFromPath = 1 --> /cms/en-US/anotherPage
+
 
         .row-fluid
           .span4
@@ -94,10 +114,11 @@ html(lang="en")
 
         .row-fluid
           .span4
-            h4.feature-title Set fallback language:
+            h4.feature-title Unset/Set fallback language:
 
           .span8
             .feature
+              h6 setting fallback language:
               pre
                 code
                   | i18n.init({ fallbackLng: 'en' });
@@ -108,6 +129,48 @@ html(lang="en")
                 p 
                   span.badge.badge-info Production Hint:
                   |  set fallback language to some meaningful language, eg. 'en'
+
+              h6 turn fallback language feature off:
+              pre
+                code
+                  | i18n.init({ fallbackLng: false });
+              .alert.alert-info.feature-description
+                p 
+                  | As the fallbackLng will default to 'dev' you can turn it off by setting the option value to false.
+                  | This will prevent loading the fallbacks resource file and any futher look up of missing value inside a fallback file.
+
+        .row-fluid
+          .span4
+            h4.feature-title Specify which locales to load:
+            p 
+              | This will help you optimizing the loading behaviour. In combination with setting 
+              | fallbackLng to false you can reduce the requests to the server to one! 
+
+          .span8
+            .feature
+              h6 only load current resource file:
+              pre
+                code
+                  | i18n.init({ load: 'current' });
+              .alert.alert-info.feature-description
+                p 
+                  | If load option is set to current i18next will load the current set language 
+                  | (this could be a specific (en-US) or unspecific (en) resource file).
+                p 
+                  span.badge.badge-info Hint:
+                  |  to prevent loading the fallbackLng's resource file set fallbackLng to false.
+
+              h6 only load unspecific resource file:
+              pre
+                code
+                  | i18n.init({ load: 'unspecific' });
+              .alert.alert-info.feature-description
+                p 
+                  | If set to unspecific i18next will always load the unspecific resource file 
+                  | (eg. en instead of en-US).
+                p 
+                  span.badge.badge-info Hint:
+                  |  to prevent loading the fallbackLng's resource file set fallbackLng to false.
 
         .row-fluid
           .span4
