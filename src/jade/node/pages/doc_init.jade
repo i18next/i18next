@@ -342,6 +342,7 @@ html(lang="en")
               li mongoDb
               li redis
               li couchDb
+              li gettext
 
           .span8
             .feature
@@ -408,9 +409,23 @@ html(lang="en")
                   |     // handle err
                   | });
 
+              a(name='gettext')
+              h4 load gettext files .mo/.po from filesystem:
+              pre
+                code
+                  | npm install i18next.gettext
+                  | 
+                  | var gettextSync = require('i18next.gettext')
+                  | 
+                  | i18n.backend(gettextSync);
+                  | i18n.init({ resSetPath: 'locales/__lng__/__ns__.mo' }); // or .po
+
+              .alert.alert-info.feature-description
+                p: gettext-sync only supports loading resources! Saving of missing resources is not yet supported.
+
               .alert.alert-info.feature-description
                 p 
-                  | The additional backends where provided thanks to 
+                  | The additional database backends where provided thanks to 
                   a(href='https://github.com/adrai') adrai.
 
     include ../includes/layout/extra
