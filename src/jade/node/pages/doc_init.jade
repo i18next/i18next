@@ -55,6 +55,7 @@ html(lang="en")
                 code
                   | i18n.init({ lng: 'en-US' });
               .alert.alert-info.feature-description
+                a(name='lookupvalue')
                 p Resources will be resolved in this order:
                   ol
                     li 1) try languageCode plus countryCode, eg. 'en-US'
@@ -70,6 +71,7 @@ html(lang="en")
 
         .row-fluid
           .span4
+            a(name='detectlng')
             h4.feature-title language detection:
 
           .span8
@@ -187,6 +189,7 @@ html(lang="en")
         //- ************************************************
         //- * Resource Loading
         //- * 
+        a(name='getresources')
         h2 Resource Loading
 
         h3 init callback when loaded
@@ -326,6 +329,7 @@ html(lang="en")
                     li 'locales/en/buttons.json'
                     li 'locales/dev/buttons.json' 
         
+        a(name='backend')
         h3 Change Backend Implementation
 
         .row-fluid
