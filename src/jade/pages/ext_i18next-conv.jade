@@ -1,0 +1,101 @@
+- var path = '../'
+- var title = 'i18next - gettext'
+!!! 5
+html(lang="en")
+  head
+    include ../includes/layout/head
+
+  body
+    include ../includes/layout/header
+          
+    include ../includes/layout/content
+      .documentation
+        .row-fluid
+          .span8
+            .hero-unit
+              h2 
+                | i18next-conv
+                small  - gettext support for i18next
+
+            p
+              | i18next-conv converts files from gettext (.mo/.po) to i18next's json format and vice versa.
+
+            h6 All credits go to:
+            p
+              ol
+                li
+                  a(href='https://github.com/andris9/node-gettext', target='_new') andri9's node-gettext
+                  | for .mo and .po files parser
+                li
+                  a(href='https://github.com/visionmedia/commander.js', target='_new') TJ Holowaychuk's commander.js
+                  | for console program
+
+          .span4.downloads
+            p node.js:
+              pre
+                code
+                  | npm install i18next-conv -g
+
+            .alert.alert-info.feature-description(style='margin-top: 25px;')
+                a(href='https://github.com/jamuhl/i18next-gettext-converter')
+                  i.icon-github
+                  |  fork me on github
+
+                //- h6(style='margin-top: 10px;') using with i18next-node module:
+                //- a(href='#{path}node/pages/doc_express.html#webtranslate')
+                //-   i.icon-external-link
+                //-   |  more information
+
+        .row-fluid
+          .span12
+            h2 Setup
+
+            .row-fluid
+              .span4
+                h4.feature-title Setup
+
+              .span8
+                .feature
+                  pre
+                    p
+                      |1. install node.js from 
+                      a(href='http://nodejs.org/', target='_new') nodejs.org
+                    p
+                      |2. 
+                      code npm install i18next-conv -g
+
+                  .alert.alert-info.feature-description
+                    p To use the program you should install the npm package globally (with -g flag).
+                    p If you get encounter any accessright errors try install with admin-rights (sudo).
+
+            h2 Usage
+            .row-fluid
+              .span4
+                h4.feature-title convert gettext to i18next JSON
+
+              .span8
+                .feature
+                    h6 in your console type:
+                    strong for help:
+                    pre
+                      code
+                        | i18next-conv -h
+                    strong to convert a .mo or .po file to json:
+                    pre
+                      code
+                        | i18next-conv -l [domain] -s [sourcePath] -t [targetPath]
+                        | 
+                        | eg.: i18next-conv -l en -s ./locales/en.po -t ./locales/en/translation.json
+
+
+                  .alert.alert-info.feature-description
+                    p 
+                      | if no target (-t) is specified, the file will be stored next to the source directory: 
+                      | [sourceDir]/[domain]/translation.json.
+
+
+    include ../includes/layout/extra
+      
+    include ../includes/layout/footer
+    
+    include ../includes/layout/endscripts

@@ -43,9 +43,6 @@ html(lang="en")
                 |  support for variables
               li 
                 i.icon-ok
-                |  NEW: sprintf supported
-              li 
-                i.icon-ok
                 |  support for nesting
               li 
                 i.icon-ok
@@ -53,6 +50,12 @@ html(lang="en")
               li 
                 i.icon-ok
                 |  support for multiple plural forms
+              li 
+                i.icon-ok
+                |  NEW: gettext support
+              li 
+                i.icon-ok
+                |  NEW: sprintf supported
               li 
                 i.icon-ok
                 |  detect language
@@ -106,7 +109,12 @@ html(lang="en")
               i.icon-cogs
               |  Extensions: 
             ul.unstyled
-              li: a(href='#{path}pages/ext_webtranslate.html') i18next-webtranslate
+              li
+                | Translation UI: 
+                a(href='#{path}pages/ext_webtranslate.html') i18next-webtranslate
+              li
+                | NEW gettext: 
+                a(href="#{path}pages/ext_i18next-conv.html") i18next-conv
 
           br
 
