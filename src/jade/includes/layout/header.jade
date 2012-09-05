@@ -13,14 +13,16 @@ header.header
           // Be sure to leave the brand out there if you want it shown
           a.brand(href='#{path}') i18next
 
-          ul.nav
-            li: a(href="#{path}index.html") Home
-            li: a(href="#{path}pages/doc_features.html") Documentation
-            li: a(href="#{path}pages/sample.html") Sample
-            li: a(href="#{path}pages/ext_webtranslate.html") i18next-WebTranslate
-
           // Everything you want hidden at 940px or less, place within here
           .nav-collapse
+          
+            ul.nav
+              li: a(href="#{path}index.html") Home
+              li: a(href="#{path}pages/doc_features.html") Documentation
+              li: a(href="#{path}pages/sample.html") Sample
+              li: a(href="#{path}pages/ext_webtranslate.html") i18next-WebTranslate
+
+
 
             ul.nav.pull-right
               li
