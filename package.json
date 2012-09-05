@@ -16,6 +16,10 @@
     , "handlebars": ">= 0.0.1"
     , "underscore": ">= 0.0.1"
     }
-  , "devDependencies": {}
+  , "devDependencies": {
+      "grunt": "*"
+    , "grunt-contrib": ">=0.1.0"
+    , "express": ">= 0.0.1"
+  }
   , "scripts": {}
 }
