@@ -19,6 +19,7 @@ html(lang="en")
 
         include ../shared/features
 
+        a(name='postprocessing')
         h3 post processing translations
 
         .row-fluid
@@ -54,6 +55,7 @@ html(lang="en")
                   |  Alternatively you can set i18next to always postProcess with a specific postProcessor by init with option postProcess: 
                   code i18n.init({ postProcess: 'myProcessorsName' });
 
+        a(name='postmissing')
         h3 send missing resources to server
 
         .row-fluid

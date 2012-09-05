@@ -54,6 +54,7 @@ html(lang="en")
                 code
                   | i18n.init({ lng: 'en-US' });
               .alert.alert-info.feature-description
+                a(name='lookupvalue')
                 p Resources will be resolved in this order:
                   ol
                     li 1) try languageCode plus countryCode, eg. 'en-US'
@@ -61,6 +62,7 @@ html(lang="en")
                     li 3) finally look it up in definded fallback language, default: 'dev'
               
               .alert.alert-info.feature-description
+                a(name='detectlng')
                 p If language is not set explicitly i18next tries to detect the user language by:
                   ol
                     li 1) querystring parameter (?setLng=en-US)
@@ -210,6 +212,7 @@ html(lang="en")
                   strong  't' 
                   | to access your resources in given language.
 
+        a(name='getresources')
         h3 options to load resources
 
         .row-fluid
