@@ -143,6 +143,7 @@ html(lang="en")
 
         .row-fluid
           .span4
+            a(name='loadbehaviour')
             h4.feature-title Specify which locales to load:
             p 
               | This will help you optimizing the loading behaviour. In combination with setting 
@@ -409,8 +410,19 @@ html(lang="en")
                   |     // handle err
                   | });
 
-              a(name='gettext')
-              h4 load gettext files .mo/.po from filesystem:
+              .alert.alert-info.feature-description
+                p 
+                  | The additional database backends where provided thanks to 
+                  a(href='https://github.com/adrai') adrai.
+
+        .row-fluid
+          .span4
+            a(name='gettext')
+            h4.feature-title gettext backend:
+            p load gettext files (.mo/.po) from filesystem.
+
+          .span8
+            .feature
               pre
                 code
                   | npm install i18next.gettext
@@ -422,11 +434,6 @@ html(lang="en")
 
               .alert.alert-info.feature-description
                 p: gettext-sync only supports loading resources! Saving of missing resources is not yet supported.
-
-              .alert.alert-info.feature-description
-                p 
-                  | The additional database backends where provided thanks to 
-                  a(href='https://github.com/adrai') adrai.
 
     include ../includes/layout/extra
       
