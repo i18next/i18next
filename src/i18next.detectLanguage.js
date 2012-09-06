@@ -3,7 +3,7 @@ function detectLanguage() {
 
     // get from qs
     var qsParm = [];
-    if (window) {
+    if (typeof window !== 'undefined') {
         (function() {
             var query = window.location.search.substring(1);
             var parms = query.split('&');
@@ -22,13 +22,13 @@ function detectLanguage() {
     }
 
     // get from cookie
-    if (!detectedLng && document) {
+    if (!detectedLng && typeof document !== 'undefined') {
         var c = f.cookie.read('i18next');
         if (c) detectedLng = c;
     }
 
     // get from navigator
-    if (!detectedLng && navigator) {
+    if (!detectedLng && typeof navigator !== 'undefined') {
         detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
     }
     
