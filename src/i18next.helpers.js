@@ -329,6 +329,7 @@ function _ajax(options) {
         }
     });
 }
+
 var _cookie = {
     create: function(name,value,minutes) {
         var expires;
@@ -356,6 +357,7 @@ var _cookie = {
         this.create(name,"",-1);
     }
 };
+
 var cookie_noop = {
     create: function(name,value,minutes) {},
     read: function(name) { return null; },
