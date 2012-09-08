@@ -375,7 +375,15 @@ html(lang="en")
                   |     host: "localhost",
                   |     port: 27017,
                   |     database: 0
-                  |     // resCollectionName: "resources"
+                  |     /*
+                  |     resCollectionName: "resources", 
+                  |     username: "usr",
+                  |     password: "pwd",
+                  |     options: {
+                  |       auto_reconnect: true, // default true
+                  |       ssl: false // default false
+                  |     }
+                  |     */
                   | }, function() {
                   |     i18n.backend(i18nRedisSync);
                   |     i18n.init();
@@ -392,7 +400,15 @@ html(lang="en")
                   |     host: "http://localhost",
                   |     port: 5984,
                   |     dbName: "i18next"
-                  |     // resCollectionName: "resources"
+                  |     /*
+                  |     resCollectionName: "resources",
+                  |     options: {
+                  |       cache: true, // default true
+                  |       raw: false, // default false
+                  |       secure: true, // default false
+                  |       auth: { username: 'usr', password: 'pwd' } // default none
+                  |     }
+                  |     */
                   | }, function() {
                   |     i18n.backend(i18nextCouchSync);
                   |     i18n.init();
