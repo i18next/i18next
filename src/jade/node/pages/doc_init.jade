@@ -354,11 +354,19 @@ html(lang="en")
                   | 
                   | var i18nextMongoSync = require('i18next.mongoDb')
                   | 
-                  | i18nMongoSync.connect({
+                  | i18nextMongoSync.connect({
                   |     host: "localhost",
                   |     port: 27017,
                   |     dbName: "i18next"
-                  |     // resCollectionName: "resources"
+                  |     /*
+                  |     resCollectionName: "resources", 
+                  |     username: "usr",
+                  |     password: "pwd",
+                  |     options: {
+                  |       auto_reconnect: true, // default true
+                  |       ssl: false // default false
+                  |     }
+                  |     */
                   | }, function() {
                   |     i18n.backend(i18nMongoSync);
                   |     i18n.init();
@@ -371,19 +379,11 @@ html(lang="en")
                   | 
                   | var i18nextRedisSync = require('i18next.redis')
                   | 
-                  | i18nMongoSync.connect({
+                  | i18nextRedisSync.connect({
                   |     host: "localhost",
                   |     port: 27017,
                   |     database: 0
-                  |     /*
-                  |     resCollectionName: "resources", 
-                  |     username: "usr",
-                  |     password: "pwd",
-                  |     options: {
-                  |       auto_reconnect: true, // default true
-                  |       ssl: false // default false
-                  |     }
-                  |     */
+                  |     // resCollectionName: "resources",
                   | }, function() {
                   |     i18n.backend(i18nRedisSync);
                   |     i18n.init();
