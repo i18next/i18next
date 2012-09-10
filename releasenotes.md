@@ -1,6 +1,7 @@
 ###	1.5.6_pre
 - typesafe check for window, document existance
 - runnable under rhino
+- seperated amd builds with/without jquery
 
 ### 1.5.5
 - __BREAKING__ added all plurals: suffixes will new be same as in gettext usage (number indexes key_plural_0|2|3|4|5|7|8|10|11|20|100), additional if needed signature of addRule has changed

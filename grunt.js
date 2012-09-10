@@ -28,6 +28,14 @@ module.exports = function(grunt) {
         src: ['<banner:meta.banner>', 'src/i18next.js'],
         dest: 'bin/i18next-latest.js'
       },
+      amd: {
+        src: ['<banner:meta.banner>', 'src/amd.js'],
+        dest: 'bin/i18next.amd-latest.js'
+      },
+      'amd.jquery': {
+        src: ['<banner:meta.banner>', 'src/amd.jquery.js'],
+        dest: 'bin/i18next.amd.withJQuery-latest.js'
+      },
       spec: {
         src: ['spec/spec.js'],
         dest: 'test/test.js'
@@ -78,12 +86,18 @@ module.exports = function(grunt) {
             if (filename == "i18next-latest.js") {
               filename = "i18next-" + version + ".js";
             }
+            if (filename == "i18next.amd-latest.js") {
+              filename = "i18next.amd-" + version + ".js";
+            }
+            if (filename == "i18next.amd.withJQuery-latest.js") {
+              filename = "i18next.amd.withJQuery-" + version + ".js";
+            }
             return filename;
           } 
       },
         files: {
-          "bin": "bin/i18next-latest.js",
-          "release": "bin/i18next-latest.js"
+          "bin": ["bin/i18next-latest.js", "bin/i18next.amd-latest.js", "bin/i18next.amd.withJQuery-latest.js"],
+          "release": ["bin/i18next-latest.js", "bin/i18next.amd-latest.js", "bin/i18next.amd.withJQuery-latest.js"]
         }
       }
     },

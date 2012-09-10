@@ -2,7 +2,19 @@
 // Copyright (c)2012 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
-(function() {
+(function (root, factory) {
+    if (typeof exports === 'object') {
+
+      var jquery = require('jquery');
+
+      module.exports = factory(jquery);
+
+    } else if (typeof define === 'function' && define.amd) {
+
+      define(['jquery'], factory);
+
+    } 
+}(this, function ($) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {  
@@ -38,27 +50,12 @@
         }
     } 
 
-    var root = this
-      , $ = root.jQuery
-      , i18n = {}
-      , resStore = {}
-      , currentLng
-      , replacementCounter = 0
-      , languages = [];
+    var i18n = {}
+        , resStore = {}
+        , currentLng
+        , replacementCounter = 0
+        , languages = [];
 
-
-    // Export the i18next object for **CommonJS**. 
-    // If we're not in CommonJS, add `i18n` to the
-    // global object or to jquery.
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = i18n;
-    } else {
-        if ($) {
-            $.i18n = $.i18n || i18n;
-        }
-        
-        root.i18n = root.i18n || i18n;
-    }
     // defaults
     var o = {
         lng: undefined,
@@ -2268,5 +2265,7 @@
     i18n.lng = lng;
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
+        
+    return i18n;
 
-})();
+}));
