@@ -82,7 +82,8 @@ module.exports = function(grunt) {
           } 
       },
         files: {
-          "bin": "bin/i18next-latest.js"
+          "bin": "bin/i18next-latest.js",
+          "release": "bin/i18next-latest.js"
         }
       }
     },
