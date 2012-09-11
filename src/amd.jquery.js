@@ -32,6 +32,9 @@
     //= i18next.postProcessor.js
     //= i18next.postProcessor.sprintf.js
     //= i18next.api.js
+
+    $.i18n = i18n;
+    $.t = i18n.t;
         
     return i18n;
 

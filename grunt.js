@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         src: ['<banner:meta.banner>', 'src/amd.js'],
         dest: 'bin/i18next.amd-latest.js'
       },
-      'amd.jquery': {
+      amdjquery: {
         src: ['<banner:meta.banner>', 'src/amd.jquery.js'],
         dest: 'bin/i18next.amd.withJQuery-latest.js'
       },
@@ -46,11 +46,15 @@ module.exports = function(grunt) {
       standard: {
         src: ['<banner:meta.banner>', '<config:rig.build.dest>'],
         dest: 'bin/i18next-<%= meta.version %>.min.js'
-      }/*,
+      },
       amd: {
         src: ['<banner:meta.banner>', '<config:rig.amd.dest>'],
-        dest: 'lib/amd/backbone.marionette.min.js'
-      }*/
+        dest: 'bin/i18next.amd-<%= meta.version %>.min.js'
+      },
+      amdjquery: {
+        src: ['<banner:meta.banner>', '<config:rig.amdjquery.dest>'],
+        dest: 'bin/i18next.amd.withJQuery-<%= meta.version %>.min.js'
+      }
     },
 
     jshint: {

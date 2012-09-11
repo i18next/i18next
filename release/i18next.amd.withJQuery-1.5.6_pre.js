@@ -2265,6 +2265,9 @@
     i18n.lng = lng;
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
+
+    $.i18n = i18n;
+    $.t = i18n.t;
         
     return i18n;
 
