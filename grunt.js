@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.5.6_pre';
+  var version = '1.5.6';
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
@@ -115,6 +115,16 @@ module.exports = function(grunt) {
         },
         files: {
           "release/i18next-<%= meta.version %>.zip": "bin/*"
+        }
+      },
+      zipamd: {
+        options: {
+          mode: "zip",
+          basePath: "bin",
+          level: 1
+        },
+        files: {
+          "release/i18next.amd-<%= meta.version %>.zip": ["bin/i18next.amd.withJQuery-<%= meta.version %>.js", "bin/i18next.amd-<%= meta.version %>.js"]
         }
       }
     },

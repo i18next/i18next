@@ -1,4 +1,4 @@
-###	1.5.6_pre
+###	1.5.6
 - typesafe check for window, document existance
 - runnable under rhino
 - seperated amd builds with/without jquery
