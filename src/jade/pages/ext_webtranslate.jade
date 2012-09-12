@@ -1,5 +1,6 @@
 - var path = '../'
 - var title = 'i18next - webtranslate'
+- var version = '0.0.2'
 !!! 5
 html(lang="en")
   head
@@ -21,9 +22,9 @@ html(lang="en")
                 img(src='#{path}public/img/i18nextWT.png', style='width: 100%; margin-top: 10px')
 
           .span4.downloads
-            a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18nextWT-0.0.1.zip', download='i18nextWT-0.0.1.zip') 
+            a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18nextWT-#{version}.zip', download='i18nextWT-#{version}.zip') 
               i.icon-download-alt
-              |  Beta v0.0.1
+              |  Beta #{version}
 
             a.btn.btn-large.btn-primary(href='#{path}pages/demoWT.html', target='_blank') 
               i.icon-eye-open
@@ -38,6 +39,33 @@ html(lang="en")
                 a(href='#{path}node/pages/doc_express.html#webtranslate')
                   i.icon-external-link
                   |  more information
+
+            .features
+              br
+              h4.feature-title Benefits
+              ol.alert.alert-success
+                li 
+                  i.icon-ok
+                  |  easy translation
+                li 
+                  i.icon-ok
+                  |  highlighting of resource resolving
+                li 
+                  i.icon-ok
+                  |  multiline values
+                li 
+                  i.icon-ok
+                  |  add/remove key/value
+                li 
+                  i.icon-ok
+                  |  fitering
+                li 
+                  i.icon-ok
+                  |  test output
+                li 
+                  i.icon-ok
+                  |  NEW: value compare thx to 
+                  a(href='https://github.com/Ferrari/i18next-webtranslate', target='_new') ferrari.
 
         .row-fluid
           .span12
