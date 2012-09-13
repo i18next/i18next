@@ -64,7 +64,7 @@ function _translate(key, options){
 
     if (!resStore) { return notfound; } // no resStore to translate from
 
-    var ns = o.ns.defaultNs;
+    var ns = options.ns || o.ns.defaultNs;
     if (key.indexOf(o.nsseparator) > -1) {
         var parts = key.split(o.nsseparator);
         ns = parts[0];
