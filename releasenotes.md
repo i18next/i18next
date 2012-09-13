@@ -1,3 +1,7 @@
+### 1.5.7pre
+- pass namespace in t() options
+- interpolation nesting
+
 ###	1.5.6
 - typesafe check for window, document existance
 - runnable under rhino
