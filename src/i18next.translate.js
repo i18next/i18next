@@ -3,7 +3,7 @@ function applyReplacement(str, replacementHash, nestedKey) {
 
     f.each(replacementHash, function(key, value) {
         if (typeof value === 'object') {
-            str = applyReplacement(str, value, key);
+            str = applyReplacement(str, value, nestedKey ? nestedKey + '.' + key : key);
         } else {
             str = str.replace(new RegExp([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), 'g'), value);
         }
