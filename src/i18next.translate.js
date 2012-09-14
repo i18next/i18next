@@ -3,7 +3,7 @@ function applyReplacement(str, replacementHash, nestedKey) {
 
     f.each(replacementHash, function(key, value) {
         if (typeof value === 'object') {
-            str = applyReplacement(str, value, key);
+            str = applyReplacement(str, value, nestedKey ? nestedKey + '.' + key : key);
         } else {
             str = str.replace(new RegExp([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), 'g'), value);
         }
@@ -64,7 +64,7 @@ function _translate(key, options){
 
     if (!resStore) { return notfound; } // no resStore to translate from
 
-    var ns = o.ns.defaultNs;
+    var ns = options.ns || o.ns.defaultNs;
     if (key.indexOf(o.nsseparator) > -1) {
         var parts = key.split(o.nsseparator);
         ns = parts[0];

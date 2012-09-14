@@ -678,7 +678,8 @@ describe('i18next', function() {
             translation: {                      
               interpolationTest1: 'added __toAdd__',
               interpolationTest2: 'added __toAdd__ __toAdd__ twice',
-              interpolationTest3: 'added __child.one__ __child.two__'
+              interpolationTest3: 'added __child.one__ __child.two__',
+              interpolationTest4: 'added __child.grandChild.three__'
             } 
           }
         };
@@ -692,10 +693,11 @@ describe('i18next', function() {
           expect(i18n.t('interpolationTest1', {toAdd: 'something'})).to.be('added something');
           expect(i18n.t('interpolationTest2', {toAdd: 'something'})).to.be('added something something twice');
           expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2'}})).to.be('added 1 2');
+          expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3'}}})).to.be('added 3');
         });
   
         it('it should replace passed in key/values on defaultValue', function() {
-          expect(i18n.t('interpolationTest4', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
+          expect(i18n.t('interpolationTest5', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
         });
   
       });
@@ -914,6 +916,7 @@ describe('i18next', function() {
     });
   
   });
+  
   describe('jQuery integration / specials', function() {
   
     describe('initialise - use deferrer instead of callback', function() {
