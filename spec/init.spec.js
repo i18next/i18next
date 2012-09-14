@@ -242,6 +242,11 @@ describe('Initialisation', function() {
           expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_common_en-US');
           expect(i18n.t('ns.common:simple_en')).to.be('ok_from_common_en');
           expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_common_dev');
+
+          // ns in options
+          expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_common_en-US');
+          expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_common_en');
+          expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_common_dev');
         });
 
       });
