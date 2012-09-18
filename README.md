@@ -8,7 +8,7 @@ Project goal is to provide an easy way to translate a website on clientside:
 - post missing key-value pairs to server (for easy development -> just translate the new keys)
 - search for key _en-US_ first, then in _en_, then in fallback language (or de-DE, de , fallback)
 
-Check out the [documentation](http://jamuhl.github.com/i18next/)
+Check out the [documentation](http://i18next.com)
 
 # Usage
 
