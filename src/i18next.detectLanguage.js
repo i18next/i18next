@@ -16,8 +16,8 @@ function detectLanguage() {
                 }
             }
         })();
-        if (qsParm.setLng) {
-            detectedLng = qsParm.setLng;
+        if (qsParm[o.detectLngQS]) {
+            detectedLng = qsParm[o.detectLngQS];
         }
     }
 

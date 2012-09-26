@@ -6,6 +6,7 @@ var o = {
     lowerCaseLng: false,
     returnObjectTrees: false,
     fallbackLng: 'dev',
+    detectLngQS: 'setLng',
     ns: 'translation',
     nsseparator: ':',
     keyseparator: '.',
