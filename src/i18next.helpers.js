@@ -379,7 +379,7 @@ var f = {
     },
     toLanguages: function(lng) {
         var languages = [];
-        if (lng.indexOf('-') === 2 && lng.length === 5) {
+        if (lng.indexOf('-') > -1) {
             var parts = lng.split('-');
 
             lng = o.lowerCaseLng ? 
@@ -387,7 +387,7 @@ var f = {
                 parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
 
             if (o.load !== 'unspecific') languages.push(lng);
-            if (o.load !== 'current') languages.push(lng.substr(0, 2));
+            if (o.load !== 'current') languages.push(parts[0]);
         } else {
             languages.push(lng);
         }
