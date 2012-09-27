@@ -12,7 +12,7 @@
 
     //= i18next.shim.js
 
-    var $ = undefinded
+    var $ = undefined
         , i18n = {}
         , resStore = {}
         , currentLng
