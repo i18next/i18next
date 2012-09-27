@@ -96,6 +96,26 @@ html(lang="en")
                     li detectLngFromPath = 0 --> /en-US/myPage
                     li detectLngFromPath = 1 --> /cms/en-US/anotherPage
 
+                p 
+                  span.badge.badge-info Hint:
+                  |  to set i18next to set language to fallbackLng if no locale could be set by path 
+                  | you could set init option 'forceDetectLngFromPath' to true. This will stop any further 
+                  | lookup via querystring or cookie.
+
+        .row-fluid
+          .span4
+            h4.feature-title Change the querystring param to lookup lng:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ detectLngQS: 'lang' });
+              .alert.alert-info.feature-description
+                p The current locale to set will be looked up in the new parameter: 
+                  code ?lang=en-US 
+                | default would be ?setLng=en-US
+
 
         .row-fluid
           .span4
@@ -446,10 +466,72 @@ html(lang="en")
                   | var gettextSync = require('i18next.gettext')
                   | 
                   | i18n.backend(gettextSync);
-                  | i18n.init({ resSetPath: 'locales/__lng__/__ns__.mo' }); // or .po
+                  | i18n.init({ resGetPath: 'locales/__lng__/__ns__.mo' }); // or .po
 
               .alert.alert-info.feature-description
                 p: gettext-sync only supports loading resources! Saving of missing resources is not yet supported.
+
+                p 
+                  span.badge.badge-info Tips:
+                  h6 namespaces:
+                  | alternatively to prepending namespace 
+                  code i18n.t('messages:login failed!')
+                  |  you could pass it via options 
+                  code i18n.t('login failed!', { ns: 'messages' }).
+                  br
+                  br
+                  h6 defining different separators
+                  | as '.' and ':' might be part of the key (eg. 
+                  code i18n.t('this will break. because of the dot')
+                  |  ) you could change the separators, like:
+                  pre
+                    code
+                      | i18n.init({
+                      |   keyseparator: '::',
+                      |   nsseparator: ':::'
+                      | });
+                  | to prevent issues.
+
+        .row-fluid
+          .span4
+            a(name='yaml')
+            h4.feature-title yaml backend:
+            p load yaml files (.yml/.yaml) from filesystem.
+
+          .span8
+            .feature
+              pre
+                code
+                  | npm install i18next.yaml
+                  | 
+                  | var yamlSync = require('i18next.yaml')
+                  | 
+                  | i18n.backend(yamlSync);
+                  | i18n.init({ resGetPath: 'locales/__lng__/__ns__.yml' }); // or .yaml
+
+              .alert.alert-info.feature-description
+                p: yaml-sync only supports loading resources! Saving of missing resources is not yet supported.
+
+                p 
+                  span.badge.badge-info Tips:
+                  h6 namespaces:
+                  | alternatively to prepending namespace 
+                  code i18n.t('messages:login failed!')
+                  |  you could pass it via options 
+                  code i18n.t('login failed!', { ns: 'messages' }).
+                  br
+                  br
+                  h6 defining different separators
+                  | as '.' and ':' might be part of the key (eg. 
+                  code i18n.t('this will break. because of the dot')
+                  |  ) you could change the separators, like:
+                  pre
+                    code
+                      | i18n.init({
+                      |   keyseparator: '::',
+                      |   nsseparator: ':::'
+                      | });
+                  | to prevent issues.
 
     include ../includes/layout/extra
       

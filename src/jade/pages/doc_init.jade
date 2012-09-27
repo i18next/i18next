@@ -78,6 +78,20 @@ html(lang="en")
 
         .row-fluid
           .span4
+            h4.feature-title Change the querystring param to lookup lng:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ detectLngQS: 'lang' });
+              .alert.alert-info.feature-description
+                p The current locale to set will be looked up in the new parameter: 
+                  code ?lang=en-US 
+                | default would be ?setLng=en-US
+
+        .row-fluid
+          .span4
             h4.feature-title preload additional languages on init:
 
           .span8

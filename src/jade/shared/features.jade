@@ -87,7 +87,7 @@
         code
           | // given resources
           | {           
-          |   'en-US': { translation: {  key: '__myVar__ is important' } }
+          |   'en-US': { translation: {  key: '__myVar__ are important' } }
           | };
           | 
           | i18n.t("key", { myVar: "variables" }); // -> variables are important
@@ -96,11 +96,23 @@
         p Will return 'variables are important'.
         p You can even have hierarchical variables in form __some.child__.
         p
-          span.badge.badge-info Hint:
+          span.badge.badge-info Hint 1:
           |  You can change pre-/suffix by setting options on init:
           ul
             li interpolationPrefix = '__',
             li interpolationSuffix = '__',
+
+        p 
+          span.badge.badge-info Hint 2:
+          |  You could even have nested values like:
+          pre
+            code
+              | // given resources
+              | {           
+              |   'en-US': { translation: {  key: '__person.name.first__ is important' } }
+              | };
+              | 
+              | i18n.t("key", { person: { name: { first: 'cristina' } } }); // -> cristina is important
 
 .row-fluid
   .span4
