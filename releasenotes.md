@@ -1,6 +1,7 @@
-### 1.5.7pre
+### 1.5.7
 - pass namespace in t() options
 - interpolation nesting
+- changable querystring param to look language up from
 
 ###	1.5.6
 - typesafe check for window, document existance
