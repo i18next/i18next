@@ -48,7 +48,7 @@
         }
     } 
 
-    var $ = undefinded
+    var $ = undefined
         , i18n = {}
         , resStore = {}
         , currentLng
