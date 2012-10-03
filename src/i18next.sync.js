@@ -141,7 +141,7 @@ var sync = {
             var item = urls[y];
             f.ajax({
                 url: item.url,
-                type: o.sendType,
+                sendType: o.sendType,
                 data: payload,
                 success: function(data, status, xhr) {
                     f.log('posted missing key \'' + key + '\' to: ' + item.url);
