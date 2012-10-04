@@ -319,7 +319,7 @@ function _ajax(options) {
     };
 
 
-    var methode = options.sendType ? options.sendType.toLowerCase() : 'get';
+    var methode = options.type ? options.type.toLowerCase() : 'get';
 
     http[methode](options.url, {async: options.async}, function (status, data) {
         if (status === 200) {
