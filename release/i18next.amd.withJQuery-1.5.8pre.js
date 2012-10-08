@@ -789,7 +789,7 @@
                     } else {
                         for (var m in value) {
                             // apply translation on childs
-                            value[m] = _translate(key + '.' + m, options);
+                            value[m] = _translate(ns + ':' + key + '.' + m, options);
                         }
                     }
                 }

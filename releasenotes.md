@@ -1,5 +1,6 @@
 ### 1.5.8pre
 - fixed bug in own ajax implementation not using proper sendType
+- fixed bug for returning objTree in combination with namespace
 
 ### 1.5.7
 - pass namespace in t() options
