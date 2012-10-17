@@ -57,6 +57,9 @@ textarea {
 .hero-unit p.small {
   font-size: 14px;
 }
+.hero-unit.tight {
+  margin-bottom: 5px;
+}
 .brand {
   padding: 4px 20px;
 }
@@ -80,6 +83,9 @@ textarea {
   font-weight: 600;
   position: relative;
   top: 2px;
+}
+.navbar .nav iframe {
+  margin: 10px 0 0 10px;
 }
 .main {
   padding: 2em 0;

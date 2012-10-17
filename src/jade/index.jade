@@ -11,7 +11,7 @@ html(lang="en")
     include includes/layout/content
       .row-fluid
         .span8
-          .hero-unit
+          .hero-unit.tight
             h2 
               | i18next
               small  - translation made easy
@@ -36,6 +36,21 @@ html(lang="en")
               a(href='#{path}node/index.html')
                 i.icon-external-link
                 |  more information (npm module)
+
+      .row-fluid
+        .span8
+          .pull-right 
+            //- github
+            iframe(src="http://ghbtns.com/github-btn.html?user=jamuhl&amp;repo=i18next&amp;type=watch&amp;count=true", allowtransparency="true", frameborder="0", scrolling="0", width="85px", height="20px", style='margin: 0 20px 0 4px;')
+
+            //- twitter btn
+            a(href="https://twitter.com/share", class="twitter-share-button", data-url="http://i18next.com", data-text="fullfeatured #i18n for #javascript or #nodejs - translation made easy.", data-via="jamuhl", data-lang="en", data-hashtags="i18next") Twittern
+            
+            //- gplus btn
+            .g-plusone(data-size="medium", data-href="http://i18next.com")
+          
+          .pull-right(style="margin: 0 0 20px 0;")
+            | if you like i18next - help promoting it: 
 
       .row-fluid
         .span4
@@ -188,3 +203,14 @@ html(lang="en")
     include includes/layout/footer
     
     include includes/layout/endscripts
+
+    script(type="text/javascript")
+      // twitter
+      !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+      
+      // gplus
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
