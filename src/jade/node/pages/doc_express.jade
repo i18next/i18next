@@ -44,6 +44,17 @@ html(lang="en")
                   |     // ...
                   | });
 
+              .alert.alert-info.feature-description
+                p
+                  span.badge.badge-info Hint:
+                  |  To avoid some routes from beeing handled (detect lng, set cookie,...) you can 
+                  | add an array of strings that should be ignored.
+                  pre
+                    code
+                      | i18n.init({
+                      |   ignoreRoutes: ['images/', 'public/', 'css/', 'js/']
+                      | });
+
         .row-fluid
           .span4
             h4.feature-title Access i18n inside your route:
