@@ -62,7 +62,7 @@ textarea {
 }
 .hero-unit.world {
   padding: 50px;
-  background-image: url("../img/world.png");
+  background-image: url("../img/world.png") no-repeat;
   background-repeat: no-repeat;
 }
 .hero-unit.world .hero-text {
