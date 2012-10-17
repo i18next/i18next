@@ -114,6 +114,21 @@
               | 
               | i18n.t("key", { person: { name: { first: 'cristina' } } }); // -> cristina is important
 
+        h6 Formating:
+        p 
+          span.badge.badge-info
+            i.icon-money
+            |  numbers or currency:
+          |  You might try 
+          a(href="http://adamwdraper.github.com/Numeral-js/", target="_blank") numeraljs.
+
+        p 
+          span.badge.badge-info
+            i.icon-calendar
+            |  dates or time:
+          |  You might try 
+          a(href="http://momentjs.com/", target="_blank") momentjs.
+
 .row-fluid
   .span4
     a(name='sprintf')
@@ -136,8 +151,8 @@
 
       .alert.alert-info.feature-description
         p 
-          | For more information about sprintf go 
-          a(href='http://www.diveintojavascript.com/projects/javascript-sprintf', target='_blank') here.
+          | For more information about sprintf and source go to 
+          a(href='http://www.diveintojavascript.com/projects/javascript-sprintf', target='_blank') dive.into.javascript.
         p
           span.badge.badge-info Hint:
           |  You can set i18next to always postProcess with sprintf by init with option postProcess: 
