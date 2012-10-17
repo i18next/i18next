@@ -60,6 +60,18 @@ textarea {
 .hero-unit.tight {
   margin-bottom: 5px;
 }
+.hero-unit.world {
+  padding: 50px;
+  background-image: url("../img/world.png");
+}
+.hero-unit.world .hero-text {
+  padding: 10px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: solid 2px #fff;
+  background: rgba(254,254,254,0.9);
+  text-shadow: 1px 1px 1px #fff;
+}
 .brand {
   padding: 4px 20px;
 }

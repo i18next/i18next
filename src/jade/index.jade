@@ -11,12 +11,13 @@ html(lang="en")
     include includes/layout/content
       .row-fluid
         .span8
-          .hero-unit.tight
-            h2 
-              | i18next
-              small  - translation made easy
-            p i18next is a full-featured i18n javascript library for translating your webapplication.
-            p.small runs in browser, under node.js, rhino and other javascript runtimes.
+          .hero-unit.tight.world
+            .hero-text
+              h2 
+                | i18next
+                small  - translation made easy
+              p i18next is a full-featured i18n javascript library for translating your webapplication.
+              p.small runs in browser, under node.js, rhino and other javascript runtimes.
 
         .span4.downloads
           a.btn.btn-large.btn-warning(href='#{path}public/download/versions/i18next-#{version}.min.js', download='i18next-#{version}.min.js') 
