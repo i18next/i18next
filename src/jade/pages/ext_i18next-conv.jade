@@ -94,6 +94,32 @@ html(lang="en")
                       | if no target (-t) is specified, the file will be stored next to the source directory: 
                       | [sourceDir]/[domain]/translation.json.
 
+            .row-fluid
+              .span4
+                h4.feature-title convert i18next JSON to gettext files
+
+              .span8
+                .feature
+                    h6 in your console type:
+                    strong for help:
+                    pre
+                      code
+                        | i18next-conv -h
+                    strong to convert a json to .mo or .po file:
+                    pre
+                      code
+                        | i18next-conv -l [domain] -s [sourcePath] -t [targetPath]
+                        | 
+                        | eg. for .mo file: i18next-conv -l en -s ./locales/en/translation.json -t ./locales/en/translation.mo
+                        | 
+                        | eg. for .po file: i18next-conv -l en -s ./locales/en/translation.json -t ./locales/en/translation.po
+
+
+                  .alert.alert-info.feature-description
+                    p 
+                      | if no target (-t) is specified, the file will be stored next to the source directory in .po format: 
+                      | [sourceDir]/[domain]/translation.po.
+
 
     include ../includes/layout/extra
       
