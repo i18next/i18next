@@ -116,7 +116,7 @@ function _translate(key, options){
             value = value && value[keys[x]];
             x++;
         }
-        if (value) {
+        if (value != null) {
             if (typeof value === 'string') {
                 value = applyReplacement(value, options);
                 value = applyReuse(value, options);
@@ -140,7 +140,7 @@ function _translate(key, options){
         }
     }
 
-    if (!found && o.sendMissing) {
+    if (found == null && o.sendMissing) {
         if (options.lng) {
             sync.postMissing(options.lng, ns, key, notfound, lngs);
         } else {
@@ -149,16 +149,16 @@ function _translate(key, options){
     }
 
     var postProcessor = options.postProcess || o.postProcess;
-    if (found && postProcessor) {
+    if (found != null && postProcessor) {
         if (postProcessors[postProcessor]) {
             found = postProcessors[postProcessor](found, key, options);
         }
     }
 
-    if (!found) {
+    if (found == null) {
         notfound = applyReplacement(notfound, options);
         notfound = applyReuse(notfound, options);
     }
 
-    return (found) ? found : notfound;
+    return (found != null) ? found : notfound;
 }
