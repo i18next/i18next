@@ -22,7 +22,7 @@ function detectLanguage() {
     }
 
     // get from cookie
-    if (!detectedLng && typeof document !== 'undefined') {
+    if (!detectedLng && typeof document !== 'undefined' && o.useCookie ) {
         var c = f.cookie.read('i18next');
         if (c) detectedLng = c;
     }

@@ -99,6 +99,7 @@
         setJqueryExt: true,
         useDataAttrOptions: false,
         cookieExpirationTime: undefined,
+        useCookie: true,
     
         postProcess: undefined
     };
@@ -520,10 +521,10 @@
         if (!o.lng) o.lng = f.detectLanguage(); 
         if (o.lng) {
             // set cookie with lng set (as detectLanguage will set cookie on need)
-            f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
+            if (o.useCookie) f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
         } else {
             o.lng =  o.fallbackLng;
-            f.cookie.remove('i18next');
+            if (o.useCookie) f.cookie.remove('i18next');
         }
     
         languages = f.toLanguages(o.lng);
@@ -847,7 +848,7 @@
         }
     
         // get from cookie
-        if (!detectedLng && typeof document !== 'undefined') {
+        if (!detectedLng && typeof document !== 'undefined' && o.useCookie ) {
             var c = f.cookie.read('i18next');
             if (c) detectedLng = c;
         }

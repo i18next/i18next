@@ -38,6 +38,7 @@ var o = {
     setJqueryExt: true,
     useDataAttrOptions: false,
     cookieExpirationTime: undefined,
+    useCookie: true,
 
     postProcess: undefined
 };
