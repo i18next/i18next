@@ -776,7 +776,7 @@
                 value = value && value[keys[x]];
                 x++;
             }
-            if (value) {
+            if (value !== undefined) {
                 if (typeof value === 'string') {
                     value = applyReplacement(value, options);
                     value = applyReuse(value, options);
@@ -800,7 +800,7 @@
             }
         }
     
-        if (!found && o.sendMissing) {
+        if (found === undefined && o.sendMissing) {
             if (options.lng) {
                 sync.postMissing(options.lng, ns, key, notfound, lngs);
             } else {
@@ -809,18 +809,18 @@
         }
     
         var postProcessor = options.postProcess || o.postProcess;
-        if (found && postProcessor) {
+        if (found !== undefined && postProcessor) {
             if (postProcessors[postProcessor]) {
                 found = postProcessors[postProcessor](found, key, options);
             }
         }
     
-        if (!found) {
+        if (found === undefined) {
             notfound = applyReplacement(notfound, options);
             notfound = applyReuse(notfound, options);
         }
     
-        return (found) ? found : notfound;
+        return (found !== undefined) ? found : notfound;
     }
     
     function detectLanguage() {
