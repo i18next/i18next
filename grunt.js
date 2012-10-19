@@ -100,8 +100,8 @@ module.exports = function(grunt) {
           } 
       },
         files: {
-          "bin": ["bin/i18next-latest.js", "bin/i18next.amd-latest.js", "bin/i18next.amd.withJQuery-latest.js"],
-          "release": ["bin/i18next-latest.js", "bin/i18next.amd-latest.js", "bin/i18next.amd.withJQuery-latest.js"]
+          "bin/": ["bin/i18next-latest.js", "bin/i18next.amd-latest.js", "bin/i18next.amd.withJQuery-latest.js"],
+          "release/": ["bin/i18next-latest.js", "bin/i18next.amd-latest.js", "bin/i18next.amd.withJQuery-latest.js"]
         }
       }
     },
