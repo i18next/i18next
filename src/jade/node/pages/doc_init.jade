@@ -116,7 +116,20 @@ html(lang="en")
                   code ?lang=en-US 
                 | default would be ?setLng=en-US
 
+        .row-fluid
+          .span4
+            h4.feature-title Disable cookie usage:
 
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ useCookie: false });
+              .alert.alert-info.feature-description
+                p 
+                  | Use this only if your sure that language will be provided by the other lookup options or 
+                  | set programatically.
+                  
         .row-fluid
           .span4
             h4.feature-title preload additional languages on init:
