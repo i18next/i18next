@@ -44,7 +44,7 @@ function translate(key, options){
 function _translate(key, options){
     options = options || {};
 
-    var optionsSansCount, translated
+    var optionWithoutCount, translated
       , notfound = options.defaultValue || key
       , lngs = languages;
 
@@ -72,22 +72,22 @@ function _translate(key, options){
     }
 
     if (hasContext(options)) {
-        optionsSansCount = f.extend({}, options);
-        delete optionsSansCount.context;
-        optionsSansCount.defaultValue = o.contextNotFound;
+        optionWithoutCount = f.extend({}, options);
+        delete optionWithoutCount.context;
+        optionWithoutCount.defaultValue = o.contextNotFound;
 
         var contextKey = ns + ':' + key + '_' + options.context;
         
-        translated = translate(contextKey, optionsSansCount);
+        translated = translate(contextKey, optionWithoutCount);
         if (translated != o.contextNotFound) {
             return applyReplacement(translated, { context: options.context }); // apply replacement for context only
         } // else continue translation with original/nonContext key
     }
 
     if (needsPlural(options)) {
-        optionsSansCount = f.extend({}, options);
-        delete optionsSansCount.count;
-        optionsSansCount.defaultValue = o.pluralNotFound;
+        optionWithoutCount = f.extend({}, options);
+        delete optionWithoutCount.count;
+        optionWithoutCount.defaultValue = o.pluralNotFound;
 
         var pluralKey = ns + ':' + key + o.pluralSuffix;
         var pluralExtension = pluralExtensions.get(currentLng, options.count);
@@ -97,7 +97,7 @@ function _translate(key, options){
             pluralKey = ns + ':' + key; // singular
         }
         
-        translated = translate(pluralKey, optionsSansCount);
+        translated = translate(pluralKey, optionWithoutCount);
         if (translated != o.pluralNotFound) {
             return applyReplacement(translated, { count: options.count }); // apply replacement for count only
         } // else continue translation with original/singular key

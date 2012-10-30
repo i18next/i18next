@@ -1,4 +1,4 @@
-// i18next, v1.5.7pre
+// i18next, v1.5.8
 // Copyright (c)2012 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -48,7 +48,7 @@
         }
     } 
 
-    var $ = undefinded
+    var $ = undefined
         , i18n = {}
         , resStore = {}
         , currentLng
@@ -95,6 +95,7 @@
         setJqueryExt: true,
         useDataAttrOptions: false,
         cookieExpirationTime: undefined,
+        useCookie: true,
     
         postProcess: undefined
     };
@@ -419,7 +420,7 @@
         };
     
     
-        var methode = options.sendType ? options.sendType.toLowerCase() : 'get';
+        var methode = options.type ? options.type.toLowerCase() : 'get';
     
         http[methode](options.url, {async: options.async}, function (status, data) {
             if (status === 200) {
@@ -516,10 +517,10 @@
         if (!o.lng) o.lng = f.detectLanguage(); 
         if (o.lng) {
             // set cookie with lng set (as detectLanguage will set cookie on need)
-            f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
+            if (o.useCookie) f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
         } else {
             o.lng =  o.fallbackLng;
-            f.cookie.remove('i18next');
+            if (o.useCookie) f.cookie.remove('i18next');
         }
     
         languages = f.toLanguages(o.lng);
@@ -700,7 +701,7 @@
     function _translate(key, options){
         options = options || {};
     
-        var optionsSansCount, translated
+        var optionWithoutCount, translated
           , notfound = options.defaultValue || key
           , lngs = languages;
     
@@ -728,22 +729,22 @@
         }
     
         if (hasContext(options)) {
-            optionsSansCount = f.extend({}, options);
-            delete optionsSansCount.context;
-            optionsSansCount.defaultValue = o.contextNotFound;
+            optionWithoutCount = f.extend({}, options);
+            delete optionWithoutCount.context;
+            optionWithoutCount.defaultValue = o.contextNotFound;
     
             var contextKey = ns + ':' + key + '_' + options.context;
             
-            translated = translate(contextKey, optionsSansCount);
+            translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
                 return applyReplacement(translated, { context: options.context }); // apply replacement for context only
             } // else continue translation with original/nonContext key
         }
     
         if (needsPlural(options)) {
-            optionsSansCount = f.extend({}, options);
-            delete optionsSansCount.count;
-            optionsSansCount.defaultValue = o.pluralNotFound;
+            optionWithoutCount = f.extend({}, options);
+            delete optionWithoutCount.count;
+            optionWithoutCount.defaultValue = o.pluralNotFound;
     
             var pluralKey = ns + ':' + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
@@ -753,7 +754,7 @@
                 pluralKey = ns + ':' + key; // singular
             }
             
-            translated = translate(pluralKey, optionsSansCount);
+            translated = translate(pluralKey, optionWithoutCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated, { count: options.count }); // apply replacement for count only
             } // else continue translation with original/singular key
@@ -772,7 +773,7 @@
                 value = value && value[keys[x]];
                 x++;
             }
-            if (value) {
+            if (value !== undefined) {
                 if (typeof value === 'string') {
                     value = applyReplacement(value, options);
                     value = applyReuse(value, options);
@@ -788,7 +789,7 @@
                     } else {
                         for (var m in value) {
                             // apply translation on childs
-                            value[m] = _translate(key + '.' + m, options);
+                            value[m] = _translate(ns + ':' + key + '.' + m, options);
                         }
                     }
                 }
@@ -796,7 +797,7 @@
             }
         }
     
-        if (!found && o.sendMissing) {
+        if (found === undefined && o.sendMissing) {
             if (options.lng) {
                 sync.postMissing(options.lng, ns, key, notfound, lngs);
             } else {
@@ -805,18 +806,18 @@
         }
     
         var postProcessor = options.postProcess || o.postProcess;
-        if (found && postProcessor) {
+        if (found !== undefined && postProcessor) {
             if (postProcessors[postProcessor]) {
                 found = postProcessors[postProcessor](found, key, options);
             }
         }
     
-        if (!found) {
+        if (found === undefined) {
             notfound = applyReplacement(notfound, options);
             notfound = applyReuse(notfound, options);
         }
     
-        return (found) ? found : notfound;
+        return (found !== undefined) ? found : notfound;
     }
     
     function detectLanguage() {
@@ -843,7 +844,7 @@
         }
     
         // get from cookie
-        if (!detectedLng && typeof document !== 'undefined') {
+        if (!detectedLng && typeof document !== 'undefined' && o.useCookie ) {
             var c = f.cookie.read('i18next');
             if (c) detectedLng = c;
         }
@@ -2097,10 +2098,21 @@
                     var i = ext.plurals(c);
                     var number = ext.numbers[i];
                     if (ext.numbers.length === 2) {
-                        if (number === 2) { 
-                            number = 1;
-                        } else if (number === 1) {
-                            number = -1;
+                        // germanic like en
+                        if (ext.numbers[0] === 2) {
+                            if (number === 2) { 
+                                number = 1; // singular
+                            } else if (number === 1) {
+                                number = -1; // regular plural
+                            }
+                        } 
+                        // romanic like fr
+                        else if (ext.numbers[0] === 1) {
+                            if (number === 2) { 
+                                number = -1; // regular plural
+                            } else if (number === 1) {
+                                number = 1; // singular
+                            }
                         }
                     } //console.log(count + '-' + number);
                     return number;

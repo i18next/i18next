@@ -1082,10 +1082,21 @@ var pluralExtensions = {
                 var i = ext.plurals(c);
                 var number = ext.numbers[i];
                 if (ext.numbers.length === 2) {
-                    if (number === 2) { 
-                        number = 1;
-                    } else if (number === 1) {
-                        number = -1;
+                    // germanic like en
+                    if (ext.numbers[0] === 2) {
+                        if (number === 2) { 
+                            number = 1; // singular
+                        } else if (number === 1) {
+                            number = -1; // regular plural
+                        }
+                    } 
+                    // romanic like fr
+                    else if (ext.numbers[0] === 1) {
+                        if (number === 2) { 
+                            number = -1; // regular plural
+                        } else if (number === 1) {
+                            number = 1; // singular
+                        }
                     }
                 } //console.log(count + '-' + number);
                 return number;

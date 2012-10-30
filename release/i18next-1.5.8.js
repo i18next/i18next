@@ -1,18 +1,8 @@
-// i18next, v1.5.8pre
+// i18next, v1.5.8
 // Copyright (c)2012 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
-(function (root, factory) {
-    if (typeof exports === 'object') {
-
-        module.exports = factory();
-
-    } else if (typeof define === 'function' && define.amd) {
-
-        define([], factory);
-
-    } 
-}(this, function () {
+(function() {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {  
@@ -48,13 +38,27 @@
         }
     } 
 
-    var $ = undefined
-        , i18n = {}
-        , resStore = {}
-        , currentLng
-        , replacementCounter = 0
-        , languages = [];
+    var root = this
+      , $ = root.jQuery
+      , i18n = {}
+      , resStore = {}
+      , currentLng
+      , replacementCounter = 0
+      , languages = [];
 
+
+    // Export the i18next object for **CommonJS**. 
+    // If we're not in CommonJS, add `i18n` to the
+    // global object or to jquery.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = i18n;
+    } else {
+        if ($) {
+            $.i18n = $.i18n || i18n;
+        }
+        
+        root.i18n = root.i18n || i18n;
+    }
     // defaults
     var o = {
         lng: undefined,
@@ -701,7 +705,7 @@
     function _translate(key, options){
         options = options || {};
     
-        var optionsSansCount, translated
+        var optionWithoutCount, translated
           , notfound = options.defaultValue || key
           , lngs = languages;
     
@@ -729,22 +733,22 @@
         }
     
         if (hasContext(options)) {
-            optionsSansCount = f.extend({}, options);
-            delete optionsSansCount.context;
-            optionsSansCount.defaultValue = o.contextNotFound;
+            optionWithoutCount = f.extend({}, options);
+            delete optionWithoutCount.context;
+            optionWithoutCount.defaultValue = o.contextNotFound;
     
             var contextKey = ns + ':' + key + '_' + options.context;
             
-            translated = translate(contextKey, optionsSansCount);
+            translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
                 return applyReplacement(translated, { context: options.context }); // apply replacement for context only
             } // else continue translation with original/nonContext key
         }
     
         if (needsPlural(options)) {
-            optionsSansCount = f.extend({}, options);
-            delete optionsSansCount.count;
-            optionsSansCount.defaultValue = o.pluralNotFound;
+            optionWithoutCount = f.extend({}, options);
+            delete optionWithoutCount.count;
+            optionWithoutCount.defaultValue = o.pluralNotFound;
     
             var pluralKey = ns + ':' + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
@@ -754,7 +758,7 @@
                 pluralKey = ns + ':' + key; // singular
             }
             
-            translated = translate(pluralKey, optionsSansCount);
+            translated = translate(pluralKey, optionWithoutCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated, { count: options.count }); // apply replacement for count only
             } // else continue translation with original/singular key
@@ -2098,10 +2102,21 @@
                     var i = ext.plurals(c);
                     var number = ext.numbers[i];
                     if (ext.numbers.length === 2) {
-                        if (number === 2) { 
-                            number = 1;
-                        } else if (number === 1) {
-                            number = -1;
+                        // germanic like en
+                        if (ext.numbers[0] === 2) {
+                            if (number === 2) { 
+                                number = 1; // singular
+                            } else if (number === 1) {
+                                number = -1; // regular plural
+                            }
+                        } 
+                        // romanic like fr
+                        else if (ext.numbers[0] === 1) {
+                            if (number === 2) { 
+                                number = -1; // regular plural
+                            } else if (number === 1) {
+                                number = 1; // singular
+                            }
                         }
                     } //console.log(count + '-' + number);
                     return number;
@@ -2267,7 +2282,5 @@
     i18n.lng = lng;
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
-        
-    return i18n; 
 
-}));
+})();

@@ -1,4 +1,4 @@
-// i18next, v1.5.8pre
+// i18next, v1.5.8
 // Copyright (c)2012 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -702,7 +702,7 @@
     function _translate(key, options){
         options = options || {};
     
-        var optionsSansCount, translated
+        var optionWithoutCount, translated
           , notfound = options.defaultValue || key
           , lngs = languages;
     
@@ -730,22 +730,22 @@
         }
     
         if (hasContext(options)) {
-            optionsSansCount = f.extend({}, options);
-            delete optionsSansCount.context;
-            optionsSansCount.defaultValue = o.contextNotFound;
+            optionWithoutCount = f.extend({}, options);
+            delete optionWithoutCount.context;
+            optionWithoutCount.defaultValue = o.contextNotFound;
     
             var contextKey = ns + ':' + key + '_' + options.context;
             
-            translated = translate(contextKey, optionsSansCount);
+            translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
                 return applyReplacement(translated, { context: options.context }); // apply replacement for context only
             } // else continue translation with original/nonContext key
         }
     
         if (needsPlural(options)) {
-            optionsSansCount = f.extend({}, options);
-            delete optionsSansCount.count;
-            optionsSansCount.defaultValue = o.pluralNotFound;
+            optionWithoutCount = f.extend({}, options);
+            delete optionWithoutCount.count;
+            optionWithoutCount.defaultValue = o.pluralNotFound;
     
             var pluralKey = ns + ':' + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
@@ -755,7 +755,7 @@
                 pluralKey = ns + ':' + key; // singular
             }
             
-            translated = translate(pluralKey, optionsSansCount);
+            translated = translate(pluralKey, optionWithoutCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated, { count: options.count }); // apply replacement for count only
             } // else continue translation with original/singular key
@@ -2099,10 +2099,21 @@
                     var i = ext.plurals(c);
                     var number = ext.numbers[i];
                     if (ext.numbers.length === 2) {
-                        if (number === 2) { 
-                            number = 1;
-                        } else if (number === 1) {
-                            number = -1;
+                        // germanic like en
+                        if (ext.numbers[0] === 2) {
+                            if (number === 2) { 
+                                number = 1; // singular
+                            } else if (number === 1) {
+                                number = -1; // regular plural
+                            }
+                        } 
+                        // romanic like fr
+                        else if (ext.numbers[0] === 1) {
+                            if (number === 2) { 
+                                number = -1; // regular plural
+                            } else if (number === 1) {
+                                number = 1; // singular
+                            }
                         }
                     } //console.log(count + '-' + number);
                     return number;

@@ -1,8 +1,9 @@
-### 1.5.8pre
+### 1.5.8
 - disable cookie usage by setting init option useCookie to false
 - accept empty string as translation value
 - fixed bug in own ajax implementation not using proper sendType
 - fixed bug for returning objTree in combination with namespace
+- fixed bug in plurals of romanic lngs
 
 ### 1.5.7
 - pass namespace in t() options
