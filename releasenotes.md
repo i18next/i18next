@@ -1,3 +1,6 @@
+### 1.5.9pre
+- typesafe use of console if in debug mode
+
 ### 1.5.8
 - disable cookie usage by setting init option useCookie to false
 - accept empty string as translation value

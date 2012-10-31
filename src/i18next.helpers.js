@@ -375,7 +375,7 @@ var f = {
     cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
     detectLanguage: detectLanguage,
     log: function(str) {
-        if (o.debug) console.log(str);
+        if (o.debug && typeof console !== "undefined") console.log(str);
     },
     toLanguages: function(lng) {
         var languages = [];
