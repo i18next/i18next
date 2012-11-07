@@ -32,7 +32,7 @@ function addJqueryFunct() {
     }
 
     function localize(ele, options) {
-        var key = ele.attr('data-i18n');
+        var key = ele.attr(o.selectorAttr);
         if (!key) return;
 
         if (!options && o.useDataAttrOptions === true) {
@@ -61,7 +61,7 @@ function addJqueryFunct() {
             localize($(this), options);
 
             // localize childs
-            var elements =  $(this).find('[data-i18n]');
+            var elements =  $(this).find('[' + o.selectorAttr + ']');
             elements.each(function() { 
                 localize($(this), options);
             });
