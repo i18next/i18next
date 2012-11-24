@@ -379,7 +379,7 @@ var f = {
     },
     toLanguages: function(lng) {
         var languages = [];
-        if (lng.indexOf('-') > -1) {
+        if (typeof lng === 'string' && lng.indexOf('-') > -1) {
             var parts = lng.split('-');
 
             lng = o.lowerCaseLng ? 
