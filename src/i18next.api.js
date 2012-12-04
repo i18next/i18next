@@ -2,6 +2,9 @@
 i18n.init = init;
 i18n.setLng = setLng;
 i18n.preload = preload;
+i18n.loadNamespace = loadNamespace;
+i18n.loadNamespaces = loadNamespaces;
+i18n.setDefaultNamespace = setDefaultNamespace;
 i18n.t = translate;
 i18n.translate = translate;
 i18n.detectLanguage = f.detectLanguage;

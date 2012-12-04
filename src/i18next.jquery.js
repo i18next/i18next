@@ -19,14 +19,14 @@ function addJqueryFunct() {
 
         var optionsToUse;
         if (attr === 'html') {
-            optionsToUse = $.extend({ defaultValue: ele.html() }, options);
+            optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.html() }, options) : options;
             ele.html($.t(key, optionsToUse));
         } 
         else if (attr === 'text') {
-            optionsToUse = $.extend({ defaultValue: ele.text() }, options);
+            optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.text() }, options) : options;
             ele.text($.t(key, optionsToUse));
         } else {
-            optionsToUse = $.extend({ defaultValue: ele.attr(attr) }, options);
+            optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.attr(attr) }, options) : options;
             ele.attr(attr, $.t(key, optionsToUse));
         }
     }

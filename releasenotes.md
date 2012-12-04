@@ -1,4 +1,9 @@
-### 1.5.9pre
+### 1.5.9
+- functions to load additional namespaces after init and to set default namespace to something else
+- set if you don't want to read defaultValues from content while using jquery fc
+- set dataAttribute to different value
+- set cookieName to different value
+- some smallbugfixes
 - typesafe use of console if in debug mode
 
 ### 1.5.8

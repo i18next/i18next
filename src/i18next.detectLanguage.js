@@ -23,7 +23,7 @@ function detectLanguage() {
 
     // get from cookie
     if (!detectedLng && typeof document !== 'undefined' && o.useCookie ) {
-        var c = f.cookie.read('i18next');
+        var c = f.cookie.read(o.cookieName);
         if (c) detectedLng = c;
     }
 

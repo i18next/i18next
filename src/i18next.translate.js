@@ -2,7 +2,7 @@ function applyReplacement(str, replacementHash, nestedKey) {
     if (str.indexOf(o.interpolationPrefix) < 0) return str;
 
     f.each(replacementHash, function(key, value) {
-        if (typeof value === 'object') {
+        if (typeof value === 'object' && value !== null) {
             str = applyReplacement(str, value, nestedKey ? nestedKey + '.' + key : key);
         } else {
             str = str.replace(new RegExp([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), 'g'), value);
@@ -44,6 +44,8 @@ function translate(key, options){
 function _translate(key, options){
     options = options || {};
 
+    if (!resStore) { return notfound; } // no resStore to translate from
+
     var optionWithoutCount, translated
       , notfound = options.defaultValue || key
       , lngs = languages;
@@ -61,8 +63,6 @@ function _translate(key, options){
             });
         }
     }
-
-    if (!resStore) { return notfound; } // no resStore to translate from
 
     var ns = options.ns || o.ns.defaultNs;
     if (key.indexOf(o.nsseparator) > -1) {

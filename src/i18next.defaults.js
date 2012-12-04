@@ -37,9 +37,11 @@ var o = {
     contextNotFound: ['context_not_found', Math.random()].join(''),
 
     setJqueryExt: true,
+    defaultValueFromContent: true,
     useDataAttrOptions: false,
     cookieExpirationTime: undefined,
     useCookie: true,
+    cookieName: 'i18next',
 
     postProcess: undefined
 };

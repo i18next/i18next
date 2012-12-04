@@ -9,7 +9,7 @@ var sync = {
                 }
 
                 if (missingLngs.length > 0) {
-                    sync._fetch(missingLngs, options, function(err, fetched){
+                    sync._fetch(missingLngs, options, function(err, fetched) {
                         f.extend(store, fetched);
                         sync._storeLocal(fetched);
 
