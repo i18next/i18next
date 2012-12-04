@@ -525,10 +525,10 @@
         if (!o.lng) o.lng = f.detectLanguage(); 
         if (o.lng) {
             // set cookie with lng set (as detectLanguage will set cookie on need)
-            if (o.useCookie) f.cookie.create('i18next', o.lng, o.cookieExpirationTime);
+            if (o.useCookie) f.cookie.create(o.cookieName, o.lng, o.cookieExpirationTime);
         } else {
             o.lng =  o.fallbackLng;
-            if (o.useCookie) f.cookie.remove('i18next');
+            if (o.useCookie) f.cookie.remove(o.cookieName);
         }
     
         languages = f.toLanguages(o.lng);
