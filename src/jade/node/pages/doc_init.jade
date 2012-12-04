@@ -475,7 +475,31 @@ html(lang="en")
                 p 
                   | The additional database backends where provided thanks to 
                   a(href='https://github.com/adrai') adrai.
+        .row-fluid
+          .span4
+            a(name='remoteSync')
+            h4.feature-title remote sync backend:
+            p load resources from a different server.
 
+          .span8
+            .feature
+              pre
+                code
+                  | npm install i18next.remotesync
+                  | 
+                  | var remoteSync = require('i18next.remotesync')
+                  | 
+                  | i18n.backend(remoteSync);
+                  | i18n.init({ 
+                  |   resGetPath: 'http://myServer.com/locales/__lng__/__ns__.json',
+                  |   resPostPath: 'http://myServer.com/locales/add/__lng__/__ns__'
+                  |   // resUpdatePath: 'http://myServer.com/locales/update/__lng__/__ns__',
+                  |   // resREmovePath: 'http://myServer.com/locales/remove/__lng__/__ns__'
+                  | });
+
+              .alert.alert-info.feature-description
+                p remote sync just uses request to get or set resources from a remote location.
+        
         .row-fluid
           .span4
             a(name='gettext')
@@ -494,7 +518,7 @@ html(lang="en")
                   | i18n.init({ resGetPath: 'locales/__lng__/__ns__.mo' }); // or .po
 
               .alert.alert-info.feature-description
-                p: gettext-sync only supports loading resources! Saving of missing resources is not yet supported.
+                p gettext-sync only supports loading resources! Saving of missing resources is not yet supported.
 
                 p 
                   span.badge.badge-info Tips:
@@ -535,7 +559,7 @@ html(lang="en")
                   | i18n.init({ resGetPath: 'locales/__lng__/__ns__.yml' }); // or .yaml
 
               .alert.alert-info.feature-description
-                p: yaml-sync only supports loading resources! Saving of missing resources is not yet supported.
+                p yaml-sync only supports loading resources! Saving of missing resources is not yet supported.
 
                 p 
                   span.badge.badge-info Tips:
