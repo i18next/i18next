@@ -118,6 +118,18 @@ html(lang="en")
 
         .row-fluid
           .span4
+            h4.feature-title Change the cookie name to lookup lng:
+
+          .span8
+            .feature
+              pre
+                code
+                  | i18n.init({ cookieName: 'lang' }); /* default 'i18next' */
+              .alert.alert-info.feature-description
+                p The current locale to set and looked up in the given cookie parameter.
+
+        .row-fluid
+          .span4
             h4.feature-title Disable cookie usage:
 
           .span8

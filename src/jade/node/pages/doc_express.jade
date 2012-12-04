@@ -123,6 +123,9 @@ html(lang="en")
                     | i18n.init({ detectLngFromPath: 0 }); // default false
 
                 p This will get language from first part of the route, in the example /:lng/
+                p If no valid language is found i18next will try to get language via other options. 
+                  | You can avoid further language detection by setting 'forceDetectLngFromPath' to true on init options.
+                p To only accept setting languages to values you have translated you could add option 'supportedLngs: ['en', 'de', 'fr']'.
 
         a(name='template')
         h3 Usage inside serverside Template
