@@ -19,6 +19,7 @@ describe('i18next', function() {
       getAsync: true,
       returnObjectTrees: false,
       debug: true,
+      selectorAttr: 'data-i18n',
       postProcess: ''
     };
   });
@@ -1040,7 +1041,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          setFixtures('<div id="container"><button id="testBtn" data-i18n="simpleTest"></button></div>');
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="simpleTest"></button></div>');
   
           i18n.init( $.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
@@ -1067,7 +1068,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
   
           i18n.init( $.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
@@ -1094,7 +1095,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
   
           i18n.init( $.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
@@ -1139,7 +1140,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
   
           i18n.init( $.extend(opts, { 
             resStore: resStore,
@@ -1162,5 +1163,6 @@ describe('i18next', function() {
     });
   
   });
+  
 
 });
