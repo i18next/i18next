@@ -86,6 +86,9 @@ html(lang="en")
               .alert.alert-info.feature-description
                 p The button will get it's text attribute set depending on it's key.
                 p Like in the translation function '$.t(key)' you can prepand namespace with 'myNamespace:'
+                p You could change the dataAttributes name to something else if needed, just set 'selectorAttr' on init (default is 'data-i18n').
+                p i18next will grab a missing value from content and post it if postMissing feature is activated. You can 
+                  | turn this off by setting option ''defaultValueFromContent' to false on init.
             
             .feature
               :markdown
