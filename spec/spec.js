@@ -19,6 +19,7 @@ describe('i18next', function() {
       getAsync: true,
       returnObjectTrees: false,
       debug: true,
+      selectorAttr: 'data-i18n',
       postProcess: ''
     };
   });

@@ -10,6 +10,7 @@ var o = {
     ns: 'translation',
     nsseparator: ':',
     keyseparator: '.',
+    selectorAttr: 'data-i18n',
     debug: false,
     
     resGetPath: 'locales/__lng__/__ns__.json',

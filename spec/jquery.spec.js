@@ -63,7 +63,7 @@ describe('jQuery integration / specials', function() {
       };
       
       beforeEach(function(done) {
-        setFixtures('<div id="container"><button id="testBtn" data-i18n="simpleTest"></button></div>');
+        setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="simpleTest"></button></div>');
 
         i18n.init( $.extend(opts, { resStore: resStore }),
           function(t) {  done(); });
@@ -90,7 +90,7 @@ describe('jQuery integration / specials', function() {
       };
       
       beforeEach(function(done) {
-        setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+        setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
 
         i18n.init( $.extend(opts, { resStore: resStore }),
           function(t) {  done(); });
@@ -117,7 +117,7 @@ describe('jQuery integration / specials', function() {
       };
       
       beforeEach(function(done) {
-        setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+        setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
 
         i18n.init( $.extend(opts, { resStore: resStore }),
           function(t) {  done(); });
@@ -162,7 +162,7 @@ describe('jQuery integration / specials', function() {
       };
       
       beforeEach(function(done) {
-        setFixtures('<div id="container"><button id="testBtn" data-i18n="[title]simpleTest;simpleTest"></button></div>');
+        setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
 
         i18n.init( $.extend(opts, { 
           resStore: resStore,
