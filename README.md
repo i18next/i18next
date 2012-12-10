@@ -106,6 +106,15 @@ In the folder you find one static sample.
 
 - [jsperanto](https://github.com/jpjoyal/jsperanto).
 
+# Building
+To build your own copy of i18next, check out the repository and:
+
+    cd i18next
+    npm install grunt grunt-contrib grunt-rigger
+    node_modules/grunt/bin/grunt
+    
+The grunt command will build i18next into the bin/ and release/ folders.
+
 # License
 
 Copyright (c) 2011 Jan Mühlemann
