@@ -72,9 +72,9 @@ var sync = {
             // load each file individual
             f.each(ns.namespaces, function(nsIndex, nsValue) {
                 f.each(lngs, function(lngIndex, lngValue) {
-					
-					// Call this once our translation has returned.
-					var loadComplete = function(err, data) {
+                    
+                    // Call this once our translation has returned.
+                    var loadComplete = function(err, data) {
                         if (err) {
                             errors = errors || [];
                             errors.push(err);
@@ -86,13 +86,13 @@ var sync = {
                         if (todo === 0) cb(errors, store);
                     };
                     
-					if(typeof options.customLoad == 'function'){
-						// Use the specified custom callback.
-						options.customLoad(lngValue, nsValue, options, loadComplete);
-					} else {
-						//~ // Use our inbuilt sync.
-						sync._fetchOne(lngValue, nsValue, options, loadComplete);
-					}
+                    if(typeof options.customLoad == 'function'){
+                        // Use the specified custom callback.
+                        options.customLoad(lngValue, nsValue, options, loadComplete);
+                    } else {
+                        //~ // Use our inbuilt sync.
+                        sync._fetchOne(lngValue, nsValue, options, loadComplete);
+                    }
                 });
             });
         } else {
