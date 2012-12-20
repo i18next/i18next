@@ -14,6 +14,10 @@ function init(options, cb) {
         o.ns = { namespaces: [o.ns], defaultNs: o.ns};
     }
 
+    // escape prefix/suffix
+    o.interpolationPrefixEscaped = f.regexEscape(o.interpolationPrefix);
+    o.interpolationSuffixEscaped = f.regexEscape(o.interpolationSuffix);
+
     if (!o.lng) o.lng = f.detectLanguage(); 
     if (o.lng) {
         // set cookie with lng set (as detectLanguage will set cookie on need)

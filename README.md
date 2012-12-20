@@ -109,9 +109,11 @@ In the folder you find one static sample.
 # Building
 To build your own copy of i18next, check out the repository and:
 
+	git clone https://github.com/jamuhl/i18next.git
     cd i18next
-    npm install grunt grunt-contrib grunt-rigger
-    node_modules/grunt/bin/grunt
+    npm install grunt -g
+    npm install
+    grunt
     
 The grunt command will build i18next into the bin/ and release/ folders.
 

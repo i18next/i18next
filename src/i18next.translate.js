@@ -5,7 +5,7 @@ function applyReplacement(str, replacementHash, nestedKey) {
         if (typeof value === 'object' && value !== null) {
             str = applyReplacement(str, value, nestedKey ? nestedKey + '.' + key : key);
         } else {
-            str = str.replace(new RegExp([o.interpolationPrefix, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffix].join(''), 'g'), value);
+            str = str.replace(new RegExp([o.interpolationPrefixEscaped, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffixEscaped].join(''), 'g'), value);
         }
     });
     return str;

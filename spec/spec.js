@@ -20,7 +20,9 @@ describe('i18next', function() {
       returnObjectTrees: false,
       debug: true,
       selectorAttr: 'data-i18n',
-      postProcess: ''
+      postProcess: '',
+      interpolationPrefix: '__',
+      interpolationSuffix: '__'
     };
   });
 
