@@ -1,3 +1,8 @@
+### 1.5.10pre
+- BREAKING: fixed plural rules for languages with extended plural forms (more than 2 forms)
+- merged pull #61 - custom loader (enables jsonp or other loading custom loading strategies)
+- escaping interpolation prefix/suffix for proper regex replace
+
 ### 1.5.9
 - functions to load additional namespaces after init and to set default namespace to something else
 - set if you don't want to read defaultValues from content while using jquery fc
