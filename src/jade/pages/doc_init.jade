@@ -333,6 +333,25 @@ html(lang="en")
               .alert.alert-info.feature-description
                 p Will load 'locales/translation-en-US.json'.
 
+              .alert.alert-info.feature-description
+                h6 Overriding ajax loading functionality
+                p 
+                  | You could exchange the ajax loading functionality by providing a custom loader on init:
+
+                pre
+                  code
+                    | var option = { 
+                    |   customLoad: function(lng, ns, options, loadComplete) {
+                    |      // load the file for given language and namespace
+                    | 
+                    |      // callback with parsed json data
+                    |      loadComplete(null, data); // or loadComplete('some error'); if failed
+                    |   }
+                    | }
+                    | 
+                    | i18n.init(option);
+
+
         .row-fluid
           .span4
             h4.feature-title Load resource dynamically generated on server:

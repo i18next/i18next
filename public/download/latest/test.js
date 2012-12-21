@@ -20,7 +20,9 @@ describe('i18next', function() {
       returnObjectTrees: false,
       debug: true,
       selectorAttr: 'data-i18n',
-      postProcess: ''
+      postProcess: '',
+      interpolationPrefix: '__',
+      interpolationSuffix: '__'
     };
   });
 
@@ -801,6 +803,42 @@ describe('i18next', function() {
   
       });
   
+      describe('default i18next way - different prefix/suffix', function() {
+  
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { 
+            translation: {                      
+              interpolationTest1: 'added *toAdd*',
+              interpolationTest2: 'added *toAdd* *toAdd* twice',
+              interpolationTest3: 'added *child.one* *child.two*',
+              interpolationTest4: 'added *child.grandChild.three*'
+            } 
+          }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init( $.extend(opts, { 
+            resStore: resStore,
+            interpolationPrefix: '*',
+            interpolationSuffix: '*'
+          }), function(t) { done(); });
+        });
+  
+        it('it should replace passed in key/values', function() {
+          expect(i18n.t('interpolationTest1', {toAdd: 'something'})).to.be('added something');
+          expect(i18n.t('interpolationTest2', {toAdd: 'something'})).to.be('added something something twice');
+          expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2'}})).to.be('added 1 2');
+          expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3'}}})).to.be('added 3');
+        });
+  
+        it('it should replace passed in key/values on defaultValue', function() {
+          expect(i18n.t('interpolationTest5', {defaultValue: 'added *toAdd*', toAdd: 'something'})).to.be('added something');
+        });
+  
+      });
+  
       describe('using sprintf', function() {
   
         var resStore = {
@@ -919,7 +957,7 @@ describe('i18next', function() {
         });
       });
   
-      describe('extended usage - multiple plural forms', function() {
+      describe('extended usage - multiple plural forms - ar', function() {
         var resStore = {
             dev: { translation: { } },
             ar: { translation: { 
@@ -950,6 +988,39 @@ describe('i18next', function() {
           expect(i18n.t('key', {count: 99})).to.be('many');
           expect(i18n.t('key', {count: 199})).to.be('many');
           expect(i18n.t('key', {count: 100})).to.be('plural');
+        });
+      });
+  
+      describe('extended usage - multiple plural forms - ru', function() {
+        var resStore = {
+            dev: { translation: { } },
+            ru: { translation: { 
+                key: '1,21,31',
+                key_plural_2: '2,3,4',
+                key_plural_5: '0,5,6'
+              } 
+            },            
+            'ru-??': { translation: { } }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init( $.extend(opts, { lng: 'ru', resStore: resStore }),
+            function(t) { done(); });
+        });
+  
+        it('it should provide correct plural forms', function() {
+          expect(i18n.t('key', {count: 0})).to.be('0,5,6');
+          expect(i18n.t('key', {count: 1})).to.be('1,21,31');
+          expect(i18n.t('key', {count: 2})).to.be('2,3,4');
+          expect(i18n.t('key', {count: 3})).to.be('2,3,4');
+          expect(i18n.t('key', {count: 4})).to.be('2,3,4');
+          expect(i18n.t('key', {count: 104})).to.be('2,3,4');
+          expect(i18n.t('key', {count: 11})).to.be('0,5,6');
+          expect(i18n.t('key', {count: 24})).to.be('2,3,4');
+          expect(i18n.t('key', {count: 25})).to.be('0,5,6');
+          expect(i18n.t('key', {count: 99})).to.be('0,5,6');
+          expect(i18n.t('key', {count: 199})).to.be('0,5,6');
+          expect(i18n.t('key', {count: 100})).to.be('0,5,6');
         });
       });
   
