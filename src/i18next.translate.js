@@ -12,6 +12,9 @@ function applyReplacement(str, replacementHash, nestedKey) {
 }
 
 function applyReuse(translated, options){
+    var comma = ',';
+    var options_open = '{';
+    var options_close = '}';
     var opts = f.extend({}, options);
     delete opts.postProcess;
 
@@ -22,6 +25,20 @@ function applyReuse(translated, options){
         var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
         var token = translated.substring(index_of_opening, index_of_end_of_closing);
         var token_sans_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
+        
+        if (token_sans_symbols.indexOf(comma) != -1) {
+            var index_of_token_end_of_closing = token_sans_symbols.indexOf(comma);
+            if (token_sans_symbols.indexOf(options_open, index_of_token_end_of_closing) != -1 && token_sans_symbols.indexOf(options_close, index_of_token_end_of_closing) != -1) {
+                var index_of_opts_opening = token_sans_symbols.indexOf(options_open, index_of_token_end_of_closing);
+                var index_of_opts_end_of_closing = token_sans_symbols.indexOf(options_close, index_of_opts_opening) + options_close.length;
+                try {
+                    opts = f.extend(opts, JSON.parse(token_sans_symbols.substring(index_of_opts_opening, index_of_opts_end_of_closing)));
+                    token_sans_symbols = token_sans_symbols.substring(0, index_of_token_end_of_closing);
+                } catch (e) {
+                }
+            }
+        }
+        
         var translated_token = _translate(token_sans_symbols, opts);
         translated = translated.replace(token, translated_token);
     }
