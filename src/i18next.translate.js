@@ -158,6 +158,8 @@ function _translate(key, options){
     if (found === undefined) {
         notfound = applyReplacement(notfound, options);
         notfound = applyReuse(notfound, options);
+        //Added line for namespace fallback...
+        found = translate(key);
     }
 
     return (found !== undefined) ? found : notfound;
