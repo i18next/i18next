@@ -1,0 +1,49 @@
+__report = {
+  "info": {
+    "file": "src/i18next.api.js",
+    "fileShort": "i18next.api.js",
+    "fileSafe": "i18next_api_js",
+    "link": "files/i18next_api_js/index.html"
+  },
+  "complexity": {
+    "aggregate": {
+      "line": 2,
+      "complexity": {
+        "sloc": {
+          "physical": 15,
+          "logical": 15
+        },
+        "cyclomatic": 1,
+        "halstead": {
+          "operators": {
+            "distinct": 2,
+            "total": 31,
+            "identifiers": [
+              "__stripped__"
+            ]
+          },
+          "operands": {
+            "distinct": 18,
+            "total": 46,
+            "identifiers": [
+              "__stripped__"
+            ]
+          },
+          "length": 77,
+          "vocabulary": 20,
+          "difficulty": 2.5555555555555554,
+          "volume": 332.78846330632695,
+          "effort": 850.4594062272799,
+          "bugs": 0.11092948776877565,
+          "time": 47.24774479040444
+        }
+      }
+    },
+    "functions": [],
+    "maintainability": 104.05903049177937,
+    "module": "i18next.api.js"
+  },
+  "jshint": {
+    "messages": []
+  }
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - JavaScript Introspection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="assets/css/plato.css" rel="stylesheet">
+  <link href="assets/css/plato-overview.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li class="active">
+        <a href="index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>JavaScript Source Analysis</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <h1 class="span12">Summary</h1>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Total SLOC</h2>
+      <p class="stat">2444</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Average Maintainability</h2>
+      <p class="stat">110.07</p>
+    </div>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <h2 class="span12">Maintainability</h2>
+    <div class="span12"><div id='chart_maintainability' class='chart'></div></div>
+  </div>
+  <div class="row">
+    <h2 class="span12">Lines of code</h2>
+    <div class="span12"><div id='chart_sloc' class='chart'></div></div>
+  </div>
+  <div class="row">
+    <h2 class="span12">Estimated number of bugs</h2>
+    <div class="span12"><div id='chart_bugs' class='chart'></div></div>
+  </div>
+</div>
+
+
+
+<div class="container">
+  <div class="row">
+    <h1 class="span12">Files</h1>
+  </div>
+  <div class="row">
+    <ul class="file-list list-unstyled">
+      
+      <li class="span12" id="plato-file-0">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/amd_jquery_js/index.html">amd.jquery.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-1">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/amd_js/index.html">amd.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-2">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_api_js/index.html">i18next.api.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-3">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_defaults_js/index.html">i18next.defaults.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-4">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_detectLanguage_js/index.html">i18next.detectLanguage.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-5">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_exports_js/index.html">i18next.exports.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-6">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_functions_js/index.html">i18next.functions.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-7">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_helpers_js/index.html">i18next.helpers.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-8">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_init_js/index.html">i18next.init.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-9">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_jquery_js/index.html">i18next.jquery.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-10">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_js/index.html">i18next.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-11">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_plurals_js/index.html">i18next.plurals.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-12">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_postProcessor_js/index.html">i18next.postProcessor.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-13">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_postProcessor_sprintf_js/index.html">i18next.postProcessor.sprintf.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-14">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_shim_js/index.html">i18next.shim.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-15">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_sync_js/index.html">i18next.sync.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+      <li class="span12" id="plato-file-16">
+        <span class="fade-left plato-file-fade visible-desktop"></span>
+        <span class="span4 plato-file"><a class="plato-file-link" href="./files/i18next_translate_js/index.html">i18next.translate.js</a></span>
+        <span class="span8 plato-file-chart"></span>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/javascript" src="assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="assets/scripts/plato-overview.js"></script>
+
+</body>
+</html>

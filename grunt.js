@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.5.10pre';
+  var version = '1.5.11pre';
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
@@ -143,12 +143,12 @@ module.exports = function(grunt) {
     watch: {
       lib: {
         files: "src/*.js",
-        tasks: "rig"
+        tasks: "rig:build"
       },
 
       spec: {
         files: "spec/*.js",
-        tasks: "rig"
+        tasks: "rig:spec"
       }
     }
 

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>i18next.functions.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability</h2>
+      <p class="stat">111.19</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated # Bugs</h2>
+      <p class="stat">0.79</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty</h2>
+      <p class="stat">37.76</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">SLOC/LSLOC</h2>
+      <p class="stat">84 / 69</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity</h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC</h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">function preload(lngs, cb) {
+    if (typeof lngs === 'string') lngs = [lngs];
+    for (var i = 0, l = lngs.length; i < l; i++) {
+        if (o.preload.indexOf(lngs[i]) < 0) {
+            o.preload.push(lngs[i]);
+        }
+    }
+    return init(cb);
+}
+
+function setDefaultNamespace(ns) {
+    o.ns.defaultNs = ns;
+}
+
+function loadNamespace(namespace, cb) {
+    loadNamespaces([namespace], cb);
+}
+
+function loadNamespaces(namespaces, cb) {
+    var opts = {
+        dynamicLoad: o.dynamicLoad,
+        resGetPath: o.resGetPath,
+        getAsync: o.getAsync,
+        ns: { namespaces: namespaces, defaultNs: ''} /* new namespaces to load */
+    };
+
+    // languages to load
+    var lngsToLoad = f.toLanguages(o.lng);
+    if (typeof o.preload === 'string') o.preload = [o.preload];
+    for (var i = 0, l = o.preload.length; i < l; i++) {
+        var pres = f.toLanguages(o.preload[i]);
+        for (var y = 0, len = pres.length; y < len; y++) {
+            if (lngsToLoad.indexOf(pres[y]) < 0) {
+                lngsToLoad.push(pres[y]);
+            }
+        }
+    }
+
+    // check if we have to load
+    var lngNeedLoad = [];
+    for (var a = 0, lenA = lngsToLoad.length; a < lenA; a++) {
+        var needLoad = false;
+        var resSet = resStore[lngsToLoad[a]];
+        if (resSet) {
+            for (var b = 0, lenB = namespaces.length; b < lenB; b++) {
+                if (!resSet[namespaces[b]]) needLoad = true;
+            }
+        } else {
+            needLoad = true;
+        }
+
+        if (needLoad) lngNeedLoad.push(lngsToLoad[a]);
+    }
+
+    if (lngNeedLoad.length) {
+        i18n.sync._fetch(lngNeedLoad, opts, function(err, store) {
+            var todo = namespaces.length * lngNeedLoad.length;
+
+            // load each file individual
+            f.each(namespaces, function(nsIndex, nsValue) {
+                f.each(lngNeedLoad, function(lngIndex, lngValue) {
+                    resStore[lngValue] = resStore[lngValue] || {};
+                    resStore[lngValue][nsValue] = store[lngValue][nsValue];
+
+                    todo--; // wait for all done befor callback
+                    if (todo === 0 && cb) {
+                        if (o.useLocalStorage) i18n.sync._storeLocal(resStore);
+                        cb();
+                    }
+                });
+            });
+        });
+    } else {
+        if (cb) cb();
+    }
+}
+
+function setLng(lng, cb) {
+    return init({lng: lng}, cb);
+}
+
+function lng() {
+    return currentLng;
+}</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+
+</body>
+</html>
