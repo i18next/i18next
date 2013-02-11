@@ -4,11 +4,14 @@
   "main": "./release/i18next-1.5.10.js",
   "dependencies": {},
   "ignore": [
-    "tests/",
+    "test/",
     "spec/",
     "src/",
     "sample/",
     "report/",
-    "buildtasks/"
+    ".gitignore",
+    "grunt.js",
+    "package.json",
+    "testem.yml"
   ]
 }

@@ -2,6 +2,10 @@
 module.exports = function(grunt) {
 
   var version = '1.5.11pre';
+  // before release:
+  // update component.js
+  // after release:
+  // add tag to repo
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
