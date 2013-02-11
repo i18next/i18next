@@ -740,14 +740,18 @@
         };
     }
     
-    function applyReplacement(str, replacementHash, nestedKey) {
-        if (str.indexOf(o.interpolationPrefix) < 0) return str;
+    function applyReplacement(str, replacementHash, nestedKey, options) {
+        options = options || replacementHash; // first call uses replacement hash combined with options
+        if (str.indexOf(options.interpolationPrefix || o.interpolationPrefix) < 0) return str;
+    
+        var prefix = options.interpolationPrefix ? f.regexEscape(options.interpolationPrefix) : o.interpolationPrefixEscaped
+          , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped;
     
         f.each(replacementHash, function(key, value) {
             if (typeof value === 'object' && value !== null) {
-                str = applyReplacement(str, value, nestedKey ? nestedKey + '.' + key : key);
+                str = applyReplacement(str, value, nestedKey ? nestedKey + o.keyseparator + key : key, options);
             } else {
-                str = str.replace(new RegExp([o.interpolationPrefixEscaped, nestedKey ? nestedKey + '.' + key : key, o.interpolationSuffixEscaped].join(''), 'g'), value);
+                str = str.replace(new RegExp([prefix, nestedKey ? nestedKey + o.keyseparator + key : key, suffix].join(''), 'g'), value);
             }
         });
         return str;
@@ -763,8 +767,8 @@
             var index_of_opening = translated.indexOf(o.reusePrefix);
             var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
             var token = translated.substring(index_of_opening, index_of_end_of_closing);
-            var token_sans_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
-            var translated_token = _translate(token_sans_symbols, opts);
+            var token_without_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
+            var translated_token = _translate(token_without_symbols, opts);
             translated = translated.replace(token, translated_token);
         }
         return translated;
