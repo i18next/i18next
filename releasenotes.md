@@ -1,4 +1,12 @@
-### 1.5.10pre
+### 1.5.11pre
+- option to lookup in default namespace if value is not found in given namespace
+- option to change interpolation prefix and suffix via translation options
+- fixed issue with using ns/keyseparator on plurals, context,...
+- fixed issue with posting missing when not using jquery
+- post missing in correct lng if lng is given in translation options
+- proper usage of deferred object in init function
+
+### 1.5.10
 - BREAKING: fixed plural rules for languages with extended plural forms (more than 2 forms)
 - merged pull #61 - custom loader (enables jsonp or other loading custom loading strategies)
 - escaping interpolation prefix/suffix for proper regex replace
