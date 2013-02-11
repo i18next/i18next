@@ -12,6 +12,7 @@
     ".gitignore",
     "grunt.js",
     "package.json",
-    "testem.yml"
+    "testem.yml",
+    "**/*.zip"
   ]
 }
