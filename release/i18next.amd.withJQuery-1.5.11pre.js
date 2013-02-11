@@ -584,7 +584,7 @@
             if (deferred) deferred.resolve();
         });
     
-        return deferred;
+        return deferred.promise();
     }
     function preload(lngs, cb) {
         if (typeof lngs === 'string') lngs = [lngs];
@@ -885,7 +885,7 @@
     
         if (found === undefined && o.sendMissing) {
             if (options.lng) {
-                sync.postMissing(options.lng, ns, key, notfound, lngs);
+                sync.postMissing(lngs[0], ns, key, notfound, lngs);
             } else {
                 sync.postMissing(o.lng, ns, key, notfound, lngs);
             }

@@ -70,5 +70,5 @@ function init(options, cb) {
         if (deferred) deferred.resolve();
     });
 
-    return deferred;
+    return deferred.promise();
 }
