@@ -9,6 +9,7 @@
     "src/",
     "sample/",
     "report/",
+    "buildtasks/",
     ".gitignore",
     "grunt.js",
     "package.json",
