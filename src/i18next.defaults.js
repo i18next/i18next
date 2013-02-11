@@ -8,6 +8,7 @@ var o = {
     fallbackLng: 'dev',
     detectLngQS: 'setLng',
     ns: 'translation',
+    fallbackToDefaultNS: false,
     nsseparator: ':',
     keyseparator: '.',
     selectorAttr: 'data-i18n',

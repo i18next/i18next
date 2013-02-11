@@ -66,6 +66,7 @@
         fallbackLng: 'dev',
         detectLngQS: 'setLng',
         ns: 'translation',
+        fallbackToDefaultNS: false,
         nsseparator: ':',
         keyseparator: '.',
         selectorAttr: 'data-i18n',
@@ -885,6 +886,10 @@
                 }
                 found = value;
             }
+        }
+        
+        if (found === undefined && o.fallbackToDefaultNS) {
+            found = _translate(key, options);
         }
     
         if (found === undefined && o.sendMissing) {

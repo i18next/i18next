@@ -143,6 +143,10 @@ function _translate(key, options){
             found = value;
         }
     }
+    
+    if (found === undefined && o.fallbackToDefaultNS) {
+        found = _translate(key, options);
+    }
 
     if (found === undefined && o.sendMissing) {
         if (options.lng) {

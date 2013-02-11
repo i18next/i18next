@@ -11,6 +11,7 @@ describe('i18next', function() {
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',
+      fallbackToDefaultNS: false,
       resGetPath: 'locales/__lng__/__ns__.json',
       dynamicLoad: false,
       useLocalStorage: false,
@@ -276,6 +277,30 @@ describe('i18next', function() {
             expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_common_en-US');
             expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_common_en');
             expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_common_dev');
+          });
+  
+          describe('and fallbacking to default namespace', function() {
+            var resStore = {
+              dev: { 'ns.special': { 'simple_dev': 'ok_from_dev' } },
+              en: { 'ns.special': { 'simple_en': 'ok_from_en' } },            
+              'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
+            };
+  
+            beforeEach(function(done) {
+              i18n.init( $.extend(opts, { 
+                fallbackToDefaultNS: true, 
+                resStore: resStore, 
+                ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
+                function(t) { done(); });
+            });
+  
+            it('it should fallback to default ns', function() {
+              // default ns fallback lookup
+              expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_en-US');
+              expect(i18n.t('ns.common:simple_en')).to.be('ok_from_en');
+              expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_dev');
+            });
+  
           });
   
         });
