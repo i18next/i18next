@@ -775,19 +775,35 @@ describe('i18next', function() {
   
           it('it should return objectTree applying options', function() {
             expect(i18n.t('test', { replace: 'two' })).to.eql({ 'res': 'added two' });
+            expect(i18n.t('test', { replace: 'three' })).to.eql({ 'res': 'added three' });
+            expect(i18n.t('test', { replace: 'four' })).to.eql({ 'res': 'added four' });
           });
   
         });
   
         describe('with flag in options', function() {
+          
+          var resStore = {
+            dev: { translation: {  } },
+            en: { translation: {  } },            
+            'en-US': { 
+              translation: {                      
+                test: { res: 'added __replace__' }
+              } 
+            }
+          };
   
           beforeEach(function(done) {
-            i18n.init($.extend(opts, { returnObjectTrees: false }),
+            i18n.init($.extend(opts, { 
+              returnObjectTrees: false,
+              resStore: resStore }),
               function(t) { done(); } );
           });
   
           it('it should return objectTree', function() {
-            expect(i18n.t('test', { returnObjectTrees: true })).to.eql({ 'simple_en-US': 'ok_from_en-US' });
+            expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 'res': 'added two' });
+            expect(i18n.t('test', { returnObjectTrees: true, replace: 'three' })).to.eql({ 'res': 'added three' });
+            expect(i18n.t('test', { returnObjectTrees: true, replace: 'four' })).to.eql({ 'res': 'added four' });
           });
   
         });

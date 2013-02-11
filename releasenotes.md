@@ -6,6 +6,7 @@
 - fixed issue with posting missing when not using jquery
 - post missing in correct lng if lng is given in translation options
 - proper usage of deferred object in init function
+- fixed issue replacing values in objectTree
 
 ### 1.5.10
 - BREAKING: fixed plural rules for languages with extended plural forms (more than 2 forms)

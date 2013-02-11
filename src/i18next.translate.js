@@ -134,10 +134,12 @@ function _translate(key, options){
                             'returned a object instead of string.';
                     f.log(value);
                 } else {
+                    var copy = {}; // apply child translation on a copy
                     for (var m in value) {
                         // apply translation on childs
-                        value[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
+                        copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
                     }
+                    value = copy;
                 }
             }
             found = value;
