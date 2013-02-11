@@ -142,7 +142,7 @@ function _translate(key, options){
 
     if (found === undefined && o.sendMissing) {
         if (options.lng) {
-            sync.postMissing(options.lng, ns, key, notfound, lngs);
+            sync.postMissing(lngs[0], ns, key, notfound, lngs);
         } else {
             sync.postMissing(o.lng, ns, key, notfound, lngs);
         }
