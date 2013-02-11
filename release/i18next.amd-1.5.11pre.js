@@ -818,7 +818,7 @@
             delete optionWithoutCount.context;
             optionWithoutCount.defaultValue = o.contextNotFound;
     
-            var contextKey = ns + ':' + key + '_' + options.context;
+            var contextKey = ns + o.nsseparator + key + '_' + options.context;
             
             translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
@@ -831,12 +831,12 @@
             delete optionWithoutCount.count;
             optionWithoutCount.defaultValue = o.pluralNotFound;
     
-            var pluralKey = ns + ':' + key + o.pluralSuffix;
+            var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
             if (pluralExtension >= 0) { 
                 pluralKey = pluralKey + '_' + pluralExtension; 
             } else if (pluralExtension === 1) {
-                pluralKey = ns + ':' + key; // singular
+                pluralKey = ns + o.nsseparator + key; // singular
             }
             
             translated = translate(pluralKey, optionWithoutCount);
@@ -874,7 +874,7 @@
                     } else {
                         for (var m in value) {
                             // apply translation on childs
-                            value[m] = _translate(ns + ':' + key + '.' + m, options);
+                            value[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
                         }
                     }
                 }
