@@ -1,6 +1,14 @@
 {
   "name": "i18next",
-  "version": "1.5.7",
-  "main": "./release/i18next-1.5.7.js",
-  "dependencies": {}
+  "version": "1.5.10",
+  "main": "./release/i18next-1.5.10.js",
+  "dependencies": {},
+  "ignore": [
+    "tests/",
+    "spec/",
+    "src/",
+    "sample/",
+    "report/",
+    "buildtasks/"
+  ]
 }
