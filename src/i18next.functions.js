@@ -8,6 +8,18 @@ function preload(lngs, cb) {
     return init(cb);
 }
 
+function addResourceBundle(lng, ns, resources) {
+    if (typeof ns !== 'string') {
+        resources = ns;
+        ns = o.ns.defaultNs;
+    }
+
+    resStore[lng] = resStore[lng] || {};
+    resStore[lng][ns] = resStore[lng][ns] || {};
+
+    f.extend(resStore[lng][ns], resources);
+}
+
 function setDefaultNamespace(ns) {
     o.ns.defaultNs = ns;
 }

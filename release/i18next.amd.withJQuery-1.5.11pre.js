@@ -597,6 +597,18 @@
         return init(cb);
     }
     
+    function addResourceBundle(lng, ns, resources) {
+        if (typeof ns !== 'string') {
+            resources = ns;
+            ns = o.ns.defaultNs;
+        }
+    
+        resStore[lng] = resStore[lng] || {};
+        resStore[lng][ns] = resStore[lng][ns] || {};
+    
+        f.extend(resStore[lng][ns], resources);
+    }
+    
     function setDefaultNamespace(ns) {
         o.ns.defaultNs = ns;
     }
@@ -2376,6 +2388,7 @@
     i18n.init = init;
     i18n.setLng = setLng;
     i18n.preload = preload;
+    i18n.addResourceBundle = addResourceBundle;
     i18n.loadNamespace = loadNamespace;
     i18n.loadNamespaces = loadNamespaces;
     i18n.setDefaultNamespace = setDefaultNamespace;
