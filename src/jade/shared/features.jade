@@ -1,5 +1,53 @@
 .row-fluid
   .span4
+    a(name='basic')
+    h4.feature-title accessing resources
+
+  .span8
+    .feature
+      h6 with default namespace
+      pre
+        code
+          | // given resourcefile translation.en.json
+          | { 
+          |   key1: 'value of key 1' 
+          | }
+          | 
+          | i18n.t("key1"); // -> value of key 1
+
+      h6 with namespaces set
+      pre
+        code
+          | // given resourcesfile namespace1.en.json (default ns)
+          | { 
+          |    key1: 'value of key 1' 
+          | }
+          | 
+          | // given additional resourcesfile namespace2.en.json
+          | { 
+          |   keys: { 
+          |     2: 'value of key 2',
+          |     3: 'value of key 3'
+          |   }
+          | }
+          | 
+          | i18n.t("key1"); // -> value of key 1
+          | i18n.t("namespace1.key1"); // -> value of key 1
+          | i18n.t("keys.2"); // -> missing key
+          | i18n.t("namespace2:keys.2"); // -> value of key 2
+          | i18n.t("namespace2:keys.3"); // -> value of key 3
+
+      .feature-description
+        p
+          span.badge.badge-info Hint:
+          |  You can change namespace and/or key seperator by setting options on init:
+          ul
+            li nsseparator = ':::'
+            li keyseperator = '::'
+            li: code i18n.t("namespace2:::keys::2"); // -> value of key 2
+
+.row-fluid
+  .span4
     h4.feature-title multiline in json
 
   .span8
@@ -19,7 +67,7 @@
           |   }
           | };
 
-      .alert.alert-info.feature-description
+      .feature-description
         p The translation will be joined with '\n'.
         p
           span.badge.badge-info Hint:
@@ -40,7 +88,7 @@
           | 
           | i18n.t("key", { defaultValue: "my text" }); // -> my text
 
-      .alert.alert-info.feature-description
+      .feature-description
         p 
           | If a resource key isn't resolvable (en-US -> en -> fallbackLng) than normally the key would be returned 
           | as string value. You can provide a better default by passing in option defaultValue.
@@ -66,7 +114,7 @@
           | 
           | i18n.t("nesting1"); // -> 1 2 3
 
-      .alert.alert-info.feature-description
+      .feature-description
         p Will return '1 2 3'.
         p All other options like plurals, ... will work as expected
         p
@@ -75,6 +123,25 @@
           ul
             li reusePrefix = '$t(',
             li reuseSuffix = ')',
+
+.row-fluid
+  .span4
+    h4.feature-title nested resources with option replace
+
+  .span8
+    .feature
+      pre
+        code
+          | // given resources
+          | {
+          |   dev: { translation: { girlsAndBoys_plural: '$t(girls, {"count": __girls__}) and __count__ boys' } },
+          |   en: { translation: { girls_plural: '__count__ girls' } }
+          | };
+          | 
+          | i18n.t("nesting1", {count: 2, girls: 3}); // -> 3 girls and 2 boys
+
+      .feature-description
+        p You could change interpolationPrefix/Suffix (default '__') on need.
 
 .row-fluid
   .span4
@@ -92,12 +159,12 @@
           | 
           | i18n.t("key", { myVar: "variables" }); // -> variables are important
 
-      .alert.alert-info.feature-description
+      .feature-description
         p Will return 'variables are important'.
         p You can even have hierarchical variables in form __some.child__.
         p
           span.badge.badge-info Hint 1:
-          |  You can change pre-/suffix by setting options on init:
+          |  You can change pre-/suffix by setting options on init or on calling t function with options:
           ul
             li interpolationPrefix = '__',
             li interpolationSuffix = '__',
@@ -149,7 +216,7 @@
           | i18n.t("key1", { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] });
           | i18n.t("key2", { postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } } );
 
-      .alert.alert-info.feature-description
+      .feature-description
         p 
           | For more information about sprintf and source go to 
           a(href='http://www.diveintojavascript.com/projects/javascript-sprintf', target='_blank') dive.into.javascript.
@@ -182,7 +249,7 @@
           | i18n.t("key", { count: 1 }); // -> 1 child
           | i18n.t("key", { count: 5 }); // -> 5 children
 
-      .alert.alert-info.feature-description
+      .feature-description
         p The variable __count__ is optional.
 
 .row-fluid
@@ -218,7 +285,7 @@
           | i18n.t("key", { count: 199 }); // -> many
           | i18n.t("key", { count: 100 }); // -> plural
 
-      .alert.alert-info.feature-description
+      .feature-description
         p What did you expect ;).
         p
           span.badge.badge-info Hint:
@@ -261,7 +328,7 @@
           | i18n.t("friend", { context: 'male' }); // -> A boyfriend
           | i18n.t("friend", { context: 'female' }); // -> A girlfriend
 
-      .alert.alert-info.feature-description
+      .feature-description
         p This feature can be combined with plurals.
         p eg. key: friend_male_plural: '__count__ boyfriends'
 
@@ -285,7 +352,7 @@
           | 
           | i18n.t("tree", { returnObjectTrees: true }); // -> { res: 'added' }
 
-      .alert.alert-info.feature-description
+      .feature-description
         p 
         p
           span.badge.badge-info Hint:
@@ -302,7 +369,7 @@
         code
           | i18n.t("my.key", { lng: "de-DE" }); // -> will get value in de-DE instead of en-US
 
-      .alert.alert-info.feature-description
+      .feature-description
         p You should preload the additional languages on init!
         p 
           span.badge.badge-info Hint:

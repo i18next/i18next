@@ -44,7 +44,7 @@ html(lang="en")
                   |     // ...
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p
                   span.badge.badge-info Hint:
                   |  To avoid some routes from beeing handled (detect lng, set cookie,...) you can 
@@ -91,7 +91,7 @@ html(lang="en")
 
           .span8
             .feature
-              .alert.alert-info.feature-description
+              .feature-description
                 p
                   | Just add routes like: 
                   code i18n.addRoute(route, languages, expressApp, verb, routeFunction)
@@ -107,7 +107,7 @@ html(lang="en")
                   |   });
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | route parts starting with ':' will be added as params. Every other part will be 
                   | looked up as key, eg.:
@@ -115,7 +115,7 @@ html(lang="en")
                     li key 'route.products'
                     li key 'route.harddrives'
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p You can use this in combination with detecting the language from path:
 
                 pre
@@ -169,48 +169,48 @@ html(lang="en")
                 |   .serveChangeKeyRoute(app)      // route to post value changes
                 |   .serveRemoveKeyRoute(app);     // route to remove key/value
 
-            .alert.alert-info.feature-description
-                h6 Authentication:
+            .feature-description
+              h6 Authentication:
 
-                p 
-                  | The 'postMissing', 'change' and 'remove' routes can be called with a second 
-                  | argument providing a function for authentifation, eg:
-
-                  pre
-                    code
-                      | i18n.serveChangeKeyRoute(app, function(req, res) { 
-                      |   return !req.user; 
-                      | });
-
-
-            .alert.alert-info.feature-description
-                p 
-                  | Now you can use i18next on the client like:
+              p 
+                | The 'postMissing', 'change' and 'remove' routes can be called with a second 
+                | argument providing a function for authentifation, eg:
 
                 pre
                   code
-                    | // add script
-                    | script(src="i18next/i18next.js", type="text/javascript")
-                    | 
-                    | // init i18next in script block
-                    | i18n.init([options], function() { 
-                    |   $('#appname').text(i18n.t("app.name"));
-                    | });
-                    | 
-                    | // to support the dynamic route in client add options
-                    | i18n.init({
-                    |   resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
-                    |   dynamicLoad: true
-                    | });
-                    | 
-                    | // to support posting of missing keys add option
-                    | i18n.init({
-                    |   sendMissing: true
+                    | i18n.serveChangeKeyRoute(app, function(req, res) { 
+                    |   return !req.user; 
                     | });
 
-                p
-                  | For details read the 
-                  a(href='#{path}pages/doc_init.html') client api documetation.
+
+            .feature-description
+              p 
+                | Now you can use i18next on the client like:
+
+              pre
+                code
+                  | // add script
+                  | script(src="i18next/i18next.js", type="text/javascript")
+                  | 
+                  | // init i18next in script block
+                  | i18n.init([options], function() { 
+                  |   $('#appname').text(i18n.t("app.name"));
+                  | });
+                  | 
+                  | // to support the dynamic route in client add options
+                  | i18n.init({
+                  |   resGetPath: "locales/resources.json?lng=__lng__&ns=__ns__",
+                  |   dynamicLoad: true
+                  | });
+                  | 
+                  | // to support posting of missing keys add option
+                  | i18n.init({
+                  |   sendMissing: true
+                  | });
+
+              p
+                | For details read the 
+                a(href='#{path}pages/doc_init.html') client api documetation.
             
         h3 Serve i18next-webtranslate
 
@@ -220,7 +220,7 @@ html(lang="en")
             h4.feature-title Serve i18next-webtranslate:
 
           .span8
-            .alert.alert-info.feature-description
+            .feature-description
               img(src='#{path}public/img/i18nextWT.png', style='width: 100%;')
 
             pre
@@ -242,7 +242,7 @@ html(lang="en")
                 |   }
                 | });
 
-            .alert.alert-info.feature-description
+            .feature-description
                 h6 Authentication:
 
                 pre

@@ -46,7 +46,7 @@ html(lang="en")
                   | })
 
         a(name='jqueryfc')
-        h3 using the selector function
+        h3 Using the selector function
 
         .row-fluid
           .span4
@@ -56,25 +56,17 @@ html(lang="en")
               code
                 | $(mySelector).i18n(options);
 
-            .alert.alert-info.feature-description
-                p 
-                  | You can pass in same options as in the translation function. For 
-                  | more information about the options go to the 
-                  a(href='#{path}pages/doc_features') features page.
-                p
-                  | Alternatively by setting init option or translation option 'useDataAttrOptions = true' 
-                  | the Options for translation will be read and cached in the elements data-i18n-options attribute.
-                p
-                  span.badge.badge-info Hint:
-                  |  You can deactivate this features by setting options on init:
-                  ul
-                    li setJqueryExt = false
-                    li (will deactivate $.t too!)
+            p
+              span.badge.badge-info Hint:
+              |  You can deactivate this features by setting options on init:
+              ul
+                li setJqueryExt = false
+                li (will deactivate $.t too!)
 
           .span8
             .feature
               :markdown
-                Replace text of one element:
+                #### Replace text of one element:
                   
                     <a id="btn1" href="#" data-i18n="key.to.set.text"></a>
 
@@ -83,16 +75,26 @@ html(lang="en")
                   | $("#btn1").i18n();
 
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p The button will get it's text attribute set depending on it's key.
                 p Like in the translation function '$.t(key)' you can prepand namespace with 'myNamespace:'
                 p You could change the dataAttributes name to something else if needed, just set 'selectorAttr' on init (default is 'data-i18n').
                 p i18next will grab a missing value from content and post it if postMissing feature is activated. You can 
                   | turn this off by setting option ''defaultValueFromContent' to false on init.
             
+              .feature-description
+                h4 Using Options or data-i18n-options attribute:
+                p 
+                  | You can pass in same options as in the translation function. For 
+                  | more information about the options go to the 
+                  a(href='#{path}pages/doc_features') features page.
+                p
+                  | Alternatively by setting init option or translation option 'useDataAttrOptions = true' 
+                  | the Options for translation will be read and cached in the elements data-i18n-options attribute.
+
             .feature
               :markdown
-                Replace on elements children:
+                #### Replace on elements children:
 
                     <ul class="nav">
                       <li><a href="#" data-i18n="nav.home"></a></li>
@@ -105,13 +107,29 @@ html(lang="en")
                   | $(".nav").i18n();
 
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Every li element will get it's text attribute set depending on it's key.
+
+            .feature
+              :markdown
+                #### Replace on inner element:
+
+                    <div class="outer" data-i18n="ns:key" data-i18n-target=".inner">
+                      <input class="inner" type="text"></input>
+                    </div>
+
+              pre
+                code
+                  | $(".outer").i18n();
+
+
+              .feature-description
+                p As the target attribute is set the input tag with class 'inner' will get his value set.
 
 
             .feature
               :markdown
-                Replace other attributes or innerHtml:
+                #### Replace other attributes or innerHtml:
                   
                     <a id="btn1" href="#" data-i18n="[title]key.for.title;key.for.text"></a>
 
@@ -120,7 +138,7 @@ html(lang="en")
                   | $("#btn1").i18n();
 
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Just provide the attribute to set in '[]' and seperate multiple attributes via ';'.
                 p You can even set the innerHtml by prepending '[html]'.
 

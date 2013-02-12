@@ -35,7 +35,7 @@ html(lang="en")
                   |   return 'some post processed data based on translated value';
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p All keys unable to resolve will be send to: 'locales/add/dev/translation'
 
         .row-fluid
@@ -48,10 +48,10 @@ html(lang="en")
                 code
                   | i18n.t("my.key", { postProcess: "myProcessorsName" }); 
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p i18next will translate the key as usual. Then it passes the translation text to the post processor.
 
-              .alert.alert-info.feature-description
+              .feature-description
                 h6 eg. markdown:
                 pre
                   code
@@ -115,7 +115,7 @@ html(lang="en")
                 code 
                   | i18n.init({ saveMissing: true });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p All keys unable to resolve will be saved to: 'locales/en-US/translation.json'
 
         .row-fluid

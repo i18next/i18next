@@ -38,7 +38,7 @@ html(lang="en")
                   | // setting arguments
                   | input(type="text", placeholder!=t('my.key5'))
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p You can have html content written with multilines in JSON File
                 h6 JSON:
                 pre
@@ -88,7 +88,7 @@ html(lang="en")
                   | // use mixin
                   | mixin h4AndUl(t('listWithHeader', {returnObjectTrees: true}))
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p By using option returnObjectTrees i18next will return an object usefull in mixins.
                 p When using returnObjectTrees i18next won't join arrays so arrays can be used for lists.
                 p 
@@ -129,7 +129,7 @@ html(lang="en")
                   code
                     | !=t("markdownKey", { postProcess: "markdown" }) // -> will output parsed markdown
 
-                .alert.alert-info.feature-description
+                .feature-description
                   p Post Processor will be called after regular translation.
                   p 
                     span.badge.badge-info Hint:
@@ -169,7 +169,7 @@ html(lang="en")
                   code
                     | !=t("jadeKey", { postProcess: "jade" }) // -> will output parsed jade
 
-                .alert.alert-info.feature-description
+                .feature-description
                   p Post Processor will be called after regular translation.
                   p 
                     span.badge.badge-info Hint:

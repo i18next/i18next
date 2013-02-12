@@ -29,7 +29,7 @@
 body {
   background: #444;
   font: 13px/1.7em 'Open Sans';
-  color: #999;
+  color: #555;
 }
 p {
   font: 13px/1.7em 'Open Sans';
@@ -262,6 +262,16 @@ textarea {
 }
 .documentation code {
   font-size: 10px;
+  color: #222;
+}
+.documentation .feature-description {
+  margin-top: 10px;
+}
+.documentation .feature-description h4 {
+  margin-top: 20px;
+}
+.documentation .feature h4 {
+  margin-bottom: 5px;
 }
 .documentation .hero-unit {
   padding: 20px 60px;

@@ -54,7 +54,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ lng: 'en-US' });
-              .alert.alert-info.feature-description
+              .feature-description
                 a(name='lookupvalue')
                 p Resources will be resolved in this order:
                   ol
@@ -62,7 +62,7 @@ html(lang="en")
                     li 2) alternative look it up in languageCode only, eg. 'en'
                     li 3) finally look it up in definded fallback language, default: 'dev'
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   h5.alert-heading Change language programatically:
                   | Call function i18n.setLng(lng, callback).
@@ -77,14 +77,14 @@ html(lang="en")
           .span8
             .feature
               
-              .alert.alert-info.feature-description
+              .feature-description
                 p If language is not set explicitly i18next tries to detect the user language by:
                   ol
                     li 1) querystring parameter (?setLng=en-US)
                     li 2) cookie (i18next)
                     li 3) request header
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Alternatively you can init i18next to set language from requested route:
 
                 pre
@@ -111,7 +111,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ detectLngQS: 'lang' });
-              .alert.alert-info.feature-description
+              .feature-description
                 p The current locale to set will be looked up in the new parameter: 
                   code ?lang=en-US 
                 | default would be ?setLng=en-US
@@ -125,7 +125,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ cookieName: 'lang' }); /* default 'i18next' */
-              .alert.alert-info.feature-description
+              .feature-description
                 p The current locale to set and looked up in the given cookie parameter.
 
         .row-fluid
@@ -137,7 +137,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ useCookie: false });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Use this only if your sure that language will be provided by the other lookup options or 
                   | set programatically.
@@ -151,10 +151,10 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ preload: ['de-DE', 'fr'] });
-              .alert.alert-info.feature-description
+              .feature-description
                 p The additional languages will be preloaded.
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   h5.alert-heading Preload after init:
                   | Call function i18n.preload([lngs], callback).
@@ -169,7 +169,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ fallbackLng: 'en' });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | If not set it will default to 'dev'. If turned on, all missing key/values will be 
                   | sent to this language.
@@ -181,7 +181,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ fallbackLng: false });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | As the fallbackLng will default to 'dev' you can turn it off by setting the option value to false.
                   | This will prevent loading the fallbacks resource file and any futher look up of missing value inside a fallback file.
@@ -200,7 +200,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ load: 'current' });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | If load option is set to current i18next will load the current set language 
                   | (this could be a specific (en-US) or unspecific (en) resource file).
@@ -212,7 +212,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ load: 'unspecific' });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | If set to unspecific i18next will always load the unspecific resource file 
                   | (eg. en instead of en-US).
@@ -229,7 +229,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ debug: true });
-              .alert.alert-info.feature-description
+              .feature-description
                 p If something went wrong you might find some helpful information on console log.
 
         //- ************************************************
@@ -253,7 +253,7 @@ html(lang="en")
                   | i18n.init(function(t) { 
                   |   var appName = t("key");
                   | });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | after callback is called you can use the translation function
                   strong  't' 
@@ -279,7 +279,7 @@ html(lang="en")
                   | 
                   | i18n.init({ resStore: resources });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p As you provide the resources the callbacks will fire immediatly and no external resources will be loaded!
 
         .row-fluid
@@ -294,7 +294,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Will load 'locales/en-US/translation.json'.
                 p 
                   | If language is set to
@@ -316,7 +316,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Will load 'locales/translation-en-US.json'.
 
         .row-fluid
@@ -331,7 +331,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Will load:
                   ol
@@ -364,7 +364,7 @@ html(lang="en")
                   |   var y = t("buttons:any.key.from.buttons") 
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Will load:
                   ol
@@ -471,7 +471,7 @@ html(lang="en")
                   |     // handle err
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | The additional database backends where provided thanks to 
                   a(href='https://github.com/adrai') adrai.
@@ -497,7 +497,7 @@ html(lang="en")
                   |   // resREmovePath: 'http://myServer.com/locales/remove/__lng__/__ns__'
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p remote sync just uses request to get or set resources from a remote location.
         
         .row-fluid
@@ -517,7 +517,7 @@ html(lang="en")
                   | i18n.backend(gettextSync);
                   | i18n.init({ resGetPath: 'locales/__lng__/__ns__.mo' }); // or .po
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p gettext-sync only supports loading resources! Saving of missing resources is not yet supported.
 
                 p 
@@ -558,7 +558,7 @@ html(lang="en")
                   | i18n.backend(yamlSync);
                   | i18n.init({ resGetPath: 'locales/__lng__/__ns__.yml' }); // or .yaml
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p yaml-sync only supports loading resources! Saving of missing resources is not yet supported.
 
                 p 

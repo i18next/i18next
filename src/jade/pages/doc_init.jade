@@ -53,7 +53,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ lng: 'en-US' });
-              .alert.alert-info.feature-description
+              .feature-description
                 a(name='lookupvalue')
                 p Resources will be resolved in this order:
                   ol
@@ -61,7 +61,7 @@ html(lang="en")
                     li 2) alternative look it up in languageCode only, eg. 'en'
                     li 3) finally look it up in definded fallback language, default: 'dev'
               
-              .alert.alert-info.feature-description
+              .feature-description
                 a(name='detectlng')
                 p If language is not set explicitly i18next tries to detect the user language by:
                   ol
@@ -69,12 +69,16 @@ html(lang="en")
                     li 2) cookie (i18next)
                     li 3) language set in navigator
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   h5.alert-heading Change language programatically:
-                  | Call function i18next.setLng(lng, callback).
+                  | Call function 
+                  code i18next.setLng(lng, callback)
+                  |  .
                   h5.alert-heading Read out current language set:
-                  | Call function i18next.lng() returns current lng.
+                  | Call function 
+                  code i18next.lng()
+                  |  returns current lng.
 
         .row-fluid
           .span4
@@ -85,10 +89,13 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ detectLngQS: 'lang' });
-              .alert.alert-info.feature-description
+              .feature-description
                 p The current locale to set will be looked up in the new parameter: 
                   code ?lang=en-US 
-                | default would be ?setLng=en-US
+                p
+                  span.badge.badge-info Hint:
+                  |  default would be 
+                  code ?setLng=en-US
 
         .row-fluid
           .span4
@@ -99,7 +106,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ cookieName: 'lang' }); /* default 'i18next' */
-              .alert.alert-info.feature-description
+              .feature-description
                 p The current locale to set and looked up in the given cookie parameter.
 
         .row-fluid
@@ -111,10 +118,8 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ useCookie: false });
-              .alert.alert-info.feature-description
-                p 
-                  | Use this only if your sure that language will be provided by the other lookup options or 
-                  | set programatically.                
+              .feature-description
+                p Use this only if your sure that language will be provided by the other lookup options or set programatically.                
 
         .row-fluid
           .span4
@@ -125,13 +130,15 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ preload: ['de-DE', 'fr'] });
-              .alert.alert-info.feature-description
+              .feature-description
                 p The additional languages will be preloaded.
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   h5.alert-heading Preload after init:
-                  | Call function i18next.preload([lngs], callback).
+                  | Call function 
+                  code i18next.preload([lngs], callback)
+                  | .
 
         .row-fluid
           .span4
@@ -144,13 +151,15 @@ html(lang="en")
                 code
                   | i18n.loadNamespace('myNamespace', function() { /* loaded */ });
                   | i18n.loadNamespaces(['myNamespace1', 'myNamespace2'], function() { /* loaded */ });
-              .alert.alert-info.feature-description
+              .feature-description
                 p The additional namespaces will be loaded.
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   h5.alert-heading changing the default namespace:
-                  | Call function i18next.setDefaultNamespace('myNamespace').
+                  | Call function 
+                  code i18next.setDefaultNamespace('myNamespace')
+                  | .
 
         .row-fluid
           .span4
@@ -162,28 +171,56 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ fallbackLng: 'en' });
-              .alert.alert-info.feature-description
-                p 
-                  | If not set it will default to 'dev'. If turned on, all missing key/values will be 
+              .feature-description
+                p If not set it will default to 'dev'. If turned on, all missing key/values will be 
                   | sent to this language.
                 p 
                   span.badge.badge-info Production Hint:
                   |  set fallback language to some meaningful language, eg. 'en'
 
+              br
               h6 turn fallback language feature off:
               pre
                 code
                   | i18n.init({ fallbackLng: false });
-              .alert.alert-info.feature-description
-                p 
-                  | As the fallbackLng will default to 'dev' you can turn it off by setting the option value to false.
+              .feature-description
+                p As the fallbackLng will default to 'dev' you can turn it off by setting the option value to false.
                   | This will prevent loading the fallbacks resource file and any futher look up of missing value inside a fallback file.
 
         .row-fluid
           .span4
+            h4.feature-title Unset/Set fallback namespace:
+
+          .span8
+            .feature
+              h6 with default namespace
+              pre
+                code
+                  | // given resourcesfile namespace1.en.json (default ns)
+                  | { 
+                  |    key1: 'value of key 1' 
+                  | }
+                  | 
+                  | // given additional resourcesfile namespace2.en.json
+                  | { 
+                  |   keys: { 
+                  |     2: 'value of key 2',
+                  |     3: 'value of key 3'
+                  |   }
+                  | }
+                  | 
+                  | i18n.init({ fallbackToDefaultNS: true });
+                  | 
+                  | i18n.t("namespace2.key1"); // -> value of key 1
+
+              .feature-description
+                p If a resource can't be found in namespace it will be looked up in default namespace. By 
+                | default this option is turned off.
+
+        .row-fluid
+          .span4
             h4.feature-title Specify which locales to load:
-            p 
-              | This will help you optimizing the loading behaviour. In combination with setting 
+            p This will help you optimizing the loading behaviour. In combination with setting 
               | fallbackLng to false you can reduce the requests to the server to one! 
 
           .span8
@@ -193,21 +230,20 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ load: 'current' });
-              .alert.alert-info.feature-description
-                p 
-                  | If load option is set to current i18next will load the current set language 
+              .feature-description
+                p If load option is set to current i18next will load the current set language 
                   | (this could be a specific (en-US) or unspecific (en) resource file).
                 p 
                   span.badge.badge-info Hint:
                   |  to prevent loading the fallbackLng's resource file set fallbackLng to false.
 
+              br
               h6 only load unspecific resource file:
               pre
                 code
                   | i18n.init({ load: 'unspecific' });
-              .alert.alert-info.feature-description
-                p 
-                  | If set to unspecific i18next will always load the unspecific resource file 
+              .feature-description
+                p If set to unspecific i18next will always load the unspecific resource file 
                   | (eg. en instead of en-US).
                 p 
                   span.badge.badge-info Hint:
@@ -226,13 +262,15 @@ html(lang="en")
                   |   useLocalStorage: true | false,
                   |   localStorageExpirationTime: 86400000 // in ms, default 1 week
                   | });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Caching is turned off by default. You might want to turn it on for production.
                 p 
                   span.badge.badge-warning Warning:
                   |  if the resouces in a given language had been stored to localStorage they won't
-                  | be fetched / reloaded from online until set localStorageExpirationTime expired. So if they had been cached once and you add
+                  | be fetched / reloaded from online until set 
+                  code localStorageExpirationTime
+                  |  expired. So if they had been cached once and you add
                   | new resources, they won't be reloaded until expired.
 
         .row-fluid
@@ -244,7 +282,7 @@ html(lang="en")
               pre
                 code
                   | i18n.init({ debug: true });
-              .alert.alert-info.feature-description
+              .feature-description
                 p If something went wrong you might find some helpful information on console log.
 
         //- ************************************************
@@ -267,7 +305,7 @@ html(lang="en")
                   | i18n.init(function(t) { 
                   |   var appName = t("key");
                   | });
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | after callback is called you can use the translation function
                   strong  't' 
@@ -293,8 +331,16 @@ html(lang="en")
                   | 
                   | i18n.init({ resStore: resources });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p As you provide the resources the callbacks will fire immediatly and no external resources will be loaded!
+
+                h5 Adding additional resource bundles after initialization:
+                pre
+                  code
+                    | var additionalResources = { 'key': 'value' };
+                    | 
+                    | // addResourceBundle(lng, ns, resources) ns will default to default ns if not provided
+                    | i18n.addResourceBundle('de-CH', 'translation', additionalResources);
 
         .row-fluid
           .span4
@@ -308,7 +354,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Will load 'locales/en-US/translation.json'.
                 p 
                   | If language is set to
@@ -324,32 +370,36 @@ html(lang="en")
                   | set option 
                   strong lowerCaseLng = true
 
+              br
+              h6 Another sample:
               pre
                 code
                   | var option = { resGetPath: 'locales/__ns__-__lng__.json' };
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p Will load 'locales/translation-en-US.json'.
+        
+        .row-fluid
+          .span4
+            h4.feature-title Overriding ajax loading functionality
 
-              .alert.alert-info.feature-description
-                h6 Overriding ajax loading functionality
-                p 
-                  | You could exchange the ajax loading functionality by providing a custom loader on init:
+          .span8
+            p You could exchange the ajax loading functionality by providing a custom loader on init:
 
-                pre
-                  code
-                    | var option = { 
-                    |   customLoad: function(lng, ns, options, loadComplete) {
-                    |      // load the file for given language and namespace
-                    | 
-                    |      // callback with parsed json data
-                    |      loadComplete(null, data); // or loadComplete('some error'); if failed
-                    |   }
-                    | }
-                    | 
-                    | i18n.init(option);
+            pre
+              code
+                | var option = { 
+                |   customLoad: function(lng, ns, options, loadComplete) {
+                |      // load the file for given language and namespace
+                | 
+                |      // callback with parsed json data
+                |      loadComplete(null, data); // or loadComplete('some error'); if failed
+                |   }
+                | }
+                | 
+                | i18n.init(option);
 
 
         .row-fluid
@@ -367,7 +417,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Will request 'resources.json?lng=en-US+en+dev&ns=translation'. You will have to assert 
                   | that the server returns the complete JSON resource Store.
@@ -392,7 +442,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Will load:
                   ol
@@ -400,7 +450,9 @@ html(lang="en")
                     li 'locales/en/resource.json'
                     li 'locales/dev/resource.json'
 
-                p (Default namespace is 'translation'.)
+                p
+                  span.badge.badge-info Hint:
+                  |  Default namespace is 'translation'.
 
         .row-fluid
           .span4
@@ -425,7 +477,7 @@ html(lang="en")
                   |   var y = t("buttons:any.key.from.buttons") 
                   | });
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Will load:
                   ol
@@ -454,7 +506,7 @@ html(lang="en")
                   | 
                   | i18n.init(option);
 
-              .alert.alert-info.feature-description
+              .feature-description
                 p 
                   | Requests for resources will now be called synchronous.
                 p
