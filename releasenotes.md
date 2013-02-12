@@ -1,4 +1,5 @@
 ### 1.5.11pre
+- option to specify target to set attributes with jquery function by using 'data-i18n-target attribute'
 - function to set new options for nesting functionality
 - function to add resources after init
 - option to lookup in default namespace if value is not found in given namespace

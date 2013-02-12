@@ -35,6 +35,12 @@ function addJqueryFunct() {
         var key = ele.attr(o.selectorAttr);
         if (!key) return;
 
+        var target = ele
+          , targetSelector = ele.data("i18n-target");
+        if (targetSelector) {
+            target = ele.find(targetSelector) || ele;
+        }
+
         if (!options && o.useDataAttrOptions === true) {
             options = ele.data("i18n-options");
         }
@@ -44,11 +50,11 @@ function addJqueryFunct() {
             var keys = key.split(';');
 
             $.each(keys, function(m, k) {
-                parse(ele, k, options);
+                parse(target, k, options);
             });
 
         } else {
-            parse(ele, k, options);
+            parse(target, k, options);
         }
 
         if (o.useDataAttrOptions === true) ele.data("i18n-options", options);

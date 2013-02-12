@@ -29,8 +29,8 @@ describe('i18next', function() {
 
   
   //= init.spec.js
-  //= functions.basic.spec.js
-  //= functions.translation.spec.js
+  //= functions.spec.js
+  //= translate.spec.js
   //= jquery.spec.js
 
 });
