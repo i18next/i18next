@@ -771,7 +771,11 @@
         return str;
     }
     
-    function applyReuse(translated, options){
+    function applyReuse(translated, options) {
+        var comma = ',';
+        var options_open = '{';
+        var options_close = '}';
+    
         var opts = f.extend({}, options);
         delete opts.postProcess;
     
@@ -782,6 +786,21 @@
             var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
             var token = translated.substring(index_of_opening, index_of_end_of_closing);
             var token_without_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
+            
+    
+            if (token_without_symbols.indexOf(comma) != -1) {
+                var index_of_token_end_of_closing = token_without_symbols.indexOf(comma);
+                if (token_without_symbols.indexOf(options_open, index_of_token_end_of_closing) != -1 && token_without_symbols.indexOf(options_close, index_of_token_end_of_closing) != -1) {
+                    var index_of_opts_opening = token_without_symbols.indexOf(options_open, index_of_token_end_of_closing);
+                    var index_of_opts_end_of_closing = token_without_symbols.indexOf(options_close, index_of_opts_opening) + options_close.length;
+                    try {
+                        opts = f.extend(opts, JSON.parse(token_without_symbols.substring(index_of_opts_opening, index_of_opts_end_of_closing)));
+                        token_without_symbols = token_without_symbols.substring(0, index_of_token_end_of_closing);
+                    } catch (e) {
+                    }
+                }
+            }
+    
             var translated_token = _translate(token_without_symbols, opts);
             translated = translated.replace(token, translated_token);
         }
@@ -890,7 +909,7 @@
                                 'returned a object instead of string.';
                         f.log(value);
                     } else {
-                        var copy = {};
+                        var copy = {}; // apply child translation on a copy
                         for (var m in value) {
                             // apply translation on childs
                             copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);

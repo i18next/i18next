@@ -1,4 +1,5 @@
 ### 1.5.11pre
+- function to set new options for nesting functionality
 - function to add resources after init
 - option to lookup in default namespace if value is not found in given namespace
 - option to change interpolation prefix and suffix via translation options

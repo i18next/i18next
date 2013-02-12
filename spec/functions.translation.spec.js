@@ -128,21 +128,21 @@ describe('translation functionality', function() {
       expect(i18n.t('nesting_default', {defaultValue: '0 $t(nesting1)'})).to.be('0 1 2 3');
     });
 
-    // describe('with setting new options', function() {
-    //   var resStore = {
-    //     dev: { translation: { nesting1_plural: '$t(nesting2, {"count": {girls}}) and {count} boys' } },
-    //     en: { translation: { nesting2_plural: '{count} girls' } }
-    //   };
+    describe('with setting new options', function() {
+      var resStore = {
+        dev: { translation: { nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys' } },
+        en: { translation: { nesting2_plural: '__count__ girls' } }
+      };
       
-    //   beforeEach(function(done) {
-    //     i18n.init( $.extend(opts, { resStore: resStore }),
-    //       function(t) { done(); });
-    //   });
+      beforeEach(function(done) {
+        i18n.init( $.extend(opts, { resStore: resStore }),
+          function(t) { done(); });
+      });
 
-    //   it('it should translate nested value and set new options', function() {
-    //     expect(i18n.t('nesting1', {count: 2, girls: 3})).to.be('3 girls and 2 boys');
-    //   });
-    // });
+      it('it should translate nested value and set new options', function() {
+        expect(i18n.t('nesting1', {count: 2, girls: 3})).to.be('3 girls and 2 boys');
+      });
+    });
 
   });
 
