@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.5.11pre';
+  var version = '1.6.0';
   // before release:
   // update component.js
   // after release:
@@ -50,6 +50,10 @@ module.exports = function(grunt) {
       standard: {
         src: ['<banner:meta.banner>', '<config:rig.build.dest>'],
         dest: 'bin/i18next-<%= meta.version %>.min.js'
+      },
+      release: {
+        src: ['<banner:meta.banner>', '<config:rig.build.dest>'],
+        dest: 'release/i18next-<%= meta.version %>.min.js'
       },
       amd: {
         src: ['<banner:meta.banner>', '<config:rig.amd.dest>'],
