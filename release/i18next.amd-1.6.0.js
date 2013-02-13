@@ -562,6 +562,7 @@
             if (cb) cb(translate);
             if (deferred) deferred.resolve();
             if (deferred) return deferred.promise();
+            return;
         }
     
         // languages to load
