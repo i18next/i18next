@@ -561,7 +561,7 @@
             resStore = o.resStore;
             if (cb) cb(translate);
             if (deferred) deferred.resolve();
-            return deferred;
+            if (deferred) return deferred.promise();
         }
     
         // languages to load
@@ -584,7 +584,7 @@
             if (deferred) deferred.resolve();
         });
     
-        return deferred.promise();
+        if (deferred) return deferred.promise();
     }
     function preload(lngs, cb) {
         if (typeof lngs === 'string') lngs = [lngs];

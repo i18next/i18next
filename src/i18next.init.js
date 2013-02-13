@@ -47,7 +47,7 @@ function init(options, cb) {
         resStore = o.resStore;
         if (cb) cb(translate);
         if (deferred) deferred.resolve();
-        return deferred;
+        if (deferred) return deferred.promise();
     }
 
     // languages to load
@@ -70,5 +70,5 @@ function init(options, cb) {
         if (deferred) deferred.resolve();
     });
 
-    return deferred.promise();
+    if (deferred) return deferred.promise();
 }
