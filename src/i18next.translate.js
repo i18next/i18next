@@ -129,7 +129,7 @@ function _translate(key, options){
     var found;
     var keys = key.split(o.keyseparator);
     for (var i = 0, len = lngs.length; i < len; i++ ) {
-        if (found) break;
+        if (found !== undefined) break;
 
         var l = lngs[i];
 

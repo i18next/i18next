@@ -1,3 +1,6 @@
+### 1.6.1pre
+- fixed issue #80 empty string lookup ends in fallback instead of returning result in language
+
 ### 1.6.0
 - option to specify target to set attributes with jquery function by using 'data-i18n-target attribute'
 - function to set new options for nesting functionality

@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.6.0';
+  var version = '1.6.1pre';
   // before release:
   // update component.js
   // after release:
