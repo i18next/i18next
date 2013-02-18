@@ -64,10 +64,15 @@ html(lang="en")
 
               .feature-description
                 p 
-                  h5.alert-heading Change language programatically:
-                  | Call function i18n.setLng(lng, callback).
-                  h5.alert-heading Read out current language:
-                  | Call function i18n.lng() returns current lng.
+                  h4 Change language programatically:
+                  | Call function 
+                  code i18n.setLng(lng, callback)
+                  |.
+                p
+                  h4 Read out current language:
+                  | Call function 
+                  code i18n.lng()
+                  |  returns current lng.
 
         .row-fluid
           .span4
@@ -83,8 +88,20 @@ html(lang="en")
                     li 1) querystring parameter (?setLng=en-US)
                     li 2) cookie (i18next)
                     li 3) request header
+              
+              .feature-description
+                p 
+                  h5 Turn cookie off:
+                  | Call function 
+                  code i18n.init({ useCookie: false })
+                  | .
+                  h5 Don't lookup in header:
+                  | Call function 
+                  code i18n.init({ detectLngFromHeaders: false })
+                  | .
 
               .feature-description
+                h4 Detect from route:
                 p Alternatively you can init i18next to set language from requested route:
 
                 pre
@@ -101,6 +118,13 @@ html(lang="en")
                   |  to set i18next to set language to fallbackLng if no locale could be set by path 
                   | you could set init option 'forceDetectLngFromPath' to true. This will stop any further 
                   | lookup via querystring or cookie.
+
+              .feature-description
+                h4 Control over supported languages:
+                p To avoid i18next returning unsupported languages you could set an array of 
+                | supported languages on init: 
+                code i18n.init({supportedLngs: ['en', 'de']})
+                |.
 
         .row-fluid
           .span4

@@ -129,9 +129,17 @@ html(lang="en")
                   | var option = { 
                   |   // change path to store file
                   |   resSetPath: 'locales/__lng__/__ns__.json';
+                  | 
+                  |   // send missing values to
+                  |   sendMissingTo: 'fallback|current|all'
                   | };
                   | 
                   | i18n.init(option);
+
+                  pre
+
+              .feature-description
+                p You can save missing values to the fallbackLng, the current language or 'all' languages (eg. 'en-US', 'en', 'fallback')
 
     include ../includes/layout/extra
       
