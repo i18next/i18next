@@ -6,7 +6,7 @@ describe('resource nesting', function() {
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { resStore: resStore }),
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
       function(t) { done(); });
   });
 
@@ -25,7 +25,7 @@ describe('resource nesting', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) { done(); });
     });
 

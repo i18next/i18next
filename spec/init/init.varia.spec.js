@@ -19,7 +19,7 @@ describe('with lowercase flag', function() {
   describe('default behaviour will uppercase specifc country part.', function() {
 
     beforeEach(function() {
-      i18n.init( $.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
         lng: 'en-us',
         resStore: {
           'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
@@ -40,7 +40,7 @@ describe('with lowercase flag', function() {
   describe('overridden behaviour will accept lowercased country part.', function() {
 
     beforeEach(function() {
-      i18n.init( $.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
         lng: 'en-us',
         lowerCaseLng: true,
         resStore: {

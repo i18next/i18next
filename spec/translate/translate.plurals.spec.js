@@ -20,7 +20,7 @@ describe('plural usage', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
           resStore: resStore,
           ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
         }),
@@ -69,7 +69,7 @@ describe('plural usage', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, {
+      i18n.init(i18n.functions.extend(opts, {
           lng: 'fr',
           resStore: resStore,
           ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
@@ -105,7 +105,7 @@ describe('plural usage', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { lng: 'ar', resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { lng: 'ar', resStore: resStore }),
         function(t) { done(); });
     });
 
@@ -136,7 +136,7 @@ describe('plural usage', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { lng: 'ru', resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { lng: 'ru', resStore: resStore }),
         function(t) { done(); });
     });
 

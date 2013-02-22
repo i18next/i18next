@@ -3,7 +3,7 @@ describe('with namespace', function() {
   describe('with one namespace set', function() {
 
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { ns: 'ns.special'} ),
+      i18n.init(i18n.functions.extend(opts, { ns: 'ns.special'} ),
         function(t) { done(); });
     });
 
@@ -18,7 +18,7 @@ describe('with namespace', function() {
   describe('with more than one namespace set', function() {
 
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
+      i18n.init(i18n.functions.extend(opts, { ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
         function(t) { done(); });
     });
 
@@ -47,7 +47,7 @@ describe('with namespace', function() {
       };
 
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { 
+        i18n.init(i18n.functions.extend(opts, { 
           fallbackToDefaultNS: true, 
           resStore: resStore, 
           ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
@@ -100,14 +100,16 @@ describe('with namespace', function() {
       var spy; 
 
       before(function() {
-        window.localStorage.removeItem('res_en-US');
-        window.localStorage.removeItem('res_en');
-        window.localStorage.removeItem('res_dev');
+        if (typeof window !== 'undefined') { // safe use on server
+          window.localStorage.removeItem('res_en-US');
+          window.localStorage.removeItem('res_en');
+          window.localStorage.removeItem('res_dev');
+        }
       });
 
       beforeEach(function(done) {
         spy = sinon.spy(i18n.sync, '_fetchOne');
-        i18n.init($.extend(opts, { 
+        i18n.init(i18n.functions.extend(opts, { 
           useLocalStorage: true 
         }), function(t) {
           i18n.setDefaultNamespace('ns.special');
@@ -127,7 +129,7 @@ describe('with namespace', function() {
 
         beforeEach(function(done) {
           spy.reset();
-          i18n.init($.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
             useLocalStorage: true,
             ns: 'translation'
           }), function(t) {

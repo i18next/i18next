@@ -15,6 +15,9 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
     return str;
 }
 
+// append it to functions
+f.applyReplacement = applyReplacement;
+
 function applyReuse(translated, options) {
     var comma = ',';
     var options_open = '{';

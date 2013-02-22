@@ -44,6 +44,18 @@ module.exports = function(grunt) {
       spec: {
         src: ['spec/spec.js'],
         dest: 'test/test.js'
+      },
+      serverInit: {
+        src: ['spec/server.init.spec.js'],
+        dest: 'test/server/i18next.init.spec.js'
+      },
+      serverFunct: {
+        src: ['spec/server.functions.spec.js'],
+        dest: 'test/server/i18next.functions.spec.js'
+      },
+      serverTrans: {
+        src: ['spec/server.translate.spec.js'],
+        dest: 'test/server/i18next.translate.spec.js'
       }
     },
 

@@ -10,7 +10,7 @@ describe('using localStorage', function() {
 
   beforeEach(function(done) {
     spy = sinon.spy(i18n.sync, '_fetchOne');
-    i18n.init($.extend(opts, { 
+    i18n.init(i18n.functions.extend(opts, { 
       useLocalStorage: true 
     }), function(t) { done(); });
   });

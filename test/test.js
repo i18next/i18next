@@ -39,7 +39,7 @@ describe('i18next', function() {
       };
       
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { resStore: resStore }),
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
           function(t) { done(); });
       });
     
@@ -82,7 +82,7 @@ describe('i18next', function() {
     
           server.respondWith([200, { "Content-Type": "application/json" }, JSON.stringify(res)]);
     
-          i18n.init( $.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
               resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
               dynamicLoad: true }),
             function(t) { server.restore(); done(); });
@@ -109,7 +109,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { 
               i18n.addResourceBundle('en-US', 'translation', { 'simple_en-US': 'ok_from_en-US' });
               done(); 
@@ -132,7 +132,7 @@ describe('i18next', function() {
       
           beforeEach(function(done) {
             spy = sinon.spy(i18n.sync, '_fetchOne');
-            i18n.init($.extend(opts, { 
+            i18n.init(i18n.functions.extend(opts, { 
                 load: 'current' }),
               function(t) { done(); });
           });
@@ -159,7 +159,7 @@ describe('i18next', function() {
       
           beforeEach(function(done) {
             spy = sinon.spy(i18n.sync, '_fetchOne');
-            i18n.init($.extend(opts, { 
+            i18n.init(i18n.functions.extend(opts, { 
                 load: 'unspecific' }),
               function(t) { done(); });
           });
@@ -192,7 +192,7 @@ describe('i18next', function() {
       
         beforeEach(function(done) {
           spy = sinon.spy(i18n.sync, '_fetchOne');
-          i18n.init($.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
               fallbackLng: false }),
             function(t) { done(); });
         });
@@ -219,7 +219,7 @@ describe('i18next', function() {
       
         beforeEach(function(done) {
           spy = sinon.spy(i18n.sync, '_fetchOne');
-          i18n.init($.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
               preload: ['fr', 'de-DE'] }),
             function(t) { done(); });
         });
@@ -236,6 +236,7 @@ describe('i18next', function() {
       
           beforeEach(function(done) {
             spy.reset();
+            if (i18n.sync.resStore) i18n.sync.resStore = {}; // to reset for test on server!
             i18n.setLng('de-DE',
               function(t) { done(); });
           });
@@ -251,7 +252,7 @@ describe('i18next', function() {
       describe('with synchronous flag', function() {
       
         beforeEach(function() {
-          i18n.init( $.extend(opts, { getAsync: false }) );
+          i18n.init(i18n.functions.extend(opts, { getAsync: false }) );
         });
       
         it('it should provide loaded resources for translation', function() {
@@ -267,7 +268,7 @@ describe('i18next', function() {
         describe('with one namespace set', function() {
       
           beforeEach(function(done) {
-            i18n.init( $.extend(opts, { ns: 'ns.special'} ),
+            i18n.init(i18n.functions.extend(opts, { ns: 'ns.special'} ),
               function(t) { done(); });
           });
       
@@ -282,7 +283,7 @@ describe('i18next', function() {
         describe('with more than one namespace set', function() {
       
           beforeEach(function(done) {
-            i18n.init( $.extend(opts, { ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
+            i18n.init(i18n.functions.extend(opts, { ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
               function(t) { done(); });
           });
       
@@ -311,7 +312,7 @@ describe('i18next', function() {
             };
       
             beforeEach(function(done) {
-              i18n.init( $.extend(opts, { 
+              i18n.init(i18n.functions.extend(opts, { 
                 fallbackToDefaultNS: true, 
                 resStore: resStore, 
                 ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
@@ -364,14 +365,16 @@ describe('i18next', function() {
             var spy; 
       
             before(function() {
-              window.localStorage.removeItem('res_en-US');
-              window.localStorage.removeItem('res_en');
-              window.localStorage.removeItem('res_dev');
+              if (typeof window !== 'undefined') { // safe use on server
+                window.localStorage.removeItem('res_en-US');
+                window.localStorage.removeItem('res_en');
+                window.localStorage.removeItem('res_dev');
+              }
             });
       
             beforeEach(function(done) {
               spy = sinon.spy(i18n.sync, '_fetchOne');
-              i18n.init($.extend(opts, { 
+              i18n.init(i18n.functions.extend(opts, { 
                 useLocalStorage: true 
               }), function(t) {
                 i18n.setDefaultNamespace('ns.special');
@@ -391,7 +394,7 @@ describe('i18next', function() {
       
               beforeEach(function(done) {
                 spy.reset();
-                i18n.init($.extend(opts, { 
+                i18n.init(i18n.functions.extend(opts, { 
                   useLocalStorage: true,
                   ns: 'translation'
                 }), function(t) {
@@ -424,7 +427,7 @@ describe('i18next', function() {
       
         beforeEach(function(done) {
           spy = sinon.spy(i18n.sync, '_fetchOne');
-          i18n.init($.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
             useLocalStorage: true 
           }), function(t) { done(); });
         });
@@ -493,7 +496,7 @@ describe('i18next', function() {
         describe('default behaviour will uppercase specifc country part.', function() {
       
           beforeEach(function() {
-            i18n.init( $.extend(opts, { 
+            i18n.init(i18n.functions.extend(opts, { 
               lng: 'en-us',
               resStore: {
                 'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
@@ -514,7 +517,7 @@ describe('i18next', function() {
         describe('overridden behaviour will accept lowercased country part.', function() {
       
           beforeEach(function() {
-            i18n.init( $.extend(opts, { 
+            i18n.init(i18n.functions.extend(opts, { 
               lng: 'en-us',
               lowerCaseLng: true,
               resStore: {
@@ -543,7 +546,7 @@ describe('i18next', function() {
     describe('setting language', function() {
     
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, {
+        i18n.init(i18n.functions.extend(opts, {
           resStore: {
             'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
             'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
@@ -578,9 +581,10 @@ describe('i18next', function() {
     
       it('it should preload resources for languages', function(done) {
         spy.reset();
+        if (i18n.sync.resStore) i18n.sync.resStore = {}; // to reset for test on server!
         i18n.preload('de-DE', function(t) {
-            expect(spy.callCount).to.be(5); // en-US, en, de-DE, de, dev
-            done();
+          expect(spy.callCount).to.be(5); // en-US, en, de-DE, de, dev
+          done();
         });
     
       });
@@ -598,7 +602,7 @@ describe('i18next', function() {
         });
     
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, {
+          i18n.init(i18n.functions.extend(opts, {
             resStore: {
               'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
               'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
@@ -613,7 +617,7 @@ describe('i18next', function() {
         describe('or setting it as default on init', function() {
     
           beforeEach(function(done) {
-            i18n.init( $.extend(opts, {
+            i18n.init(i18n.functions.extend(opts, {
               resStore: {
                 'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
                 'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
@@ -643,7 +647,7 @@ describe('i18next', function() {
     
           server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
     
-          i18n.init( $.extend(opts, {
+          i18n.init(i18n.functions.extend(opts, {
             sendMissing: true,
             resStore: {
               'en-US': { translation: {  } },
@@ -675,7 +679,7 @@ describe('i18next', function() {
     
           server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
     
-          i18n.init( $.extend(opts, {
+          i18n.init(i18n.functions.extend(opts, {
             sendMissing: true,
             sendMissingTo: 'all',
             resStore: {
@@ -712,7 +716,7 @@ describe('i18next', function() {
       };
       
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { resStore: resStore, returnObjectTrees: true }),
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore, returnObjectTrees: true }),
           function(t) { done(); });
       });
     
@@ -730,7 +734,7 @@ describe('i18next', function() {
       };
     
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { resStore: resStore }),
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { done(); });
       });
     
@@ -746,7 +750,7 @@ describe('i18next', function() {
         };
     
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore, lng: 'en' }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lng: 'en' }),
               function(t) { done(); });
         });
     
@@ -763,7 +767,7 @@ describe('i18next', function() {
         };
     
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
               function(t) { done(); });
         });
     
@@ -781,7 +785,7 @@ describe('i18next', function() {
       };
       
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { resStore: resStore }),
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
           function(t) { done(); });
       });
     
@@ -792,8 +796,20 @@ describe('i18next', function() {
   
     describe('accessing tree values', function() {
     
+      var resStore = {
+        dev: { translation: {  } },
+        en: { translation: {  } },            
+        'en-US': { 
+          translation: {                      
+            test: { 'simple_en-US': 'ok_from_en-US' }
+          } 
+        }
+      };
+    
       beforeEach(function(done) {
-        i18n.init(opts, function(t) { done(); } );
+        i18n.init(i18n.functions.extend(opts, { 
+          resStore: resStore }
+        ), function(t) { done(); });
       });
     
       it('it should return nested string', function() {
@@ -819,7 +835,7 @@ describe('i18next', function() {
           };
           
           beforeEach(function(done) {
-            i18n.init( $.extend(opts, { 
+            i18n.init(i18n.functions.extend(opts, { 
               returnObjectTrees: true,
               resStore: resStore }
               ), function(t) { done(); });
@@ -846,7 +862,7 @@ describe('i18next', function() {
           };
     
           beforeEach(function(done) {
-            i18n.init($.extend(opts, { 
+            i18n.init(i18n.functions.extend(opts, { 
               returnObjectTrees: false,
               resStore: resStore }),
               function(t) { done(); } );
@@ -872,7 +888,7 @@ describe('i18next', function() {
       };
       
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { resStore: resStore }),
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
           function(t) { done(); });
       });
     
@@ -891,7 +907,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { done(); });
         });
     
@@ -920,7 +936,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { done(); });
         });
       
@@ -953,7 +969,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
             resStore: resStore,
             interpolationPrefix: '*',
             interpolationSuffix: '*'
@@ -989,7 +1005,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
             resStore: resStore
           }), function(t) { done(); });
         });
@@ -1021,7 +1037,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { done(); });
         });
       
@@ -1056,7 +1072,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
               resStore: resStore,
               ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
             }),
@@ -1105,7 +1121,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, {
+          i18n.init(i18n.functions.extend(opts, {
               lng: 'fr',
               resStore: resStore,
               ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
@@ -1141,7 +1157,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { lng: 'ar', resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { lng: 'ar', resStore: resStore }),
             function(t) { done(); });
         });
     
@@ -1172,7 +1188,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { lng: 'ru', resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { lng: 'ru', resStore: resStore }),
             function(t) { done(); });
         });
     
@@ -1214,7 +1230,7 @@ describe('i18next', function() {
         };
     
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
               resStore: resStore, 
               ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
             }),
@@ -1252,7 +1268,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { done(); });
         });
     
@@ -1275,7 +1291,7 @@ describe('i18next', function() {
     describe('with passed in languages different from set one', function() {
     
       beforeEach(function(done) {
-        i18n.init($.extend(opts, { 
+        i18n.init(i18n.functions.extend(opts, { 
             preload: ['de-DE'] }),
           function(t) { done(); });
       });
@@ -1287,7 +1303,8 @@ describe('i18next', function() {
       describe('with language not preloaded', function() {
     
         it('it should provide translation for passed in language after loading file sync', function() {
-          expect(i18n.t('simple_fr', { lng: 'fr' })).to.be('ok_from_fr');
+          var expectedValue = i18n.clientVersion ? 'simple_fr' : 'ok_from_fr';
+          expect(i18n.t('simple_fr', { lng: 'fr' })).to.be(expectedValue);
         });
     
       });
@@ -1309,7 +1326,7 @@ describe('i18next', function() {
         };
         
         beforeEach(function(done) {
-          i18n.init( $.extend(opts, { resStore: resStore })).done(function(t) { done(); });
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore })).done(function(t) { done(); });
         });
     
         it('it should provide passed in resources for translation', function() {
@@ -1363,7 +1380,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="simpleTest"></button></div>');
     
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
         });
     
@@ -1390,7 +1407,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
     
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
         });
     
@@ -1417,7 +1434,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
     
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
         });
     
@@ -1439,7 +1456,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           setFixtures('<div id="container" data-i18n="[html]simpleTest"></div>');
     
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
         });
     
@@ -1461,7 +1478,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           setFixtures('<div id="container" data-i18n-target="#inner" data-i18n="[html]simpleTest"><div id="inner"></div></div>');
     
-          i18n.init( $.extend(opts, { resStore: resStore }),
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) {  done(); });
         });
     
@@ -1484,7 +1501,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
     
-          i18n.init( $.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, { 
             resStore: resStore,
             useDataAttrOptions: true
           }),

@@ -6,7 +6,7 @@ describe('setting load', function() {
 
     beforeEach(function(done) {
       spy = sinon.spy(i18n.sync, '_fetchOne');
-      i18n.init($.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
           load: 'current' }),
         function(t) { done(); });
     });
@@ -33,7 +33,7 @@ describe('setting load', function() {
 
     beforeEach(function(done) {
       spy = sinon.spy(i18n.sync, '_fetchOne');
-      i18n.init($.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
           load: 'unspecific' }),
         function(t) { done(); });
     });
@@ -66,7 +66,7 @@ describe('with fallback language set to false', function() {
 
   beforeEach(function(done) {
     spy = sinon.spy(i18n.sync, '_fetchOne');
-    i18n.init($.extend(opts, { 
+    i18n.init(i18n.functions.extend(opts, { 
         fallbackLng: false }),
       function(t) { done(); });
   });

@@ -18,7 +18,7 @@ describe('context usage', function() {
     };
 
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
           resStore: resStore, 
           ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
         }),
@@ -56,7 +56,7 @@ describe('context usage', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) { done(); });
     });
 

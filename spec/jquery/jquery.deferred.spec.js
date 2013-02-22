@@ -9,7 +9,7 @@ describe('initialise - use deferrer instead of callback', function() {
     };
     
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { resStore: resStore })).done(function(t) { done(); });
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore })).done(function(t) { done(); });
     });
 
     it('it should provide passed in resources for translation', function() {

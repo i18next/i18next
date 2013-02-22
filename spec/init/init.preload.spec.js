@@ -4,7 +4,7 @@ describe('preloading multiple languages', function() {
 
   beforeEach(function(done) {
     spy = sinon.spy(i18n.sync, '_fetchOne');
-    i18n.init($.extend(opts, { 
+    i18n.init(i18n.functions.extend(opts, { 
         preload: ['fr', 'de-DE'] }),
       function(t) { done(); });
   });
@@ -21,6 +21,7 @@ describe('preloading multiple languages', function() {
 
     beforeEach(function(done) {
       spy.reset();
+      if (i18n.sync.resStore) i18n.sync.resStore = {}; // to reset for test on server!
       i18n.setLng('de-DE',
         function(t) { done(); });
     });

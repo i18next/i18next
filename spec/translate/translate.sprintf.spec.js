@@ -12,7 +12,7 @@ describe('using sprintf', function() {
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { resStore: resStore }),
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
       function(t) { done(); });
   });
 

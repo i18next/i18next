@@ -1,7 +1,19 @@
 describe('accessing tree values', function() {
 
+  var resStore = {
+    dev: { translation: {  } },
+    en: { translation: {  } },            
+    'en-US': { 
+      translation: {                      
+        test: { 'simple_en-US': 'ok_from_en-US' }
+      } 
+    }
+  };
+
   beforeEach(function(done) {
-    i18n.init(opts, function(t) { done(); } );
+    i18n.init(i18n.functions.extend(opts, { 
+      resStore: resStore }
+    ), function(t) { done(); });
   });
 
   it('it should return nested string', function() {
@@ -27,7 +39,7 @@ describe('accessing tree values', function() {
       };
       
       beforeEach(function(done) {
-        i18n.init( $.extend(opts, { 
+        i18n.init(i18n.functions.extend(opts, { 
           returnObjectTrees: true,
           resStore: resStore }
           ), function(t) { done(); });
@@ -54,7 +66,7 @@ describe('accessing tree values', function() {
       };
 
       beforeEach(function(done) {
-        i18n.init($.extend(opts, { 
+        i18n.init(i18n.functions.extend(opts, { 
           returnObjectTrees: false,
           resStore: resStore }),
           function(t) { done(); } );

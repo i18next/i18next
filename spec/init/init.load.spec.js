@@ -7,7 +7,7 @@ describe('with passed in resource set', function() {
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { resStore: resStore }),
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
       function(t) { done(); });
   });
 
@@ -50,7 +50,7 @@ describe('loading from server', function() {
 
       server.respondWith([200, { "Content-Type": "application/json" }, JSON.stringify(res)]);
 
-      i18n.init( $.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
           resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
           dynamicLoad: true }),
         function(t) { server.restore(); done(); });

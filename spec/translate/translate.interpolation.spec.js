@@ -14,7 +14,7 @@ describe('default i18next way', function() {
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { resStore: resStore }),
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
       function(t) { done(); });
   });
 
@@ -47,7 +47,7 @@ describe('default i18next way - different prefix/suffix', function() {
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { 
+    i18n.init(i18n.functions.extend(opts, { 
       resStore: resStore,
       interpolationPrefix: '*',
       interpolationSuffix: '*'
@@ -83,7 +83,7 @@ describe('default i18next way - different prefix/suffix via options', function()
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { 
+    i18n.init(i18n.functions.extend(opts, { 
       resStore: resStore
     }), function(t) { done(); });
   });

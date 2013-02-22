@@ -9,7 +9,7 @@ describe('post missing resources', function() {
 
       server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
 
-      i18n.init( $.extend(opts, {
+      i18n.init(i18n.functions.extend(opts, {
         sendMissing: true,
         resStore: {
           'en-US': { translation: {  } },
@@ -41,7 +41,7 @@ describe('post missing resources', function() {
 
       server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
 
-      i18n.init( $.extend(opts, {
+      i18n.init(i18n.functions.extend(opts, {
         sendMissing: true,
         sendMissingTo: 'all',
         resStore: {

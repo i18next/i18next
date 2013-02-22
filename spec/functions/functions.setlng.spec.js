@@ -1,7 +1,7 @@
 describe('setting language', function() {
 
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, {
+    i18n.init(i18n.functions.extend(opts, {
       resStore: {
         'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
         'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }

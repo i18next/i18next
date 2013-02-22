@@ -1,7 +1,7 @@
 describe('with synchronous flag', function() {
 
   beforeEach(function() {
-    i18n.init( $.extend(opts, { getAsync: false }) );
+    i18n.init(i18n.functions.extend(opts, { getAsync: false }) );
   });
 
   it('it should provide loaded resources for translation', function() {

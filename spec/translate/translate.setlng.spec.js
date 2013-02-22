@@ -1,7 +1,7 @@
 describe('with passed in languages different from set one', function() {
 
   beforeEach(function(done) {
-    i18n.init($.extend(opts, { 
+    i18n.init(i18n.functions.extend(opts, { 
         preload: ['de-DE'] }),
       function(t) { done(); });
   });
@@ -13,7 +13,8 @@ describe('with passed in languages different from set one', function() {
   describe('with language not preloaded', function() {
 
     it('it should provide translation for passed in language after loading file sync', function() {
-      expect(i18n.t('simple_fr', { lng: 'fr' })).to.be('ok_from_fr');
+      var expectedValue = i18n.clientVersion ? 'simple_fr' : 'ok_from_fr';
+      expect(i18n.t('simple_fr', { lng: 'fr' })).to.be(expectedValue);
     });
 
   });

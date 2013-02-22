@@ -7,7 +7,7 @@ describe('adding resources after init', function() {
   };
   
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { resStore: resStore }),
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
       function(t) { 
         i18n.addResourceBundle('en-US', 'translation', { 'simple_en-US': 'ok_from_en-US' });
         done(); 

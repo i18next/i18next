@@ -11,7 +11,7 @@ describe('using bindings $([selector].i18n())', function() {
     beforeEach(function(done) {
       setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="simpleTest"></button></div>');
 
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) {  done(); });
     });
 
@@ -38,7 +38,7 @@ describe('using bindings $([selector].i18n())', function() {
     beforeEach(function(done) {
       setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
 
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) {  done(); });
     });
 
@@ -65,7 +65,7 @@ describe('using bindings $([selector].i18n())', function() {
     beforeEach(function(done) {
       setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
 
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) {  done(); });
     });
 
@@ -87,7 +87,7 @@ describe('using bindings $([selector].i18n())', function() {
     beforeEach(function(done) {
       setFixtures('<div id="container" data-i18n="[html]simpleTest"></div>');
 
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) {  done(); });
     });
 
@@ -109,7 +109,7 @@ describe('using bindings $([selector].i18n())', function() {
     beforeEach(function(done) {
       setFixtures('<div id="container" data-i18n-target="#inner" data-i18n="[html]simpleTest"><div id="inner"></div></div>');
 
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) {  done(); });
     });
 
@@ -132,7 +132,7 @@ describe('using bindings $([selector].i18n())', function() {
     beforeEach(function(done) {
       setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest"></button></div>');
 
-      i18n.init( $.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, { 
         resStore: resStore,
         useDataAttrOptions: true
       }),

@@ -6,7 +6,7 @@ describe('key with empty string value as valid option', function() {
   };
 
   beforeEach(function(done) {
-    i18n.init( $.extend(opts, { resStore: resStore }),
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) { done(); });
   });
 
@@ -22,7 +22,7 @@ describe('key with empty string value as valid option', function() {
     };
 
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { resStore: resStore, lng: 'en' }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore, lng: 'en' }),
           function(t) { done(); });
     });
 
@@ -39,7 +39,7 @@ describe('key with empty string value as valid option', function() {
     };
 
     beforeEach(function(done) {
-      i18n.init( $.extend(opts, { resStore: resStore }),
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
           function(t) { done(); });
     });
 
