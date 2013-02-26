@@ -34,15 +34,14 @@ function applyReuse(translated, options) {
         var token = translated.substring(index_of_opening, index_of_end_of_closing);
         var token_without_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
 
+
         if (token_without_symbols.indexOf(comma) != -1) {
             var index_of_token_end_of_closing = token_without_symbols.indexOf(comma);
             if (token_without_symbols.indexOf(options_open, index_of_token_end_of_closing) != -1 && token_without_symbols.indexOf(options_close, index_of_token_end_of_closing) != -1) {
                 var index_of_opts_opening = token_without_symbols.indexOf(options_open, index_of_token_end_of_closing);
                 var index_of_opts_end_of_closing = token_without_symbols.indexOf(options_close, index_of_opts_opening) + options_close.length;
                 try {
-                    var str_opts
-                    eval('str_opts='+token_without_symbols.substring(index_of_opts_opening, index_of_opts_end_of_closing))
-                    opts = f.extend(opts, str_opts);
+                    opts = f.extend(opts, JSON.parse(token_without_symbols.substring(index_of_opts_opening, index_of_opts_end_of_closing)));
                     token_without_symbols = token_without_symbols.substring(0, index_of_token_end_of_closing);
                 } catch (e) {
                 }
