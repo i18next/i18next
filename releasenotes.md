@@ -1,6 +1,7 @@
 ### 1.6.1pre
 - fixed issue #80 empty string lookup ends in fallback instead of returning result in language
 - fixed issue with null value in resources not returning expected value
+- optimized tests to use on server (nodejs) too
 
 ### 1.6.0
 - option to specify target to set attributes with jquery function by using 'data-i18n-target attribute'

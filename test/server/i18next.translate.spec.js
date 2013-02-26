@@ -22,6 +22,7 @@ describe('i18next.translate', function() {
       returnObjectTrees: false,
       interpolationPrefix: '__',
       interpolationSuffix: '__',
+      postProcess: '',
       debug: false
     };
   });

@@ -29,6 +29,7 @@ describe('i18next.init', function() {
       returnObjectTrees: false,
       interpolationPrefix: '__',
       interpolationSuffix: '__',
+      postProcess: '',
       debug: false
     };
 

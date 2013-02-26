@@ -28,6 +28,7 @@ describe('i18next.functions', function() {
       returnObjectTrees: false,
       interpolationPrefix: '__',
       interpolationSuffix: '__',
+      postProcess: '',
       debug: false
     };
 
