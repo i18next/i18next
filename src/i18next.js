@@ -3,7 +3,7 @@
     //= i18next.shim.js
 
     var root = this
-      , $ = root.jQuery
+      , $ = root.jQuery || root.Zepto
       , i18n = {}
       , resStore = {}
       , currentLng
