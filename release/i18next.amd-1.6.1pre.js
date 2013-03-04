@@ -761,6 +761,8 @@
     }
     
     function applyReplacement(str, replacementHash, nestedKey, options) {
+        if (!str) return str;
+        
         options = options || replacementHash; // first call uses replacement hash combined with options
         if (str.indexOf(options.interpolationPrefix || o.interpolationPrefix) < 0) return str;
     

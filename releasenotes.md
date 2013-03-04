@@ -1,4 +1,5 @@
 ### 1.6.1pre
+- fixed issue with null value throws in applyReplacement function
 - fixed issue #80 empty string lookup ends in fallback instead of returning result in language
 - fixed issue with null value in resources not returning expected value
 - optimized tests to use on server (nodejs) too
