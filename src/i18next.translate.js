@@ -125,17 +125,13 @@ function _translate(key, options){
         
         translated = translate(pluralKey, optionWithoutCount);
         if (translated != o.pluralNotFound) {
-            var pluralOptions = { count :  options.count }; // apply replacement for count only
 
-            if (options.interpolationPrefix) {
-                pluralOptions.interpolationPrefix = options.interpolationPrefix;
-            }
+            return applyReplacement(translated, { // apply replacement for count only
+              count: options.count,
+              interpolationPrefix: options.interpolationPrefix,
+              interpolationSuffix: options.interpolationSuffix 
+            });
 
-            if (options.interpolationSuffix) {
-                pluralOptions.interpolationSuffix = options.interpolationSuffix;
-            }
-
-            return applyReplacement(translated, pluralOptions);
         } // else continue translation with original/singular key
     }
 
