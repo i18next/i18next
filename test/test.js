@@ -1,3 +1,7 @@
+// i18next, v1.6.1pre
+// Copyright (c)2013 Jan Mühlemann (jamuhl).
+// Distributed under MIT license
+// http://i18next.com
 describe('i18next', function() {
 
   var i18n = $.i18n
@@ -1312,7 +1316,6 @@ describe('i18next', function() {
     });
   
   });
-  
   describe('jQuery integration / specials', function() {
   
     describe('initialise - use deferrer instead of callback', function() {
@@ -1522,6 +1525,5 @@ describe('i18next', function() {
     });
   
   });
-  
 
 });

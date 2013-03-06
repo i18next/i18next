@@ -1,3 +1,7 @@
+// i18next, v1.6.1pre
+// Copyright (c)2013 Jan Mühlemann (jamuhl).
+// Distributed under MIT license
+// http://i18next.com
 var i18n = require('../index')
   , expect = require('expect.js')
   , sinon = require('sinon');

@@ -10,7 +10,7 @@
 
 module.exports = function(grunt) {
 
-  var _ = grunt.utils._;
+  var _ = grunt.util._;
   // Shorthand Grunt functions
   var log = grunt.log;
 
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
     });
 
     // Run the server
-    grunt.helper("server", options);
+    listen(options);
 
     // Fail task if errors were logged
     if (grunt.errors) { return false; }
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
     log.writeln("Listening on http://" + options.host + ":" + options.port);
   });
 
-  grunt.registerHelper("server", function(options) {
+  function listen(options) {
     // Require libraries.
     var fs = require("fs");
     var path = require("path");
@@ -72,11 +72,9 @@ module.exports = function(grunt) {
 
     // Map static folders.
     Object.keys(options.folders).sort().reverse().forEach(function(key) {
-      var uri = key === './' ? root + '*' : root + key + "/*";
-      site.get(uri, function(req, res, next) {
+      site.get(root + key + "/*", function(req, res, next) {
         // Find filename.
-        var filename = req.url.slice((root + key).length);
-        if (filename.indexOf('?') > -1) filename = filename.substring(0, filename.indexOf('?'));
+        var filename = '/' + req.params[0];//;.slice((root + key).length); console.log(req.params[0]);
 
         res.sendfile(path.join(options.folders[key] + filename));
       });
@@ -85,7 +83,7 @@ module.exports = function(grunt) {
     // Map static files.
     if (_.isObject(options.files)) {
       Object.keys(options.files).sort().reverse().forEach(function(key) {
-        site.get(root + key, function(req, res) { 
+        site.get(root + key, function(req, res) {
           return res.sendfile(options.files[key]);
         });
       });
@@ -101,6 +99,6 @@ module.exports = function(grunt) {
 
     // Actually listen
     site.listen(options.port, options.host);
-  });
+  }
 
 };

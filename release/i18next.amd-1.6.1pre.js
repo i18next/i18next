@@ -103,7 +103,6 @@
     
         postProcess: undefined
     };
-    
     function _extend(target, source) {
         if (!source || typeof source === 'function') {
             return target;
@@ -759,7 +758,6 @@
             });
         };
     }
-    
     function applyReplacement(str, replacementHash, nestedKey, options) {
         if (!str) return str;
         
@@ -958,7 +956,6 @@
     
         return (found !== undefined) ? found : notfound;
     }
-    
     function detectLanguage() {
         var detectedLng;
     
@@ -1175,7 +1172,6 @@
             }
         }
     };
-    
     // definition http://translate.sourceforge.net/wiki/l10n/pluralforms
     var pluralExtensions = {
     
