@@ -8,10 +8,12 @@
  *
  */
 var prettify = require('./lib/prettify')
-  , path = require('path')
-  , _ = require('underscore');
+  , path = require('path');
 
 module.exports = function(grunt) {
+
+
+  var _ = grunt.util._;
 
   var config = grunt.config;
   var file = grunt.file;
@@ -31,7 +33,7 @@ module.exports = function(grunt) {
 
     files.forEach(function (filepath) {
       var opts = _.extend(options, {filename: filepath}); console.log(filepath);
-      var html = grunt.helper('prettify', file.read(filepath), opts);
+      var html = parse(file.read(filepath), opts);
 
       file.write(filepath, html);
 
@@ -39,7 +41,7 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerHelper('prettify', function(src, options) {
+  function parse(src, options) {
     var prettifyFn = function(scr, options) {
       return src.replace(/<pre><code>[^<]+<\/code><\/pre>/g,
         function applyHighlight(code) {
@@ -49,6 +51,6 @@ module.exports = function(grunt) {
         });
     };
     return prettifyFn();
-  });
+  }
 
 };

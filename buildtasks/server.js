@@ -10,7 +10,7 @@
 
 module.exports = function(grunt) {
 
-  var _ = grunt.utils._;
+  var _ = grunt.util._;
   // Shorthand Grunt functions
   var log = grunt.log;
 
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
     });
 
     // Run the server
-    grunt.helper("server", options);
+    listen(options);
 
     // Fail task if errors were logged
     if (grunt.errors) { return false; }
@@ -58,11 +58,10 @@ module.exports = function(grunt) {
     log.writeln("Listening on http://" + options.host + ":" + options.port);
   });
 
-  grunt.registerHelper("server", function(options) {
+  function listen(options) {
     // Require libraries.
     var fs = require("fs");
     var path = require("path");
-    var stylus = require("stylus");
     var express = require("express");
 
     // If the server is already available use it.
@@ -70,22 +69,6 @@ module.exports = function(grunt) {
 
     // Allow users to override the root.
     var root = _.isString(options.root) ? options.root : "/";
-
-    // Process stylus stylesheets.
-    site.get(/.styl$/, function(req, res) {
-      var url = req.url.split("assets/css/")[1];
-      var file = path.join("assets/css", url);
-
-      fs.readFile(file, function(err, contents) {
-        var processer = stylus(contents.toString());
-
-        processer.set("paths", ["assets/css/"]);
-        processer.render(function(err, css) {
-          res.header("Content-type", "text/css");
-          res.send(css);
-        });
-      });
-    });
 
     // Map static folders.
     Object.keys(options.folders).sort().reverse().forEach(function(key) {
@@ -116,6 +99,6 @@ module.exports = function(grunt) {
 
     // Actually listen
     site.listen(options.port, options.host);
-  });
+  }
 
 };
