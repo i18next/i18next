@@ -19,7 +19,7 @@ describe('i18next', function() {
       resStore: false,
       getAsync: true,
       returnObjectTrees: false,
-      debug: true,
+      debug: false,
       selectorAttr: 'data-i18n',
       postProcess: '',
       interpolationPrefix: '__',

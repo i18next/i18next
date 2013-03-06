@@ -10,6 +10,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
+  //grunt.loadNpmTasks('grunt-shell');
   grunt.loadTasks("buildtasks");
 
   // Project configuration.
@@ -23,6 +24,13 @@ module.exports = function(grunt) {
     },
 
     clean: ["bin"],
+
+    // shell: {
+    //   /* create phonegap projects */
+    //   maintain: {
+    //     command: plato -r -d reports/maintain src',
+    //     stdout: true
+    //   },
 
     lint: {
       files: ['bin/i18next-latest.js']
