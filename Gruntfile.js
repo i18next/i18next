@@ -218,7 +218,7 @@ module.exports = function(grunt) {
       },
 
       spec: {
-        files: 'spec/*.js',
+        files: 'spec/**/*.js',
         tasks: 'rig:spec'
       }
     }

@@ -127,7 +127,11 @@ function _translate(key, options){
         
         translated = translate(pluralKey, optionWithoutCount);
         if (translated != o.pluralNotFound) {
-            return applyReplacement(translated, { count: options.count }); // apply replacement for count only
+            return applyReplacement(translated, {
+                count: options.count,
+                interpolationPrefix: options.interpolationPrefix,
+                interpolationSuffix: options.interpolationSuffix 
+            }); // apply replacement for count only
         } // else continue translation with original/singular key
     }
 

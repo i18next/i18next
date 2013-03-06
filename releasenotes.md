@@ -6,6 +6,7 @@
 - allow zepto as drop in replacement for $
 - using testacular as runner
 - upgraded to grunt 0.4.0
+- fixed Optional interpolation prefix/suffix not used in plural translation cases.
 
 ### 1.6.0
 - option to specify target to set attributes with jquery function by using 'data-i18n-target attribute'
