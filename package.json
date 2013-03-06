@@ -18,5 +18,6 @@
     , "zipstream": ">=0.2.1"
   }
   , "scripts": {
+    "test": "testacular start"
   }
 }

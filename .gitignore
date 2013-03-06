@@ -13,5 +13,5 @@ $ cat .gitignore
 node_modules
 node_modules/**/*
 bin
-.idea
-.idea/*
+reports
+reports/**/*

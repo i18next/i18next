@@ -4,6 +4,7 @@
 - fixed issue with null value in resources not returning expected value
 - optimized tests to use on server (nodejs) too
 - allow zepto as drop in replacement for $
+- using testacular as runner
 
 ### 1.6.0
 - option to specify target to set attributes with jquery function by using 'data-i18n-target attribute'
