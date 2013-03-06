@@ -13,6 +13,7 @@
     , "grunt-rigger": "*"
     , "grunt-contrib": ">=0.1.0"
     , "grunt-shell": ">=0.1.0"
+    , "gruntacular": ">=0.1.0"
     , "express": ">= 0.0.1"
     , "async": ">= 0.1.18"
     , "lodash": ">= 0.5.x"

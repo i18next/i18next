@@ -11,6 +11,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
   grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('gruntacular');
   grunt.loadTasks('buildtasks');
 
   // Project configuration.
@@ -28,8 +29,25 @@ module.exports = function(grunt) {
     shell: {
       /* create phonegap projects */
       maintain: {
-        command: 'plato -r -d reports/maintain src',
+        command: 'plato -r -d reports/maintain/<%= grunt.template.today("yyyymmdd") %> src',
         stdout: true
+      }
+    },
+
+    testacular: {
+      options: {
+        configFile: 'testacular.conf.js'
+      },
+      ci: {
+        singleRun: true,
+        browsers: ['PhantomJS']
+      },
+      all: {
+
+      },
+      dev: {
+        reporters: 'dots',
+        browsers: ['PhantomJS']
       }
     },
 
@@ -211,7 +229,10 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['clean', 'rig']);
   grunt.registerTask('release', ['default', 'uglify', 'copy', 'compress']);
 
-  grunt.registerTask('report', ['shell:maintain']);
+  grunt.registerTask('test', ['testacular:dev']);
+  grunt.registerTask('test:all', ['testacular:all']);
+
+  grunt.registerTask('report', ['shell:maintain', 'testacular:ci']);
 
 
 };
