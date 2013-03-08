@@ -46,15 +46,15 @@ function addJqueryFunct() {
         }
         options = options || {};
 
-        if (key.indexOf(';') <= key.length-1) {
+        if (key.indexOf(';') >= 0) {
             var keys = key.split(';');
 
             $.each(keys, function(m, k) {
-                parse(target, k, options);
+                if (k !== '') parse(target, k, options);
             });
 
         } else {
-            parse(target, k, options);
+            parse(target, key, options);
         }
 
         if (o.useDataAttrOptions === true) ele.data("i18n-options", options);

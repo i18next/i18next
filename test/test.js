@@ -1429,6 +1429,33 @@ describe('i18next', function() {
         
       });
     
+      describe('extended - empty key -> double ;;', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;;simpleTest"></button></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) {  done(); });
+        });
+    
+        it('it should set text of elements inside selector having data-i18n attribute', function() {
+          $('#container').i18n();
+          expect($('#testBtn').text()).to.be('ok_from_en-US');
+        });
+    
+        it('it should set attributes of elements inside selector having data-i18n attribute', function() {
+          $('#container').i18n();
+          expect($('#testBtn').attr('title')).to.be('ok_from_en-US');
+        });
+        
+      });
+    
       describe('extended - pass in options', function() {
     
         var resStore = {
