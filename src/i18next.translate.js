@@ -69,14 +69,54 @@ function translate(key, options){
     return _translate(key, options);
 }
 
+function exists(key, options) {
+    options = options || {};
+
+    var notFound = options.defaultValue || key
+        , found = _find(key, options);
+
+    return  found != null || found === notFound;
+}
+
 function _translate(key, options){
+    options = options || {};
+
+    var notFound = options.defaultValue || key
+        , found = _find(key, options)
+        , lngs = options.lng ? f.toLanguages(options.lng) : languages
+        , ns = options.ns || o.ns.defaultNs;
+
+    if (found === undefined && o.sendMissing) {
+        if (options.lng) {
+            sync.postMissing(lngs[0], ns, key, notfound, lngs);
+        } else {
+            sync.postMissing(o.lng, ns, key, notFound, lngs);
+        }
+    }
+
+    var postProcessor = options.postProcess || o.postProcess;
+    if (found !== undefined && postProcessor) {
+        if (postProcessors[postProcessor]) {
+            found = postProcessors[postProcessor](found, key, options);
+        }
+    }
+
+    if (found === undefined) {
+        notFound = applyReplacement(notFound, options);
+        notFound = applyReuse(notFound, options);
+    }
+
+    return (found !== undefined) ? found : notFound;
+}
+
+function _find(key, options){
     options = options || {};
 
     if (!resStore) { return notfound; } // no resStore to translate from
 
-    var optionWithoutCount, translated
-      , notfound = options.defaultValue || key
-      , lngs = languages;
+    var optionsSansCount, translated
+        , notFound = options.defaultValue || key
+        , lngs = languages;
 
     if (options.lng) {
         lngs = f.toLanguages(options.lng);
@@ -105,7 +145,7 @@ function _translate(key, options){
         optionWithoutCount.defaultValue = o.contextNotFound;
 
         var contextKey = ns + o.nsseparator + key + '_' + options.context;
-        
+
         translated = translate(contextKey, optionWithoutCount);
         if (translated != o.contextNotFound) {
             return applyReplacement(translated, { context: options.context }); // apply replacement for context only
@@ -119,18 +159,18 @@ function _translate(key, options){
 
         var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
         var pluralExtension = pluralExtensions.get(currentLng, options.count);
-        if (pluralExtension >= 0) { 
-            pluralKey = pluralKey + '_' + pluralExtension; 
+        if (pluralExtension >= 0) {
+            pluralKey = pluralKey + '_' + pluralExtension;
         } else if (pluralExtension === 1) {
             pluralKey = ns + o.nsseparator + key; // singular
         }
-        
+
         translated = translate(pluralKey, optionWithoutCount);
         if (translated != o.pluralNotFound) {
             return applyReplacement(translated, {
                 count: options.count,
                 interpolationPrefix: options.interpolationPrefix,
-                interpolationSuffix: options.interpolationSuffix 
+                interpolationSuffix: options.interpolationSuffix
             }); // apply replacement for count only
         } // else continue translation with original/singular key
     }
@@ -158,8 +198,8 @@ function _translate(key, options){
                 value = applyReuse(value, options);
             } else if (value !== null) {
                 if (!o.returnObjectTrees && !options.returnObjectTrees) {
-                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
-                            'returned a object instead of string.';
+                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
+                        'returned a object instead of string.';
                     f.log(value);
                 } else {
                     var copy = {}; // apply child translation on a copy
@@ -173,30 +213,10 @@ function _translate(key, options){
             found = value;
         }
     }
-    
+
     if (found === undefined && o.fallbackToDefaultNS) {
         found = _translate(key, options);
     }
 
-    if (found === undefined && o.sendMissing) {
-        if (options.lng) {
-            sync.postMissing(lngs[0], ns, key, notfound, lngs);
-        } else {
-            sync.postMissing(o.lng, ns, key, notfound, lngs);
-        }
-    }
-
-    var postProcessor = options.postProcess || o.postProcess;
-    if (found !== undefined && postProcessor) {
-        if (postProcessors[postProcessor]) {
-            found = postProcessors[postProcessor](found, key, options);
-        }
-    }
-
-    if (found === undefined) {
-        notfound = applyReplacement(notfound, options);
-        notfound = applyReuse(notfound, options);
-    }
-
-    return (found !== undefined) ? found : notfound;
+    return found;
 }

@@ -1,5 +1,7 @@
 describe('translation functionality', function() {
 
+  //= translate/translate.exists.spec.js
+
   //= translate/translate.nullValue.spec.js
 
   //= translate/translate.emptyValue.spec.js
