@@ -31,11 +31,11 @@ function applyReuse(translated, options) {
     while (translated.indexOf(o.reusePrefix) != -1) {
         replacementCounter++;
         if (replacementCounter > o.maxRecursion) { break; } // safety net for too much recursion
-        var index_of_opening = translated.indexOf(o.reusePrefix);
+        var index_of_opening = translated.lastIndexOf(o.reusePrefix);
         var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
         var token = translated.substring(index_of_opening, index_of_end_of_closing);
         var token_without_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
-        
+
 
         if (token_without_symbols.indexOf(comma) != -1) {
             var index_of_token_end_of_closing = token_without_symbols.indexOf(comma);
@@ -105,7 +105,7 @@ function _translate(key, options){
         optionWithoutCount.defaultValue = o.contextNotFound;
 
         var contextKey = ns + o.nsseparator + key + '_' + options.context;
-        
+
         translated = translate(contextKey, optionWithoutCount);
         if (translated != o.contextNotFound) {
             return applyReplacement(translated, { context: options.context }); // apply replacement for context only
@@ -119,12 +119,12 @@ function _translate(key, options){
 
         var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
         var pluralExtension = pluralExtensions.get(currentLng, options.count);
-        if (pluralExtension >= 0) { 
-            pluralKey = pluralKey + '_' + pluralExtension; 
+        if (pluralExtension >= 0) {
+            pluralKey = pluralKey + '_' + pluralExtension;
         } else if (pluralExtension === 1) {
             pluralKey = ns + o.nsseparator + key; // singular
         }
-        
+
         translated = translate(pluralKey, optionWithoutCount);
         if (translated != o.pluralNotFound) {
             return applyReplacement(translated, {
@@ -158,7 +158,7 @@ function _translate(key, options){
                 value = applyReuse(value, options);
             } else if (value !== null) {
                 if (!o.returnObjectTrees && !options.returnObjectTrees) {
-                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
+                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
                             'returned a object instead of string.';
                     f.log(value);
                 } else {
@@ -173,7 +173,7 @@ function _translate(key, options){
             found = value;
         }
     }
-    
+
     if (found === undefined && o.fallbackToDefaultNS) {
         found = _translate(key, options);
     }
