@@ -75,7 +75,7 @@ function exists(key, options) {
     var notFound = options.defaultValue || key
         , found = _find(key, options);
 
-    return  found != null || found === notFound;
+    return found !== undefined || found === notFound;
 }
 
 function _translate(key, options){
@@ -114,7 +114,7 @@ function _find(key, options){
 
     if (!resStore) { return notfound; } // no resStore to translate from
 
-    var optionsSansCount, translated
+    var optionWithoutCount, translated
         , notFound = options.defaultValue || key
         , lngs = languages;
 
