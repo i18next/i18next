@@ -1,5 +1,6 @@
 ### 1.6.1pre
-- added an exists method to check for the existence of a key in the resource store
+- added support for passing options to nested resources PR #81
+- added an exists method to check for the existence of a key in the resource store PR #88
 - fixed issue with null value throws in applyReplacement function
 - fixed issue #80 empty string lookup ends in fallback instead of returning result in language
 - fixed issue with null value in resources not returning expected value
