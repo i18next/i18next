@@ -8,6 +8,7 @@ describe('i18next', function() {
       lng: 'en-US',
       load: 'all',
       fallbackLng: 'dev',
+      fallbackNS: [],
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',

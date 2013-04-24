@@ -6,6 +6,7 @@ var o = {
     lowerCaseLng: false,
     returnObjectTrees: false,
     fallbackLng: 'dev',
+    fallbackNS: [],
     detectLngQS: 'setLng',
     ns: 'translation',
     fallbackOnNull: true,

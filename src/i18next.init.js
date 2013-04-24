@@ -14,6 +14,11 @@ function init(options, cb) {
         o.ns = { namespaces: [o.ns], defaultNs: o.ns};
     }
 
+    // fallback namespaces
+    if (typeof o.fallbackNS == 'string') {
+        o.fallbackNS = [o.fallbackNS];
+    }
+
     // escape prefix/suffix
     o.interpolationPrefixEscaped = f.regexEscape(o.interpolationPrefix);
     o.interpolationSuffixEscaped = f.regexEscape(o.interpolationSuffix);

@@ -12,6 +12,7 @@ describe('i18next', function() {
       lng: 'en-US',
       load: 'all',
       fallbackLng: 'dev',
+      fallbackNS: [],
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',
@@ -329,6 +330,65 @@ describe('i18next', function() {
               expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_en-US');
               expect(i18n.t('ns.common:simple_en')).to.be('ok_from_en');
               expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_dev');
+            });
+      
+          });
+      
+          describe('and fallbacking to set namespace', function() {
+            var resStore = {
+              dev: { 
+                'ns.special': { 'simple_dev': 'ok_from_dev' },
+                'ns.fallback': { 'simple_fallback': 'ok_from_fallback' }
+              },
+              en: { 'ns.special': { 'simple_en': 'ok_from_en' } },            
+              'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
+            };
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { 
+                fallbackNS: 'ns.fallback', 
+                resStore: resStore, 
+                ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
+                function(t) { done(); });
+            });
+      
+            it('it should fallback to set fallback namespace', function() {
+              expect(i18n.t('ns.common:simple_fallback')).to.be('ok_from_fallback');
+            });
+      
+          });
+      
+          describe('and fallbacking to multiple set namespace', function() {
+            var resStore = {
+              dev: { 
+                'ns.special': { 'simple_dev': 'ok_from_dev' },
+                'ns.fallback1': { 
+                  'simple_fallback': 'ok_from_fallback1',
+                  'simple_fallback1': 'ok_from_fallback1'
+                }
+              },
+              en: { 
+                'ns.special': { 'simple_en': 'ok_from_en' },
+                'ns.fallback2': { 
+                  'simple_fallback': 'ok_from_fallback2',
+                  'simple_fallback2': 'ok_from_fallback2'
+                }
+              },            
+              'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
+            };
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { 
+                fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
+                resStore: resStore, 
+                ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
+                function(t) { done(); });
+            });
+      
+            it('it should fallback to set fallback namespace', function() {
+              expect(i18n.t('ns.common:simple_fallback')).to.be('ok_from_fallback1'); /* first wins */
+              expect(i18n.t('ns.common:simple_fallback1')).to.be('ok_from_fallback1');
+              expect(i18n.t('ns.common:simple_fallback2')).to.be('ok_from_fallback2');
             });
       
           });

@@ -220,8 +220,26 @@ function _find(key, options){
         }
     }
 
-    if (found === undefined && o.fallbackToDefaultNS) {
-        found = _translate(key, options);
+    if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length))) { 
+        // set flag for fallback lookup - avoid recursion
+        options.isFallbackLookup = true;
+
+        if (o.fallbackNS.length) {
+
+            for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
+                found = _translate(o.fallbackNS[y] + o.nsseparator + key, options);
+                
+                if (found) {
+                    /* compare value without namespace */
+                    var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
+                      , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;
+
+                    if (foundValue !== notFoundValue) break;
+                }
+            }
+        } else {
+            found = _translate(key, options); // fallback to default NS
+        }
     }
 
     return found;
