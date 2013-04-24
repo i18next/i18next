@@ -104,6 +104,10 @@ function _translate(key, options){
     if (found === undefined) {
         notFound = applyReplacement(notFound, options);
         notFound = applyReuse(notFound, options);
+
+        if (postProcessor && postProcessors[postProcessor]) {
+            found = postProcessors[postProcessor](found, key, options);
+        }
     }
 
     return (found !== undefined) ? found : notFound;

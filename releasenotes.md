@@ -1,4 +1,5 @@
 ### 1.6.1pre
+- defaultValues get postProcessed
 - BREAKING: per default null values in resources get translated to fallback. This can be changed by setting option fallbackOnNull to false
 - added support for passing options to nested resources PR #81
 - added an exists method to check for the existence of a key in the resource store PR #88

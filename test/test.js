@@ -619,6 +619,10 @@ describe('i18next', function() {
           expect(i18n.t('simpleTest', {postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
         });
     
+        it('it should postprocess on default value', function() {
+          expect(i18n.t('notFound', {defaultValue: 'not processed', postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
+        });
+    
         describe('or setting it as default on init', function() {
     
           beforeEach(function(done) {
