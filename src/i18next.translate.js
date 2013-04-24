@@ -196,6 +196,8 @@ function _find(key, options){
                 value = value.join('\n');
                 value = applyReplacement(value, options);
                 value = applyReuse(value, options);
+            } else if (value === null && o.fallbackOnNull === true) {
+                value = undefined;
             } else if (value !== null) {
                 if (!o.returnObjectTrees && !options.returnObjectTrees) {
                     value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +

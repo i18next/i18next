@@ -12,6 +12,7 @@ describe('i18next', function() {
       lowerCaseLng: false,
       ns: 'translation',
       fallbackToDefaultNS: false,
+      fallbackOnNull: true,
       resGetPath: 'locales/__lng__/__ns__.json',
       dynamicLoad: false,
       useLocalStorage: false,
