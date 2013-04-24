@@ -128,6 +128,22 @@ describe('i18next', function() {
           expect(i18n.t('simple_dev')).to.be('ok_from_dev');
         });
       
+        describe('with a additional namespace', function() {
+      
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+              function(t) { 
+                i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
+                done(); 
+              });
+          });
+      
+          it('it should add the new namespace to the namespace array', function() {
+            expect(i18n.options.ns.namespaces).to.contain('newNamespace');
+          });
+      
+        });
+      
       });
   
       describe('setting load', function() {
@@ -421,6 +437,11 @@ describe('i18next', function() {
               expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_common_en-US');
               expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_common_en');
               expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_common_dev');
+            });
+      
+            it('it should add the new namespaces to the namespace array', function() {
+              expect(i18n.options.ns.namespaces).to.contain('ns.common');
+              expect(i18n.options.ns.namespaces).to.contain('ns.special');
             });
       
           });

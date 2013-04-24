@@ -12,6 +12,8 @@ function addResourceBundle(lng, ns, resources) {
     if (typeof ns !== 'string') {
         resources = ns;
         ns = o.ns.defaultNs;
+    } else if (o.ns.namespaces.indexOf(ns) < 0) {
+        o.ns.namespaces.push(ns);
     }
 
     resStore[lng] = resStore[lng] || {};
@@ -33,6 +35,7 @@ function loadNamespaces(namespaces, cb) {
         dynamicLoad: o.dynamicLoad,
         resGetPath: o.resGetPath,
         getAsync: o.getAsync,
+        customLoad: o.customLoad,
         ns: { namespaces: namespaces, defaultNs: ''} /* new namespaces to load */
     };
 
@@ -70,6 +73,12 @@ function loadNamespaces(namespaces, cb) {
 
             // load each file individual
             f.each(namespaces, function(nsIndex, nsValue) {
+
+                // append namespace to namespace array
+                if (o.ns.namespaces.indexOf(nsValue) < 0) {
+                    o.ns.namespaces.push(nsValue);
+                }
+
                 f.each(lngNeedLoad, function(lngIndex, lngValue) {
                     resStore[lngValue] = resStore[lngValue] || {};
                     resStore[lngValue][nsValue] = store[lngValue][nsValue];

@@ -96,21 +96,31 @@ var sync = {
                 });
             });
         } else {
-            var url = applyReplacement(options.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
-            // load all needed stuff once
-            f.ajax({
-                url: url,
-                success: function(data, status, xhr) {
-                    f.log('loaded: ' + url);
-                    cb(null, data);
-                },
-                error : function(xhr, status, error) {
-                    f.log('failed loading: ' + url);
-                    cb('failed loading resource.json error: ' + error);
-                },
-                dataType: "json",
-                async : options.getAsync
-            });         
+            // Call this once our translation has returned.
+            var loadComplete = function(err, data) {
+                cb(null, data);
+            };
+
+            if(typeof options.customLoad == 'function'){
+                // Use the specified custom callback.
+                options.customLoad(lngs, ns.namespaces, options, loadComplete);
+            } else {
+                var url = applyReplacement(options.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
+                // load all needed stuff once
+                f.ajax({
+                    url: url,
+                    success: function(data, status, xhr) {
+                        f.log('loaded: ' + url);
+                        loadComplete(null, data);
+                    },
+                    error : function(xhr, status, error) {
+                        f.log('failed loading: ' + url);
+                        loadComplete('failed loading resource.json error: ' + error);
+                    },
+                    dataType: "json",
+                    async : options.getAsync
+                });
+            }    
         }
     },
 

@@ -152,6 +152,11 @@ describe('with namespace', function() {
         expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_common_dev');
       });
 
+      it('it should add the new namespaces to the namespace array', function() {
+        expect(i18n.options.ns.namespaces).to.contain('ns.common');
+        expect(i18n.options.ns.namespaces).to.contain('ns.special');
+      });
+
     });
 
     describe('with using localStorage', function() {

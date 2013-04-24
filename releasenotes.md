@@ -1,4 +1,6 @@
 ### 1.6.1pre
+- customload will get called on dynamicLoad too
+- fixes namespace array settings if loaded resourcebundle or additional namespaces
 - lookup of not existend resouces can be fallbacked to other namespaces - see option fallbackNS (array or string if one ns to fallback to)
 - defaultValues get postProcessed
 - BREAKING: per default null values in resources get translated to fallback. This can be changed by setting option fallbackOnNull to false
