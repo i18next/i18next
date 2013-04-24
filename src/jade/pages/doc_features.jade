@@ -79,20 +79,21 @@ html(lang="en")
             .feature
               pre
                 code
-                  | var option = { 
+                  | var options = { 
                   |   // change path
-                  |   resPostPath: 'locales/add/__lng__/__ns__';
+                  |   resPostPath: 'locales/add/__lng__/__ns__'
                   | 
                   |   // change sendType
-                  |   sendType: 'POST|GET'; // default: POST
+                  |   sendType: 'POST|GET' // default: POST
                   |   
                   |   // send missing values to
                   |   sendMissingTo: 'fallback|current|all'
                   | 
                   |   // change async / sync
-                  |   postAsync: true|false; // default: true
+                  |   postAsync: true|false // default: true
+                  | }
                   | 
-                  | i18n.init(option);
+                  | i18n.init(options);
 
               .feature-description
                 p You can send missing values to the fallbackLng, the current language or all languages (eg. 'en-US', 'en', 'fallback')
