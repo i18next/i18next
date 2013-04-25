@@ -47,6 +47,25 @@ function _each(object, callback, args) {
     return object;
 }
 
+var _entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+};
+
+function _escape(data) {
+    if (typeof data === 'string') {
+        return data.replace(/[&<>"'\/]/g, function (s) {
+            return _entityMap[s];
+        });    
+    }else{
+        return data;
+    }
+}
+
 function _ajax(options) {
 
     // v0.5.0 of https://github.com/goloroden/http.js
@@ -380,6 +399,7 @@ var f = {
     ajax: $ ? $.ajax : _ajax,
     cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
     detectLanguage: detectLanguage,
+    escape: _escape,
     log: function(str) {
         if (o.debug && typeof console !== "undefined") console.log(str);
     },

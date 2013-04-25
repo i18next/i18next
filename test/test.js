@@ -1108,7 +1108,9 @@ describe('i18next', function() {
               interpolationTest1: 'added __toAdd__',
               interpolationTest2: 'added __toAdd__ __toAdd__ twice',
               interpolationTest3: 'added __child.one__ __child.two__',
-              interpolationTest4: 'added __child.grandChild.three__'
+              interpolationTest4: 'added __child.grandChild.three__',
+              interpolationTest5: 'added __toAddHTML__',
+              interpolationTest6: 'added __child.oneHTML__'
             } 
           }
         };
@@ -1123,6 +1125,15 @@ describe('i18next', function() {
           expect(i18n.t('interpolationTest2', {toAdd: 'something'})).to.be('added something something twice');
           expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2'}})).to.be('added 1 2');
           expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3'}}})).to.be('added 3');
+        });
+      
+        it("it should escape HTML", function() {
+          expect(i18n.t('interpolationTest1', {toAdd: '<html>'})).to.be('added &lt;html&gt;');
+        });
+      
+        it("it should not escape when HTML is suffixed", function() {
+          expect(i18n.t('interpolationTest5', {toAdd: '<html>'})).to.be('added <html>');
+          expect(i18n.t('interpolationTest6', { child: { one: '<1>'}})).to.be('added <1>');
         });
       
         it('it should replace passed in key/values on defaultValue', function() {
