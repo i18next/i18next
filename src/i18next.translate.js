@@ -80,7 +80,7 @@ function translate(key, options) {
 
 function _injectSprintfProcessor() {
     
-    var values = new Array;
+    var values = [];
     
     // mh: build array from second argument onwards
     for (var i = 1; i < arguments.length; i++) {
