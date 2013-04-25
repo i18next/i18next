@@ -64,11 +64,6 @@ function needsPlural(options) {
     return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
 }
 
-function translate(key, options){
-    replacementCounter = 0;
-    return _translate(key, options);
-}
-
 function exists(key, options) {
     options = options || {};
 
@@ -78,8 +73,34 @@ function exists(key, options) {
     return found !== undefined || found === notFound;
 }
 
-function _translate(key, options){
-    options = options || {};
+function translate(key, options) {
+    replacementCounter = 0;
+    return _translate.apply(null, arguments);
+}
+
+function _injectSprintfProcessor() {
+    
+    var values = new Array;
+    
+    // mh: build array from second argument onwards
+    for (var i = 1; i < arguments.length; i++) {
+        values.push(arguments[i]);
+    }
+    
+    return {
+        postProcess: 'sprintf',
+        sprintf:     values
+    };
+}
+
+function _translate(key, options) {
+    
+    if (typeof options == 'string') {
+        // mh: gettext like sprintf syntax found, automatically create sprintf processor
+        options = _injectSprintfProcessor.apply(null, arguments);
+    } else {
+        options = options || {};
+    }         
 
     var notFound = options.defaultValue || key
         , found = _find(key, options)
