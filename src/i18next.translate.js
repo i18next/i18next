@@ -64,6 +64,10 @@ function needsPlural(options) {
     return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
 }
 
+function needsNegative(options) {
+    return (options.count !== undefined && typeof options.count === 'number' && options.count === 0);
+}
+
 function translate(key, options){
     replacementCounter = 0;
     return _translate(key, options);
@@ -156,7 +160,24 @@ function _find(key, options){
         } // else continue translation with original/nonContext key
     }
 
-    if (needsPlural(options)) {
+    if (needsNegative(options)) {
+        optionWithoutCount = f.extend({}, options);
+        delete optionWithoutCount.count;
+        optionWithoutCount.defaultValue = o.negativeNotFound;
+
+        var negativeKey = ns + o.nsseparator + key + o.negativeSuffix;
+
+        translated = translate(negativeKey, optionWithoutCount);
+        if (translated != o.negativeNotFound) {
+            return applyReplacement(translated, {
+                count: options.count,
+                interpolationPrefix: options.interpolationPrefix,
+                interpolationSuffix: options.interpolationSuffix
+            }); // apply replacement for count only
+        } // else continue translation with original/singular key
+
+    }
+    else if (needsPlural(options)) {
         optionWithoutCount = f.extend({}, options);
         delete optionWithoutCount.count;
         optionWithoutCount.defaultValue = o.pluralNotFound;

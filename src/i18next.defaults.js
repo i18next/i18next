@@ -36,7 +36,9 @@ var o = {
     reusePrefix: '$t(',
     reuseSuffix: ')',
     pluralSuffix: '_plural',
+    negativeSuffix: '_negative',
     pluralNotFound: ['plural_not_found', Math.random()].join(''),
+    negativeNotFound: ['negative_not_found', Math.random()].join(''),
     contextNotFound: ['context_not_found', Math.random()].join(''),
 
     setJqueryExt: true,
