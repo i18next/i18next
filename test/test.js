@@ -444,6 +444,25 @@ describe('i18next', function() {
               expect(i18n.options.ns.namespaces).to.contain('ns.special');
             });
       
+            describe('and fallbackToDefaultNS turned on', function() {
+      
+              beforeEach(function(done) {
+                i18n.init(i18n.functions.extend(opts, { 
+                    ns: 'ns.common',
+                    fallbackToDefaultNS: true
+                  }),
+                  function(t) {
+                    i18n.loadNamespaces(['ns.special'], done);
+                  });
+              });
+      
+              it('it should fallback to default namespace', function() {
+                expect(i18n.t('ns.special:test.fallback_en')).to.be('ok_from_common_en-fallback');
+                expect(i18n.t('ns.special:test.fallback_dev')).to.be('ok_from_common_dev-fallback');
+              });
+      
+            });
+      
           });
       
           describe('with using localStorage', function() {
@@ -965,7 +984,7 @@ describe('i18next', function() {
         ), function(t) { done(); });
       });
     
-      it('it should return nested string', function() {
+      it('it should return nested string as usual', function() {
         expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
       });
     
@@ -978,11 +997,14 @@ describe('i18next', function() {
         describe('with init flag', function() {
     
           var resStore = {
-            dev: { translation: {  } },
+            dev: { translation: {
+                test_dev: { res_dev: 'added __replace__' }
+              } 
+            },
             en: { translation: {  } },            
             'en-US': { 
               translation: {                      
-                test: { res: 'added __replace__' }
+                test_en_US: { res_en_US: 'added __replace__' }
               } 
             }
           };
@@ -995,9 +1017,12 @@ describe('i18next', function() {
           });
     
           it('it should return objectTree applying options', function() {
-            expect(i18n.t('test', { replace: 'two' })).to.eql({ 'res': 'added two' });
-            expect(i18n.t('test', { replace: 'three' })).to.eql({ 'res': 'added three' });
-            expect(i18n.t('test', { replace: 'four' })).to.eql({ 'res': 'added four' });
+            expect(i18n.t('test_en_US', { replace: 'two' })).to.eql({ 'res_en_US': 'added two' });
+            expect(i18n.t('test_en_US', { replace: 'three' })).to.eql({ 'res_en_US': 'added three' });
+            expect(i18n.t('test_en_US', { replace: 'four' })).to.eql({ 'res_en_US': 'added four' });
+    
+            // from fallback
+            expect(i18n.t('test_dev', { replace: 'two' })).to.eql({ 'res_dev': 'added two' });
           });
     
         });
@@ -1187,7 +1212,8 @@ describe('i18next', function() {
           'en-US': { 
             translation: {                      
               interpolationTest1: 'The first 4 letters of the english alphabet are: %s, %s, %s and %s',
-              interpolationTest2: 'Hello %(users[0].name)s, %(users[1].name)s and %(users[2].name)s'
+              interpolationTest2: 'Hello %(users[0].name)s, %(users[1].name)s and %(users[2].name)s',
+              interpolationTest3: 'The last letter of the english alphabet is %s'
             } 
           }
         };
@@ -1200,6 +1226,11 @@ describe('i18next', function() {
         it('it should replace passed in key/values', function() {
           expect(i18n.t('interpolationTest1', {postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd']})).to.be('The first 4 letters of the english alphabet are: a, b, c and d');
           expect(i18n.t('interpolationTest2', {postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } })).to.be('Hello Dolly, Molly and Polly');
+        });
+      
+        it('it should recognize the sprintf syntax and automatically add the sprintf processor', function() {
+          expect(i18n.t('interpolationTest1', 'a', 'b', 'c', 'd')).to.be('The first 4 letters of the english alphabet are: a, b, c and d');
+          expect(i18n.t('interpolationTest3', 'z')).to.be('The last letter of the english alphabet is z');
         });
         
       });

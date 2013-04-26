@@ -76,13 +76,13 @@ describe('i18next.init', function() {
             function(t) { 
               i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
               done(); 
-            });
+    });
         });
     
         it('it should add the new namespace to the namespace array', function() {
           expect(i18n.options.ns.namespaces).to.contain('newNamespace');
         });
-    
+
       });
     
     });
@@ -301,7 +301,7 @@ describe('i18next.init', function() {
             expect(i18n.t('ns.common:simple_fallback')).to.be('ok_from_fallback');
           });
     
-        });
+      });
     
         describe('and fallbacking to multiple set namespace', function() {
           var resStore = {
@@ -371,6 +371,25 @@ describe('i18next.init', function() {
           it('it should add the new namespaces to the namespace array', function() {
             expect(i18n.options.ns.namespaces).to.contain('ns.common');
             expect(i18n.options.ns.namespaces).to.contain('ns.special');
+          });
+    
+          describe('and fallbackToDefaultNS turned on', function() {
+    
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { 
+                  ns: 'ns.common',
+                  fallbackToDefaultNS: true
+                }),
+                function(t) {
+                  i18n.loadNamespaces(['ns.special'], done);
+                });
+            });
+    
+            it('it should fallback to default namespace', function() {
+              expect(i18n.t('ns.special:test.fallback_en')).to.be('ok_from_common_en-fallback');
+              expect(i18n.t('ns.special:test.fallback_dev')).to.be('ok_from_common_dev-fallback');
+            });
+    
           });
     
         });

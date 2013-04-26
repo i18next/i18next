@@ -16,7 +16,7 @@ describe('accessing tree values', function() {
     ), function(t) { done(); });
   });
 
-  it('it should return nested string', function() {
+  it('it should return nested string as usual', function() {
     expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
   });
 
@@ -29,11 +29,14 @@ describe('accessing tree values', function() {
     describe('with init flag', function() {
 
       var resStore = {
-        dev: { translation: {  } },
+        dev: { translation: {
+            test_dev: { res_dev: 'added __replace__' }
+          } 
+        },
         en: { translation: {  } },            
         'en-US': { 
           translation: {                      
-            test: { res: 'added __replace__' }
+            test_en_US: { res_en_US: 'added __replace__' }
           } 
         }
       };
@@ -46,9 +49,12 @@ describe('accessing tree values', function() {
       });
 
       it('it should return objectTree applying options', function() {
-        expect(i18n.t('test', { replace: 'two' })).to.eql({ 'res': 'added two' });
-        expect(i18n.t('test', { replace: 'three' })).to.eql({ 'res': 'added three' });
-        expect(i18n.t('test', { replace: 'four' })).to.eql({ 'res': 'added four' });
+        expect(i18n.t('test_en_US', { replace: 'two' })).to.eql({ 'res_en_US': 'added two' });
+        expect(i18n.t('test_en_US', { replace: 'three' })).to.eql({ 'res_en_US': 'added three' });
+        expect(i18n.t('test_en_US', { replace: 'four' })).to.eql({ 'res_en_US': 'added four' });
+
+        // from fallback
+        expect(i18n.t('test_dev', { replace: 'two' })).to.eql({ 'res_dev': 'added two' });
       });
 
     });

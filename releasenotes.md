@@ -1,4 +1,5 @@
 ### 1.6.1pre
+- automatic gettext like sprintf syntax detection + postprocess injection PR #101
 - customload will get called on dynamicLoad too
 - fixes namespace array settings if loaded resourcebundle or additional namespaces
 - lookup of not existend resouces can be fallbacked to other namespaces - see option fallbackNS (array or string if one ns to fallback to)

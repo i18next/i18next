@@ -17,38 +17,69 @@
 }(this, function ($) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
-    if (!Array.prototype.indexOf) {  
-        Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {  
-            "use strict";  
-            if (this == null) {  
-                throw new TypeError();  
-            }  
-            var t = Object(this);  
-            var len = t.length >>> 0;  
-            if (len === 0) {  
-                return -1;  
-            }  
-            var n = 0;  
-            if (arguments.length > 0) {  
-                n = Number(arguments[1]);  
-                if (n != n) { // shortcut for verifying if it's NaN  
-                    n = 0;  
-                } else if (n != 0 && n != Infinity && n != -Infinity) {  
-                    n = (n > 0 || -1) * Math.floor(Math.abs(n));  
-                }  
-            }  
-            if (n >= len) {  
-                return -1;  
-            }  
-            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);  
-            for (; k < len; k++) {  
-                if (k in t && t[k] === searchElement) {  
-                    return k;  
-                }  
-            }  
-            return -1;  
+    if (!Array.prototype.indexOf) {
+        Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
+            "use strict";
+            if (this == null) {
+                throw new TypeError();
+            }
+            var t = Object(this);
+            var len = t.length >>> 0;
+            if (len === 0) {
+                return -1;
+            }
+            var n = 0;
+            if (arguments.length > 0) {
+                n = Number(arguments[1]);
+                if (n != n) { // shortcut for verifying if it's NaN
+                    n = 0;
+                } else if (n != 0 && n != Infinity && n != -Infinity) {
+                    n = (n > 0 || -1) * Math.floor(Math.abs(n));
+                }
+            }
+            if (n >= len) {
+                return -1;
+            }
+            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+            for (; k < len; k++) {
+                if (k in t && t[k] === searchElement) {
+                    return k;
+                }
+            }
+            return -1;
         }
-    } 
+    }
+    
+    // add lastIndexOf to non ECMA-262 standard compliant browsers
+    if (!Array.prototype.lastIndexOf) {
+        Array.prototype.lastIndexOf = function(searchElement /*, fromIndex*/) {
+            "use strict";
+            if (this == null) {
+                throw new TypeError();
+            }
+            var t = Object(this);
+            var len = t.length >>> 0;
+            if (len === 0) {
+                return -1;
+            }
+            var n = len;
+            if (arguments.length > 1) {
+                n = Number(arguments[1]);
+                if (n != n) {
+                    n = 0;
+                } else if (n != 0 && n != (1 / 0) && n != -(1 / 0)) {
+                    n = (n > 0 || -1) * Math.floor(Math.abs(n));
+                }
+            }
+            var k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n);
+            for (; k >= 0; k--) {
+                if (k in t && t[k] === searchElement) {
+                    return k;
+                }
+            }
+            return -1;
+        };
+    }
 
     var i18n = {}
         , resStore = {}
@@ -64,8 +95,10 @@
         lowerCaseLng: false,
         returnObjectTrees: false,
         fallbackLng: 'dev',
+        fallbackNS: [],
         detectLngQS: 'setLng',
         ns: 'translation',
+        fallbackOnNull: true,
         fallbackToDefaultNS: false,
         nsseparator: ':',
         keyseparator: '.',
@@ -528,6 +561,11 @@
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
         }
     
+        // fallback namespaces
+        if (typeof o.fallbackNS == 'string') {
+            o.fallbackNS = [o.fallbackNS];
+        }
+    
         // escape prefix/suffix
         o.interpolationPrefixEscaped = f.regexEscape(o.interpolationPrefix);
         o.interpolationSuffixEscaped = f.regexEscape(o.interpolationSuffix);
@@ -601,6 +639,8 @@
         if (typeof ns !== 'string') {
             resources = ns;
             ns = o.ns.defaultNs;
+        } else if (o.ns.namespaces.indexOf(ns) < 0) {
+            o.ns.namespaces.push(ns);
         }
     
         resStore[lng] = resStore[lng] || {};
@@ -622,6 +662,7 @@
             dynamicLoad: o.dynamicLoad,
             resGetPath: o.resGetPath,
             getAsync: o.getAsync,
+            customLoad: o.customLoad,
             ns: { namespaces: namespaces, defaultNs: ''} /* new namespaces to load */
         };
     
@@ -659,6 +700,12 @@
     
                 // load each file individual
                 f.each(namespaces, function(nsIndex, nsValue) {
+    
+                    // append namespace to namespace array
+                    if (o.ns.namespaces.indexOf(nsValue) < 0) {
+                        o.ns.namespaces.push(nsValue);
+                    }
+    
                     f.each(lngNeedLoad, function(lngIndex, lngValue) {
                         resStore[lngValue] = resStore[lngValue] || {};
                         resStore[lngValue][nsValue] = store[lngValue][nsValue];
@@ -731,15 +778,15 @@
             }
             options = options || {};
     
-            if (key.indexOf(';') <= key.length-1) {
+            if (key.indexOf(';') >= 0) {
                 var keys = key.split(';');
     
                 $.each(keys, function(m, k) {
-                    parse(target, k, options);
+                    if (k !== '') parse(target, k, options);
                 });
     
             } else {
-                parse(target, k, options);
+                parse(target, key, options);
             }
     
             if (o.useDataAttrOptions === true) ele.data("i18n-options", options);
@@ -792,11 +839,11 @@
         while (translated.indexOf(o.reusePrefix) != -1) {
             replacementCounter++;
             if (replacementCounter > o.maxRecursion) { break; } // safety net for too much recursion
-            var index_of_opening = translated.indexOf(o.reusePrefix);
+            var index_of_opening = translated.lastIndexOf(o.reusePrefix);
             var index_of_end_of_closing = translated.indexOf(o.reuseSuffix, index_of_opening) + o.reuseSuffix.length;
             var token = translated.substring(index_of_opening, index_of_end_of_closing);
             var token_without_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
-            
+    
     
             if (token_without_symbols.indexOf(comma) != -1) {
                 var index_of_token_end_of_closing = token_without_symbols.indexOf(comma);
@@ -825,19 +872,84 @@
         return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
     }
     
-    function translate(key, options){
-        replacementCounter = 0;
-        return _translate(key, options);
+    function exists(key, options) {
+        options = options || {};
+    
+        var notFound = options.defaultValue || key
+            , found = _find(key, options);
+    
+        return found !== undefined || found === notFound;
     }
     
-    function _translate(key, options){
+    function translate(key, options) {
+        replacementCounter = 0;
+        return _translate.apply(null, arguments);
+    }
+    
+    function _injectSprintfProcessor() {
+        
+        var values = [];
+        
+        // mh: build array from second argument onwards
+        for (var i = 1; i < arguments.length; i++) {
+            values.push(arguments[i]);
+        }
+        
+        return {
+            postProcess: 'sprintf',
+            sprintf:     values
+        };
+    }
+    
+    function _translate(key, options) {
+        
+        if (typeof options == 'string') {
+            // mh: gettext like sprintf syntax found, automatically create sprintf processor
+            options = _injectSprintfProcessor.apply(null, arguments);
+        } else {
+            options = options || {};
+        }         
+    
+        var notFound = options.defaultValue || key
+            , found = _find(key, options)
+            , lngs = options.lng ? f.toLanguages(options.lng) : languages
+            , ns = options.ns || o.ns.defaultNs;
+    
+        if (found === undefined && o.sendMissing) {
+            if (options.lng) {
+                sync.postMissing(lngs[0], ns, key, notfound, lngs);
+            } else {
+                sync.postMissing(o.lng, ns, key, notFound, lngs);
+            }
+        }
+    
+        var postProcessor = options.postProcess || o.postProcess;
+        if (found !== undefined && postProcessor) {
+            if (postProcessors[postProcessor]) {
+                found = postProcessors[postProcessor](found, key, options);
+            }
+        }
+    
+        if (found === undefined) {
+            notFound = applyReplacement(notFound, options);
+            notFound = applyReuse(notFound, options);
+    
+            if (postProcessor && postProcessors[postProcessor]) {
+                found = postProcessors[postProcessor](found, key, options);
+            }
+        }
+    
+        return (found !== undefined) ? found : notFound;
+    }
+    
+    function _find(key, options){
         options = options || {};
     
         if (!resStore) { return notfound; } // no resStore to translate from
     
         var optionWithoutCount, translated
-          , notfound = options.defaultValue || key
-          , lngs = languages;
+            , notFound = options.defaultValue || key
+            , lngs = languages;
     
         if (options.lng) {
             lngs = f.toLanguages(options.lng);
@@ -866,7 +978,7 @@
             optionWithoutCount.defaultValue = o.contextNotFound;
     
             var contextKey = ns + o.nsseparator + key + '_' + options.context;
-            
+    
             translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
                 return applyReplacement(translated, { context: options.context }); // apply replacement for context only
@@ -880,18 +992,18 @@
     
             var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(currentLng, options.count);
-            if (pluralExtension >= 0) { 
-                pluralKey = pluralKey + '_' + pluralExtension; 
+            if (pluralExtension >= 0) {
+                pluralKey = pluralKey + '_' + pluralExtension;
             } else if (pluralExtension === 1) {
                 pluralKey = ns + o.nsseparator + key; // singular
             }
-            
+    
             translated = translate(pluralKey, optionWithoutCount);
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated, {
                     count: options.count,
                     interpolationPrefix: options.interpolationPrefix,
-                    interpolationSuffix: options.interpolationSuffix 
+                    interpolationSuffix: options.interpolationSuffix
                 }); // apply replacement for count only
             } // else continue translation with original/singular key
         }
@@ -917,10 +1029,12 @@
                     value = value.join('\n');
                     value = applyReplacement(value, options);
                     value = applyReuse(value, options);
+                } else if (value === null && o.fallbackOnNull === true) {
+                    value = undefined;
                 } else if (value !== null) {
                     if (!o.returnObjectTrees && !options.returnObjectTrees) {
-                        value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' + 
-                                'returned a object instead of string.';
+                        value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
+                            'returned a object instead of string.';
                         f.log(value);
                     } else {
                         var copy = {}; // apply child translation on a copy
@@ -934,32 +1048,30 @@
                 found = value;
             }
         }
-        
-        if (found === undefined && o.fallbackToDefaultNS) {
-            found = _translate(key, options);
-        }
     
-        if (found === undefined && o.sendMissing) {
-            if (options.lng) {
-                sync.postMissing(lngs[0], ns, key, notfound, lngs);
+        if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length))) { 
+            // set flag for fallback lookup - avoid recursion
+            options.isFallbackLookup = true;
+    
+            if (o.fallbackNS.length) {
+    
+                for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
+                    found = _translate(o.fallbackNS[y] + o.nsseparator + key, options);
+                    
+                    if (found) {
+                        /* compare value without namespace */
+                        var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
+                          , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;
+    
+                        if (foundValue !== notFoundValue) break;
+                    }
+                }
             } else {
-                sync.postMissing(o.lng, ns, key, notfound, lngs);
+                found = _translate(key, options); // fallback to default NS
             }
         }
     
-        var postProcessor = options.postProcess || o.postProcess;
-        if (found !== undefined && postProcessor) {
-            if (postProcessors[postProcessor]) {
-                found = postProcessors[postProcessor](found, key, options);
-            }
-        }
-    
-        if (found === undefined) {
-            notfound = applyReplacement(notfound, options);
-            notfound = applyReuse(notfound, options);
-        }
-    
-        return (found !== undefined) ? found : notfound;
+        return found;
     }
     function detectLanguage() {
         var detectedLng;
@@ -1095,21 +1207,31 @@
                     });
                 });
             } else {
-                var url = applyReplacement(options.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
-                // load all needed stuff once
-                f.ajax({
-                    url: url,
-                    success: function(data, status, xhr) {
-                        f.log('loaded: ' + url);
-                        cb(null, data);
-                    },
-                    error : function(xhr, status, error) {
-                        f.log('failed loading: ' + url);
-                        cb('failed loading resource.json error: ' + error);
-                    },
-                    dataType: "json",
-                    async : options.getAsync
-                });         
+                // Call this once our translation has returned.
+                var loadComplete = function(err, data) {
+                    cb(null, data);
+                };
+    
+                if(typeof options.customLoad == 'function'){
+                    // Use the specified custom callback.
+                    options.customLoad(lngs, ns.namespaces, options, loadComplete);
+                } else {
+                    var url = applyReplacement(options.resGetPath, { lng: lngs.join('+'), ns: ns.namespaces.join('+') });
+                    // load all needed stuff once
+                    f.ajax({
+                        url: url,
+                        success: function(data, status, xhr) {
+                            f.log('loaded: ' + url);
+                            loadComplete(null, data);
+                        },
+                        error : function(xhr, status, error) {
+                            f.log('failed loading: ' + url);
+                            loadComplete('failed loading resource.json error: ' + error);
+                        },
+                        dataType: "json",
+                        async : options.getAsync
+                    });
+                }    
             }
         },
     
@@ -2427,6 +2549,7 @@
     i18n.setDefaultNamespace = setDefaultNamespace;
     i18n.t = translate;
     i18n.translate = translate;
+    i18n.exists = exists;
     i18n.detectLanguage = f.detectLanguage;
     i18n.pluralExtensions = pluralExtensions;
     i18n.sync = sync;
