@@ -13,8 +13,13 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
         if (typeof value === 'object' && value !== null) {
             str = applyReplacement(str, value, nextKey, options);
         } else {
-            str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), value);
-            str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.escape(value));
+            if (options.escapeInterpolation || o.escapeInterpolation) {
+                str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), value);
+                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.escape(value));
+            }else{
+                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), value);
+            }
+            // str = options.escapeInterpolation;
         }
     });
     return str;
