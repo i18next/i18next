@@ -1,3 +1,6 @@
+### 1.6.2pre
+- fixes some var typo
+
 ### 1.6.1
 - PR #106 optionally un/escape interpolated content
 - PR #101 automatic gettext like sprintf syntax detection + postprocess injection

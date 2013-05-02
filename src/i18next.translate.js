@@ -117,7 +117,7 @@ function _translate(key, options) {
 
     if (found === undefined && o.sendMissing) {
         if (options.lng) {
-            sync.postMissing(lngs[0], ns, key, notfound, lngs);
+            sync.postMissing(lngs[0], ns, key, notFound, lngs);
         } else {
             sync.postMissing(o.lng, ns, key, notFound, lngs);
         }
@@ -145,11 +145,11 @@ function _translate(key, options) {
 function _find(key, options){
     options = options || {};
 
-    if (!resStore) { return notfound; } // no resStore to translate from
-
     var optionWithoutCount, translated
         , notFound = options.defaultValue || key
         , lngs = languages;
+
+    if (!resStore) { return notFound; } // no resStore to translate from
 
     if (options.lng) {
         lngs = f.toLanguages(options.lng);
