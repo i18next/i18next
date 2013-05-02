@@ -30,6 +30,12 @@ describe('post missing resources', function() {
       expect(stub.calledOnce).to.be(true);
     });
 
+    it('it should post missing resource to server when language is passed in', function() {
+      i18n.t('missing_en', { lng: 'en' });
+      server.respond();
+      expect(stub.calledOnce).to.be(true);
+    });
+
   });
 
   describe('to all', function() {
