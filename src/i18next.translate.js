@@ -5,13 +5,21 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
     if (str.indexOf(options.interpolationPrefix || o.interpolationPrefix) < 0) return str;
 
     var prefix = options.interpolationPrefix ? f.regexEscape(options.interpolationPrefix) : o.interpolationPrefixEscaped
-      , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped;
+      , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped
+      , unEscapingSuffix = 'HTML'+suffix;
 
     f.each(replacementHash, function(key, value) {
+        var nextKey = nestedKey ? nestedKey + o.keyseparator + key : key;
         if (typeof value === 'object' && value !== null) {
-            str = applyReplacement(str, value, nestedKey ? nestedKey + o.keyseparator + key : key, options);
+            str = applyReplacement(str, value, nextKey, options);
         } else {
-            str = str.replace(new RegExp([prefix, nestedKey ? nestedKey + o.keyseparator + key : key, suffix].join(''), 'g'), value);
+            if (options.escapeInterpolation || o.escapeInterpolation) {
+                str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), value);
+                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.escape(value));
+            }else{
+                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), value);
+            }
+            // str = options.escapeInterpolation;
         }
     });
     return str;

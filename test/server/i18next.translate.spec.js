@@ -156,7 +156,7 @@ describe('i18next.translate', function() {
       ), function(t) { done(); });
     });
   
-    it('it should return nested string', function() {
+    it('it should return nested string as usual', function() {
       expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
     });
   
@@ -169,11 +169,14 @@ describe('i18next.translate', function() {
       describe('with init flag', function() {
   
         var resStore = {
-          dev: { translation: {  } },
+          dev: { translation: {
+              test_dev: { res_dev: 'added __replace__' }
+            } 
+          },
           en: { translation: {  } },            
           'en-US': { 
             translation: {                      
-              test: { res: 'added __replace__' }
+              test_en_US: { res_en_US: 'added __replace__' }
             } 
           }
         };
@@ -186,9 +189,12 @@ describe('i18next.translate', function() {
         });
   
         it('it should return objectTree applying options', function() {
-          expect(i18n.t('test', { replace: 'two' })).to.eql({ 'res': 'added two' });
-          expect(i18n.t('test', { replace: 'three' })).to.eql({ 'res': 'added three' });
-          expect(i18n.t('test', { replace: 'four' })).to.eql({ 'res': 'added four' });
+          expect(i18n.t('test_en_US', { replace: 'two' })).to.eql({ 'res_en_US': 'added two' });
+          expect(i18n.t('test_en_US', { replace: 'three' })).to.eql({ 'res_en_US': 'added three' });
+          expect(i18n.t('test_en_US', { replace: 'four' })).to.eql({ 'res_en_US': 'added four' });
+  
+          // from fallback
+          expect(i18n.t('test_dev', { replace: 'two' })).to.eql({ 'res_dev': 'added two' });
         });
   
       });
@@ -291,6 +297,10 @@ describe('i18next.translate', function() {
         expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3'}}})).to.be('added 3');
       });
     
+      it("it should not escape HTML", function() {
+        expect(i18n.t('interpolationTest1', {toAdd: '<html>'})).to.be('added <html>');
+      });
+    
       it('it should replace passed in key/values on defaultValue', function() {
         expect(i18n.t('interpolationTest5', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
       });
@@ -366,6 +376,77 @@ describe('i18next.translate', function() {
     
       it('it should replace passed in key/values on defaultValue', function() {
         expect(i18n.t('interpolationTest6', {defaultValue: 'added *toAdd*', toAdd: 'something', interpolationPrefix: '*', interpolationSuffix: '*'})).to.be('added something');
+      });
+    
+    });
+    
+    describe('default i18next way - with escaping interpolated arguments per default', function () {
+      var resStore = {
+        dev: { translation: {  } },
+        en: { translation: {  } },            
+        'en-US': { 
+          translation: {                      
+            interpolationTest1: 'added __toAdd__',
+            interpolationTest5: 'added __toAddHTML__',
+            interpolationTest6: 'added __child.oneHTML__',
+            interpolationTest7: 'added __toAddHTML__ __toAdd__'
+          } 
+        }
+      };
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { 
+          resStore: resStore,
+          escapeInterpolation: true
+        }), function(t) { done(); });
+      });
+    
+      it("it should escape HTML", function() {
+        expect(i18n.t('interpolationTest1', {toAdd: '<html>'})).to.be('added &lt;html&gt;');
+      });
+    
+      it("it should not escape when HTML is suffixed", function() {
+        expect(i18n.t('interpolationTest5', {toAdd: '<html>'})).to.be('added <html>');
+        expect(i18n.t('interpolationTest6', { child: { one: '<1>'}})).to.be('added <1>');
+      });
+    
+      it("it should support both escaping and not escaping HTML", function() {
+        expect(i18n.t('interpolationTest7', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html> &lt;html&gt;');
+      });
+    
+    });
+    
+    describe('default i18next way - with escaping interpolated arguments per default via options', function () {
+      var resStore = {
+        dev: { translation: {  } },
+        en: { translation: {  } },            
+        'en-US': { 
+          translation: {                      
+            interpolationTest1: 'added __toAdd__',
+            interpolationTest5: 'added __toAddHTML__',
+            interpolationTest6: 'added __child.oneHTML__',
+            interpolationTest7: 'added __toAddHTML__ __toAdd__'
+          } 
+        }
+      };
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { 
+          resStore: resStore
+        }), function(t) { done(); });
+      });
+    
+      it("it should escape HTML", function() {
+        expect(i18n.t('interpolationTest1', {toAdd: '<html>', escapeInterpolation: true})).to.be('added &lt;html&gt;');
+      });
+    
+      it("it should not escape when HTML is suffixed", function() {
+        expect(i18n.t('interpolationTest5', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html>');
+        expect(i18n.t('interpolationTest6', { child: { one: '<1>', escapeInterpolation: true}})).to.be('added <1>');
+      });
+    
+      it("it should support both escaping and not escaping HTML", function() {
+        expect(i18n.t('interpolationTest7', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html> &lt;html&gt;');
       });
     
     });

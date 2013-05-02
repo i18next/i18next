@@ -38,6 +38,7 @@ var o = {
     pluralSuffix: '_plural',
     pluralNotFound: ['plural_not_found', Math.random()].join(''),
     contextNotFound: ['context_not_found', Math.random()].join(''),
+    escapeInterpolation: false,
 
     setJqueryExt: true,
     defaultValueFromContent: true,
