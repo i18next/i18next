@@ -2,5 +2,9 @@
 	"simple_en": "ok_from_en",
 	"test": {
 		"simple_en": "ok_from_en"
+	},
+	"route": {
+		"key1": "key1_en",
+		"key2": "key2_en"
 	}
 }
