@@ -1,12 +1,13 @@
-### 1.6.1pre
-- automatic gettext like sprintf syntax detection + postprocess injection PR #101
+### 1.6.1
+- PR #106 optionally un/escape interpolated content
+- PR #101 automatic gettext like sprintf syntax detection + postprocess injection
 - customload will get called on dynamicLoad too
 - fixes namespace array settings if loaded resourcebundle or additional namespaces
 - lookup of not existend resouces can be fallbacked to other namespaces - see option fallbackNS (array or string if one ns to fallback to)
 - defaultValues get postProcessed
 - BREAKING: per default null values in resources get translated to fallback. This can be changed by setting option fallbackOnNull to false
-- added support for passing options to nested resources PR #81
-- added an exists method to check for the existence of a key in the resource store PR #88
+- PR #81 added support for passing options to nested resources
+- PR #88 added an exists method to check for the existence of a key in the resource store 
 - fixed issue with null value throws in applyReplacement function
 - fixed issue #80 empty string lookup ends in fallback instead of returning result in language
 - fixed issue with null value in resources not returning expected value
@@ -14,7 +15,7 @@
 - allow zepto as drop in replacement for $
 - using testacular as runner
 - upgraded to grunt 0.4.0
-- fixed Optional interpolation prefix/suffix not used in plural translation cases
+- fixed optional interpolation prefix/suffix not used in plural translation cases
 - optimized check if there are multiple keys for the data-i18n attribute to parse
 
 ### 1.6.0

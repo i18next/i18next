@@ -1,20 +1,8 @@
-// i18next, v1.6.1pre
+// i18next, v1.6.1
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
-(function (root, factory) {
-    if (typeof exports === 'object') {
-
-      var jquery = require('jquery');
-
-      module.exports = factory(jquery);
-
-    } else if (typeof define === 'function' && define.amd) {
-
-      define(['jquery'], factory);
-
-    } 
-}(this, function ($) {
+(function() {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {
@@ -81,12 +69,27 @@
         };
     }
 
-    var i18n = {}
-        , resStore = {}
-        , currentLng
-        , replacementCounter = 0
-        , languages = [];
+    var root = this
+      , $ = root.jQuery || root.Zepto
+      , i18n = {}
+      , resStore = {}
+      , currentLng
+      , replacementCounter = 0
+      , languages = [];
 
+
+    // Export the i18next object for **CommonJS**. 
+    // If we're not in CommonJS, add `i18n` to the
+    // global object or to jquery.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = i18n;
+    } else {
+        if ($) {
+            $.i18n = $.i18n || i18n;
+        }
+        
+        root.i18n = root.i18n || i18n;
+    }
     // defaults
     var o = {
         lng: undefined,
@@ -127,6 +130,7 @@
         pluralSuffix: '_plural',
         pluralNotFound: ['plural_not_found', Math.random()].join(''),
         contextNotFound: ['context_not_found', Math.random()].join(''),
+        escapeInterpolation: false,
     
         setJqueryExt: true,
         defaultValueFromContent: true,
@@ -184,6 +188,25 @@
         }
     
         return object;
+    }
+    
+    var _entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+    
+    function _escape(data) {
+        if (typeof data === 'string') {
+            return data.replace(/[&<>"'\/]/g, function (s) {
+                return _entityMap[s];
+            });    
+        }else{
+            return data;
+        }
     }
     
     function _ajax(options) {
@@ -519,6 +542,7 @@
         ajax: $ ? $.ajax : _ajax,
         cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
         detectLanguage: detectLanguage,
+        escape: _escape,
         log: function(str) {
             if (o.debug && typeof console !== "undefined") console.log(str);
         },
@@ -813,13 +837,21 @@
         if (str.indexOf(options.interpolationPrefix || o.interpolationPrefix) < 0) return str;
     
         var prefix = options.interpolationPrefix ? f.regexEscape(options.interpolationPrefix) : o.interpolationPrefixEscaped
-          , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped;
+          , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped
+          , unEscapingSuffix = 'HTML'+suffix;
     
         f.each(replacementHash, function(key, value) {
+            var nextKey = nestedKey ? nestedKey + o.keyseparator + key : key;
             if (typeof value === 'object' && value !== null) {
-                str = applyReplacement(str, value, nestedKey ? nestedKey + o.keyseparator + key : key, options);
+                str = applyReplacement(str, value, nextKey, options);
             } else {
-                str = str.replace(new RegExp([prefix, nestedKey ? nestedKey + o.keyseparator + key : key, suffix].join(''), 'g'), value);
+                if (options.escapeInterpolation || o.escapeInterpolation) {
+                    str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), value);
+                    str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.escape(value));
+                }else{
+                    str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), value);
+                }
+                // str = options.escapeInterpolation;
             }
         });
         return str;
@@ -2558,9 +2590,4 @@
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
 
-    $.i18n = i18n;
-    $.t = i18n.t;
-        
-    return i18n;
-
-}));
+})();
