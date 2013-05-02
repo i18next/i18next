@@ -181,6 +181,29 @@
               | 
               | i18n.t("key", { person: { name: { first: 'cristina' } } }); // -> cristina is important
 
+        p 
+          span.badge.badge-info Hint 3:
+          |  Enscaping:
+          pre
+            code
+              | // given resources
+              | {           
+              |   'en-US': { 
+              |     translation: { 
+              |       key1: Not escaped __nameHTML__,
+              |       key2: Escaped __name__ 
+              |     } 
+              |   }
+              | };
+              | 
+              | i18n.t("key2", { name: '<tag>', escapeInterpolation: true }); // -> Escaped &<i>lt</i>;tag&<i>gt</i>;
+              | i18n.t("key1", { name: '<tag>', escapeInterpolation: true }); // -> Not escaped &lt;tag&gt
+
+          p Adding suffix 'HTML__' to your value will prevent the escaping even if option is set so.
+          p You could turn on escaping on init 
+            code i18n.init({escapeInterpolation: true});
+            |  or by passing in option to t function like in the sample.
+
         h6 Formating:
         p 
           span.badge.badge-info
@@ -215,6 +238,9 @@
           | 
           | i18n.t("key1", { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] });
           | i18n.t("key2", { postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } } );
+          |
+          | // or simpler just call:
+          | i18n.t("key1", 'a', 'b', 'c', 'd');
 
       .feature-description
         p 
@@ -377,3 +403,15 @@
             |  If the additional language wasn't preloaded it will be fetched synchronous.
           if target === 'server'
             |  If the additional language wasn't preloaded it won't return expected value.
+
+            .row-fluid
+
+.row-fluid
+  .span4
+    h4.feature-title check if a key exists
+
+  .span8
+    .feature
+      pre
+        code
+          | i18n.exists("my.key", options); // same options as in t function

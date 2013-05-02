@@ -189,7 +189,7 @@ html(lang="en")
 
         .row-fluid
           .span4
-            h4.feature-title Unset/Set fallback namespace:
+            h4.feature-title Unset/Set fallback namespace(s):
 
           .span8
             .feature
@@ -211,7 +211,39 @@ html(lang="en")
                   | 
                   | i18n.init({ fallbackToDefaultNS: true });
                   | 
-                  | i18n.t("namespace2.key1"); // -> value of key 1
+                  | i18n.t("namespace2:key1"); // -> value of key 1
+
+              h6 with one or more namespace(s)
+              pre
+                code
+                  | // given resourcesfile namespace1.en.json
+                  | { 
+                  |    key1: 'value of key 1 - ns1' 
+                  | }
+                  | 
+                  | // given resourcesfile namespace2.en.json
+                  | { 
+                  |    key1: 'value of key 1 - ns2' 
+                  |    key2: 'value of key 2 - ns2' 
+                  | }
+                  | 
+                  | // given resourcesfile namespace3.en.json
+                  | { 
+                  |   keys: { 
+                  |     2: 'value of key 2',
+                  |     3: 'value of key 3'
+                  |   }
+                  | }
+                  | 
+                  | i18n.init({ fallbackNS: 'namespace2' });
+                  | 
+                  | i18n.t("namespace3:key1"); // -> value of key 1 - ns2
+                  | 
+                  | // array
+                  | i18n.init({ fallbackNS: ['namespace1', 'namespace2'] }); // order matters
+                  | 
+                  | i18n.t("namespace3:key1"); // -> value of key 1 - ns1
+                  | i18n.t("namespace3:key2"); // -> value of key 2 - ns2
 
               .feature-description
                 p If a resource can't be found in namespace it will be looked up in default namespace. By 
@@ -272,6 +304,32 @@ html(lang="en")
                   code localStorageExpirationTime
                   |  expired. So if they had been cached once and you add
                   | new resources, they won't be reloaded until expired.
+        
+        .row-fluid
+          .span4
+            h4.feature-title handling of null values:
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resourcesfile namespace1.dev.json (fallback lng)
+                  | { 
+                  |    key1: 'fallback' 
+                  | }
+                  | // given resourcesfile namespace1.en.json
+                  | { 
+                  |    key1: null 
+                  | }
+                  | 
+                  | i18n.init({ fallbackOnNull: true });
+                  | i18n.t('key1'); // -> 'fallback'
+                  | 
+                  | i18n.init({ fallbackOnNull: false });
+                  | i18n.t('key1'); // -> ''
+
+              .feature-description
+                p Default is true.
 
         .row-fluid
           .span4

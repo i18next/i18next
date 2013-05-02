@@ -85,6 +85,8 @@ html(lang="en")
                     pre
                       code
                         | i18next-conv -l [domain] -s [sourcePath] -t [targetPath]
+                        | 
+                        | quiet mode: i18next-conv -l [domain] -s [sourcePath] -t [targetPath] --quiet
                         | 
                         | eg.: i18next-conv -l en -s ./locales/en.po -t ./locales/en/translation.json
 
@@ -109,6 +111,8 @@ html(lang="en")
                     pre
                       code
                         | i18next-conv -l [domain] -s [sourcePath] -t [targetPath]
+                        | 
+                        | quiet mode: i18next-conv -l [domain] -s [sourcePath] -t [targetPath] --quiet
                         | 
                         | eg. for .mo file: 
                         | i18next-conv -l en -s ./locales/en/translation.json -t ./locales/en/translation.mo
