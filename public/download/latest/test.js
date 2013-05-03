@@ -1,4 +1,4 @@
-// i18next, v1.6.1
+// i18next, v1.6.2
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -376,7 +376,8 @@ describe('i18next', function() {
       
           describe('and fallbacking to multiple set namespace', function() {
             var resStore = {
-              dev: { 
+              dev: {
+                'ns.common': {},
                 'ns.special': { 'simple_dev': 'ok_from_dev' },
                 'ns.fallback1': { 
                   'simple_fallback': 'ok_from_fallback1',
@@ -405,6 +406,37 @@ describe('i18next', function() {
               expect(i18n.t('ns.common:simple_fallback')).to.be('ok_from_fallback1'); /* first wins */
               expect(i18n.t('ns.common:simple_fallback1')).to.be('ok_from_fallback1');
               expect(i18n.t('ns.common:simple_fallback2')).to.be('ok_from_fallback2');
+            });
+      
+            describe('and post missing', function() {
+      
+              var spy; 
+      
+              beforeEach(function(done) {
+                spy = sinon.spy(i18n.sync, 'postMissing');
+                i18n.init(i18n.functions.extend(opts, { 
+                  fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
+                  resStore: resStore,
+                  sendMissing: true,
+                  ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
+                  function(t) { 
+                    t('ns.common:notExisting');
+                    done(); 
+                  });
+              });
+      
+              afterEach(function() {
+                spy.restore();
+              });
+      
+              it('it should post only to origin namespace', function() {
+                expect(spy.callCount).to.be(1);
+                expect(spy.args[0][0]).to.be('en-US');
+                expect(spy.args[0][1]).to.be('ns.common');
+                expect(spy.args[0][2]).to.be('notExisting');
+                expect(spy.args[0][3]).to.be('ns.common:notExisting');
+              });
+      
             });
       
           });
@@ -748,11 +780,13 @@ describe('i18next', function() {
     describe('post missing resources', function() {
     
       describe('to fallback', function() {
-        var server, stub; 
+        var server, stub, spy; 
     
         beforeEach(function(done) {
           server = sinon.fakeServer.create();
-          stub = sinon.stub(i18n.functions, "ajax"); 
+          stub = sinon.stub(i18n.functions, "ajax");
+          spy = sinon.spy(i18n.sync, 'postMissing');
+    
     
           server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
     
@@ -769,12 +803,27 @@ describe('i18next', function() {
         afterEach(function() {
           server.restore();
           stub.restore();
+          spy.restore();
         });
     
         it('it should post missing resource to server', function() {
           i18n.t('missing');
           server.respond();
           expect(stub.calledOnce).to.be(true);
+        });
+    
+        it('it should post missing resource to server when language is passed in', function() {
+          i18n.t('missing_en', { lng: 'en' });
+          server.respond();
+          expect(stub.calledOnce).to.be(true);
+        });
+    
+        it('it should call with right arguments', function() {
+          i18n.t('missing');
+          expect(spy.args[0][0]).to.be('en-US');
+          expect(spy.args[0][1]).to.be('translation');
+          expect(spy.args[0][2]).to.be('missing');
+          expect(spy.args[0][3]).to.be('missing');
         });
     
       });
