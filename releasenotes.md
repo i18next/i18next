@@ -1,5 +1,9 @@
-### 1.6.2pre
+### 1.6.3pre
+
+### 1.6.2
 - fixes some var typo
+- fixes sendMissing to correct namespace
+- fixes sendMissing in combination with fallbackNS
 
 ### 1.6.1
 - PR #106 optionally un/escape interpolated content

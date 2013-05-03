@@ -115,6 +115,13 @@ function _translate(key, options) {
         , lngs = options.lng ? f.toLanguages(options.lng) : languages
         , ns = options.ns || o.ns.defaultNs;
 
+    // split ns and key
+    if (key.indexOf(o.nsseparator) > -1) {
+        var parts = key.split(o.nsseparator);
+        ns = parts[0];
+        key = parts[1];
+    }
+
     if (found === undefined && o.sendMissing) {
         if (options.lng) {
             sync.postMissing(lngs[0], ns, key, notFound, lngs);
@@ -256,7 +263,7 @@ function _find(key, options){
         if (o.fallbackNS.length) {
 
             for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
-                found = _translate(o.fallbackNS[y] + o.nsseparator + key, options);
+                found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
                 
                 if (found) {
                     /* compare value without namespace */
@@ -267,7 +274,7 @@ function _find(key, options){
                 }
             }
         } else {
-            found = _translate(key, options); // fallback to default NS
+            found = _find(key, options); // fallback to default NS
         }
     }
 

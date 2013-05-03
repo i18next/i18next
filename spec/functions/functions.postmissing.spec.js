@@ -1,11 +1,13 @@
 describe('post missing resources', function() {
 
   describe('to fallback', function() {
-    var server, stub; 
+    var server, stub, spy; 
 
     beforeEach(function(done) {
       server = sinon.fakeServer.create();
-      stub = sinon.stub(i18n.functions, "ajax"); 
+      stub = sinon.stub(i18n.functions, "ajax");
+      spy = sinon.spy(i18n.sync, 'postMissing');
+
 
       server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
 
@@ -22,6 +24,7 @@ describe('post missing resources', function() {
     afterEach(function() {
       server.restore();
       stub.restore();
+      spy.restore();
     });
 
     it('it should post missing resource to server', function() {
@@ -34,6 +37,14 @@ describe('post missing resources', function() {
       i18n.t('missing_en', { lng: 'en' });
       server.respond();
       expect(stub.calledOnce).to.be(true);
+    });
+
+    it('it should call with right arguments', function() {
+      i18n.t('missing');
+      expect(spy.args[0][0]).to.be('en-US');
+      expect(spy.args[0][1]).to.be('translation');
+      expect(spy.args[0][2]).to.be('missing');
+      expect(spy.args[0][3]).to.be('missing');
     });
 
   });

@@ -1,4 +1,4 @@
-// i18next, v1.6.2pre
+// i18next, v1.6.2
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
