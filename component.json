@@ -1,6 +1,6 @@
 {
   "name": "i18next",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "main": "./release/i18next-1.6.1.min.js",
   "dependencies": {},
   "ignore": [
