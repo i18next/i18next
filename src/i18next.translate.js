@@ -256,7 +256,7 @@ function _find(key, options){
         }
     }
 
-    if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length))) { 
+    if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length > 0))) { 
         // set flag for fallback lookup - avoid recursion
         options.isFallbackLookup = true;
 

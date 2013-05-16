@@ -1,4 +1,5 @@
 ### 1.6.3pre
+- fixed namespace fallback loop to only loop if array has really a ns in it
 
 ### 1.6.2
 - fixes some var typo

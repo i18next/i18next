@@ -1,7 +1,7 @@
 {
   "author": "jamuhl"
   , "name": "i18next-clientscript"
-  , "version": "1.6.0"
+  , "version": "1.6.3"
   , "private": false
   , "main": "server.js"
   , "engines": {

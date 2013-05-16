@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
   var version = '1.6.3_pre';
   // before release:
-  // update component.js
+  // update component.js, package.json
   // after release:
   // add tag to repo: git tag -a 1.6.0 -m 'i18next v1.6.0'
   // push tag: git push origin 1.6.0
