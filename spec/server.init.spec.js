@@ -25,6 +25,7 @@ describe('i18next.init', function() {
       resGetPath: 'test/locales/__lng__/__ns__.json',
       resSetPath: 'test/locales/__lng__/new.__ns__.json',
       saveMissing: false,
+      sendMissingTo: 'fallback',
       resStore: false,
       returnObjectTrees: false,
       interpolationPrefix: '__',

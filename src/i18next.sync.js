@@ -147,9 +147,9 @@ var sync = {
 
         var urls = [];
 
-        if (o.sendMissingTo === 'fallback') {
+        if (o.sendMissingTo === 'fallback' && o.fallbackLng !== false) {
             urls.push({lng: o.fallbackLng, url: applyReplacement(o.resPostPath, { lng: o.fallbackLng, ns: ns })});
-        } else if (o.sendMissingTo === 'current') {
+        } else if (o.sendMissingTo === 'current' || (o.sendMissingTo === 'fallback' && o.fallbackLng === false) ) {
             urls.push({lng: lng, url: applyReplacement(o.resPostPath, { lng: lng, ns: ns })});
         } else if (o.sendMissingTo === 'all') {
             for (var i = 0, l = lngs.length; i < l; i++) {

@@ -1,4 +1,4 @@
-// i18next, v1.6.2
+// i18next, v1.6.3_pre
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -29,6 +29,7 @@ describe('i18next.init', function() {
       resGetPath: 'test/locales/__lng__/__ns__.json',
       resSetPath: 'test/locales/__lng__/new.__ns__.json',
       saveMissing: false,
+      sendMissingTo: 'fallback',
       resStore: false,
       returnObjectTrees: false,
       interpolationPrefix: '__',

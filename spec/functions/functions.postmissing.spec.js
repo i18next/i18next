@@ -47,6 +47,43 @@ describe('post missing resources', function() {
       expect(spy.args[0][3]).to.be('missing');
     });
 
+    describe('with fallbackLng set to false', function() {
+       
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, {
+          lng: 'de',
+          sendMissing: true,
+          fallbackLng: false,
+          sendMissingTo: 'fallback',
+          resStore: {
+            'en-US': { translation: {  } },
+            'en': { translation: {  } },
+            'dev': { translation: {  } }
+          }
+        }), function(t) { done(); } );
+      });
+
+      it('it should post missing resource to server', function() {
+        i18n.t('missing');
+        server.respond();
+        expect(stub.calledOnce).to.be(true);
+      });
+
+      it('it should call post missing with right arguments', function() {
+        i18n.t('missing');
+        expect(spy.args[0][0]).to.be('de');
+        expect(spy.args[0][1]).to.be('translation');
+        expect(spy.args[0][2]).to.be('missing');
+        expect(spy.args[0][3]).to.be('missing');
+      });
+
+      it('it should call ajax with right arguments', function() {
+        i18n.t('missing');
+        expect(stub.args[0][0].url).to.be('locales/add/de/translation');
+      });
+
+    });
+
   });
 
   describe('to all', function() {
