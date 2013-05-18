@@ -142,7 +142,8 @@ function _translate(key, options) {
         notFound = applyReuse(notFound, options);
 
         if (postProcessor && postProcessors[postProcessor]) {
-            found = postProcessors[postProcessor](found, key, options);
+            var val = options.defaultValue || key;
+            found = postProcessors[postProcessor](val, key, options);
         }
     }
 
