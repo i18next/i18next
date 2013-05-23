@@ -139,7 +139,8 @@
         useCookie: true,
         cookieName: 'i18next',
     
-        postProcess: undefined
+        postProcess: undefined,
+        parseMissingKey: undefined
     };
     function _extend(target, source) {
         if (!source || typeof source === 'function') {
@@ -945,11 +946,12 @@
         var notFound = options.defaultValue || key
             , found = _find(key, options)
             , lngs = options.lng ? f.toLanguages(options.lng) : languages
-            , ns = options.ns || o.ns.defaultNs;
+            , ns = options.ns || o.ns.defaultNs
+            , parts;
     
         // split ns and key
         if (key.indexOf(o.nsseparator) > -1) {
-            var parts = key.split(o.nsseparator);
+            parts = key.split(o.nsseparator);
             ns = parts[0];
             key = parts[1];
         }
@@ -967,6 +969,16 @@
             if (postProcessors[postProcessor]) {
                 found = postProcessors[postProcessor](found, key, options);
             }
+        }
+    
+        // process notFound if function exists
+        var splitNotFound = notFound;
+        if (notFound.indexOf(o.nsseparator) > -1) {
+            parts = notFound.split(o.nsseparator);
+            splitNotFound = parts[1];
+        }
+        if (splitNotFound === key && o.parseMissingKey) {
+            notFound = o.parseMissingKey(notFound);
         }
     
         if (found === undefined) {

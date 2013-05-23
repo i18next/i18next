@@ -1,4 +1,5 @@
 ### 1.6.3pre
+- option to parse key if missing
 - fixes issue where plural don't get translated if language is passed in t options
 - fixes issue where key or defaultValue aren't postProcessed with itself as value
 - fixes issue with fallbackLng = false in combination with sendMissingTo = fallback
