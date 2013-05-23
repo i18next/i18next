@@ -29,6 +29,7 @@ describe('i18next.functions', function() {
       interpolationPrefix: '__',
       interpolationSuffix: '__',
       postProcess: '',
+      parseMissingKey: '',
       debug: false
     };
 

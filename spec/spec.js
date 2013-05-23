@@ -24,6 +24,7 @@ describe('i18next', function() {
       debug: false,
       selectorAttr: 'data-i18n',
       postProcess: '',
+      parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__'
     };

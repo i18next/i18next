@@ -23,9 +23,12 @@ describe('i18next.translate', function() {
       interpolationPrefix: '__',
       interpolationSuffix: '__',
       postProcess: '',
+      parseMissingKey: '',
       debug: false
     };
   });
+
+  //= translate/translate.missingKey.spec.js
 
   //= translate/translate.nullValue.spec.js
 

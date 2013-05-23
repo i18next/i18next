@@ -47,5 +47,6 @@ var o = {
     useCookie: true,
     cookieName: 'i18next',
 
-    postProcess: undefined
+    postProcess: undefined,
+    parseMissingKey: undefined
 };
