@@ -737,6 +737,9 @@ describe('i18next', function() {
           i18n.addPostProcessor('myProcessor', function(val, key, opts) {
             return 'ok_from_postprocessor';
           });
+          i18n.addPostProcessor('myProcessor2', function(val, key, opts) {
+            return val + ' ok' ;
+          });
         });
     
         beforeEach(function(done) {
@@ -753,7 +756,11 @@ describe('i18next', function() {
         });
     
         it('it should postprocess on default value', function() {
-          expect(i18n.t('notFound', {defaultValue: 'not processed', postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
+          expect(i18n.t('notFound1', {defaultValue: 'defaultValue', postProcess: 'myProcessor2'})).to.be('defaultValue ok');
+        });
+    
+        it('it should postprocess on missing value', function() {
+          expect(i18n.t('notFound2', {postProcess: 'myProcessor2'})).to.be('notFound2 ok');
         });
     
         describe('or setting it as default on init', function() {
@@ -862,6 +869,45 @@ describe('i18next', function() {
             expect(stub.args[0][0].url).to.be('locales/add/de/translation');
           });
     
+        });
+    
+      });
+    
+      describe('to current', function() {
+        var server, stub; 
+    
+        beforeEach(function(done) {
+          server = sinon.fakeServer.create();
+          stub = sinon.stub(i18n.functions, "ajax"); 
+    
+          server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
+    
+          i18n.init(i18n.functions.extend(opts, {
+            sendMissing: true,
+            sendMissingTo: 'current',
+            //fallbackLng: false,
+            resStore: {
+              'en-US': { translation: {  } },
+              'en': { translation: {  } },
+              'dev': { translation: {  } }
+            }
+          }), function(t) { done(); } );
+        });
+    
+        afterEach(function() {
+          server.restore();
+          stub.restore();
+        });
+    
+        it('it should post missing resource for all lng to server', function() {
+          i18n.t('missing');
+          server.respond();
+          expect(stub.calledOnce).to.be(true);
+        });
+    
+        it('it should call ajax with right arguments', function() {
+          i18n.t('missing2');
+          expect(stub.args[0][0].url).to.be('locales/add/en-US/translation');
         });
     
       });
@@ -1618,6 +1664,33 @@ describe('i18next', function() {
           expect(i18n.t('key', {count: 99})).to.be('0,5,6');
           expect(i18n.t('key', {count: 199})).to.be('0,5,6');
           expect(i18n.t('key', {count: 100})).to.be('0,5,6');
+        });
+      });
+    
+      describe('extended usage - ask for a key in a language with a different plural form', function() {
+        var resStore = {
+            en: { translation: {
+                key:'singular_en',
+                key_plural:'plural_en'
+              } 
+            },
+            zh: { translation: { 
+                key: 'singular_zh'
+              }
+            }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { lng: 'zh', resStore: resStore }),
+            function(t) { done(); });
+        });
+    
+        it('it should provide translation for passed in language with 1 item', function() {
+          expect(i18n.t('key', { lng: 'en', count:1 })).to.be('singular_en');
+        });
+    
+        it('it should provide translation for passed in language with 2 items', function() {
+          expect(i18n.t('key', { lng: 'en', count:2 })).to.be('plural_en');
         });
       });
     

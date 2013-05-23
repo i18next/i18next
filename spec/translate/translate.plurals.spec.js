@@ -156,4 +156,31 @@ describe('plural usage', function() {
     });
   });
 
+  describe('extended usage - ask for a key in a language with a different plural form', function() {
+    var resStore = {
+        en: { translation: {
+            key:'singular_en',
+            key_plural:'plural_en'
+          } 
+        },
+        zh: { translation: { 
+            key: 'singular_zh'
+          }
+        }
+    };
+    
+    beforeEach(function(done) {
+      i18n.init(i18n.functions.extend(opts, { lng: 'zh', resStore: resStore }),
+        function(t) { done(); });
+    });
+
+    it('it should provide translation for passed in language with 1 item', function() {
+      expect(i18n.t('key', { lng: 'en', count:1 })).to.be('singular_en');
+    });
+
+    it('it should provide translation for passed in language with 2 items', function() {
+      expect(i18n.t('key', { lng: 'en', count:2 })).to.be('plural_en');
+    });
+  });
+
 });

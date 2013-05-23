@@ -6,6 +6,9 @@ describe('postprocessing tranlation', function() {
       i18n.addPostProcessor('myProcessor', function(val, key, opts) {
         return 'ok_from_postprocessor';
       });
+      i18n.addPostProcessor('myProcessor2', function(val, key, opts) {
+        return val + ' ok' ;
+      });
     });
 
     beforeEach(function(done) {
@@ -22,7 +25,11 @@ describe('postprocessing tranlation', function() {
     });
 
     it('it should postprocess on default value', function() {
-      expect(i18n.t('notFound', {defaultValue: 'not processed', postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
+      expect(i18n.t('notFound1', {defaultValue: 'defaultValue', postProcess: 'myProcessor2'})).to.be('defaultValue ok');
+    });
+
+    it('it should postprocess on missing value', function() {
+      expect(i18n.t('notFound2', {postProcess: 'myProcessor2'})).to.be('notFound2 ok');
     });
 
     describe('or setting it as default on init', function() {

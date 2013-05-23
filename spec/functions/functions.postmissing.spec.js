@@ -86,6 +86,45 @@ describe('post missing resources', function() {
 
   });
 
+  describe('to current', function() {
+    var server, stub; 
+
+    beforeEach(function(done) {
+      server = sinon.fakeServer.create();
+      stub = sinon.stub(i18n.functions, "ajax"); 
+
+      server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
+
+      i18n.init(i18n.functions.extend(opts, {
+        sendMissing: true,
+        sendMissingTo: 'current',
+        //fallbackLng: false,
+        resStore: {
+          'en-US': { translation: {  } },
+          'en': { translation: {  } },
+          'dev': { translation: {  } }
+        }
+      }), function(t) { done(); } );
+    });
+
+    afterEach(function() {
+      server.restore();
+      stub.restore();
+    });
+
+    it('it should post missing resource for all lng to server', function() {
+      i18n.t('missing');
+      server.respond();
+      expect(stub.calledOnce).to.be(true);
+    });
+
+    it('it should call ajax with right arguments', function() {
+      i18n.t('missing2');
+      expect(stub.args[0][0].url).to.be('locales/add/en-US/translation');
+    });
+
+  });
+
   describe('to all', function() {
     var server, stub; 
 

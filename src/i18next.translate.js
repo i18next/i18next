@@ -153,7 +153,8 @@ function _translate(key, options) {
         notFound = applyReuse(notFound, options);
 
         if (postProcessor && postProcessors[postProcessor]) {
-            found = postProcessors[postProcessor](found, key, options);
+            var val = options.defaultValue || key;
+            found = postProcessors[postProcessor](val, key, options);
         }
     }
 
@@ -209,7 +210,7 @@ function _find(key, options){
         optionWithoutCount.defaultValue = o.pluralNotFound;
 
         var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
-        var pluralExtension = pluralExtensions.get(currentLng, options.count);
+        var pluralExtension = pluralExtensions.get(lngs[0], options.count);
         if (pluralExtension >= 0) {
             pluralKey = pluralKey + '_' + pluralExtension;
         } else if (pluralExtension === 1) {
