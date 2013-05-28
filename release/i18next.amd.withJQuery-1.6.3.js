@@ -1,18 +1,20 @@
-// i18next, v1.6.3_pre
+// i18next, v1.6.3
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 (function (root, factory) {
     if (typeof exports === 'object') {
 
-        module.exports = factory();
+      var jquery = require('jquery');
+
+      module.exports = factory(jquery);
 
     } else if (typeof define === 'function' && define.amd) {
 
-        define([], factory);
+      define(['jquery'], factory);
 
     } 
-}(this, function () {
+}(this, function ($) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {
@@ -79,8 +81,7 @@
         };
     }
 
-    var $ = undefined
-        , i18n = {}
+    var i18n = {}
         , resStore = {}
         , currentLng
         , replacementCounter = 0
@@ -2605,7 +2606,10 @@
     i18n.lng = lng;
     i18n.addPostProcessor = addPostProcessor;
     i18n.options = o;
+
+    $.i18n = i18n;
+    $.t = i18n.t;
         
-    return i18n; 
+    return i18n;
 
 }));

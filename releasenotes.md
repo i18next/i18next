@@ -1,4 +1,4 @@
-### 1.6.3pre
+### 1.6.3
 - option to parse key if missing
 - fixes issue where plural don't get translated if language is passed in t options
 - fixes issue where key or defaultValue aren't postProcessed with itself as value
