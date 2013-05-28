@@ -1,4 +1,4 @@
-// i18next, v1.6.2
+// i18next, v1.6.3
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -28,6 +28,7 @@ describe('i18next', function() {
       debug: false,
       selectorAttr: 'data-i18n',
       postProcess: '',
+      parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__'
     };
@@ -736,6 +737,9 @@ describe('i18next', function() {
           i18n.addPostProcessor('myProcessor', function(val, key, opts) {
             return 'ok_from_postprocessor';
           });
+          i18n.addPostProcessor('myProcessor2', function(val, key, opts) {
+            return val + ' ok' ;
+          });
         });
     
         beforeEach(function(done) {
@@ -752,7 +756,11 @@ describe('i18next', function() {
         });
     
         it('it should postprocess on default value', function() {
-          expect(i18n.t('notFound', {defaultValue: 'not processed', postProcess: 'myProcessor'})).to.be('ok_from_postprocessor');
+          expect(i18n.t('notFound1', {defaultValue: 'defaultValue', postProcess: 'myProcessor2'})).to.be('defaultValue ok');
+        });
+    
+        it('it should postprocess on missing value', function() {
+          expect(i18n.t('notFound2', {postProcess: 'myProcessor2'})).to.be('notFound2 ok');
         });
     
         describe('or setting it as default on init', function() {
@@ -826,6 +834,82 @@ describe('i18next', function() {
           expect(spy.args[0][3]).to.be('missing');
         });
     
+        describe('with fallbackLng set to false', function() {
+           
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, {
+              lng: 'de',
+              sendMissing: true,
+              fallbackLng: false,
+              sendMissingTo: 'fallback',
+              resStore: {
+                'en-US': { translation: {  } },
+                'en': { translation: {  } },
+                'dev': { translation: {  } }
+              }
+            }), function(t) { done(); } );
+          });
+    
+          it('it should post missing resource to server', function() {
+            i18n.t('missing');
+            server.respond();
+            expect(stub.calledOnce).to.be(true);
+          });
+    
+          it('it should call post missing with right arguments', function() {
+            i18n.t('missing');
+            expect(spy.args[0][0]).to.be('de');
+            expect(spy.args[0][1]).to.be('translation');
+            expect(spy.args[0][2]).to.be('missing');
+            expect(spy.args[0][3]).to.be('missing');
+          });
+    
+          it('it should call ajax with right arguments', function() {
+            i18n.t('missing');
+            expect(stub.args[0][0].url).to.be('locales/add/de/translation');
+          });
+    
+        });
+    
+      });
+    
+      describe('to current', function() {
+        var server, stub; 
+    
+        beforeEach(function(done) {
+          server = sinon.fakeServer.create();
+          stub = sinon.stub(i18n.functions, "ajax"); 
+    
+          server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
+    
+          i18n.init(i18n.functions.extend(opts, {
+            sendMissing: true,
+            sendMissingTo: 'current',
+            //fallbackLng: false,
+            resStore: {
+              'en-US': { translation: {  } },
+              'en': { translation: {  } },
+              'dev': { translation: {  } }
+            }
+          }), function(t) { done(); } );
+        });
+    
+        afterEach(function() {
+          server.restore();
+          stub.restore();
+        });
+    
+        it('it should post missing resource for all lng to server', function() {
+          i18n.t('missing');
+          server.respond();
+          expect(stub.calledOnce).to.be(true);
+        });
+    
+        it('it should call ajax with right arguments', function() {
+          i18n.t('missing2');
+          expect(stub.args[0][0].url).to.be('locales/add/en-US/translation');
+        });
+    
       });
     
       describe('to all', function() {
@@ -865,6 +949,70 @@ describe('i18next', function() {
   
   });
   describe('translation functionality', function() {
+  
+    describe('resource is missing', function() {
+      var resStore = {
+        dev: { translation: { } },
+        en: { translation: { } },            
+        'en-US': { translation: { } }
+      };
+      
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+          function(t) { done(); });
+      });
+    
+      it('it should return key', function() {
+        expect(i18n.t('missing')).to.be('missing');
+      });
+    
+      it('it should return default value if set', function() {
+        expect(i18n.t('missing', { defaultValue: 'defaultOfMissing'})).to.be('defaultOfMissing');
+      });
+    
+      describe('with namespaces', function() {
+    
+        it('it should return key', function() {
+          expect(i18n.t('translate:missing')).to.be('translate:missing');
+        });
+    
+        it('it should return default value if set', function() {
+          expect(i18n.t('translate:missing', { defaultValue: 'defaultOfMissing'})).to.be('defaultOfMissing');
+        });
+    
+        describe('and function parseMissingKey set', function() {
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { 
+              parseMissingKey: function(key) {
+                var ret = key;
+    
+                if (ret.indexOf(':')) {
+                   ret = ret.substring(ret.lastIndexOf(':')+1, ret.length);
+                }
+    
+                if (ret.indexOf('.')) {
+                  ret = ret.substring(ret.lastIndexOf('.')+1, ret.length);
+                }
+    
+                return ret;
+              } 
+            }), function(t) { done(); });
+          });
+    
+          it('it should parse key', function() {
+            expect(i18n.t('translate:missing')).to.be('missing');
+            expect(i18n.t('translate:somenesting.missing')).to.be('missing');
+          });
+    
+          it('it should return default value if set', function() {
+            expect(i18n.t('translate:missing', { defaultValue: 'defaultOfMissing'})).to.be('defaultOfMissing');
+          });
+    
+        });
+    
+      });
+    
+    });
   
     describe('Check for existence of keys', function() {
         var resStore = {
@@ -1516,6 +1664,33 @@ describe('i18next', function() {
           expect(i18n.t('key', {count: 99})).to.be('0,5,6');
           expect(i18n.t('key', {count: 199})).to.be('0,5,6');
           expect(i18n.t('key', {count: 100})).to.be('0,5,6');
+        });
+      });
+    
+      describe('extended usage - ask for a key in a language with a different plural form', function() {
+        var resStore = {
+            en: { translation: {
+                key:'singular_en',
+                key_plural:'plural_en'
+              } 
+            },
+            zh: { translation: { 
+                key: 'singular_zh'
+              }
+            }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { lng: 'zh', resStore: resStore }),
+            function(t) { done(); });
+        });
+    
+        it('it should provide translation for passed in language with 1 item', function() {
+          expect(i18n.t('key', { lng: 'en', count:1 })).to.be('singular_en');
+        });
+    
+        it('it should provide translation for passed in language with 2 items', function() {
+          expect(i18n.t('key', { lng: 'en', count:2 })).to.be('plural_en');
         });
       });
     
