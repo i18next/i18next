@@ -201,6 +201,7 @@ module.exports = function(grunt) {
     },
 
     server: {
+      host: '0.0.0.0',
       index: 'test/index.html',
       files: { 'test.js': 'test/test.js' },
 

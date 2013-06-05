@@ -418,7 +418,7 @@ describe('i18next', function() {
                 i18n.init(i18n.functions.extend(opts, { 
                   fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                   resStore: resStore,
-                  sendMissing: true,
+                  sendMissing: true, /* must be changed to saveMissing */
                   ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                   function(t) { 
                     t('ns.common:notExisting');
