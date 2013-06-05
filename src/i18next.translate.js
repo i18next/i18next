@@ -257,10 +257,9 @@ function _find(key, options){
                     f.log(value);
                 } else {
                     var copy = {}; // apply child translation on a copy
-                    for (var m in value) {
-                        // apply translation on childs
+                    f.each(value, function(m) {
                         copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
-                    }
+                    });
                     value = copy;
                 }
             }

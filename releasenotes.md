@@ -1,3 +1,6 @@
+###1.6.4pre
+- fixes issue #115 out of stack exception in IE8 by recursing _translate in objectTrees
+
 ### 1.6.3
 - option to parse key if missing
 - fixes issue where plural don't get translated if language is passed in t options
