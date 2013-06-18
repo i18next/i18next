@@ -38,9 +38,9 @@ html(lang="en")
 
         wt.config(
           {
-            languages: ['en-US', 'de-DE', 'dev'],
-            namespaces: ['ns.special'],
-            resGetPath: "#{path}public/locales/__lng__/__ns__.json",
+            languages: ['en-US', 'en', 'de-DE', 'de', 'dev'],
+            namespaces: ['ns.special', 'ns.common'],
+            resGetPath: "#{path}public/sample_locales/__lng__/__ns__.json",
             resChangePath: '#{path}public/locales/change.json',
             resRemovePath: '#{path}public/locales/remove.json',
             fallbackLng: "dev",
