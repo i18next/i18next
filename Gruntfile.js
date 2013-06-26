@@ -208,7 +208,8 @@ module.exports = function(grunt) {
       folders: {
           'libs': './test/libs',
           'bin': './bin',
-          'locales': './test/locales'
+          'locales': './test/locales',
+          'sample': './sample/static'
       }
     },
 
