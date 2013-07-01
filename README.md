@@ -111,7 +111,7 @@ To build your own copy of i18next, check out the repository and:
 
 	git clone https://github.com/jamuhl/i18next.git
     cd i18next
-    npm install grunt -g
+    npm install -g grunt-cli
     npm install
     grunt
     

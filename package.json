@@ -9,8 +9,8 @@
     }
   , "dependencies": { }
   , "devDependencies": {
-      "grunt": "*"
-    , "grunt-rigger": "*"
+      "grunt": "~0.4.1"
+    , "grunt-rigger": "~0.5.0"
     , "grunt-contrib": ">=0.1.0"
     , "grunt-shell": ">=0.1.0"
     , "gruntacular": ">=0.1.0"
