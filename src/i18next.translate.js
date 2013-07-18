@@ -75,7 +75,7 @@ function needsPlural(options) {
 function exists(key, options) {
     options = options || {};
 
-    var notFound = options.defaultValue || key
+    var notFound = (options.defaultValue !== undefined) ? options.defaultValue : key
         , found = _find(key, options);
 
     return found !== undefined || found === notFound;
@@ -110,7 +110,7 @@ function _translate(key, options) {
         options = options || {};
     }         
 
-    var notFound = options.defaultValue || key
+    var notFound = (options.defaultValue !== undefined) ? options.defaultValue : key
         , found = _find(key, options)
         , lngs = options.lng ? f.toLanguages(options.lng) : languages
         , ns = options.ns || o.ns.defaultNs
