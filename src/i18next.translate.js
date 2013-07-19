@@ -64,6 +64,10 @@ function applyReuse(translated, options) {
     return translated;
 }
 
+function applyDefault(key, options) {
+    return (options.defaultValue !== undefined) ? options.defaultValue : key;
+}
+
 function hasContext(options) {
     return (options.context && typeof options.context == 'string');
 }
@@ -75,7 +79,7 @@ function needsPlural(options) {
 function exists(key, options) {
     options = options || {};
 
-    var notFound = (options.defaultValue !== undefined) ? options.defaultValue : key
+    var notFound = applyDefault(key, options)
         , found = _find(key, options);
 
     return found !== undefined || found === notFound;
@@ -110,7 +114,7 @@ function _translate(key, options) {
         options = options || {};
     }         
 
-    var notFound = (options.defaultValue !== undefined) ? options.defaultValue : key
+    var notFound = applyDefault(key, options)
         , found = _find(key, options)
         , lngs = options.lng ? f.toLanguages(options.lng) : languages
         , ns = options.ns || o.ns.defaultNs
@@ -153,7 +157,7 @@ function _translate(key, options) {
         notFound = applyReuse(notFound, options);
 
         if (postProcessor && postProcessors[postProcessor]) {
-            var val = options.defaultValue || key;
+            var val = applyDefault(key, options);
             found = postProcessors[postProcessor](val, key, options);
         }
     }
@@ -165,7 +169,7 @@ function _find(key, options){
     options = options || {};
 
     var optionWithoutCount, translated
-        , notFound = options.defaultValue || key
+        , notFound = applyDefault(key, options)
         , lngs = languages;
 
     if (!resStore) { return notFound; } // no resStore to translate from
