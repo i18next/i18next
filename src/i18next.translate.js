@@ -64,10 +64,6 @@ function applyReuse(translated, options) {
     return translated;
 }
 
-function applyDefault(key, options) {
-    return (options.defaultValue !== undefined) ? options.defaultValue : key;
-}
-
 function hasContext(options) {
     return (options.context && typeof options.context == 'string');
 }
@@ -79,7 +75,7 @@ function needsPlural(options) {
 function exists(key, options) {
     options = options || {};
 
-    var notFound = applyDefault(key, options)
+    var notFound = _getDefaultValue(key, options)
         , found = _find(key, options);
 
     return found !== undefined || found === notFound;
@@ -88,6 +84,10 @@ function exists(key, options) {
 function translate(key, options) {
     replacementCounter = 0;
     return _translate.apply(null, arguments);
+}
+
+function _getDefaultValue(key, options) {
+    return (options.defaultValue !== undefined) ? options.defaultValue : key;
 }
 
 function _injectSprintfProcessor() {
@@ -114,7 +114,7 @@ function _translate(key, options) {
         options = options || {};
     }         
 
-    var notFound = applyDefault(key, options)
+    var notFound = _getDefaultValue(key, options)
         , found = _find(key, options)
         , lngs = options.lng ? f.toLanguages(options.lng) : languages
         , ns = options.ns || o.ns.defaultNs
@@ -157,7 +157,7 @@ function _translate(key, options) {
         notFound = applyReuse(notFound, options);
 
         if (postProcessor && postProcessors[postProcessor]) {
-            var val = applyDefault(key, options);
+            var val = _getDefaultValue(key, options);
             found = postProcessors[postProcessor](val, key, options);
         }
     }
@@ -169,7 +169,7 @@ function _find(key, options){
     options = options || {};
 
     var optionWithoutCount, translated
-        , notFound = applyDefault(key, options)
+        , notFound = _getDefaultValue(key, options)
         , lngs = languages;
 
     if (!resStore) { return notFound; } // no resStore to translate from
