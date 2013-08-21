@@ -26,7 +26,7 @@ function init(options, cb) {
     if (!o.lng) o.lng = f.detectLanguage(); 
     if (o.lng) {
         // set cookie with lng set (as detectLanguage will set cookie on need)
-        if (o.useCookie) f.cookie.create(o.cookieName, o.lng, o.cookieExpirationTime);
+        if (o.useCookie) f.cookie.create(o.cookieName, o.lng, o.cookieExpirationTime, o.cookieDomain);
     } else {
         o.lng =  o.fallbackLng;
         if (o.useCookie) f.cookie.remove(o.cookieName);
