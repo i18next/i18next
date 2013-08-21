@@ -46,6 +46,7 @@ var o = {
     cookieExpirationTime: undefined,
     useCookie: true,
     cookieName: 'i18next',
+    cookieDomain: undefined,
 
     postProcess: undefined,
     parseMissingKey: undefined

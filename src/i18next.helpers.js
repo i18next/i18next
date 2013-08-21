@@ -356,7 +356,7 @@ function _ajax(options) {
 }
 
 var _cookie = {
-    create: function(name,value,minutes) {
+    create: function(name,value,minutes,domain) {
         var expires;
         if (minutes) {
             var date = new Date();
@@ -364,7 +364,8 @@ var _cookie = {
             expires = "; expires="+date.toGMTString();
         }
         else expires = "";
-        document.cookie = name+"="+value+expires+"; path=/";
+        domain = (domain)? "domain=" + domain + ";": "";
+        document.cookie = name+"="+value+expires+";"+domain+"path=/";
     },
 
     read: function(name) {
@@ -384,7 +385,7 @@ var _cookie = {
 };
 
 var cookie_noop = {
-    create: function(name,value,minutes) {},
+    create: function(name,value,minutes,domain) {},
     read: function(name) { return null; },
     remove: function(name) {}
 };
