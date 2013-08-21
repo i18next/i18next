@@ -364,7 +364,7 @@ var _cookie = {
             expires = "; expires="+date.toGMTString();
         }
         else expires = "";
-        domain = (domain)? "domain=" + domain + ";": "";
+        domain = (domain)? "domain="+domain+";" : "";
         document.cookie = name+"="+value+expires+";"+domain+"path=/";
     },
 
