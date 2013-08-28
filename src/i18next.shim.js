@@ -1,3 +1,6 @@
+// Shim in window object for Rhino.
+window = typeof window !== 'undefined' ? window : {};
+
 // add indexOf to non ECMA-262 standard compliant browsers
 if (!Array.prototype.indexOf) {
     Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
