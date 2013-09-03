@@ -72,6 +72,10 @@ function needsPlural(options) {
     return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
 }
 
+function needsNegative(options) {
+    return (options.count !== undefined && typeof options.count === 'number' && options.count === 0);
+}
+
 function exists(key, options) {
     options = options || {};
 
@@ -107,7 +111,7 @@ function _translate(key, options) {
         // mh: gettext like sprintf syntax found, automatically create sprintf processor
         options = _injectSprintfProcessor.apply(null, arguments);
     } else {
-        options = options || {};
+    options = options || {};
     }         
 
     var notFound = options.defaultValue || key
@@ -204,7 +208,24 @@ function _find(key, options){
         } // else continue translation with original/nonContext key
     }
 
-    if (needsPlural(options)) {
+    if (needsNegative(options)) {
+        optionWithoutCount = f.extend({}, options);
+        delete optionWithoutCount.count;
+        optionWithoutCount.defaultValue = o.negativeNotFound;
+
+        var negativeKey = ns + o.nsseparator + key + o.negativeSuffix;
+
+        translated = translate(negativeKey, optionWithoutCount);
+        if (translated != o.negativeNotFound) {
+            return applyReplacement(translated, {
+                count: options.count,
+                interpolationPrefix: options.interpolationPrefix,
+                interpolationSuffix: options.interpolationSuffix
+            }); // apply replacement for count only
+        } // else continue translation with original/singular key
+
+    }
+    else if (needsPlural(options)) {
         optionWithoutCount = f.extend({}, options);
         delete optionWithoutCount.count;
         optionWithoutCount.defaultValue = o.pluralNotFound;

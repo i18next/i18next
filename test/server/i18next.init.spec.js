@@ -78,13 +78,13 @@ describe('i18next.init', function() {
             function(t) { 
               i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
               done(); 
-            });
+    });
         });
     
         it('it should add the new namespace to the namespace array', function() {
           expect(i18n.options.ns.namespaces).to.contain('newNamespace');
         });
-    
+
       });
     
     });
@@ -303,7 +303,7 @@ describe('i18next.init', function() {
             expect(i18n.t('ns.common:simple_fallback')).to.be('ok_from_fallback');
           });
     
-        });
+      });
     
         describe('and fallbacking to multiple set namespace', function() {
           var resStore = {
