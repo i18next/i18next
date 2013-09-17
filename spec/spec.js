@@ -26,7 +26,8 @@ describe('i18next', function() {
       postProcess: '',
       parseMissingKey: '',
       interpolationPrefix: '__',
-      interpolationSuffix: '__'
+      interpolationSuffix: '__',
+      shortcutFunction: 'sprintf'
     };
   });
 

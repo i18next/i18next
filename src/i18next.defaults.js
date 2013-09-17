@@ -49,5 +49,7 @@ var o = {
     cookieDomain: undefined,
 
     postProcess: undefined,
-    parseMissingKey: undefined
+    parseMissingKey: undefined,
+
+    shortcutFunction: 'sprintf' // or: defaultValue
 };

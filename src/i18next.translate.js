@@ -108,8 +108,14 @@ function _injectSprintfProcessor() {
 function _translate(key, options) {
     
     if (typeof options == 'string') {
-        // mh: gettext like sprintf syntax found, automatically create sprintf processor
-        options = _injectSprintfProcessor.apply(null, arguments);
+        if (o.shortcutFunction === 'sprintf') {
+            // mh: gettext like sprintf syntax found, automatically create sprintf processor
+            options = _injectSprintfProcessor.apply(null, arguments);
+        } else if (o.shortcutFunction === 'defaultValue') {
+            options = {
+                defaultValue: options
+            }
+        }
     } else {
         options = options || {};
     }         

@@ -28,4 +28,6 @@ describe('translation functionality', function() {
 
   //= translate/translate.setlng.spec.js
 
+  //= translate/translate.defaultValue.spec.js
+
 });

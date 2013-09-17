@@ -1,4 +1,6 @@
 ###1.6.4pre
+- setting shortcutFunction to 'defaultValue' allows calling i18n.t(key, defaultValue)
+- empty string in defaultValue is now valid no longer displaying key
 - fixes issue #115 out of stack exception in IE8 by recursing _translate in objectTrees
 
 ### 1.6.3
