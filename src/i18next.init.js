@@ -36,6 +36,16 @@ function init(options, cb) {
     currentLng = languages[0];
     f.log('currentLng set to: ' + currentLng);
 
+    var lngTranslate = translate;
+    if (options.specializedTranslate) {
+        lngTranslate = function(key, options) {
+            options = options || {};
+            options.lng = options.lng || lngTranslate.lng;
+            return translate(key, options);
+        };
+        lngTranslate.lng = currentLng;
+    }
+
     pluralExtensions.setCurrentLng(currentLng);
 
     // add JQuery extensions
@@ -50,8 +60,8 @@ function init(options, cb) {
     // return immidiatly if res are passed in
     if (o.resStore) {
         resStore = o.resStore;
-        if (cb) cb(translate);
-        if (deferred) deferred.resolve();
+        if (cb) cb(lngTranslate);
+        if (deferred) deferred.resolve(lngTranslate);
         if (deferred) return deferred.promise();
         return;
     }
@@ -72,8 +82,8 @@ function init(options, cb) {
     i18n.sync.load(lngsToLoad, o, function(err, store) {
         resStore = store;
 
-        if (cb) cb(translate);
-        if (deferred) deferred.resolve();
+        if (cb) cb(lngTranslate);
+        if (deferred) deferred.resolve(lngTranslate);
     });
 
     if (deferred) return deferred.promise();
