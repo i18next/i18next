@@ -97,7 +97,7 @@ function loadNamespaces(namespaces, cb) {
 }
 
 function setLng(lng, cb) {
-    return init({lng: lng}, cb);
+    return init({lng: lng, specializedTranslate: true}, cb);
 }
 
 function lng() {
