@@ -11,7 +11,7 @@
     "report/",
     "buildtasks/",
     ".gitignore",
-    "grunt.js",
+    "Gruntfile.js",
     "package.json",
     "testacular.conf.js",
     "**/*.zip"
