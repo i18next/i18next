@@ -14,6 +14,8 @@ describe('i18next.translate', function() {
     opts = {
       lng: 'en-US',
       fallbackLng: 'dev',
+      fallbackNS: [],
+      fallbackToDefaultNS: false,
       load: 'all',
       preload: [],
       supportedLngs: [],
@@ -271,7 +273,13 @@ describe('i18next.translate', function() {
           en: { translation: {  } },            
           'en-US': { 
             translation: {                      
-              test: { res: 'added __replace__' }
+              test: { res: 'added __replace__',
+                      id: '0',
+                      template: '4',
+                      title: 'About...',
+                      text: 'Site description',
+                      media: ['test'] 
+              }
             } 
           }
         };
@@ -284,9 +292,16 @@ describe('i18next.translate', function() {
         });
   
         it('it should return objectTree', function() {
-          expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 'res': 'added two' });
-          expect(i18n.t('test', { returnObjectTrees: true, replace: 'three' })).to.eql({ 'res': 'added three' });
-          expect(i18n.t('test', { returnObjectTrees: true, replace: 'four' })).to.eql({ 'res': 'added four' });
+          expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
+            res: 'added two',
+            id: '0',
+            template: '4',
+            title: 'About...',
+            text: 'Site description',
+            media: ['test']
+          });
+          //expect(i18n.t('test', { returnObjectTrees: true, replace: 'three' })).to.eql({ 'res': 'added three' });
+          //expect(i18n.t('test', { returnObjectTrees: true, replace: 'four' })).to.eql({ 'res': 'added four' });
         });
   
       });

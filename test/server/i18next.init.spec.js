@@ -6,6 +6,7 @@
 // HINT
 //
 // you need to replace '_fetchOne' with 'fetchOne' to use this on server
+// fix line 351 'sendMissing' -> 'saveMissing'
 //
 
 
@@ -21,6 +22,8 @@ describe('i18next.init', function() {
     opts = {
       lng: 'en-US',
       fallbackLng: 'dev',
+      fallbackNS: [],
+      fallbackToDefaultNS: false,
       load: 'all',
       preload: [],
       supportedLngs: [],
@@ -348,7 +351,7 @@ describe('i18next.init', function() {
               i18n.init(i18n.functions.extend(opts, { 
                 fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                 resStore: resStore,
-                sendMissing: true,
+                sendMissing: true, /* must be changed to saveMissing */
                 ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                 function(t) { 
                   t('ns.common:notExisting');
