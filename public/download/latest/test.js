@@ -1,4 +1,4 @@
-// i18next, v1.6.3
+// i18next, v1.7.0
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -30,7 +30,8 @@ describe('i18next', function() {
       postProcess: '',
       parseMissingKey: '',
       interpolationPrefix: '__',
-      interpolationSuffix: '__'
+      interpolationSuffix: '__',
+      shortcutFunction: 'sprintf'
     };
   });
 
@@ -418,7 +419,7 @@ describe('i18next', function() {
                 i18n.init(i18n.functions.extend(opts, { 
                   fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                   resStore: resStore,
-                  sendMissing: true,
+                  sendMissing: true, /* must be changed to saveMissing */
                   ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                   function(t) { 
                     t('ns.common:notExisting');
@@ -701,6 +702,22 @@ describe('i18next', function() {
         });
     
       });
+    
+      it('should be possible to call setLng multiple times to get specialized callbacks', function(done) {
+        i18n.setLng('de-DE', { fixLng: true }, function(deDE) {
+            expect(deDE.lng).to.be('de-DE');
+    
+            i18n.setLng('en-US', { fixLng: true }, function(enUS) {
+                expect(deDE.lng).to.be('de-DE');
+                expect(enUS.lng).to.be('en-US');
+    
+                expect(deDE('simpleTest')).to.be('ok_from_de-DE');
+                expect(enUS('simpleTest')).to.be('ok_from_en-US');
+    
+                done();
+            });
+        });
+      })
     
     });
   
@@ -1231,7 +1248,13 @@ describe('i18next', function() {
             en: { translation: {  } },            
             'en-US': { 
               translation: {                      
-                test: { res: 'added __replace__' }
+                test: { res: 'added __replace__',
+                        id: '0',
+                        template: '4',
+                        title: 'About...',
+                        text: 'Site description',
+                        media: ['test'] 
+                }
               } 
             }
           };
@@ -1244,9 +1267,16 @@ describe('i18next', function() {
           });
     
           it('it should return objectTree', function() {
-            expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 'res': 'added two' });
-            expect(i18n.t('test', { returnObjectTrees: true, replace: 'three' })).to.eql({ 'res': 'added three' });
-            expect(i18n.t('test', { returnObjectTrees: true, replace: 'four' })).to.eql({ 'res': 'added four' });
+            expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
+              res: 'added two',
+              id: '0',
+              template: '4',
+              title: 'About...',
+              text: 'Site description',
+              media: ['test']
+            });
+            //expect(i18n.t('test', { returnObjectTrees: true, replace: 'three' })).to.eql({ 'res': 'added three' });
+            //expect(i18n.t('test', { returnObjectTrees: true, replace: 'four' })).to.eql({ 'res': 'added four' });
           });
     
         });
@@ -1797,6 +1827,30 @@ describe('i18next', function() {
     
     });
   
+    describe('using sprintf', function() {
+    
+      var resStore = {
+        dev: { translation: {  } },
+        en: { translation: {  } },            
+        'en-US': { 
+          translation: {                      
+            test: 'hi'
+          } 
+        }
+      };
+      
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore, shortcutFunction: 'defaultValue' }),
+          function(t) { done(); });
+      });
+    
+    
+      it('it should recognize the defaultValue syntax set as shortcutFunction', function() {
+        expect(i18n.t('notFound', 'second param defaultValue')).to.be('second param defaultValue');
+      });
+      
+    });
+  
   });
   describe('jQuery integration / specials', function() {
   
@@ -2027,6 +2081,32 @@ describe('i18next', function() {
         it('it should set text with attributes options', function() {
           $('#container').i18n(); // without option
           expect($('#testBtn').text()).to.be('replaced ok_from_en-US');
+        });
+        
+      });
+    
+      describe('extended - read key from inner content', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest2': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '>simpleTest2</button></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { 
+            resStore: resStore
+          }),
+            function(t) {
+              done(); 
+            });
+        });
+    
+        it('it should read key from inner content', function() {
+          $('#container').i18n(); // without option
+          expect($('#testBtn').text()).to.be('ok_from_en-US');
         });
         
       });

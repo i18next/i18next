@@ -87,6 +87,9 @@
           | };
           | 
           | i18n.t("key", { defaultValue: "my text" }); // -> my text
+          | 
+          | // or shorter given i18next.init({ shorcutFunction: 'defaultValue' });
+          | i18n.t("key", "my defalut value");
 
       .feature-description
         p 
@@ -239,7 +242,7 @@
           | i18n.t("key1", { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] });
           | i18n.t("key2", { postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } } );
           |
-          | // or simpler just call:
+          | // or simpler given i18next.init({ shorcutFunction: 'sprintf' }); 
           | i18n.t("key1", 'a', 'b', 'c', 'd');
 
       .feature-description

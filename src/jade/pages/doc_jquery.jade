@@ -83,6 +83,11 @@ html(lang="en")
                   | turn this off by setting option ''defaultValueFromContent' to false on init.
             
               .feature-description
+                h4 empty data-i18n attribute:
+                p the key will be taken from the elements text or value, eg: 
+                  code &lt;a id="btn1" href="#" data-i18n&gt;key.to.set.text&lt;/a&gt;
+
+              .feature-description
                 h4 Using Options or data-i18n-options attribute:
                 p 
                   | You can pass in same options as in the translation function. For 
