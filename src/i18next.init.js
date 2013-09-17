@@ -61,6 +61,7 @@ function init(options, cb) {
     // return immidiatly if res are passed in
     if (o.resStore) {
         resStore = o.resStore;
+        initialized = true;
         if (cb) cb(lngTranslate);
         if (deferred) deferred.resolve(lngTranslate);
         if (deferred) return deferred.promise();
@@ -82,6 +83,7 @@ function init(options, cb) {
     // else load them
     i18n.sync.load(lngsToLoad, o, function(err, store) {
         resStore = store;
+        initialized = true;
 
         if (cb) cb(lngTranslate);
         if (deferred) deferred.resolve(lngTranslate);

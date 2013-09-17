@@ -1,4 +1,5 @@
-###1.6.4pre
+### 1.7.0
+- test if initialisation finished before allowing calling t function
 - setting option fixLng=true will return t function on init or setLng with the lng fixed for every subsequent call to t
 - grab key from content if attr data-i18n has no value
 - setting shortcutFunction to 'defaultValue' allows calling i18n.t(key, defaultValue)

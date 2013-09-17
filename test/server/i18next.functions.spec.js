@@ -1,4 +1,4 @@
-// i18next, v1.6.3
+// i18next, v1.7.0
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -65,6 +65,22 @@ describe('i18next.functions', function() {
       });
   
     });
+  
+    it('should be possible to call setLng multiple times to get specialized callbacks', function(done) {
+      i18n.setLng('de-DE', { fixLng: true }, function(deDE) {
+          expect(deDE.lng).to.be('de-DE');
+  
+          i18n.setLng('en-US', { fixLng: true }, function(enUS) {
+              expect(deDE.lng).to.be('de-DE');
+              expect(enUS.lng).to.be('en-US');
+  
+              expect(deDE('simpleTest')).to.be('ok_from_de-DE');
+              expect(enUS('simpleTest')).to.be('ok_from_en-US');
+  
+              done();
+          });
+      });
+    })
   
   });
 
