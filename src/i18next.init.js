@@ -8,6 +8,7 @@ function init(options, cb) {
     
     // override defaults with passed in options
     f.extend(o, options);
+    delete o.fixLng; /* passed in each time */
 
     // create namespace object if namespace is passed in as string
     if (typeof o.ns == 'string') {
@@ -37,7 +38,7 @@ function init(options, cb) {
     f.log('currentLng set to: ' + currentLng);
 
     var lngTranslate = translate;
-    if (options.specializedTranslate) {
+    if (options.fixLng) {
         lngTranslate = function(key, options) {
             options = options || {};
             options.lng = options.lng || lngTranslate.lng;

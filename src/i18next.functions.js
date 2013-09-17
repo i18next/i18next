@@ -96,8 +96,13 @@ function loadNamespaces(namespaces, cb) {
     }
 }
 
-function setLng(lng, cb) {
-    return init({lng: lng, specializedTranslate: true}, cb);
+function setLng(lng, options, cb) {
+    if (typeof options === 'function') {
+        cb = options;
+        options = {};
+    }
+    options.lng = lng;
+    return init(options, cb);
 }
 
 function lng() {

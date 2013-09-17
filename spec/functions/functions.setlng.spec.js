@@ -20,10 +20,10 @@ describe('setting language', function() {
   });
 
   it('should be possible to call setLng multiple times to get specialized callbacks', function(done) {
-    i18n.setLng('de-DE', function(deDE) {
+    i18n.setLng('de-DE', { fixLng: true }, function(deDE) {
         expect(deDE.lng).to.be('de-DE');
 
-        i18n.setLng('en-US', function(enUS) {
+        i18n.setLng('en-US', { fixLng: true }, function(enUS) {
             expect(deDE.lng).to.be('de-DE');
             expect(enUS.lng).to.be('en-US');
 
