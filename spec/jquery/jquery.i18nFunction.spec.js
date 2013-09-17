@@ -177,4 +177,30 @@ describe('using bindings $([selector].i18n())', function() {
     
   });
 
+  describe('extended - read key from inner content', function() {
+
+    var resStore = {
+      dev: { translation: {  } },
+      en: { translation: {  } },            
+      'en-US': { translation: { 'simpleTest2': 'ok_from_en-US' } }
+    };
+    
+    beforeEach(function(done) {
+      setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '>simpleTest2</button></div>');
+
+      i18n.init(i18n.functions.extend(opts, { 
+        resStore: resStore
+      }),
+        function(t) {
+          done(); 
+        });
+    });
+
+    it('it should read key from inner content', function() {
+      $('#container').i18n(); // without option
+      expect($('#testBtn').text()).to.be('ok_from_en-US');
+    });
+    
+  });
+
 });

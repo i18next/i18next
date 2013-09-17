@@ -33,6 +33,7 @@ function addJqueryFunct() {
 
     function localize(ele, options) {
         var key = ele.attr(o.selectorAttr);
+        if (!key && typeof key !== 'undefined' && key !== false) key = ele.text() || ele.val();
         if (!key) return;
 
         var target = ele
