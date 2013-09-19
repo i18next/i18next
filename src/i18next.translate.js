@@ -269,7 +269,7 @@ function _find(key, options){
                     value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
                         'returned a object instead of string.';
                     f.log(value);
-                } else {
+                } else if (typeof value !== 'number') {
                     var copy = {}; // apply child translation on a copy
                     f.each(value, function(m) {
                         copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
