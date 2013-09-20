@@ -109,8 +109,7 @@ function _injectSprintfProcessor() {
     };
 }
 
-function _translate(key, options) {
-    
+function _translate(potentialKeys, options) {
     if (typeof options == 'string') {
         if (o.shortcutFunction === 'sprintf') {
             // mh: gettext like sprintf syntax found, automatically create sprintf processor
@@ -122,10 +121,24 @@ function _translate(key, options) {
         }
     } else {
         options = options || {};
-    }         
+    }
+
+    if (typeof potentialKeys == 'string') {
+        potentialKeys = [potentialKeys];
+    }
+
+    var key = null
+        , found = null;
+
+    for (var i = 0; i < potentialKeys.length; i++) {
+        key = potentialKeys[i];
+        found = _find(key, options);
+        if (found !== undefined) {
+            break;
+        }
+    }
 
     var notFound = _getDefaultValue(key, options)
-        , found = _find(key, options)
         , lngs = options.lng ? f.toLanguages(options.lng) : languages
         , ns = options.ns || o.ns.defaultNs
         , parts;
