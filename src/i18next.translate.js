@@ -127,18 +127,17 @@ function _translate(potentialKeys, options) {
         potentialKeys = [potentialKeys];
     }
 
-    var key = null
-        , found = null;
+    var key = null;
 
     for (var i = 0; i < potentialKeys.length; i++) {
         key = potentialKeys[i];
-        found = _find(key, options);
-        if (found !== undefined) {
+        if (exists(key)) {
             break;
         }
     }
 
     var notFound = _getDefaultValue(key, options)
+        , found = _find(key, options)
         , lngs = options.lng ? f.toLanguages(options.lng) : languages
         , ns = options.ns || o.ns.defaultNs
         , parts;
