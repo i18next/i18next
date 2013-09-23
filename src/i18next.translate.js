@@ -109,8 +109,7 @@ function _injectSprintfProcessor() {
     };
 }
 
-function _translate(key, options) {
-    
+function _translate(potentialKeys, options) {
     if (typeof options == 'string') {
         if (o.shortcutFunction === 'sprintf') {
             // mh: gettext like sprintf syntax found, automatically create sprintf processor
@@ -122,7 +121,20 @@ function _translate(key, options) {
         }
     } else {
         options = options || {};
-    }         
+    }
+
+    if (typeof potentialKeys == 'string') {
+        potentialKeys = [potentialKeys];
+    }
+
+    var key = null;
+
+    for (var i = 0; i < potentialKeys.length; i++) {
+        key = potentialKeys[i];
+        if (exists(key)) {
+            break;
+        }
+    }
 
     var notFound = _getDefaultValue(key, options)
         , found = _find(key, options)
