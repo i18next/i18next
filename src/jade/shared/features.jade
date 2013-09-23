@@ -37,6 +37,19 @@
           | i18n.t("namespace2:keys.2"); // -> value of key 2
           | i18n.t("namespace2:keys.3"); // -> value of key 3
 
+      h6 using multiple keys (first found will be translated)
+      pre
+        code
+          | // given resourcefile translation.en.json
+          | { 
+          |   key1: 'value of key 1' 
+          | }
+          | 
+          | i18n.t(["notExists", "key1"]); // -> value of key 1
+
+      p why this might be useful for you too: 
+        a(href='https://github.com/jamuhl/i18next/pull/150') see discussion
+
       .feature-description
         p
           span.badge.badge-info Hint:

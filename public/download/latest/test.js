@@ -1,4 +1,4 @@
-// i18next, v1.7.0
+// i18next, v1.7.1
 // Copyright (c)2013 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -1163,6 +1163,37 @@ describe('i18next', function() {
       });
     });
   
+    describe('resource key as array', function() {
+      var resStore = {
+        dev: { translation: { existing1: 'hello _name_', existing2: 'howdy __name__' } },
+        en: { translation: { } },
+        'en-US': { translation: { } }
+      };
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+          function(t) { done(); });
+      });
+    
+      describe('when none of the keys exist', function() {
+        it('return the same value as translating the last non-existent key', function() {
+          expect(i18n.t(['nonexistent1', 'nonexistent2'], {name: "Joe"})).to.equal(i18n.t('nonexistent2', {name: "Joe"}));
+        });
+      });
+    
+      describe('when one of the keys exist', function() {
+        it('return the same value as translating the one existing key', function() {
+          expect(i18n.t(['nonexistent1', 'existing2'], {name: "Joe"})).to.equal(i18n.t('existing2', {name: "Joe"}));
+        });
+      });
+    
+      describe('when two or more of the keys exist', function() {
+        it('return the same value as translating the first existing key', function() {
+          expect(i18n.t(['nonexistent1', 'existing2', 'existing1'], {name: "Joe"})).to.equal(i18n.t('existing2', {name: "Joe"}));
+        });
+      });
+    });
+  
     describe('resource string as array', function() {
       var resStore = {
         dev: { translation: { testarray: ["title", "text"] } },
@@ -1249,7 +1280,7 @@ describe('i18next', function() {
             'en-US': { 
               translation: {                      
                 test: { res: 'added __replace__',
-                        id: '0',
+                        id: 0,
                         template: '4',
                         title: 'About...',
                         text: 'Site description',
@@ -1269,7 +1300,7 @@ describe('i18next', function() {
           it('it should return objectTree', function() {
             expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
               res: 'added two',
-              id: '0',
+              id: 0,
               template: '4',
               title: 'About...',
               text: 'Site description',
