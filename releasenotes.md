@@ -1,3 +1,8 @@
+### 1.7.1
+- fixed some typo
+- allow translate to take an array of keys - take first found
+- allow numbers in object trees
+
 ### 1.7.0
 - test if initialisation finished before allowing calling t function
 - setting option fixLng=true will return t function on init or setLng with the lng fixed for every subsequent call to t
@@ -81,7 +86,7 @@
 - runnable under rhino
 - seperated amd builds with/without jquery
 
-### 1.5.5
+### 1.5.5
 - __BREAKING__ added all plurals: suffixes will new be same as in gettext usage (number indexes key_plural_0|2|3|4|5|7|8|10|11|20|100), additional if needed signature of addRule has changed
 - added sprintf as postprocessor -> postProcess = 'sprintf' and sprintf = obj or array
 - set default postProcessor on init

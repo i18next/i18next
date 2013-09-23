@@ -808,7 +808,7 @@
     
         function localize(ele, options) {
             var key = ele.attr(o.selectorAttr);
-            if (!key && typeof key !== 'undefined' && key !== false) key = ele.text() || ele.val();
+            if (!key && typeof key !== 'undefined' && key !== false) key = ele.text() || ele.val();
             if (!key) return;
     
             var target = ele
@@ -936,7 +936,7 @@
     function translate(key, options) {
         if (!initialized) {
             f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
-            return options.defaultValue || '';
+            return options.defaultValue || '';
         };
         replacementCounter = 0;
         return _translate.apply(null, arguments);
@@ -961,8 +961,7 @@
         };
     }
     
-    function _translate(key, options) {
-        
+    function _translate(potentialKeys, options) {
         if (typeof options == 'string') {
             if (o.shortcutFunction === 'sprintf') {
                 // mh: gettext like sprintf syntax found, automatically create sprintf processor
@@ -974,7 +973,20 @@
             }
         } else {
             options = options || {};
-        }         
+        }
+    
+        if (typeof potentialKeys == 'string') {
+            potentialKeys = [potentialKeys];
+        }
+    
+        var key = null;
+    
+        for (var i = 0; i < potentialKeys.length; i++) {
+            key = potentialKeys[i];
+            if (exists(key)) {
+                break;
+            }
+        }
     
         var notFound = _getDefaultValue(key, options)
             , found = _find(key, options)
@@ -1121,7 +1133,7 @@
                         value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
                             'returned a object instead of string.';
                         f.log(value);
-                    } else {
+                    } else if (typeof value !== 'number') {
                         var copy = {}; // apply child translation on a copy
                         f.each(value, function(m) {
                             copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
