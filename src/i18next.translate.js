@@ -84,7 +84,7 @@ function exists(key, options) {
 function translate(key, options) {
     if (!initialized) {
         f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
-        return options.defaultValue || '';
+        return options.defaultValue || '';
     };
     replacementCounter = 0;
     return _translate.apply(null, arguments);
