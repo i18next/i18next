@@ -36,6 +36,8 @@ describe('i18next.translate', function() {
 
   //= translate/translate.emptyValue.spec.js
 
+  //= translate/translate.arrayKey.spec.js
+
   //= translate/translate.arrayValue.spec.js
 
   //= translate/translate.objectValue.spec.js
