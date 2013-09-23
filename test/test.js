@@ -1249,7 +1249,7 @@ describe('i18next', function() {
             'en-US': { 
               translation: {                      
                 test: { res: 'added __replace__',
-                        id: '0',
+                        id: 0,
                         template: '4',
                         title: 'About...',
                         text: 'Site description',
@@ -1269,7 +1269,7 @@ describe('i18next', function() {
           it('it should return objectTree', function() {
             expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
               res: 'added two',
-              id: '0',
+              id: 0,
               template: '4',
               title: 'About...',
               text: 'Site description',
