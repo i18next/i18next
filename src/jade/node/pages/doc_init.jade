@@ -82,11 +82,11 @@ html(lang="en")
             .feature
               pre
                 code
-                  | i18n.setLng({ lng: 'en-US' }, function(t) { /* loading done */ });
+                  | i18n.setLng('en-US', function(t) { /* loading done */ });
               .feature-description
                 p you could fix the language by calling it this way:
                 p
-                  code i18n.setLng({ lng: 'en-US' }, { fixLng: true }, function(enUS) { /* done */ });
+                  code i18n.setLng('en-US', { fixLng: true }, function(enUS) { /* done */ });
                 p every call to enUS ( enUS(key, opts) ) will return in enUS even if setLng is called again in different lng
 
         .row-fluid
