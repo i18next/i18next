@@ -95,7 +95,7 @@ module.exports = function(grunt) {
         dest: 'bin/i18next.amd.withJQuery-latest.js'
       },
       bower: {
-        src: ['src/amd.js'],
+        src: ['src/amd.jquery.js'],
         dest: 'bin/i18next.bower-latest.js'
       },
       spec: {
