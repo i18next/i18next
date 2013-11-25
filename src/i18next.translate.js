@@ -269,10 +269,11 @@ function _find(key, options){
             x++;
         }
         if (value !== undefined) {
+            var valueType = Object.prototype.toString.apply(value);
             if (typeof value === 'string') {
                 value = applyReplacement(value, options);
                 value = applyReuse(value, options);
-            } else if (Object.prototype.toString.apply(value) === '[object Array]' && !o.returnObjectTrees && !options.returnObjectTrees) {
+            } else if (valueType === '[object Array]' && !o.returnObjectTrees && !options.returnObjectTrees) {
                 value = value.join('\n');
                 value = applyReplacement(value, options);
                 value = applyReuse(value, options);
@@ -283,8 +284,8 @@ function _find(key, options){
                     value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
                         'returned a object instead of string.';
                     f.log(value);
-                } else if (typeof value !== 'number') {
-                    var copy = {}; // apply child translation on a copy
+                } else if (valueType !== '[object Number]' && valueType !== '[object Function]' && valueType !== '[object RegExp]') {
+                    var copy = (valueType === '[object Array]') ? [] : {}; // apply child translation on a copy
                     f.each(value, function(m) {
                         copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
                     });
