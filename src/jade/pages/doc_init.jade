@@ -583,21 +583,21 @@ html(lang="en")
 
         .row-fluid
           .span4
-            h4.feature-title Load resource synchron:
+            h4.feature-title Load resource synchronously:
 
           .span8
             .feature
               pre
                 code
                   | var option = { 
-                  |   getAsync: true 
+                  |   getAsync: false 
                   | };
                   | 
                   | i18n.init(option);
 
               .feature-description
                 p 
-                  | Requests for resources will now be called synchronous.
+                  | Requests for resources will now be called synchronously.
                 p
                   span.badge.badge-info Hint:
                   |  The init function will now be blocking until all resources are loaded!!!
