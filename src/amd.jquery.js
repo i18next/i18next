@@ -18,7 +18,8 @@
         , resStore = {}
         , currentLng
         , replacementCounter = 0
-        , languages = [];
+        , languages = []
+        , initialized = false;
 
     //= i18next.defaults.js
     //= i18next.helpers.js
