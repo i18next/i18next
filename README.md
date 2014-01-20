@@ -121,7 +121,7 @@ To build your own copy of i18next, check out the repository and:
     
 The grunt command will build i18next into the bin/ and release/ folders.
 
-# License
+# License (MIT)
 
 Copyright (c) 2011 Jan Mühlemann
 
