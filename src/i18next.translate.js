@@ -82,6 +82,8 @@ function exists(key, options) {
 }
 
 function translate(key, options) {
+    options = options || {};
+    
     if (!initialized) {
         f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
         return options.defaultValue || '';
@@ -279,7 +281,7 @@ function _find(key, options){
             } else if (value !== null) {
                 if (!o.returnObjectTrees && !options.returnObjectTrees) {
                     value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
-                        'returned a object instead of string.';
+                        'returned an object instead of string.';
                     f.log(value);
                 } else if (typeof value !== 'number') {
                     var copy = {}; // apply child translation on a copy
