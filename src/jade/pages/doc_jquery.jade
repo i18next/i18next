@@ -88,14 +88,17 @@ html(lang="en")
                   code &lt;a id="btn1" href="#" data-i18n&gt;key.to.set.text&lt;/a&gt;
 
               .feature-description
-                h4 Using Options or data-i18n-options attribute:
+                h4 Using Options:
                 p 
                   | You can pass in same options as in the translation function. For 
                   | more information about the options go to the 
                   a(href='#{path}pages/doc_features') features page.
                 p
-                  | Alternatively by setting init option or translation option 'useDataAttrOptions = true' 
-                  | the Options for translation will be read and cached in the elements data-i18n-options attribute.
+                  | Alternatively, by setting init option or translation option `{useDataAttrOptions: true}`
+                  | the Options for translation will be read and cached in the element's jQuery data under
+                  | the "i18n-options" key. The next time `.i18n()` is called on the element, the previous
+                  | options will be used. This makes it possible to retranslate the element without supplying
+                  | the original arguments.
 
             .feature
               :markdown
