@@ -6,6 +6,8 @@ describe('Initialisation', function() {
 
     //= init/init.addResourceBundle.spec.js
 
+    //= init/init.removeResourceBundle.spec.js
+
     //= init/init.loadBehaviour.spec.js
 
     //= init/init.preload.spec.js

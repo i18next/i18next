@@ -10,6 +10,7 @@ var o = {
     detectLngQS: 'setLng',
     ns: 'translation',
     fallbackOnNull: true,
+    fallbackOnEmpty: false,
     fallbackToDefaultNS: false,
     nsseparator: ':',
     keyseparator: '.',

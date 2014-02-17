@@ -1,4 +1,4 @@
-// i18next, v1.7.1
+// i18next, v1.7.2
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -13,6 +13,8 @@ describe('i18next', function() {
       load: 'all',
       fallbackLng: 'dev',
       fallbackNS: [],
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',
@@ -144,6 +146,28 @@ describe('i18next', function() {
             expect(i18n.options.ns.namespaces).to.contain('newNamespace');
           });
       
+        });
+      
+      });
+  
+      describe('removing resources after init', function() {
+      
+        var resStore = {
+          dev: { translation: { 'test': 'ok_from_dev' } },
+          en: { translation: { 'test': 'ok_from_en' } },            
+          'en-US': { translation: { 'test': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) { 
+              i18n.removeResourceBundle('en-US', 'translation');
+              done(); 
+            });
+        });
+      
+        it('it should remove resources', function() {
+          expect(i18n.t('test')).to.be('ok_from_en');
         });
       
       });
@@ -1162,6 +1186,57 @@ describe('i18next', function() {
         });
       });
     });
+    
+    describe('key with empty string set to fallback if empty', function() {
+      var resStore = {
+        dev: { translation: { empty: '' } },
+        en: { translation: { } },
+        'en-US': { translation: { } }
+      };
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackOnEmpty: true }),
+            function(t) { done(); });
+      });
+    
+      it('it should translate correctly', function() {
+        expect(i18n.t('empty')).to.be('empty');
+      });
+    
+      describe('missing on unspecific', function() {
+        var resStore = {
+          dev: { translation: { empty: 'text' } },
+          en: { translation: { } },
+          'en-US': { translation: { empty: '' } }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lng: 'en', fallbackOnEmpty: true }),
+              function(t) { done(); });
+        });
+    
+        it('it should translate correctly', function() {
+          expect(i18n.t('empty')).to.be('text');
+        });
+      });
+    
+      describe('on specific language', function() {
+        var resStore = {
+          dev: { translation: { empty: 'text' } },
+          en: { translation: { } },
+          'en-US': { translation: { empty: '' } }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackOnEmpty: true }),
+              function(t) { done(); });
+        });
+    
+        it('it should translate correctly', function() {
+          expect(i18n.t('empty')).to.be('text');
+        });
+      });
+    });
   
     describe('resource key as array', function() {
       var resStore = {
@@ -1233,8 +1308,8 @@ describe('i18next', function() {
         expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
       });
     
-      it('it should not fail silently on accessing a objectTree', function() {
-        expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned a object instead of string.');
+      it('it should not fail silently on accessing an objectTree', function() {
+        expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned an object instead of string.');
       });
     
       describe('optional return an objectTree for UI components,...', function() {

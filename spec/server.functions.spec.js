@@ -18,6 +18,8 @@ describe('i18next.functions', function() {
       fallbackLng: 'dev',
       fallbackNS: [],
       fallbackToDefaultNS: false,
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       load: 'all',
       preload: [],
       supportedLngs: [],

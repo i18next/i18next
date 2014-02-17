@@ -22,6 +22,15 @@ function addResourceBundle(lng, ns, resources) {
     f.extend(resStore[lng][ns], resources);
 }
 
+function removeResourceBundle(lng, ns) {
+    if (typeof ns !== 'string') {
+        ns = o.ns.defaultNs;
+    }
+
+    resStore[lng] = resStore[lng] || {};
+    resStore[lng][ns] = {};
+}
+
 function setDefaultNamespace(ns) {
     o.ns.defaultNs = ns;
 }

@@ -20,6 +20,8 @@ describe('i18next.init', function() {
       fallbackLng: 'dev',
       fallbackNS: [],
       fallbackToDefaultNS: false,
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       load: 'all',
       preload: [],
       supportedLngs: [],

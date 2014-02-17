@@ -1,3 +1,7 @@
+### 1.7.2
+- introducing option fallbackOnEmpty -> empty string will fallback
+- added function removeResourceBundle(lng, ns) -> removes a resource set
+
 ### 1.7.1
 - fixed some typo
 - allow translate to take an array of keys - take first found

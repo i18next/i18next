@@ -20,8 +20,8 @@ describe('accessing tree values', function() {
     expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
   });
 
-  it('it should not fail silently on accessing a objectTree', function() {
-    expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned a object instead of string.');
+  it('it should not fail silently on accessing an objectTree', function() {
+    expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned an object instead of string.');
   });
 
   describe('optional return an objectTree for UI components,...', function() {

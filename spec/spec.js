@@ -9,6 +9,8 @@ describe('i18next', function() {
       load: 'all',
       fallbackLng: 'dev',
       fallbackNS: [],
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',
