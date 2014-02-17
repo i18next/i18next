@@ -65,7 +65,7 @@ function applyReuse(translated, options) {
 }
 
 function hasContext(options) {
-    return (options.context && typeof options.context == 'string');
+    return (options.context && (typeof options.context == 'string' || typeof options.context == 'number'));
 }
 
 function needsPlural(options) {
