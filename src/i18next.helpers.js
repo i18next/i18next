@@ -397,7 +397,7 @@ var cookie_noop = {
 var f = {
     extend: $ ? $.extend : _extend,
     each: $ ? $.each : _each,
-    ajax: $ ? $.ajax : _ajax,
+    ajax: $ ? $.ajax : (typeof document !== 'undefined' ? _ajax : function() {}),
     cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
     detectLanguage: detectLanguage,
     escape: _escape,
