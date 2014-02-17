@@ -282,6 +282,9 @@ function _find(key, options){
                 if (!o.returnObjectTrees && !options.returnObjectTrees) {
                     value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
                         'returned an object instead of string.';
+                    if (o.objectKeyHandler && typeof o.objectKeyHandler == 'function')
+                        value = o.objectKeyHandler(ns,key,l);
+                    }
                     f.log(value);
                 } else if (typeof value !== 'number') {
                     var copy = {}; // apply child translation on a copy
