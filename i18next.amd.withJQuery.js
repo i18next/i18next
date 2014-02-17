@@ -544,7 +544,7 @@
     var f = {
         extend: $ ? $.extend : _extend,
         each: $ ? $.each : _each,
-        ajax: $ ? $.ajax : _ajax,
+        ajax: $ ? $.ajax : (typeof document !== 'undefined' ? _ajax : function() {}),
         cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
         detectLanguage: detectLanguage,
         escape: _escape,
@@ -938,7 +938,7 @@
     }
     
     function hasContext(options) {
-        return (options.context && typeof options.context == 'string');
+        return (options.context && (typeof options.context == 'string' || typeof options.context == 'number'));
     }
     
     function needsPlural(options) {

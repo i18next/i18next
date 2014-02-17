@@ -6,6 +6,7 @@
 - introducing objectTreeKeyHandler
 - fixes issue with i18n.t(null), i18n.t(undefined) throwing exception
 - returnObjectTrees does not mangle arrays, functions, and regexps
+- optimized structure for bower support
 
 ### 1.7.1
 - fixed some typo
