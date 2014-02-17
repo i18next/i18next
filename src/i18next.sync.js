@@ -133,7 +133,15 @@ var sync = {
                 done(null, data);
             },
             error : function(xhr, status, error) {
-                f.log('failed loading: ' + url);
+                if (error.status == 200) {
+                    // file loaded but invalid json, stop waste time !
+                    f.log('There is a typo in: ' + url);
+                } else if (error.status == 404) {
+                    f.log('Does not exist: ' + url);
+                } else {
+                    f.log(error.status + ' when loading ' + url);
+                }
+                
                 done(error, {});
             },
             dataType: "json",

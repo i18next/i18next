@@ -16,6 +16,8 @@ describe('i18next.translate', function() {
       fallbackLng: 'dev',
       fallbackNS: [],
       fallbackToDefaultNS: false,
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       load: 'all',
       preload: [],
       supportedLngs: [],
@@ -30,8 +32,37 @@ describe('i18next.translate', function() {
       interpolationSuffix: '__',
       postProcess: '',
       parseMissingKey: '',
-      debug: false
+      debug: false,
+      objectTreeKeyHandler: null
     };
+  });
+
+  describe('keys with non supported values', function() {
+  
+    var resStore = {
+      dev: { translation: {  } },
+      en: { translation: {  } },            
+      'en-US': { 
+        translation: {                      
+          test: 'hi'
+        } 
+      }
+    };
+    
+    beforeEach(function(done) {
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+        function(t) { done(); });
+    });
+  
+  
+    it('it should not break on null key', function() {
+      expect(i18n.t(null)).to.be('');
+    });
+  
+    it('it should not break on undefined key', function() {
+      expect(i18n.t(undefined)).to.be('');
+    });
+    
   });
 
   describe('resource is missing', function() {
@@ -187,6 +218,57 @@ describe('i18next.translate', function() {
       });
     });
   });
+  
+  describe('key with empty string set to fallback if empty', function() {
+    var resStore = {
+      dev: { translation: { empty: '' } },
+      en: { translation: { } },
+      'en-US': { translation: { } }
+    };
+  
+    beforeEach(function(done) {
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackOnEmpty: true }),
+          function(t) { done(); });
+    });
+  
+    it('it should translate correctly', function() {
+      expect(i18n.t('empty')).to.be('empty');
+    });
+  
+    describe('missing on unspecific', function() {
+      var resStore = {
+        dev: { translation: { empty: 'text' } },
+        en: { translation: { } },
+        'en-US': { translation: { empty: '' } }
+      };
+  
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore, lng: 'en', fallbackOnEmpty: true }),
+            function(t) { done(); });
+      });
+  
+      it('it should translate correctly', function() {
+        expect(i18n.t('empty')).to.be('text');
+      });
+    });
+  
+    describe('on specific language', function() {
+      var resStore = {
+        dev: { translation: { empty: 'text' } },
+        en: { translation: { } },
+        'en-US': { translation: { empty: '' } }
+      };
+  
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackOnEmpty: true }),
+            function(t) { done(); });
+      });
+  
+      it('it should translate correctly', function() {
+        expect(i18n.t('empty')).to.be('text');
+      });
+    });
+  });
 
   describe('resource key as array', function() {
     var resStore = {
@@ -258,8 +340,8 @@ describe('i18next.translate', function() {
       expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
     });
   
-    it('it should not fail silently on accessing a objectTree', function() {
-      expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned a object instead of string.');
+    it('it should not fail silently on accessing an objectTree', function() {
+      expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned an object instead of string.');
     });
   
     describe('optional return an objectTree for UI components,...', function() {
@@ -306,6 +388,8 @@ describe('i18next.translate', function() {
             translation: {                      
               test: { res: 'added __replace__',
                       id: 0,
+                      regex: /test/,
+                      func: function () {},
                       template: '4',
                       title: 'About...',
                       text: 'Site description',
@@ -326,6 +410,8 @@ describe('i18next.translate', function() {
           expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
             res: 'added two',
             id: 0,
+            regex: resStore['en-US'].translation.test.regex,
+            func: resStore['en-US'].translation.test.func,
             template: '4',
             title: 'About...',
             text: 'Site description',

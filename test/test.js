@@ -1029,7 +1029,7 @@ describe('i18next', function() {
       });
     
     
-      it('it should not break on null key', function() {console.log('here', i18n.t(null))
+      it('it should not break on null key', function() {
         expect(i18n.t(null)).to.be('');
       });
     
@@ -1404,6 +1404,8 @@ describe('i18next', function() {
               translation: {                      
                 test: { res: 'added __replace__',
                         id: 0,
+                        regex: /test/,
+                        func: function () {},
                         template: '4',
                         title: 'About...',
                         text: 'Site description',
@@ -1424,6 +1426,8 @@ describe('i18next', function() {
             expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
               res: 'added two',
               id: 0,
+              regex: resStore['en-US'].translation.test.regex,
+              func: resStore['en-US'].translation.test.func,
               template: '4',
               title: 'About...',
               text: 'Site description',

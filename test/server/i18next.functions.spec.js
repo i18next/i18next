@@ -22,6 +22,8 @@ describe('i18next.functions', function() {
       fallbackLng: 'dev',
       fallbackNS: [],
       fallbackToDefaultNS: false,
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       load: 'all',
       preload: [],
       supportedLngs: [],
@@ -36,7 +38,8 @@ describe('i18next.functions', function() {
       interpolationSuffix: '__',
       postProcess: '',
       parseMissingKey: '',
-      debug: false
+      debug: false,
+      objectTreeKeyHandler: null
     };
 
     i18n.init(opts, function(t) {
@@ -166,5 +169,26 @@ describe('i18next.functions', function() {
   });
 
   // functions/functions.postmissing.spec.js
+
+  describe('using objectTreeKeyHandler', function() {
+  
+    beforeEach(function(done) {
+      i18n.init(i18n.functions.extend(opts, {
+        objectTreeKeyHandler: function(key, value, lng, ns, opts) {
+          return i18n.t(key + '.a');
+        },
+        resStore: {
+          'en-US': { translation: { 'simpleTest': { a: 'a value', b: 'b value' } } }
+        },
+        returnObjectTrees: false
+      }), function(t) { done(); } );
+    });
+  
+    it('it should apply objectTreeKeyHandler', function() {
+      expect(i18n.t('simpleTest')).to.be('a value');
+    });
+  
+  });
+
 
 });

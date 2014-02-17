@@ -5,6 +5,7 @@
 - added ability to prepend, append content with data-i18n attributes
 - introducing objectTreeKeyHandler
 - fixes issue with i18n.t(null), i18n.t(undefined) throwing exception
+- returnObjectTrees does not mangle arrays, functions, and regexps
 
 ### 1.7.1
 - fixed some typo

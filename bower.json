@@ -1,10 +1,11 @@
 {
   "name": "i18next",
-  "version": "1.7.1",
-  "main": "./release/i18next-1.7.1.min.js",
+  "version": "1.7.2",
+  "main": "./i18next.js",
   "dependencies": {},
   "ignore": [
     "test/",
+    "release/"
     "spec/",
     "src/",
     "sample/",

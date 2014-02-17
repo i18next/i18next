@@ -24,6 +24,8 @@ describe('i18next.init', function() {
       fallbackLng: 'dev',
       fallbackNS: [],
       fallbackToDefaultNS: false,
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       load: 'all',
       preload: [],
       supportedLngs: [],
@@ -39,7 +41,8 @@ describe('i18next.init', function() {
       interpolationSuffix: '__',
       postProcess: '',
       parseMissingKey: '',
-      debug: false
+      debug: false,
+      objectTreeKeyHandler: null
     };
 
     i18n.init(opts, function(t) {
@@ -88,6 +91,28 @@ describe('i18next.init', function() {
           expect(i18n.options.ns.namespaces).to.contain('newNamespace');
         });
     
+      });
+    
+    });
+
+    describe('removing resources after init', function() {
+    
+      var resStore = {
+        dev: { translation: { 'test': 'ok_from_dev' } },
+        en: { translation: { 'test': 'ok_from_en' } },            
+        'en-US': { translation: { 'test': 'ok_from_en-US' } }
+      };
+      
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+          function(t) { 
+            i18n.removeResourceBundle('en-US', 'translation');
+            done(); 
+          });
+      });
+    
+      it('it should remove resources', function() {
+        expect(i18n.t('test')).to.be('ok_from_en');
       });
     
     });

@@ -16,7 +16,7 @@ describe('keys with non supported values', function() {
   });
 
 
-  it('it should not break on null key', function() {console.log('here', i18n.t(null))
+  it('it should not break on null key', function() {
     expect(i18n.t(null)).to.be('');
   });
 

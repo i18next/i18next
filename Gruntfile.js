@@ -132,6 +132,30 @@ module.exports = function(grunt) {
       amdjquery: {
         src: ['bin/i18next.amd.withJQuery-latest.js'],
         dest: 'release/i18next.amd.withJQuery-<%= meta.version %>.min.js'
+      },
+      release_latest: {
+        src: ['bin/i18next-latest.js'],
+        dest: 'release/i18next-latest.min.js'
+      },
+      amd_latest: {
+        src: ['bin/i18next.amd-latest.js'],
+        dest: 'release/i18next.amd-latest.min.js'
+      },
+      amdjquery_latest: {
+        src: ['bin/i18next.amd.withJQuery-latest.js'],
+        dest: 'release/i18next.amd.withJQuery-latest.min.js'
+      },
+      release_latest_root: {
+        src: ['bin/i18next-latest.js'],
+        dest: './i18next.min.js'
+      },
+      amd_latest_root: {
+        src: ['bin/i18next.amd-latest.js'],
+        dest: './i18next.amd.min.js'
+      },
+      amdjquery_latest_root: {
+        src: ['bin/i18next.amd.withJQuery-latest.js'],
+        dest: './i18next.amd.withJQuery.min.js'
       }
     },
 
@@ -151,9 +175,22 @@ module.exports = function(grunt) {
               }
               return dest;
             }
+          },
+          { expand: true, cwd: 'bin/', src: ['*.js'], dest: 'release/'},
+          { expand: true, cwd: 'bin/', src: ['*.js'], dest: './', 
+            rename: function(dest, src) { console.log(src + ' -> ' + dest);
+              if (src == 'i18next-latest.js') {
+                dest += 'i18next.js';
+              }
+              if (src == 'i18next.amd-latest.js') {
+                dest += 'i18next.amd.js';
+              }
+              if (src == 'i18next.amd.withJQuery-latest.js') {
+                dest += 'i18next.amd.withJQuery.js';
+              }
+              return dest;
+            }
           }
-          //'bin/': ['bin/i18next-latest.js', 'bin/i18next.amd-latest.js', 'bin/i18next.amd.withJQuery-latest.js'],
-          //'release/': ['bin/i18next-latest.js', 'bin/i18next.amd-latest.js', 'bin/i18next.amd.withJQuery-latest.js']
         ]
       }
     },
