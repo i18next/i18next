@@ -1,6 +1,10 @@
 ### 1.7.2
 - introducing option fallbackOnEmpty -> empty string will fallback
 - added function removeResourceBundle(lng, ns) -> removes a resource set
+- fixed issue with no option passed to setLng
+- added ability to prepend, append content with data-i18n attributes
+- introducing objectTreeKeyHandler
+- fixes issue with i18n.t(null), i18n.t(undefined) throwing exception
 
 ### 1.7.1
 - fixed some typo

@@ -112,8 +112,6 @@ function setLng(lng, options, cb) {
     } else if (!options) {
         options = {};
     }
-    if (!options)
-        options = {};
 
     options.lng = lng;
     return init(options, cb);

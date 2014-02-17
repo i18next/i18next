@@ -21,10 +21,15 @@ function addJqueryFunct() {
         if (attr === 'html') {
             optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.html() }, options) : options;
             ele.html($.t(key, optionsToUse));
-        } 
-        else if (attr === 'text') {
+        } else if (attr === 'text') {
             optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.text() }, options) : options;
             ele.text($.t(key, optionsToUse));
+        } else if (attr === 'prepend') {
+            optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.html() }, options) : options;
+            ele.prepend($.t(key, optionsToUse));
+        } else if (attr === 'append') {
+            optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.html() }, options) : options;
+            ele.append($.t(key, optionsToUse));
         } else {
             optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.attr(attr) }, options) : options;
             ele.attr(attr, $.t(key, optionsToUse));

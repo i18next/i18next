@@ -125,16 +125,20 @@ function _translate(potentialKeys, options) {
         options = options || {};
     }
 
+    if (potentialKeys === undefined || potentialKeys === null) return '';
+
     if (typeof potentialKeys == 'string') {
         potentialKeys = [potentialKeys];
     }
 
-    var key = null;
+    var key = potentialKeys[0];
 
-    for (var i = 0; i < potentialKeys.length; i++) {
-        key = potentialKeys[i];
-        if (exists(key)) {
-            break;
+    if (potentialKeys.length > 1) {
+        for (var i = 0; i < potentialKeys.length; i++) {
+            key = potentialKeys[i];
+            if (exists(key)) {
+                break;
+            }
         }
     }
 
@@ -189,7 +193,7 @@ function _translate(potentialKeys, options) {
     return (found !== undefined) ? found : notFound;
 }
 
-function _find(key, options){
+function _find(key, options) {
     options = options || {};
 
     var optionWithoutCount, translated
@@ -280,12 +284,13 @@ function _find(key, options){
                 value = undefined;
             } else if (value !== null) {
                 if (!o.returnObjectTrees && !options.returnObjectTrees) {
-                    value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
-                        'returned an object instead of string.';
-                    if (o.objectKeyHandler && typeof o.objectKeyHandler == 'function')
-                        value = o.objectKeyHandler(ns,key,l);
+                    if (o.objectTreeKeyHandler && typeof o.objectTreeKeyHandler == 'function') {
+                        value = o.objectTreeKeyHandler(key, value, l, ns, options);
+                    } else {
+                        value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
+                            'returned an object instead of string.';
+                        f.log(value);
                     }
-                    f.log(value);
                 } else if (typeof value !== 'number') {
                     var copy = {}; // apply child translation on a copy
                     f.each(value, function(m) {

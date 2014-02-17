@@ -49,7 +49,7 @@ var o = {
     cookieName: 'i18next',
     cookieDomain: undefined,
 
-    objectKeyHandler: undefined,
+    objectTreeKeyHandler: undefined,
     postProcess: undefined,
     parseMissingKey: undefined,
 

@@ -34,7 +34,8 @@ describe('i18next.functions', function() {
       interpolationSuffix: '__',
       postProcess: '',
       parseMissingKey: '',
-      debug: false
+      debug: false,
+      objectTreeKeyHandler: null
     };
 
     i18n.init(opts, function(t) {
@@ -50,5 +51,8 @@ describe('i18next.functions', function() {
   //= functions/functions.postprocessor.spec.js
 
   // functions/functions.postmissing.spec.js
+
+  //= functions/functions.objectTreeKeyHandler.spec.js
+
 
 });

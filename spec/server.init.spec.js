@@ -37,7 +37,8 @@ describe('i18next.init', function() {
       interpolationSuffix: '__',
       postProcess: '',
       parseMissingKey: '',
-      debug: false
+      debug: false,
+      objectTreeKeyHandler: null
     };
 
     i18n.init(opts, function(t) {
@@ -51,6 +52,8 @@ describe('i18next.init', function() {
   describe('advanced initialisation options', function() {
 
     //= init/init.addResourceBundle.spec.js
+
+    //= init/init.removeResourceBundle.spec.js
 
     //= init/init.loadBehaviour.spec.js
 

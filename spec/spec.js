@@ -15,7 +15,6 @@ describe('i18next', function() {
       lowerCaseLng: false,
       ns: 'translation',
       fallbackToDefaultNS: false,
-      fallbackOnNull: true,
       resGetPath: 'locales/__lng__/__ns__.json',
       dynamicLoad: false,
       useLocalStorage: false,
@@ -29,7 +28,8 @@ describe('i18next', function() {
       parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__',
-      shortcutFunction: 'sprintf'
+      shortcutFunction: 'sprintf',
+      objectTreeKeyHandler: null
     };
   });
 

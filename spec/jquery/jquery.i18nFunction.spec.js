@@ -125,6 +125,50 @@ describe('using bindings $([selector].i18n())', function() {
     
   });
 
+  describe('extended - append html', function() {
+
+    var resStore = {
+      dev: { translation: {  } },
+      en: { translation: {  } },            
+      'en-US': { translation: { 'simpleTest': '<div id="inner">test</div>' } }
+    };
+    
+    beforeEach(function(done) {
+      setFixtures('<div id="container" data-i18n="[append]simpleTest"><div></div></div>');
+
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+        function(t) {  done(); });
+    });
+
+    it('it should append html', function() {
+      $('#container').i18n();
+      expect($('#container').html()).to.be('<div></div><div id="inner">test</div>');
+    });
+    
+  });
+
+  describe('extended - prepend html', function() {
+
+    var resStore = {
+      dev: { translation: {  } },
+      en: { translation: {  } },            
+      'en-US': { translation: { 'simpleTest': '<div id="inner">test</div>' } }
+    };
+    
+    beforeEach(function(done) {
+      setFixtures('<div id="container" data-i18n="[prepend]simpleTest"><div></div></div>');
+
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+        function(t) {  done(); });
+    });
+
+    it('it should append html', function() {
+      $('#container').i18n();
+      expect($('#container').html()).to.be('<div id="inner">test</div><div></div>');
+    });
+    
+  });
+
   describe('extended - with target set to inner element', function() {
 
     var resStore = {

@@ -28,9 +28,12 @@ describe('i18next.translate', function() {
       interpolationSuffix: '__',
       postProcess: '',
       parseMissingKey: '',
-      debug: false
+      debug: false,
+      objectTreeKeyHandler: null
     };
   });
+
+  //= translate/translate.nonStringKeys.spec.js
 
   //= translate/translate.missingKey.spec.js
 

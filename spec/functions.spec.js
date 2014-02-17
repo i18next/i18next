@@ -8,4 +8,6 @@ describe('basic functionality', function() {
 
   //= functions/functions.postmissing.spec.js
 
+  //= functions/functions.objectTreeKeyHandler.spec.js
+
 });
