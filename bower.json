@@ -5,7 +5,7 @@
   "dependencies": {},
   "ignore": [
     "test/",
-    "release/"
+    "release/",
     "spec/",
     "src/",
     "sample/",
