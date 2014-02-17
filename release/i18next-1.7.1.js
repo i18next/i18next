@@ -1,5 +1,5 @@
 // i18next, v1.7.1
-// Copyright (c)2013 Jan Mühlemann (jamuhl).
+// Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 (function() {
@@ -939,6 +939,8 @@
     }
     
     function translate(key, options) {
+        options = options || {};
+        
         if (!initialized) {
             f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
             return options.defaultValue || '';
@@ -1136,7 +1138,7 @@
                 } else if (value !== null) {
                     if (!o.returnObjectTrees && !options.returnObjectTrees) {
                         value = 'key \'' + ns + ':' + key + ' (' + l + ')\' ' +
-                            'returned a object instead of string.';
+                            'returned an object instead of string.';
                         f.log(value);
                     } else if (typeof value !== 'number') {
                         var copy = {}; // apply child translation on a copy
@@ -1146,6 +1148,10 @@
                         value = copy;
                     }
                 }
+    
+                if (typeof value === 'string' && value.trim() === '' && o.fallbackOnEmpty === true)
+                    value = undefined;
+    
                 found = value;
             }
         }

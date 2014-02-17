@@ -291,6 +291,10 @@ function _find(key, options){
                     value = copy;
                 }
             }
+
+            if (typeof value === 'string' && value.trim() === '' && o.fallbackOnEmpty === true)
+                value = undefined;
+
             found = value;
         }
     }
