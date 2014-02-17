@@ -364,6 +364,32 @@ html(lang="en")
 
         .row-fluid
           .span4
+            h4.feature-title handling of empty string values:
+
+          .span8
+            .feature
+              pre
+                code
+                  | // given resourcesfile namespace1.dev.json (fallback lng)
+                  | { 
+                  |    key1: 'fallback' 
+                  | }
+                  | // given resourcesfile namespace1.en.json
+                  | { 
+                  |    key1: '' 
+                  | }
+                  | 
+                  | i18n.init({ fallbackOnEmpty: true });
+                  | i18n.t('key1'); // -> 'fallback'
+                  | 
+                  | i18n.init({ fallbackOnEmpty: false });
+                  | i18n.t('key1'); // -> ''
+
+              .feature-description
+                p Default is false.
+
+        .row-fluid
+          .span4
             h4.feature-title Debug output:
 
           .span8
@@ -430,6 +456,12 @@ html(lang="en")
                     | 
                     | // addResourceBundle(lng, ns, resources) ns will default to default ns if not provided
                     | i18n.addResourceBundle('de-CH', 'translation', additionalResources);
+
+                h5 REmoving additional resource bundles after initialization:
+                pre
+                  code
+                    | // removeResourceBundle(lng, ns) ns will default to default ns if not provided
+                    | i18n.removeResourceBundle('de-CH', 'translation');
 
         .row-fluid
           .span4

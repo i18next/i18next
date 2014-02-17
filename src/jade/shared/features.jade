@@ -403,6 +403,34 @@
 
 .row-fluid
   .span4
+    a(name='objecttree_handle')
+    h4.feature-title manually handle objectTree
+    p This might be helpful if you need resources depending on some app state.
+
+  .span8
+    .feature
+      pre
+        code
+          | // given resources
+          | {           
+          |   'en-US': { 
+          |     translation: {  
+          |       state: { on: 'online', off: 'offline' }
+          |   }
+          | };
+          | 
+          | 
+          | i18n.init({objectTreeKeyHandler: function(key, value, lng, ns, options)
+          |   return (app.online) ? i18n.t(key + '.on') : i18n.t(key + '.off')
+          | })
+          | 
+          | i18n.t("state", { returnObjectTrees: false }); // -> if app.online online else offline
+
+      .feature-description
+        p i18n.init({ objectTreeKeyHandler: function(key, value, lng, ns, options) {...} ).
+
+.row-fluid
+  .span4
     h4.feature-title access value in different language
 
   .span8

@@ -1,5 +1,5 @@
-// i18next, v1.7.1
-// Copyright (c)2013 Jan Mühlemann (jamuhl).
+// i18next, v1.7.2
+// Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 describe('i18next', function() {
@@ -13,11 +13,12 @@ describe('i18next', function() {
       load: 'all',
       fallbackLng: 'dev',
       fallbackNS: [],
+      fallbackOnNull: true,
+      fallbackOnEmpty: false,
       preload: [],
       lowerCaseLng: false,
       ns: 'translation',
       fallbackToDefaultNS: false,
-      fallbackOnNull: true,
       resGetPath: 'locales/__lng__/__ns__.json',
       dynamicLoad: false,
       useLocalStorage: false,
@@ -31,7 +32,8 @@ describe('i18next', function() {
       parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__',
-      shortcutFunction: 'sprintf'
+      shortcutFunction: 'sprintf',
+      objectTreeKeyHandler: null
     };
   });
 
@@ -144,6 +146,28 @@ describe('i18next', function() {
             expect(i18n.options.ns.namespaces).to.contain('newNamespace');
           });
       
+        });
+      
+      });
+  
+      describe('removing resources after init', function() {
+      
+        var resStore = {
+          dev: { translation: { 'test': 'ok_from_dev' } },
+          en: { translation: { 'test': 'ok_from_en' } },            
+          'en-US': { translation: { 'test': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) { 
+              i18n.removeResourceBundle('en-US', 'translation');
+              done(); 
+            });
+        });
+      
+        it('it should remove resources', function() {
+          expect(i18n.t('test')).to.be('ok_from_en');
         });
       
       });
@@ -964,8 +988,56 @@ describe('i18next', function() {
     
     });
   
+    describe('using objectTreeKeyHandler', function() {
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, {
+          objectTreeKeyHandler: function(key, value, lng, ns, opts) {
+            return i18n.t(key + '.a');
+          },
+          resStore: {
+            'en-US': { translation: { 'simpleTest': { a: 'a value', b: 'b value' } } }
+          },
+          returnObjectTrees: false
+        }), function(t) { done(); } );
+      });
+    
+      it('it should apply objectTreeKeyHandler', function() {
+        expect(i18n.t('simpleTest')).to.be('a value');
+      });
+    
+    });
+  
   });
   describe('translation functionality', function() {
+  
+    describe('keys with non supported values', function() {
+    
+      var resStore = {
+        dev: { translation: {  } },
+        en: { translation: {  } },            
+        'en-US': { 
+          translation: {                      
+            test: 'hi'
+          } 
+        }
+      };
+      
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+          function(t) { done(); });
+      });
+    
+    
+      it('it should not break on null key', function() {
+        expect(i18n.t(null)).to.be('');
+      });
+    
+      it('it should not break on undefined key', function() {
+        expect(i18n.t(undefined)).to.be('');
+      });
+      
+    });
   
     describe('resource is missing', function() {
       var resStore = {
@@ -1162,6 +1234,57 @@ describe('i18next', function() {
         });
       });
     });
+    
+    describe('key with empty string set to fallback if empty', function() {
+      var resStore = {
+        dev: { translation: { empty: '' } },
+        en: { translation: { } },
+        'en-US': { translation: { } }
+      };
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackOnEmpty: true }),
+            function(t) { done(); });
+      });
+    
+      it('it should translate correctly', function() {
+        expect(i18n.t('empty')).to.be('empty');
+      });
+    
+      describe('missing on unspecific', function() {
+        var resStore = {
+          dev: { translation: { empty: 'text' } },
+          en: { translation: { } },
+          'en-US': { translation: { empty: '' } }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lng: 'en', fallbackOnEmpty: true }),
+              function(t) { done(); });
+        });
+    
+        it('it should translate correctly', function() {
+          expect(i18n.t('empty')).to.be('text');
+        });
+      });
+    
+      describe('on specific language', function() {
+        var resStore = {
+          dev: { translation: { empty: 'text' } },
+          en: { translation: { } },
+          'en-US': { translation: { empty: '' } }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackOnEmpty: true }),
+              function(t) { done(); });
+        });
+    
+        it('it should translate correctly', function() {
+          expect(i18n.t('empty')).to.be('text');
+        });
+      });
+    });
   
     describe('resource key as array', function() {
       var resStore = {
@@ -1233,8 +1356,8 @@ describe('i18next', function() {
         expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
       });
     
-      it('it should not fail silently on accessing a objectTree', function() {
-        expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned a object instead of string.');
+      it('it should not fail silently on accessing an objectTree', function() {
+        expect(i18n.t('test')).to.be('key \'translation:test (en-US)\' returned an object instead of string.');
       });
     
       describe('optional return an objectTree for UI components,...', function() {
@@ -1281,6 +1404,8 @@ describe('i18next', function() {
               translation: {                      
                 test: { res: 'added __replace__',
                         id: 0,
+                        regex: /test/,
+                        func: function () {},
                         template: '4',
                         title: 'About...',
                         text: 'Site description',
@@ -1301,6 +1426,8 @@ describe('i18next', function() {
             expect(i18n.t('test', { returnObjectTrees: true, replace: 'two' })).to.eql({ 
               res: 'added two',
               id: 0,
+              regex: resStore['en-US'].translation.test.regex,
+              func: resStore['en-US'].translation.test.func,
               template: '4',
               title: 'About...',
               text: 'Site description',
@@ -2060,6 +2187,50 @@ describe('i18next', function() {
         it('it should set inner html', function() {
           $('#container').i18n();
           expect($('#inner').html()).to.be('test');
+        });
+        
+      });
+    
+      describe('extended - append html', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest': '<div id="inner">test</div>' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container" data-i18n="[append]simpleTest"><div></div></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) {  done(); });
+        });
+    
+        it('it should append html', function() {
+          $('#container').i18n();
+          expect($('#container').html()).to.be('<div></div><div id="inner">test</div>');
+        });
+        
+      });
+    
+      describe('extended - prepend html', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest': '<div id="inner">test</div>' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container" data-i18n="[prepend]simpleTest"><div></div></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) {  done(); });
+        });
+    
+        it('it should append html', function() {
+          $('#container').i18n();
+          expect($('#container').html()).to.be('<div id="inner">test</div><div></div>');
         });
         
       });
