@@ -109,6 +109,8 @@ function setLng(lng, options, cb) {
     if (typeof options === 'function') {
         cb = options;
         options = {};
+    } else if (!options) {
+        options = {};
     }
     if (!options)
         options = {};
