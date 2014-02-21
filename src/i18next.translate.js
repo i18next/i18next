@@ -301,6 +301,12 @@ function _find(key, options) {
                 }
             }
 
+            // Add string trim for IE8.
+            if (typeof String.prototype.trim !== 'function') {
+                String.prototype.trim = function() {
+                    return this.replace(/^\s+|\s+$/g, ''); 
+                }
+            }
             if (typeof value === 'string' && value.trim() === '' && o.fallbackOnEmpty === true)
                 value = undefined;
 
