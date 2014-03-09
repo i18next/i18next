@@ -2,7 +2,7 @@ function _extend(target, source) {
     if (!source || typeof source === 'function') {
         return target;
     }
-    
+
     for (var attr in source) { target[attr] = source[attr]; }
     return target;
 }
@@ -10,7 +10,7 @@ function _extend(target, source) {
 function _each(object, callback, args) {
     var name, i = 0,
         length = object.length,
-        isObj = length === undefined || typeof object === "function";
+        isObj = length === undefined || Object.prototype.toString.apply(object) !== '[object Array]' || typeof object === "function";
 
     if (args) {
         if (isObj) {
@@ -60,7 +60,7 @@ function _escape(data) {
     if (typeof data === 'string') {
         return data.replace(/[&<>"'\/]/g, function (s) {
             return _entityMap[s];
-        });    
+        });
     }else{
         return data;
     }
@@ -203,7 +203,7 @@ function _ajax(options) {
         if (headers['content-type'] === 'application/json') {
             payload = JSON.stringify(options.data);
         } else {
-            payload = encodeUsingUrlEncoding(options.data);            
+            payload = encodeUsingUrlEncoding(options.data);
         }
 
         // Specially prepare GET requests: Setup the query string, handle caching and make a JSONP call
@@ -243,7 +243,7 @@ function _ajax(options) {
                 var script = document.createElement('script');
                 script.type = 'text/javascript';
                 script.src = url;
-                head.appendChild(script);                
+                head.appendChild(script);
                 return;
             }
         }
@@ -297,11 +297,11 @@ function _ajax(options) {
         },
 
         connect: function (url, options, callback) {
-            return ajax('CONNECT', url, options, callback);            
+            return ajax('CONNECT', url, options, callback);
         },
 
         del: function (url, options, callback) {
-            return ajax('DELETE', url, options, callback);            
+            return ajax('DELETE', url, options, callback);
         },
 
         get: function (url, options, callback) {
@@ -327,15 +327,15 @@ function _ajax(options) {
         },
 
         patch: function (url, options, callback) {
-            return ajax('PATCH', url, options, callback);            
+            return ajax('PATCH', url, options, callback);
         },
 
         post: function (url, options, callback) {
-            return ajax('POST', url, options, callback);            
+            return ajax('POST', url, options, callback);
         },
-        
+
         put: function (url, options, callback) {
-            return ajax('PUT', url, options, callback);            
+            return ajax('PUT', url, options, callback);
         },
 
         trace: function (url, options, callback) {
@@ -409,7 +409,7 @@ var f = {
         if (typeof lng === 'string' && lng.indexOf('-') > -1) {
             var parts = lng.split('-');
 
-            lng = o.lowerCaseLng ? 
+            lng = o.lowerCaseLng ?
                 parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
                 parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
 
