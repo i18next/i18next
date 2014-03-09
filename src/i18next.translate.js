@@ -1,6 +1,6 @@
 function applyReplacement(str, replacementHash, nestedKey, options) {
     if (!str) return str;
-    
+
     options = options || replacementHash; // first call uses replacement hash combined with options
     if (str.indexOf(options.interpolationPrefix || o.interpolationPrefix) < 0) return str;
 
@@ -83,7 +83,7 @@ function exists(key, options) {
 
 function translate(key, options) {
     options = options || {};
-    
+
     if (!initialized) {
         f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
         return options.defaultValue || '';
@@ -97,14 +97,14 @@ function _getDefaultValue(key, options) {
 }
 
 function _injectSprintfProcessor() {
-    
+
     var values = [];
-    
+
     // mh: build array from second argument onwards
     for (var i = 1; i < arguments.length; i++) {
         values.push(arguments[i]);
     }
-    
+
     return {
         postProcess: 'sprintf',
         sprintf:     values
@@ -136,7 +136,7 @@ function _translate(potentialKeys, options) {
     if (potentialKeys.length > 1) {
         for (var i = 0; i < potentialKeys.length; i++) {
             key = potentialKeys[i];
-            if (exists(key)) {
+            if (exists(key, options)) {
                 break;
             }
         }
@@ -308,7 +308,7 @@ function _find(key, options) {
         }
     }
 
-    if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length > 0))) { 
+    if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length > 0))) {
         // set flag for fallback lookup - avoid recursion
         options.isFallbackLookup = true;
 
@@ -316,7 +316,7 @@ function _find(key, options) {
 
             for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
                 found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
-                
+
                 if (found) {
                     /* compare value without namespace */
                     var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
