@@ -21,7 +21,7 @@ function init(options, cb) {
     }
 
     // fallback languages
-    if (typeof o.fallbackLng == 'string') {
+    if (typeof o.fallbackLng == 'string' || typeof o.fallbackLng == 'boolean') {
         o.fallbackLng = [o.fallbackLng];
     }
 
