@@ -5,7 +5,7 @@ var o = {
     preload: [],
     lowerCaseLng: false,
     returnObjectTrees: false,
-    fallbackLng: 'dev',
+    fallbackLng: ['dev'],
     fallbackNS: [],
     detectLngQS: 'setLng',
     ns: 'translation',
