@@ -133,13 +133,14 @@ var sync = {
                 done(null, data);
             },
             error : function(xhr, status, error) {
-                if (xhr.status == 200) {
+                if ((status && status == 200) || (xhr && xhr.status && xhr.status == 200)) {
                     // file loaded but invalid json, stop waste time !
                     f.log('There is a typo in: ' + url);
-                } else if (xhr.status == 404) {
+                } else if ((status && status == 404) || (xhr && xhr.status && xhr.status == 404)) {
                     f.log('Does not exist: ' + url);
                 } else {
-                    f.log(xhr.status + ' when loading ' + url);
+                    var theStatus = status ? status : ((xhr && xhr.status) ? xhr.status : null);
+                    f.log(theStatus + ' when loading ' + url);
                 }
                 
                 done(error, {});
