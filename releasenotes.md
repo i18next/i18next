@@ -3,6 +3,7 @@
 - set data using $(selector).i18n() on data-i18n='[data-someDataAttr]key'
 - more bullet proof state handling on failed file load
 - corrected latvian plurals based on [issue 231](https://github.com/jamuhl/i18next/issues/231)
+- allow array of fallback languages
 
 ### 1.7.2
 - introducing option fallbackOnEmpty -> empty string will fallback
