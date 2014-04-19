@@ -419,7 +419,9 @@ var f = {
             languages.push(lng);
         }
 
-        if (languages.indexOf(o.fallbackLng) === -1 && o.fallbackLng) languages.push(o.fallbackLng);
+        for (var i = 0; i < o.fallbackLng.length; i++) {
+            if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(o.fallbackLng[i]);
+        }
 
         return languages;
     },
