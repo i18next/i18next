@@ -62,3 +62,10 @@ if (!Array.prototype.lastIndexOf) {
         return -1;
     };
 }
+
+// Add string trim for IE8.
+if (typeof String.prototype.trim !== 'function') {
+    String.prototype.trim = function() {
+        return this.replace(/^\s+|\s+$/g, ''); 
+    }
+}
