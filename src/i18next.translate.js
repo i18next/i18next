@@ -301,7 +301,7 @@ function _find(key, options) {
                 }
             }
 
-            if (typeof value === 'string' && value.trim() === '' && o.fallbackOnEmpty === true)
+            if (typeof value === 'string' && value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '') === '' && o.fallbackOnEmpty === true)
                 value = undefined;
 
             found = value;
