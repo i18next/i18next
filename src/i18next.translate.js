@@ -202,6 +202,10 @@ function _find(key, options) {
 
     if (!resStore) { return notFound; } // no resStore to translate from
 
+    // CI mode
+    if (lngs[0].toLowerCase() === 'cimode') return notFound;
+
+    // passed in lng
     if (options.lng) {
         lngs = f.toLanguages(options.lng);
 

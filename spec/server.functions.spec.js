@@ -44,6 +44,8 @@ describe('i18next.functions', function() {
     });
   });
 
+  //= functions/functions.CI.spec.js
+
   //= functions/functions.setlng.spec.js
 
   //= functions/functions.preload.spec.js
