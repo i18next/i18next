@@ -1,4 +1,4 @@
-// i18next, v1.7.2
+// i18next, v1.7.3
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -78,6 +78,13 @@
             return -1;
         };
     }
+    
+    // Add string trim for IE8.
+    if (typeof String.prototype.trim !== 'function') {
+        String.prototype.trim = function() {
+            return this.replace(/^\s+|\s+$/g, ''); 
+        }
+    }
 
     var $ = undefined
         , i18n = {}
@@ -94,7 +101,7 @@
         preload: [],
         lowerCaseLng: false,
         returnObjectTrees: false,
-        fallbackLng: 'dev',
+        fallbackLng: ['dev'],
         fallbackNS: [],
         detectLngQS: 'setLng',
         ns: 'translation',
@@ -148,7 +155,7 @@
         if (!source || typeof source === 'function') {
             return target;
         }
-        
+    
         for (var attr in source) { target[attr] = source[attr]; }
         return target;
     }
@@ -156,7 +163,7 @@
     function _each(object, callback, args) {
         var name, i = 0,
             length = object.length,
-            isObj = length === undefined || typeof object === "function";
+            isObj = length === undefined || Object.prototype.toString.apply(object) !== '[object Array]' || typeof object === "function";
     
         if (args) {
             if (isObj) {
@@ -206,7 +213,7 @@
         if (typeof data === 'string') {
             return data.replace(/[&<>"'\/]/g, function (s) {
                 return _entityMap[s];
-            });    
+            });
         }else{
             return data;
         }
@@ -349,7 +356,7 @@
             if (headers['content-type'] === 'application/json') {
                 payload = JSON.stringify(options.data);
             } else {
-                payload = encodeUsingUrlEncoding(options.data);            
+                payload = encodeUsingUrlEncoding(options.data);
             }
     
             // Specially prepare GET requests: Setup the query string, handle caching and make a JSONP call
@@ -389,7 +396,7 @@
                     var script = document.createElement('script');
                     script.type = 'text/javascript';
                     script.src = url;
-                    head.appendChild(script);                
+                    head.appendChild(script);
                     return;
                 }
             }
@@ -443,11 +450,11 @@
             },
     
             connect: function (url, options, callback) {
-                return ajax('CONNECT', url, options, callback);            
+                return ajax('CONNECT', url, options, callback);
             },
     
             del: function (url, options, callback) {
-                return ajax('DELETE', url, options, callback);            
+                return ajax('DELETE', url, options, callback);
             },
     
             get: function (url, options, callback) {
@@ -473,15 +480,15 @@
             },
     
             patch: function (url, options, callback) {
-                return ajax('PATCH', url, options, callback);            
+                return ajax('PATCH', url, options, callback);
             },
     
             post: function (url, options, callback) {
-                return ajax('POST', url, options, callback);            
+                return ajax('POST', url, options, callback);
             },
-            
+    
             put: function (url, options, callback) {
-                return ajax('PUT', url, options, callback);            
+                return ajax('PUT', url, options, callback);
             },
     
             trace: function (url, options, callback) {
@@ -555,7 +562,7 @@
             if (typeof lng === 'string' && lng.indexOf('-') > -1) {
                 var parts = lng.split('-');
     
-                lng = o.lowerCaseLng ? 
+                lng = o.lowerCaseLng ?
                     parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
                     parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
     
@@ -565,7 +572,9 @@
                 languages.push(lng);
             }
     
-            if (languages.indexOf(o.fallbackLng) === -1 && o.fallbackLng) languages.push(o.fallbackLng);
+            for (var i = 0; i < o.fallbackLng.length; i++) {
+                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(o.fallbackLng[i]);
+            }
     
             return languages;
         },
@@ -595,6 +604,11 @@
             o.fallbackNS = [o.fallbackNS];
         }
     
+        // fallback languages
+        if (typeof o.fallbackLng == 'string' || typeof o.fallbackLng == 'boolean') {
+            o.fallbackLng = [o.fallbackLng];
+        }
+    
         // escape prefix/suffix
         o.interpolationPrefixEscaped = f.regexEscape(o.interpolationPrefix);
         o.interpolationSuffixEscaped = f.regexEscape(o.interpolationSuffix);
@@ -604,7 +618,7 @@
             // set cookie with lng set (as detectLanguage will set cookie on need)
             if (o.useCookie) f.cookie.create(o.cookieName, o.lng, o.cookieExpirationTime, o.cookieDomain);
         } else {
-            o.lng =  o.fallbackLng;
+            o.lng =  o.fallbackLng[0];
             if (o.useCookie) f.cookie.remove(o.cookieName);
         }
     
@@ -820,6 +834,14 @@
             } else if (attr === 'append') {
                 optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.html() }, options) : options;
                 ele.append($.t(key, optionsToUse));
+            } else if (attr.indexOf("data-") === 0) {
+                var dataAttr = attr.substr(("data-").length);
+                optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.data(dataAttr) }, options) : options;
+                var translated = $.t(key, optionsToUse);
+                //we change into the data cache
+                ele.data(dataAttr, translated);
+                //we change into the dom
+                ele.attr(attr, translated);
             } else {
                 optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.attr(attr) }, options) : options;
                 ele.attr(attr, $.t(key, optionsToUse));
@@ -872,7 +894,7 @@
     }
     function applyReplacement(str, replacementHash, nestedKey, options) {
         if (!str) return str;
-        
+    
         options = options || replacementHash; // first call uses replacement hash combined with options
         if (str.indexOf(options.interpolationPrefix || o.interpolationPrefix) < 0) return str;
     
@@ -955,7 +977,7 @@
     
     function translate(key, options) {
         options = options || {};
-        
+    
         if (!initialized) {
             f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
             return options.defaultValue || '';
@@ -969,14 +991,14 @@
     }
     
     function _injectSprintfProcessor() {
-        
+    
         var values = [];
-        
+    
         // mh: build array from second argument onwards
         for (var i = 1; i < arguments.length; i++) {
             values.push(arguments[i]);
         }
-        
+    
         return {
             postProcess: 'sprintf',
             sprintf:     values
@@ -984,7 +1006,7 @@
     }
     
     function _translate(potentialKeys, options) {
-        if (typeof options == 'string') {
+        if (options && typeof options !== 'object') {
             if (o.shortcutFunction === 'sprintf') {
                 // mh: gettext like sprintf syntax found, automatically create sprintf processor
                 options = _injectSprintfProcessor.apply(null, arguments);
@@ -1008,7 +1030,7 @@
         if (potentialKeys.length > 1) {
             for (var i = 0; i < potentialKeys.length; i++) {
                 key = potentialKeys[i];
-                if (exists(key)) {
+                if (exists(key, options)) {
                     break;
                 }
             }
@@ -1074,6 +1096,10 @@
     
         if (!resStore) { return notFound; } // no resStore to translate from
     
+        // CI mode
+        if (lngs[0].toLowerCase() === 'cimode') return notFound;
+    
+        // passed in lng
         if (options.lng) {
             lngs = f.toLanguages(options.lng);
     
@@ -1180,7 +1206,7 @@
             }
         }
     
-        if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length > 0))) { 
+        if (found === undefined && !options.isFallbackLookup && (o.fallbackToDefaultNS === true || (o.fallbackNS && o.fallbackNS.length > 0))) {
             // set flag for fallback lookup - avoid recursion
             options.isFallbackLookup = true;
     
@@ -1188,7 +1214,7 @@
     
                 for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
                     found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
-                    
+    
                     if (found) {
                         /* compare value without namespace */
                         var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
@@ -1375,13 +1401,14 @@
                     done(null, data);
                 },
                 error : function(xhr, status, error) {
-                    if (error.status == 200) {
+                    if ((status && status == 200) || (xhr && xhr.status && xhr.status == 200)) {
                         // file loaded but invalid json, stop waste time !
                         f.log('There is a typo in: ' + url);
-                    } else if (error.status == 404) {
+                    } else if ((status && status == 404) || (xhr && xhr.status && xhr.status == 404)) {
                         f.log('Does not exist: ' + url);
                     } else {
-                        f.log(error.status + ' when loading ' + url);
+                        var theStatus = status ? status : ((xhr && xhr.status) ? xhr.status : null);
+                        f.log(theStatus + ' when loading ' + url);
                     }
                     
                     done(error, {});
@@ -1397,9 +1424,11 @@
     
             var urls = [];
     
-            if (o.sendMissingTo === 'fallback' && o.fallbackLng !== false) {
-                urls.push({lng: o.fallbackLng, url: applyReplacement(o.resPostPath, { lng: o.fallbackLng, ns: ns })});
-            } else if (o.sendMissingTo === 'current' || (o.sendMissingTo === 'fallback' && o.fallbackLng === false) ) {
+            if (o.sendMissingTo === 'fallback' && o.fallbackLng[0] !== false) {
+                for (var i = 0; i < o.fallbackLng.length; i++) {
+                    urls.push({lng: o.fallbackLng[i], url: applyReplacement(o.resPostPath, { lng: o.fallbackLng[i], ns: ns })});
+                }
+            } else if (o.sendMissingTo === 'current' || (o.sendMissingTo === 'fallback' && o.fallbackLng[0] === false) ) {
                 urls.push({lng: lng, url: applyReplacement(o.resPostPath, { lng: lng, ns: ns })});
             } else if (o.sendMissingTo === 'all') {
                 for (var i = 0, l = lngs.length; i < l; i++) {
@@ -1994,9 +2023,9 @@
             "lv": {
                 "name": "Latvian", 
                 "numbers": [
-                    0, 
                     1, 
-                    2
+                    2, 
+                    0
                 ], 
                 "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2); }
             }, 

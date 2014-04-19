@@ -1,4 +1,4 @@
-// i18next, v1.7.2
+// i18next, v1.7.3
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -46,6 +46,29 @@ describe('i18next.functions', function() {
       i18n.sync.resStore = {};
       done();
     });
+  });
+
+  describe('CI mode', function() {
+  
+    beforeEach(function(done) {
+      i18n.init(i18n.functions.extend(opts, {
+        resStore: {
+          'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
+          'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
+        }
+      }), function(t) { done(); } );
+    });
+  
+    it('it should provide resources for set language', function(done) {
+      expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
+  
+      i18n.setLng('CIMode', function(t) {
+          expect(t('simpleTest')).to.be('simpleTest');
+          done();
+      });
+  
+    });
+  
   });
 
   describe('setting language', function() {
