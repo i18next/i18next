@@ -196,10 +196,12 @@ html(lang="en")
 
           .span8
             .feature
-              h6 setting fallback language:
+              h6 setting one or more fallback language:
               pre
                 code
                   | i18n.init({ fallbackLng: 'en' });
+                  | // or multiple
+                  | i18n.init({ fallbackLng: ['fr', 'en'] });
               .feature-description
                 p If not set it will default to 'dev'. If turned on, all missing key/values will be 
                   | sent to this language.

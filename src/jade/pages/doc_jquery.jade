@@ -135,6 +135,11 @@ html(lang="en")
                 p As the target attribute is set the input tag with class 'inner' will get his value set.
 
 
+        .row-fluid
+          .span4
+            h4.feature-title setting html, prepend, append content:
+
+          .span8
             .feature
               :markdown
                 #### Replace other attributes or innerHtml:
@@ -149,6 +154,27 @@ html(lang="en")
               .feature-description
                 p Just provide the attribute to set in '[]' and seperate multiple attributes via ';'.
                 p You can even set the innerHtml by prepending '[html]' or prepend by '[prepend]' or append by '[append]'.
+
+
+        .row-fluid
+          .span4
+            h4.feature-title setting data:
+
+          .span8
+            .feature
+              :markdown
+                #### set data:
+                  
+                    <a id="btn1" href="#" data-i18n="[data-someDataAttribute]key.for.text"></a>
+
+              pre
+                code
+                  | $("#btn1").i18n();
+
+
+              .feature-description
+                p The element will have 'data-someDataAttribute' attribute and data could be read by 
+                  code $("#btn1").data('someDataAttribute');
 
 
     include ../includes/layout/extra

@@ -1,4 +1,4 @@
-// i18next, v1.7.2
+// i18next, v1.7.3
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -110,6 +110,53 @@ describe('i18next', function() {
   
     describe('advanced initialisation options', function() {
   
+      describe('setting fallbackLng', function() {
+      
+        var resStore = {
+          dev1: { translation: { 'simple_dev1': 'ok_from_dev1' } },
+          en: { translation: { 'simple_en': 'ok_from_en' } },
+          'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackLng: 'dev1' }),
+            function(t) { done(); });
+        });
+      
+        it('it should provide passed in resources for translation', function() {
+          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.be('ok_from_en');
+          expect(i18n.t('simple_dev1')).to.be('ok_from_dev1');
+        });
+      
+      });
+      
+      describe('multiple fallbackLng', function() {
+      
+        var resStore = {
+          dev1: { translation: { 'simple_dev1': 'ok_from_dev1', 'simple_dev': 'ok_from_dev1' } },
+          dev2: { translation: { 'simple_dev2': 'ok_from_dev2', 'simple_dev': 'ok_from_dev2' } },
+          en: { translation: { 'simple_en': 'ok_from_en' } },
+          'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, fallbackLng: ['dev1', 'dev2'] }),
+            function(t) { done(); });
+        });
+      
+        it('it should provide passed in resources for translation', function() {
+          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.be('ok_from_en');
+          // in one
+          expect(i18n.t('simple_dev1')).to.be('ok_from_dev1');
+          expect(i18n.t('simple_dev2')).to.be('ok_from_dev2');
+          // in both
+          expect(i18n.t('simple_dev')).to.be('ok_from_dev1');
+        });
+      
+      });
+      //
       describe('adding resources after init', function() {
       
         var resStore = {
@@ -705,6 +752,29 @@ describe('i18next', function() {
   
   });
   describe('basic functionality', function() {
+  
+    describe('CI mode', function() {
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, {
+          resStore: {
+            'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
+            'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
+          }
+        }), function(t) { done(); } );
+      });
+    
+      it('it should provide resources for set language', function(done) {
+        expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
+    
+        i18n.setLng('CIMode', function(t) {
+            expect(t('simpleTest')).to.be('simpleTest');
+            done();
+        });
+    
+      });
+    
+    });
   
     describe('setting language', function() {
     
@@ -2187,6 +2257,29 @@ describe('i18next', function() {
         it('it should set inner html', function() {
           $('#container').i18n();
           expect($('#inner').html()).to.be('test');
+        });
+        
+      });
+    
+      describe('extended - set data attribute', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest': 'someData' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container" data-i18n="[data-test]simpleTest"></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) {  done(); });
+        });
+    
+        it('it should set data', function() {
+          $('#container').i18n();
+          expect($('#container').data('test')).to.be('someData');
+          expect($('#container').attr('data-test')).to.be('someData');
         });
         
       });
