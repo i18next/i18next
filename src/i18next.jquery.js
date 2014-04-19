@@ -30,6 +30,14 @@ function addJqueryFunct() {
         } else if (attr === 'append') {
             optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.html() }, options) : options;
             ele.append($.t(key, optionsToUse));
+        } else if (attr.indexOf("data-") === 0) {
+            var dataAttr = attr.substr(("data-").length);
+            optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.data(dataAttr) }, options) : options;
+            var translated = $.t(key, optionsToUse);
+            //we change into the data cache
+            ele.data(dataAttr, translated);
+            //we change into the dom
+            ele.attr(attr, translated);
         } else {
             optionsToUse = o.defaultValueFromContent ? $.extend({ defaultValue: ele.attr(attr) }, options) : options;
             ele.attr(attr, $.t(key, optionsToUse));

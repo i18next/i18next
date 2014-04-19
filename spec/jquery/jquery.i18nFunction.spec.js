@@ -125,6 +125,29 @@ describe('using bindings $([selector].i18n())', function() {
     
   });
 
+  describe('extended - set data attribute', function() {
+
+    var resStore = {
+      dev: { translation: {  } },
+      en: { translation: {  } },            
+      'en-US': { translation: { 'simpleTest': 'someData' } }
+    };
+    
+    beforeEach(function(done) {
+      setFixtures('<div id="container" data-i18n="[data-test]simpleTest"></div>');
+
+      i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+        function(t) {  done(); });
+    });
+
+    it('it should set data', function() {
+      $('#container').i18n();
+      expect($('#container').data('test')).to.be('someData');
+      expect($('#container').attr('data-test')).to.be('someData');
+    });
+    
+  });
+
   describe('extended - append html', function() {
 
     var resStore = {

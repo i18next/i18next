@@ -1,3 +1,7 @@
+### 1.7.3
+- solves issue with ie8 not providing .trim function on string -> added to shim
+- set data using $(selector).i18n() on data-i18n='[data-someDataAttr]key'
+
 ### 1.7.2
 - introducing option fallbackOnEmpty -> empty string will fallback
 - added function removeResourceBundle(lng, ns) -> removes a resource set
