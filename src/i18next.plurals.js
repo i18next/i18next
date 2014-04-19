@@ -554,9 +554,9 @@ var pluralExtensions = {
         "lv": {
             "name": "Latvian", 
             "numbers": [
-                0, 
                 1, 
-                2
+                2, 
+                0
             ], 
             "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2); }
         }, 
