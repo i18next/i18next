@@ -4,6 +4,7 @@
 - more bullet proof state handling on failed file load
 - corrected latvian plurals based on [issue 231](https://github.com/jamuhl/i18next/issues/231)
 - allow array of fallback languages
+- allow int in values passed to shortcut sprintf
 
 ### 1.7.2
 - introducing option fallbackOnEmpty -> empty string will fallback

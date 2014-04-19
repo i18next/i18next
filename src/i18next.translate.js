@@ -112,7 +112,7 @@ function _injectSprintfProcessor() {
 }
 
 function _translate(potentialKeys, options) {
-    if (typeof options == 'string') {
+    if (options && typeof options !== 'object') {
         if (o.shortcutFunction === 'sprintf') {
             // mh: gettext like sprintf syntax found, automatically create sprintf processor
             options = _injectSprintfProcessor.apply(null, arguments);
