@@ -427,5 +427,12 @@ var f = {
     },
     regexEscape: function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    },
+    regexReplacementEscape: function(strOrFn) {
+        if (typeof strOrFn === 'string') {
+            return strOrFn.replace(/\$/g, "$$$$");
+        } else {
+            return strOrFn;
+        }
     }
 };

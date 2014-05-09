@@ -502,6 +502,10 @@ describe('i18next.translate', function() {
         expect(i18n.t('interpolationTest5', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
       });
     
+      it("it should escape dollar signs in replacement values", function() {
+        expect(i18n.t('interpolationTest1', {toAdd: '$&'})).to.be('added $&');
+      });
+    
     });
     
     describe('default i18next way - different prefix/suffix', function() {
@@ -611,6 +615,10 @@ describe('i18next.translate', function() {
         expect(i18n.t('interpolationTest7', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html> &lt;html&gt;');
       });
     
+      it("it should escape dollar signs in replacement values", function() {
+        expect(i18n.t('interpolationTest1', {toAdd: '$&'})).to.be('added $&amp;');
+      });
+    
     });
     
     describe('default i18next way - with escaping interpolated arguments per default via options', function () {
@@ -644,6 +652,10 @@ describe('i18next.translate', function() {
     
       it("it should support both escaping and not escaping HTML", function() {
         expect(i18n.t('interpolationTest7', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html> &lt;html&gt;');
+      });
+    
+      it("it should escape dollar signs in replacement values", function() {
+        expect(i18n.t('interpolationTest1', {toAdd: '$&'})).to.be('added $&amp;');
       });
     
     });
