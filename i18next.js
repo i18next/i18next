@@ -1039,6 +1039,9 @@
                 }
             }
         }
+        
+        if (o.debug)
+            return key;
     
         var notFound = _getDefaultValue(key, options)
             , found = _find(key, options)
