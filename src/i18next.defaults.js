@@ -40,6 +40,8 @@ var o = {
     pluralNotFound: ['plural_not_found', Math.random()].join(''),
     contextNotFound: ['context_not_found', Math.random()].join(''),
     escapeInterpolation: false,
+    indefiniteSuffix: '_indefinite',
+    indefiniteNotFound: ['indefinite_not_found', Math.random()].join(''),
 
     setJqueryExt: true,
     defaultValueFromContent: true,

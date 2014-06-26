@@ -28,6 +28,8 @@ describe('translation functionality', function() {
 
   //= translate/translate.plurals.spec.js
 
+  //= translate/translate.indefinite.spec.js
+
   //= translate/translate.context.spec.js
 
   //= translate/translate.setlng.spec.js
