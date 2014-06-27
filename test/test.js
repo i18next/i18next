@@ -1963,6 +1963,11 @@ describe('i18next', function() {
               thing_plural: '__count__ things from ns.2',
               thing_indefinite: 'A thing from ns.2',
               thing_plural_indefinite: 'Some things from ns.2'
+            },
+            'ns.3': {
+              thing: '__count__ things',
+              thing_indefinite: 'A thing',
+              thing_plural_indefinite: 'Some things'
             }
           },
           en: { },
@@ -1978,11 +1983,13 @@ describe('i18next', function() {
         beforeEach(function(done) {
           i18n.init(i18n.functions.extend(opts, {
             resStore: resStore,
-            ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
+            ns: { namespaces: ['ns.1', 'ns.2', 'ns.3'], defaultNs: 'ns.1'}
           }), function(t) { done(); });
         });
     
         it('it should provide the indefinite article when requested for singular forms', function() {
+          expect(i18n.t('thing')).to.be('__count__ thing');
+          expect(i18n.t('thing', {indefinite_article: true})).to.be('A thing');
           expect(i18n.t('thing', {count:1})).to.be('1 thing');
           expect(i18n.t('thing', {count:5})).to.be('5 things');
           expect(i18n.t('thing', {count:1, indefinite_article: true})).to.be('A thing');
@@ -1994,6 +2001,12 @@ describe('i18next', function() {
           expect(i18n.t('ns.2:thing', {count:5})).to.be('5 things from ns.2');
           expect(i18n.t('ns.2:thing', {count:1, indefinite_article: true})).to.be('A thing from ns.2');
           expect(i18n.t('ns.2:thing', {count:5, indefinite_article: true})).to.be('Some things from ns.2');
+        });
+    
+        it('it should provide the right indefinite translations from the third namespace', function() {
+          expect(i18n.t('ns.3:thing', {count:5})).to.be('5 things');
+          expect(i18n.t('ns.3:thing', {count:1, indefinite_article: true})).to.be('A thing');
+          expect(i18n.t('ns.3:thing', {count:5, indefinite_article: true})).to.be('Some things')
         });
       });
     
