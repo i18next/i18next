@@ -31,6 +31,11 @@ function detectLanguage() {
     if (!detectedLng && typeof navigator !== 'undefined') {
         detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
     }
+
+    //fallback
+    if(!detectedLng){
+      detectedLng = o.fallbackLng[0];
+    }
     
     return detectedLng;
 }
