@@ -22,6 +22,42 @@ function addResourceBundle(lng, ns, resources) {
     f.extend(resStore[lng][ns], resources);
 }
 
+function mergeResourceBundle(lng, ns, resource) {
+    if (typeof lng !== 'string' || lng.length === 0) {
+        return false;
+    }
+
+    if (typeof ns !== 'string' || ns.length === 0) {
+        return false;
+    }
+
+    if (resource.constructor !== Object) {
+        return false;
+    }
+
+    resStore[lng] = resStore[lng] || {};
+    resStore[lng][ns] = resStore[lng][ns] || {};
+
+    var deepExtend = function(target, source) {
+        for (var attr in source) {
+            try {
+                if (source[attr].constructor === Object) {
+                    target[attr] = deepExtend(target[attr], source[attr]);
+                } else {
+                    target[attr] = source[attr];
+                }
+            } catch(e) {
+                target[attr] = source[attr];
+            }
+        }
+
+        return target;
+    }
+
+    deepExtend(resStore[lng][ns], resource);
+    return true;
+}
+
 function removeResourceBundle(lng, ns) {
     if (typeof ns !== 'string') {
         ns = o.ns.defaultNs;
