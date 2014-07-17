@@ -404,7 +404,11 @@ var f = {
     log: function(str) {
         if (o.debug && typeof console !== "undefined") console.log(str);
     },
-    toLanguages: function(lng) {
+    toLanguages: function(lng, fallbackLng) {
+        if (fallbackLng === undefined)
+            fallbackLng = o.fallbackLng;
+        fallbackLng = fallbackLng || [];
+
         var languages = [];
         if (typeof lng === 'string' && lng.indexOf('-') > -1) {
             var parts = lng.split('-');

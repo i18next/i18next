@@ -144,7 +144,7 @@ function _translate(potentialKeys, options) {
 
     var notFound = _getDefaultValue(key, options)
         , found = _find(key, options)
-        , lngs = options.lng ? f.toLanguages(options.lng) : languages
+        , lngs = options.lng ? f.toLanguages(options.lng, options.fallbackLng) : languages
         , ns = options.ns || o.ns.defaultNs
         , parts;
 
@@ -207,7 +207,7 @@ function _find(key, options) {
 
     // passed in lng
     if (options.lng) {
-        lngs = f.toLanguages(options.lng);
+        lngs = f.toLanguages(options.lng, options.fallbackLng);
 
         if (!resStore[lngs[0]]) {
             var oldAsync = o.getAsync;
