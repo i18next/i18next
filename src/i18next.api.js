@@ -3,6 +3,7 @@ i18n.init = init;
 i18n.setLng = setLng;
 i18n.preload = preload;
 i18n.addResourceBundle = addResourceBundle;
+i18n.mergeResourceBundle = mergeResourceBundle;
 i18n.removeResourceBundle = removeResourceBundle;
 i18n.loadNamespace = loadNamespace;
 i18n.loadNamespaces = loadNamespaces;
