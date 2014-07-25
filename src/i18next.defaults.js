@@ -31,6 +31,7 @@ var o = {
     sendMissing: false,
     sendMissingTo: 'fallback', // current | all
     sendType: 'POST',
+    missingKeyHandler: sync.postMissing,
 
     interpolationPrefix: '__',
     interpolationSuffix: '__',
