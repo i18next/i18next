@@ -72,6 +72,10 @@ function needsPlural(options) {
     return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
 }
 
+function needsIndefiniteArticle(options) {
+    return (options.indefinite_article !== undefined && typeof options.indefinite_article != 'string' && options.indefinite_article);
+}
+
 function exists(key, options) {
     options = options || {};
 
@@ -261,6 +265,18 @@ function _find(key, options) {
                 interpolationSuffix: options.interpolationSuffix
             }); // apply replacement for count only
         } // else continue translation with original/singular key
+    }
+
+    if (needsIndefiniteArticle(options)) {
+        optionsWithoutIndef = f.extend({}, options);
+        delete optionsWithoutIndef.indefinite_article;
+        optionsWithoutIndef.defaultValue = o.indefiniteNotFound;
+        // If we don't have a count, we want the indefinite, if we do have a count, and needsPlural is false
+        var indefiniteKey = ns + o.nsseparator + key + (((options.count && !needsPlural(options)) || !options.count) ? o.indefiniteSuffix : "");
+        translated = translate(indefiniteKey, optionsWithoutIndef);
+        if (translated != o.indefiniteNotFound) {
+            return translated;
+        }
     }
 
     var found;
