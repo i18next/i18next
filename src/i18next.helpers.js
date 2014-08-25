@@ -356,7 +356,8 @@ function _ajax(options) {
     var methode = options.type ? options.type.toLowerCase() : 'get';
 
     http[methode](options.url, options, function (status, data) {
-        if (status === 200) {
+        // file: protocol always gives status code 0, so check for data
+        if (status === 200 || (status === 0 && data.text())) {
             options.success(data.json(), status, null);
         } else {
             options.error(data.text(), status, null);
