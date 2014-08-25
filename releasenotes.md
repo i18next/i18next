@@ -6,6 +6,8 @@
 - allow floats for count
 - added indefinite functionality for plurals
 - optional set replacing vars to replace member to avoid collision with other options
+- experimental optional detectLngFromLocalStorage
+- fix for norwegian language
 
 ### 1.7.3
 - solves issue with ie8 not providing .trim function on string -> added to shim

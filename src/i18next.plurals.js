@@ -1075,7 +1075,7 @@ var pluralExtensions = {
         if (pluralExtensions.currentRule && pluralExtensions.currentRule.lng === lng) {
             ext = pluralExtensions.currentRule.rule; 
         } else {
-            ext = pluralExtensions.rules[parts[0]];
+            ext = pluralExtensions.rules[parts[f.getCountyIndexOfLng(lng)]];
         }
 
         if (ext && ext.numbers.length <= 1) {
@@ -1117,7 +1117,7 @@ var pluralExtensions = {
             }
         }
                     
-        return getResult(parts[0], count);
+        return getResult(parts[f.getCountyIndexOfLng(lng)], count);
     }
 
 };

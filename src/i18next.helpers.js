@@ -415,6 +415,14 @@ var f = {
     log: function(str) {
         if (o.debug && typeof console !== "undefined") console.log(str);
     },
+    error: function(str) {
+        if (typeof console !== "undefined") console.error(str);
+    },
+    getCountyIndexOfLng: function(lng) {
+        var lng_index = 0;
+        if (lng === 'nb-NO' || lng === 'nn-NO') lng_index = 1;
+        return lng_index;
+    },
     toLanguages: function(lng) {
         var log = this.log;
 
@@ -436,7 +444,7 @@ var f = {
                 parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
 
             if (o.load !== 'unspecific') addLanguage(lng);
-            if (o.load !== 'current') addLanguage(parts[0]);
+            if (o.load !== 'current') addLanguage(parts[this.getCountyIndexOfLng(lng)]);
         } else {
             addLanguage(lng);
         }

@@ -135,7 +135,7 @@ sync = {
             error : function(xhr, status, error) {
                 if ((status && status == 200) || (xhr && xhr.status && xhr.status == 200)) {
                     // file loaded but invalid json, stop waste time !
-                    f.log('There is a typo in: ' + url);
+                    f.error('There is a typo in: ' + url);
                 } else if ((status && status == 404) || (xhr && xhr.status && xhr.status == 404)) {
                     f.log('Does not exist: ' + url);
                 } else {

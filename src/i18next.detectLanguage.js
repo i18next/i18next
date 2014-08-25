@@ -27,9 +27,14 @@ function detectLanguage() {
         if (c) detectedLng = c;
     }
 
+    // get from localstorage
+    if (!detectedLng && typeof document !== 'undefined' && window.localstorage && o.detectLngFromLocalStorage) {
+        detectedLng = window.localStorage.getItem('i18next_lng');
+    }
+
     // get from navigator
     if (!detectedLng && typeof navigator !== 'undefined') {
-        detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
+        detectedLng = (navigator.language) ? navigator.language : navigator.userLanguage;
     }
 
     //fallback

@@ -8,6 +8,7 @@ var o = {
     fallbackLng: ['dev'],
     fallbackNS: [],
     detectLngQS: 'setLng',
+    detectLngFromLocalStorage: false,
     ns: 'translation',
     fallbackOnNull: true,
     fallbackOnEmpty: false,

@@ -45,6 +45,10 @@ function applyReuse(translated, options) {
         var token = translated.substring(index_of_opening, index_of_end_of_closing);
         var token_without_symbols = token.replace(o.reusePrefix, '').replace(o.reuseSuffix, '');
 
+        if (index_of_end_of_closing <= index_of_opening) {
+            f.error('there is an missing closing in following translation value', translated);
+            return '';
+        }
 
         if (token_without_symbols.indexOf(comma) != -1) {
             var index_of_token_end_of_closing = token_without_symbols.indexOf(comma);

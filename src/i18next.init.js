@@ -36,7 +36,10 @@ function init(options, cb) {
     f.log('currentLng set to: ' + currentLng);
 
     if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
-      f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
+        f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
+    }
+    if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localstorage) {
+        window.localStorage.setItem('i18next_lng', currentLng);
     }
 
     var lngTranslate = translate;
