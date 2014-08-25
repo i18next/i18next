@@ -79,7 +79,7 @@ describe('indefinite article usage', function() {
       expect(i18n.t('key', {count: 1})).to.be('1 thing');
       expect(i18n.t('key', {count: 5})).to.be('5 thing');
       expect(i18n.t('key', {count: 1, indefinite_article: true})).to.be('a thing');
-      expect(i18n.t('key', {count: 5, indefinite_article: true})).to.be('5 thing');
+      expect(i18n.t('key', {count: 5, indefinite_article: true})).to.be('a thing');
     });
   });
 });

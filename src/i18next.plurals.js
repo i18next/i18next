@@ -1068,6 +1068,23 @@ var pluralExtensions = {
         }
     },
 
+    needsPlural: function(lng, count) {
+        var parts = lng.split('-');
+
+        var ext;
+        if (pluralExtensions.currentRule && pluralExtensions.currentRule.lng === lng) {
+            ext = pluralExtensions.currentRule.rule; 
+        } else {
+            ext = pluralExtensions.rules[parts[0]];
+        }
+
+        if (ext && ext.numbers.length <= 1) {
+            return false;
+        } else {
+            return this.get(lng, count) !== 1;
+        }
+    },
+
     get: function(lng, count) {
         var parts = lng.split('-');
 

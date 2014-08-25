@@ -69,7 +69,7 @@ function hasContext(options) {
 }
 
 function needsPlural(options, lng) {
-    return (options.count !== undefined && typeof options.count != 'string' && pluralExtensions.get(lng, options.count) !== 1);
+    return (options.count !== undefined && typeof options.count != 'string' && pluralExtensions.needsPlural(lng, options.count));
 }
 
 function needsIndefiniteArticle(options) {
@@ -272,7 +272,7 @@ function _find(key, options) {
         delete optionsWithoutIndef.indefinite_article;
         optionsWithoutIndef.defaultValue = o.indefiniteNotFound;
         // If we don't have a count, we want the indefinite, if we do have a count, and needsPlural is false
-        var indefiniteKey = ns + o.nsseparator + key + (((options.count && !needsPlural(options)) || !options.count) ? o.indefiniteSuffix : "");
+        var indefiniteKey = ns + o.nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
         translated = translate(indefiniteKey, optionsWithoutIndef);
         if (translated != o.indefiniteNotFound) {
             return translated;
