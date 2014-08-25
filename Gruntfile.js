@@ -7,6 +7,7 @@ module.exports = function(grunt) {
   // after release:
   // add tag to repo: git tag -a 1.6.0 -m 'i18next v1.6.0'
   // push tag: git push origin 1.6.0
+  // npm publish
 
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib');
