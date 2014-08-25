@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.7.3';
+  var version = '1.7.4';
   // before release:
   // update bower.json, package.json
   // after release:

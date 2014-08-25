@@ -1,4 +1,4 @@
-// i18next, v1.7.3
+// i18next, v1.7.4
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -39,7 +39,8 @@ describe('i18next.functions', function() {
       postProcess: '',
       parseMissingKey: '',
       debug: false,
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      lngWhitelist: null
     };
 
     i18n.init(opts, function(t) {

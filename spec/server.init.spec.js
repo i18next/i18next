@@ -54,7 +54,7 @@ describe('i18next.init', function() {
 
     //= init/init.fallbackLng.spec.js
 
-    //= init/init.addResourceBundle.spec.js
+    //= init/init.addResourceOrResourceBundle.spec.js
 
     //= init/init.removeResourceBundle.spec.js
 

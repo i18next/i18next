@@ -1,4 +1,4 @@
-// i18next, v1.7.3
+// i18next, v1.7.4
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -42,7 +42,8 @@ describe('i18next.init', function() {
       postProcess: '',
       parseMissingKey: '',
       debug: false,
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      lngWhitelist: null
     };
 
     i18n.init(opts, function(t) {
@@ -109,33 +110,91 @@ describe('i18next.init', function() {
         en: { translation: { 'simple_en': 'ok_from_en' } }//,            
         //'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
       };
-      
-      beforeEach(function(done) {
-        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
-          function(t) { 
-            i18n.addResourceBundle('en-US', 'translation', { 'simple_en-US': 'ok_from_en-US' });
-            done(); 
-          });
-      });
     
-      it('it should provide passed in resources for translation', function() {
-        expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-        expect(i18n.t('simple_en')).to.be('ok_from_en');
-        expect(i18n.t('simple_dev')).to.be('ok_from_dev');
-      });
-    
-      describe('with a additional namespace', function() {
+      describe('resources', function() {
     
         beforeEach(function(done) {
           i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { 
-              i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
+              i18n.addResource('en-US', 'translation', 'some.deep.thing', 'ok_from_en-US');
               done(); 
             });
         });
     
-        it('it should add the new namespace to the namespace array', function() {
-          expect(i18n.options.ns.namespaces).to.contain('newNamespace');
+        it('it should provide passed in resources for translation', function() {
+          expect(i18n.t('some.deep.thing')).to.be('ok_from_en-US');
+        });
+    
+        describe('multiple resources', function() {
+    
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+              function(t) { 
+                i18n.addResources('en-US', 'translation', { 
+                  'some.other.deep.thing': 'ok_from_en-US_1',
+                  'some.other.deep.deeper.thing': 'ok_from_en-US_2' 
+                });
+                done(); 
+              });
+          });
+    
+          it('it should add the new namespace to the namespace array', function() {
+            expect(i18n.t('some.other.deep.thing')).to.be('ok_from_en-US_1');
+            expect(i18n.t('some.other.deep.deeper.thing')).to.be('ok_from_en-US_2');
+          });
+    
+        });
+    
+      });
+    
+      describe('bundles', function() {
+      
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) { 
+              i18n.addResourceBundle('en-US', 'translation', { 'simple_en-US': 'ok_from_en-US' });
+              done(); 
+            });
+        });
+    
+        it('it should provide passed in resources for translation', function() {
+          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.be('ok_from_en');
+          expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+        });
+    
+        describe('with a additional namespace', function() {
+    
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+              function(t) { 
+                i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
+                done(); 
+              });
+          });
+    
+          it('it should add the new namespace to the namespace array', function() {
+            expect(i18n.options.ns.namespaces).to.contain('newNamespace');
+          });
+    
+        });
+    
+        describe('with using deep switch', function() {
+    
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+              function(t) { 
+                i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+                i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                done(); 
+              });
+          });
+    
+          it('it should add the new namespace to the namespace array', function() {
+            expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
+            expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+          });
+    
         });
     
       });
@@ -419,7 +478,7 @@ describe('i18next.init', function() {
             var spy; 
     
             beforeEach(function(done) {
-              spy = sinon.spy(i18n.sync, 'postMissing');
+              spy = sinon.spy(i18n.options, 'missingKeyHandler');
               i18n.init(i18n.functions.extend(opts, { 
                 fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                 resStore: resStore,
