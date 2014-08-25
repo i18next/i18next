@@ -9,7 +9,8 @@
       , currentLng
       , replacementCounter = 0
       , languages = []
-      , initialized = false;
+      , initialized = false
+      , sync = {};
 
 
     //= i18next.exports.js

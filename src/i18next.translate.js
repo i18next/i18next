@@ -159,11 +159,11 @@ function _translate(potentialKeys, options) {
         key = parts[1];
     }
 
-    if (found === undefined && o.sendMissing) {
+    if (found === undefined && o.sendMissing && typeof o.missingKeyHandler === 'function') {
         if (options.lng) {
-            sync.postMissing(lngs[0], ns, key, notFound, lngs);
+            o.missingKeyHandler(lngs[0], ns, key, notFound, lngs);
         } else {
-            sync.postMissing(o.lng, ns, key, notFound, lngs);
+            o.missingKeyHandler(o.lng, ns, key, notFound, lngs);
         }
     }
 
