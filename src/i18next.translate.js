@@ -68,8 +68,8 @@ function hasContext(options) {
     return (options.context && (typeof options.context == 'string' || typeof options.context == 'number'));
 }
 
-function needsPlural(options) {
-    return (options.count !== undefined && typeof options.count != 'string' && options.count !== 1);
+function needsPlural(options, lng) {
+    return (options.count !== undefined && typeof options.count != 'string' && pluralExtensions.get(lng, options.count) !== 1);
 }
 
 function needsIndefiniteArticle(options) {
@@ -244,7 +244,7 @@ function _find(key, options) {
         } // else continue translation with original/nonContext key
     }
 
-    if (needsPlural(options)) {
+    if (needsPlural(options, lngs[0])) {
         optionWithoutCount = f.extend({}, options);
         delete optionWithoutCount.count;
         optionWithoutCount.defaultValue = o.pluralNotFound;
