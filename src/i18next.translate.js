@@ -14,10 +14,10 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
             str = applyReplacement(str, value, nextKey, options);
         } else {
             if (options.escapeInterpolation || o.escapeInterpolation) {
-                str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), value);
-                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.escape(value));
+                str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), f.regexReplacementEscape(value));
+                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.regexReplacementEscape(f.escape(value)));
             } else {
-                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), value);
+                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.regexReplacementEscape(value));
             }
             // str = options.escapeInterpolation;
         }
@@ -59,7 +59,7 @@ function applyReuse(translated, options) {
         }
 
         var translated_token = _translate(token_without_symbols, opts);
-        translated = translated.replace(token, translated_token);
+        translated = translated.replace(token, f.regexReplacementEscape(translated_token));
     }
     return translated;
 }
