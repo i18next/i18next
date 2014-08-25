@@ -1,6 +1,11 @@
 ### 1.7.4
 - add resource bundle gets deep extend flag i18n.addResourceBundle(lng, ns, { 'deep': { 'key2': 'value2' }}, true);
 - new functions to add one key value or multiple i18n.addResource(lng, ns, key, value);, i18n.addResources(lng, ns, {'key1': 'value1', 'deep.key2': 'value2'});
+- lngWhitelist merged
+- override postMissing function
+- allow floats for count
+- added indefinite functionality for plurals
+- optional set replacing vars to replace member to avoid collision with other options
 
 ### 1.7.3
 - solves issue with ie8 not providing .trim function on string -> added to shim

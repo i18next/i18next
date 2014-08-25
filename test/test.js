@@ -1662,6 +1662,13 @@ describe('i18next', function() {
           expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3'}}})).to.be('added 3');
         });
       
+        it('it should replace passed in key/values in replace member', function() {
+          expect(i18n.t('interpolationTest1', { replace: {toAdd: 'something'} })).to.be('added something');
+          expect(i18n.t('interpolationTest2', { replace: {toAdd: 'something'} })).to.be('added something something twice');
+          expect(i18n.t('interpolationTest3', { replace: { child: { one: '1', two: '2'}} })).to.be('added 1 2');
+          expect(i18n.t('interpolationTest4', { replace: { child: { grandChild: { three: '3'}}} })).to.be('added 3');
+        });
+      
         it("it should not escape HTML", function() {
           expect(i18n.t('interpolationTest1', {toAdd: '<html>'})).to.be('added <html>');
         });

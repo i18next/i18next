@@ -8,7 +8,8 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
       , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped
       , unEscapingSuffix = 'HTML'+suffix;
 
-    f.each(replacementHash, function(key, value) {
+    var hash = replacementHash.replace && typeof replacementHash.replace === 'object' ? replacementHash.replace : replacementHash;
+    f.each(hash, function(key, value) {
         var nextKey = nestedKey ? nestedKey + o.keyseparator + key : key;
         if (typeof value === 'object' && value !== null) {
             str = applyReplacement(str, value, nextKey, options);
