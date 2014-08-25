@@ -332,6 +332,7 @@ function _find(key, options) {
         } else {
             found = _find(key, options); // fallback to default NS
         }
+        options.isFallbackLookup = false;
     }
 
     return found;
