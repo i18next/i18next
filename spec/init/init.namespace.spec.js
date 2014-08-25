@@ -126,7 +126,7 @@ describe('with namespace', function() {
         var spy; 
 
         beforeEach(function(done) {
-          spy = sinon.spy(i18n.sync, 'postMissing');
+          spy = sinon.spy(i18n.options, 'missingKeyHandler');
           i18n.init(i18n.functions.extend(opts, { 
             fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
             resStore: resStore,

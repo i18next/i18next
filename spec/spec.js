@@ -29,7 +29,8 @@ describe('i18next', function() {
       interpolationPrefix: '__',
       interpolationSuffix: '__',
       shortcutFunction: 'sprintf',
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      lngWhitelist: null
     };
   });
 

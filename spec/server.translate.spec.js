@@ -30,7 +30,7 @@ describe('i18next.translate', function() {
       parseMissingKey: '',
       debug: false,
       objectTreeKeyHandler: null,
-      langWhitelist: null
+      lngWhitelist: null
     };
   });
 

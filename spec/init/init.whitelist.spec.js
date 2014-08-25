@@ -12,13 +12,13 @@ describe('with language whitelist', function() {
   };
 
   it('should degrade UNwhitelisted 2-part lang code (en-US) to WHITELISTED 1-part (en)', function() {
-    i18n.init(i18n.functions.extend(opts, { resStore: resStore, langWhitelist: ['en', 'zh-CN'], lng: 'en-US' }));
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'en-US' }));
     expect(i18n.lng()).to.be('en');
     expect(i18n.t('string_one')).to.be('good_en');
   });
 
   it('should NOT degrade WHITELISTED 2-part lang code (zh-CN) to UNwhitelisted 1-part (en)', function() {
-    i18n.init(i18n.functions.extend(opts, { resStore: resStore, langWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }));
+    i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }));
     expect(i18n.lng()).to.be('zh-CN');
     expect(i18n.t('string_one')).to.be('good_zh-CN');
   });

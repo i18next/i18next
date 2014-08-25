@@ -159,7 +159,7 @@ function _translate(potentialKeys, options) {
         key = parts[1];
     }
 
-    if (found === undefined && o.sendMissing && typeof o.missingKeyHandler === 'function') {console.log('####')
+    if (found === undefined && o.sendMissing && typeof o.missingKeyHandler === 'function') {
         if (options.lng) {
             o.missingKeyHandler(lngs[0], ns, key, notFound, lngs);
         } else {

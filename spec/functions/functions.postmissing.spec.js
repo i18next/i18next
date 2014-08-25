@@ -6,7 +6,7 @@ describe('post missing resources', function() {
     beforeEach(function(done) {
       server = sinon.fakeServer.create();
       stub = sinon.stub(i18n.functions, "ajax");
-      spy = sinon.spy(i18n.sync, 'postMissing');
+      spy = sinon.spy(i18n.options, 'missingKeyHandler');
 
 
       server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);

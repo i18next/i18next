@@ -31,7 +31,6 @@ var o = {
     sendMissing: false,
     sendMissingTo: 'fallback', // current | all
     sendType: 'POST',
-    missingKeyHandler: sync.postMissing,
 
     interpolationPrefix: '__',
     interpolationSuffix: '__',
@@ -55,6 +54,7 @@ var o = {
     objectTreeKeyHandler: undefined,
     postProcess: undefined,
     parseMissingKey: undefined,
+    missingKeyHandler: sync.postMissing,
 
     shortcutFunction: 'sprintf' // or: defaultValue
 };

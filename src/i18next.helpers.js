@@ -419,7 +419,7 @@ var f = {
         var log = this.log;
 
         var languages = [];
-        var whitelist = o.langWhitelist || false;
+        var whitelist = o.lngWhitelist || false;
         var addLanguage = function(language){
           //reject langs not whitelisted
           if(!whitelist || whitelist.indexOf(language) > -1){

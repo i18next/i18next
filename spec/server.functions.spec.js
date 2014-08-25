@@ -36,7 +36,7 @@ describe('i18next.functions', function() {
       parseMissingKey: '',
       debug: false,
       objectTreeKeyHandler: null,
-      langWhitelist: null
+      lngWhitelist: null
     };
 
     i18n.init(opts, function(t) {

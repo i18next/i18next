@@ -33,7 +33,8 @@ describe('i18next', function() {
       interpolationPrefix: '__',
       interpolationSuffix: '__',
       shortcutFunction: 'sprintf',
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      lngWhitelist: null
     };
   });
 
@@ -544,7 +545,7 @@ describe('i18next', function() {
               var spy; 
       
               beforeEach(function(done) {
-                spy = sinon.spy(i18n.sync, 'postMissing');
+                spy = sinon.spy(i18n.options, 'missingKeyHandler');
                 i18n.init(i18n.functions.extend(opts, { 
                   fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                   resStore: resStore,
@@ -820,13 +821,13 @@ describe('i18next', function() {
         };
       
         it('should degrade UNwhitelisted 2-part lang code (en-US) to WHITELISTED 1-part (en)', function() {
-          i18n.init(i18n.functions.extend(opts, { resStore: resStore, langWhitelist: ['en', 'zh-CN'], lng: 'en-US' }));
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'en-US' }));
           expect(i18n.lng()).to.be('en');
           expect(i18n.t('string_one')).to.be('good_en');
         });
       
         it('should NOT degrade WHITELISTED 2-part lang code (zh-CN) to UNwhitelisted 1-part (en)', function() {
-          i18n.init(i18n.functions.extend(opts, { resStore: resStore, langWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }));
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }));
           expect(i18n.lng()).to.be('zh-CN');
           expect(i18n.t('string_one')).to.be('good_zh-CN');
         });
@@ -989,7 +990,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           server = sinon.fakeServer.create();
           stub = sinon.stub(i18n.functions, "ajax");
-          spy = sinon.spy(i18n.sync, 'postMissing');
+          spy = sinon.spy(i18n.options, 'missingKeyHandler');
     
     
           server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);

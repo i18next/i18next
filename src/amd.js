@@ -20,6 +20,7 @@
         , languages = []
         , initialized = false;
 
+    //= i18next.sync.js
     //= i18next.defaults.js
     //= i18next.helpers.js
     //= i18next.init.js
@@ -27,7 +28,6 @@
     //= i18next.jquery.js
     //= i18next.translate.js
     //= i18next.detectLanguage.js
-    //= i18next.sync.js
     //= i18next.plurals.js
     //= i18next.postProcessor.js
     //= i18next.postProcessor.sprintf.js
