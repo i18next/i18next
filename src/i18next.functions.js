@@ -8,7 +8,7 @@ function preload(lngs, cb) {
     return init(cb);
 }
 
-function addResourceBundle(lng, ns, resources) {
+function addResourceBundle(lng, ns, resources, deep) {
     if (typeof ns !== 'string') {
         resources = ns;
         ns = o.ns.defaultNs;
@@ -19,7 +19,11 @@ function addResourceBundle(lng, ns, resources) {
     resStore[lng] = resStore[lng] || {};
     resStore[lng][ns] = resStore[lng][ns] || {};
 
-    f.extend(resStore[lng][ns], resources);
+    if (deep) {
+        f.deepExtend(resStore[lng][ns], resources);
+    } else {
+        f.extend(resStore[lng][ns], resources);
+    }
 }
 
 function removeResourceBundle(lng, ns) {
@@ -29,6 +33,48 @@ function removeResourceBundle(lng, ns) {
 
     resStore[lng] = resStore[lng] || {};
     resStore[lng][ns] = {};
+}
+
+function addResource(lng, ns, key, value) {
+    if (typeof ns !== 'string') {
+        resource = ns;
+        ns = o.ns.defaultNs;
+    } else if (o.ns.namespaces.indexOf(ns) < 0) {
+        o.ns.namespaces.push(ns);
+    }
+
+    resStore[lng] = resStore[lng] || {};
+    resStore[lng][ns] = resStore[lng][ns] || {};
+
+    var keys = key.split(o.keyseparator);
+    var x = 0;
+    var node = resStore[o.lng][ns];
+    var origRef = node;
+
+    while (keys[x]) {
+        if (x == keys.length - 1)
+            node[keys[x]] = value;
+        else {
+            if (node[keys[x]] == null)
+                node[keys[x]] = {};
+
+            node = node[keys[x]];
+        }
+        x++;
+    }
+}
+
+function addResources(lng, ns, resources) {
+    if (typeof ns !== 'string') {
+        resource = ns;
+        ns = o.ns.defaultNs;
+    } else if (o.ns.namespaces.indexOf(ns) < 0) {
+        o.ns.namespaces.push(ns);
+    }
+
+    for (var m in resources) {
+        if (typeof resources[m] === 'string') addResource(lng, ns, m, resources[m]);
+    }
 }
 
 function setDefaultNamespace(ns) {

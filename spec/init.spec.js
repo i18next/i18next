@@ -5,8 +5,8 @@ describe('Initialisation', function() {
   describe('advanced initialisation options', function() {
 
     //= init/init.fallbackLng.spec.js
-    //
-    //= init/init.addResourceBundle.spec.js
+
+    //= init/init.addResourceOrResourceBundle.spec.js
 
     //= init/init.removeResourceBundle.spec.js
 

@@ -7,6 +7,15 @@ function _extend(target, source) {
     return target;
 }
 
+function _deepExtend(target, source) {
+    for (var prop in source)
+        if (prop in target)
+            _deepExtend(target[prop], source[prop]);
+        else
+            target[prop] = source[prop];
+    return target;
+}
+
 function _each(object, callback, args) {
     var name, i = 0,
         length = object.length,
@@ -396,6 +405,7 @@ var cookie_noop = {
 // they can be overriden easier in no jquery environment (node.js)
 var f = {
     extend: $ ? $.extend : _extend,
+    deepExtend: _deepExtend,
     each: $ ? $.each : _each,
     ajax: $ ? $.ajax : (typeof document !== 'undefined' ? _ajax : function() {}),
     cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
