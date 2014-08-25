@@ -1,5 +1,5 @@
 - var path = ''
-- var version = '1.7.3'
+- var version = '1.7.4'
 !!! 5
 html(lang="en")
   head
@@ -26,6 +26,10 @@ html(lang="en")
           a.btn.btn-inverse(href='#{path}public/download/versions/i18next.amd-#{version}.zip', download='i18next.amd-#{version}.zip')
             i.icon-download-alt
             |  AMD Version v#{version}
+          p browserify:
+          pre
+            code
+              | npm install i18next-client
           p node.js:
           pre
             code
@@ -178,6 +182,11 @@ html(lang="en")
                 a(href="https://github.com/archer96/ng-i18next", target="_blank") i18next angular ng-i18next
                 |  by 
                 a(href="https://github.com/archer96") Andre Meyering
+              li
+                | Angular directive: 
+                a(href="https://github.com/mikefrey/i18ng", target="_blank") i18next for Angular.js
+                |  by 
+                a(href="https://github.com/mikefrey") Mike Frey
               li
                 | Meteor Wrapper: 
                 a(href="https://github.com/ckir/i18next-meteor/", target="_blank") i18next wrapper for meteor

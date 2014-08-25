@@ -1,4 +1,4 @@
-// i18next, v1.7.3
+// i18next, v1.7.4
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -33,7 +33,8 @@ describe('i18next', function() {
       interpolationPrefix: '__',
       interpolationSuffix: '__',
       shortcutFunction: 'sprintf',
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      lngWhitelist: null
     };
   });
 
@@ -156,7 +157,7 @@ describe('i18next', function() {
         });
       
       });
-      //
+  
       describe('adding resources after init', function() {
       
         var resStore = {
@@ -164,33 +165,91 @@ describe('i18next', function() {
           en: { translation: { 'simple_en': 'ok_from_en' } }//,            
           //'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
         };
-        
-        beforeEach(function(done) {
-          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
-            function(t) { 
-              i18n.addResourceBundle('en-US', 'translation', { 'simple_en-US': 'ok_from_en-US' });
-              done(); 
-            });
-        });
       
-        it('it should provide passed in resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
-          expect(i18n.t('simple_dev')).to.be('ok_from_dev');
-        });
-      
-        describe('with a additional namespace', function() {
+        describe('resources', function() {
       
           beforeEach(function(done) {
             i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
               function(t) { 
-                i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
+                i18n.addResource('en-US', 'translation', 'some.deep.thing', 'ok_from_en-US');
                 done(); 
               });
           });
       
-          it('it should add the new namespace to the namespace array', function() {
-            expect(i18n.options.ns.namespaces).to.contain('newNamespace');
+          it('it should provide passed in resources for translation', function() {
+            expect(i18n.t('some.deep.thing')).to.be('ok_from_en-US');
+          });
+      
+          describe('multiple resources', function() {
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+                function(t) { 
+                  i18n.addResources('en-US', 'translation', { 
+                    'some.other.deep.thing': 'ok_from_en-US_1',
+                    'some.other.deep.deeper.thing': 'ok_from_en-US_2' 
+                  });
+                  done(); 
+                });
+            });
+      
+            it('it should add the new namespace to the namespace array', function() {
+              expect(i18n.t('some.other.deep.thing')).to.be('ok_from_en-US_1');
+              expect(i18n.t('some.other.deep.deeper.thing')).to.be('ok_from_en-US_2');
+            });
+      
+          });
+      
+        });
+      
+        describe('bundles', function() {
+        
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+              function(t) { 
+                i18n.addResourceBundle('en-US', 'translation', { 'simple_en-US': 'ok_from_en-US' });
+                done(); 
+              });
+          });
+      
+          it('it should provide passed in resources for translation', function() {
+            expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+            expect(i18n.t('simple_en')).to.be('ok_from_en');
+            expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+          });
+      
+          describe('with a additional namespace', function() {
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+                function(t) { 
+                  i18n.addResourceBundle('en-US', 'newNamespace', { 'simple_en-US': 'ok_from_en-US' });
+                  done(); 
+                });
+            });
+      
+            it('it should add the new namespace to the namespace array', function() {
+              expect(i18n.options.ns.namespaces).to.contain('newNamespace');
+            });
+      
+          });
+      
+          describe('with using deep switch', function() {
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+                function(t) { 
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                  done(); 
+                });
+            });
+      
+            it('it should add the new namespace to the namespace array', function() {
+              expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
+              expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+            });
+      
           });
       
         });
@@ -486,7 +545,7 @@ describe('i18next', function() {
               var spy; 
       
               beforeEach(function(done) {
-                spy = sinon.spy(i18n.sync, 'postMissing');
+                spy = sinon.spy(i18n.options, 'missingKeyHandler');
                 i18n.init(i18n.functions.extend(opts, { 
                   fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                   resStore: resStore,
@@ -748,6 +807,29 @@ describe('i18next', function() {
       
       });
   
+      describe('with language whitelist', function() {
+      
+        var resStore = {
+          'zh-CN':  { translation: { 'string_one': 'good_zh-CN' } },
+          en:       { translation: { 'string_one': 'good_en' } },
+          zh:       { translation: { 'string_one': 'BAD_zh' } },
+          'en-US':  { translation: { 'string_one': 'BAD_en-ZH' } }
+        };
+      
+        it('should degrade UNwhitelisted 2-part lang code (en-US) to WHITELISTED 1-part (en)', function() {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'en-US' }));
+          expect(i18n.lng()).to.be('en');
+          expect(i18n.t('string_one')).to.be('good_en');
+        });
+      
+        it('should NOT degrade WHITELISTED 2-part lang code (zh-CN) to UNwhitelisted 1-part (en)', function() {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }));
+          expect(i18n.lng()).to.be('zh-CN');
+          expect(i18n.t('string_one')).to.be('good_zh-CN');
+        });
+      
+      });
+  
     });
   
   });
@@ -904,7 +986,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           server = sinon.fakeServer.create();
           stub = sinon.stub(i18n.functions, "ajax");
-          spy = sinon.spy(i18n.sync, 'postMissing');
+          spy = sinon.spy(i18n.options, 'missingKeyHandler');
     
     
           server.respondWith([200, { "Content-Type": "text/html", "Content-Length": 2 }, "OK"]);
@@ -1533,10 +1615,34 @@ describe('i18next', function() {
         expect(i18n.t('nesting_default', {defaultValue: '0 $t(nesting1)'})).to.be('0 1 2 3');
       });
     
+      describe('resource nesting syntax error', function() {
+        var resStore = {
+          dev: { translation: { nesting1: '1 $t(nesting2' } },
+          en: { translation: { nesting2: '2 $t(nesting3)' } },
+          'en-US': { translation: {  nesting3: '3' } }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+            function(t) { done(); });
+        });
+    
+        it('it should translate nested value', function() {
+          expect(i18n.t('nesting1')).to.be('');
+        });
+    
+      });
+    
       describe('with setting new options', function() {
         var resStore = {
-          dev: { translation: { nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys' } },
-          en: { translation: { nesting2_plural: '__count__ girls' } }
+          dev: { translation: { 
+            nesting1: '$t(nesting2, {"count": __girls__}) and __count__ boy',
+            nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys' 
+          } },
+          en: { translation: {
+            nesting2: '__count__ girl',
+            nesting2_plural: '__count__ girls' 
+          } }
         };
         
         beforeEach(function(done) {
@@ -1546,6 +1652,7 @@ describe('i18next', function() {
     
         it('it should translate nested value and set new options', function() {
           expect(i18n.t('nesting1', {count: 2, girls: 3})).to.be('3 girls and 2 boys');
+          expect(i18n.t('nesting1', {count: 1, girls: 3})).to.be('3 girls and 1 boy');
         });
       });
     
@@ -1580,12 +1687,23 @@ describe('i18next', function() {
           expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3'}}})).to.be('added 3');
         });
       
+        it('it should replace passed in key/values in replace member', function() {
+          expect(i18n.t('interpolationTest1', { replace: {toAdd: 'something'} })).to.be('added something');
+          expect(i18n.t('interpolationTest2', { replace: {toAdd: 'something'} })).to.be('added something something twice');
+          expect(i18n.t('interpolationTest3', { replace: { child: { one: '1', two: '2'}} })).to.be('added 1 2');
+          expect(i18n.t('interpolationTest4', { replace: { child: { grandChild: { three: '3'}}} })).to.be('added 3');
+        });
+      
         it("it should not escape HTML", function() {
           expect(i18n.t('interpolationTest1', {toAdd: '<html>'})).to.be('added <html>');
         });
       
         it('it should replace passed in key/values on defaultValue', function() {
           expect(i18n.t('interpolationTest5', {defaultValue: 'added __toAdd__', toAdd: 'something'})).to.be('added something');
+        });
+      
+        it("it should escape dollar signs in replacement values", function() {
+          expect(i18n.t('interpolationTest1', {toAdd: '$&'})).to.be('added $&');
         });
       
       });
@@ -1697,6 +1815,10 @@ describe('i18next', function() {
           expect(i18n.t('interpolationTest7', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html> &lt;html&gt;');
         });
       
+        it("it should escape dollar signs in replacement values", function() {
+          expect(i18n.t('interpolationTest1', {toAdd: '$&'})).to.be('added $&amp;');
+        });
+      
       });
       
       describe('default i18next way - with escaping interpolated arguments per default via options', function () {
@@ -1730,6 +1852,10 @@ describe('i18next', function() {
       
         it("it should support both escaping and not escaping HTML", function() {
           expect(i18n.t('interpolationTest7', {toAdd: '<html>', escapeInterpolation: true})).to.be('added <html> &lt;html&gt;');
+        });
+      
+        it("it should escape dollar signs in replacement values", function() {
+          expect(i18n.t('interpolationTest1', {toAdd: '$&'})).to.be('added $&amp;');
         });
       
       });
@@ -1952,6 +2078,92 @@ describe('i18next', function() {
         });
       });
     
+    });
+  
+    describe('indefinite article usage', function() {
+      describe('basic usage - singular, plural and indefinite', function() {
+        var resStore = {
+          dev: {
+            'ns.2': {
+              thing: '__count__ thing from ns.2',
+              thing_plural: '__count__ things from ns.2',
+              thing_indefinite: 'A thing from ns.2',
+              thing_plural_indefinite: 'Some things from ns.2'
+            },
+            'ns.3': {
+              thing: '__count__ things',
+              thing_indefinite: 'A thing',
+              thing_plural_indefinite: 'Some things'
+            }
+          },
+          en: { },
+          'en-US': {
+            'ns.1': {
+              thing: '__count__ thing',
+              thing_plural: '__count__ things',
+              thing_indefinite: 'A thing'
+            }
+          }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, {
+            resStore: resStore,
+            ns: { namespaces: ['ns.1', 'ns.2', 'ns.3'], defaultNs: 'ns.1'}
+          }), function(t) { done(); });
+        });
+    
+        it('it should provide the indefinite article when requested for singular forms', function() {
+          expect(i18n.t('thing')).to.be('__count__ thing');
+          expect(i18n.t('thing', {indefinite_article: true})).to.be('A thing');
+          expect(i18n.t('thing', {count:1})).to.be('1 thing');
+          expect(i18n.t('thing', {count:5})).to.be('5 things');
+          expect(i18n.t('thing', {count:1, indefinite_article: true})).to.be('A thing');
+          expect(i18n.t('thing', {count:5, indefinite_article: true})).to.be('5 things');
+        });
+    
+        it('it should provide the indefinite article when requested for singular forms for second namespace', function() {
+          expect(i18n.t('ns.2:thing', {count:1})).to.be('1 thing from ns.2');
+          expect(i18n.t('ns.2:thing', {count:5})).to.be('5 things from ns.2');
+          expect(i18n.t('ns.2:thing', {count:1, indefinite_article: true})).to.be('A thing from ns.2');
+          expect(i18n.t('ns.2:thing', {count:5, indefinite_article: true})).to.be('Some things from ns.2');
+        });
+    
+        it('it should provide the right indefinite translations from the third namespace', function() {
+          expect(i18n.t('ns.3:thing', {count:5})).to.be('5 things');
+          expect(i18n.t('ns.3:thing', {count:1, indefinite_article: true})).to.be('A thing');
+          expect(i18n.t('ns.3:thing', {count:5, indefinite_article: true})).to.be('Some things')
+        });
+      });
+    
+      describe('extended usage - indefinite articles in languages with different plural forms', function() {
+        var resStore = {
+          dev: {
+            translation: {
+            }
+          },
+          zh: {
+            translation: {
+              key: "__count__ thing",
+              key_indefinite: "a thing"
+            }
+          }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, {
+            lng: 'zh',
+            resStore: resStore
+          }), function(t) { done(); });
+        });
+    
+        it('it should provide the correct indefinite articles', function() {
+          expect(i18n.t('key', {count: 1})).to.be('1 thing');
+          expect(i18n.t('key', {count: 5})).to.be('5 thing');
+          expect(i18n.t('key', {count: 1, indefinite_article: true})).to.be('a thing');
+          expect(i18n.t('key', {count: 5, indefinite_article: true})).to.be('a thing');
+        });
+      });
     });
   
     describe('context usage', function() {

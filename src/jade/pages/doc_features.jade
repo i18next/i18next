@@ -87,13 +87,16 @@ html(lang="en")
                   |   sendMissingTo: 'fallback|current|all',
                   | 
                   |   // change async / sync
-                  |   postAsync: true|false // default: true
+                  |   postAsync: true|false // default: true,
+                  | 
+                  |   // or override the function
+                  |   missingKeyHandler: function(lng, ns, key, defaultValue, lngs) { }
                   | }
                   | 
                   | i18n.init(options);
 
               .feature-description
-                p You can send missing values to the fallbackLng, the current language or all languages (eg. 'en-US', 'en', 'fallback')
+                p You can send missing values to the fallbackLng, the current language or all languages (eg. 'en-US', 'en', 'fallback') or replace that function completely.
 
     include ../includes/layout/extra
       

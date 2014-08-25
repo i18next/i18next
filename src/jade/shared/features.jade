@@ -150,8 +150,11 @@
         code
           | // given resources
           | {
-          |   dev: { translation: { girlsAndBoys_plural: '$t(girls, {"count": __girls__}) and __count__ boys' } },
-          |   en: { translation: { girls_plural: '__count__ girls' } }
+          |   en: { translation: { 
+          |     girlsAndBoys: '$t(girls, {"count": __girls__}) and __count__ boy', 
+          |     girlsAndBoys_plural: '$t(girls, {"count": __girls__}) and __count__ boys' },
+          |     girls: '__count__ girl',
+          |     girls_plural: '__count__ girls' } }
           | };
           | 
           | i18n.t("nesting1", {count: 2, girls: 3}); // -> 3 girls and 2 boys
@@ -213,7 +216,7 @@
               | };
               | 
               | i18n.t("key2", { name: '<tag>', escapeInterpolation: true }); // -> Escaped &<i>lt</i>;tag&<i>gt</i>;
-              | i18n.t("key1", { name: '<tag>', escapeInterpolation: true }); // -> Not escaped &lt;tag&gt
+              | i18n.t("key1", { name: '<tag>', escapeInterpolation: false }); // -> Not escaped &lt;tag&gt
 
           p Adding suffix 'HTML__' to your value will prevent the escaping even if option is set so.
           p You could turn on escaping on init 
@@ -293,6 +296,39 @@
 
       .feature-description
         p The variable __count__ is optional.
+
+.row-fluid
+  .span4
+    a(name='plurals')
+    h4.feature-title indefinite plural
+
+  .span8
+    .feature
+      pre
+        code
+          | // given resources
+          | {           
+          |   'en-US': { 
+          |     translation: {  
+          |       key: '__count__  child',
+          |       key_plural: '__count__  children',
+          |       key_indefinite: 'a child',
+          |       key_plural_indefinite: 'some children' 
+          |     } 
+          |   }
+          | };
+          | 
+          | i18n.t("key", { count: 1, indefinite_article: true }); // -> a child
+          | i18n.t("key", { count: 5, indefinite_article: true }); // -> some children
+          | 
+          | i18n.t("key", { count: 0 }); // -> 0 children
+          | i18n.t("key", { count: 1 }); // -> 1 child
+          | i18n.t("key", { count: 5 }); // -> 5 children
+
+      .feature-description
+        p
+          span.badge.badge-info Hint:
+          |  you can set indefiniteSuffix on init to different value.
 
 .row-fluid
   .span4
@@ -448,7 +484,17 @@
           if target === 'server'
             |  If the additional language wasn't preloaded it won't return expected value.
 
-            .row-fluid
+
+.row-fluid
+  .span4
+    h4.feature-title access value with different fallback language
+
+  .span8
+    .feature
+      pre
+        code
+          | i18n.t("my.key", { fallbackLng: "de-DE" }); // -> will get value fallbacking to de-DE
+
 
 .row-fluid
   .span4
