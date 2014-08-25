@@ -415,12 +415,19 @@ var f = {
     log: function(str) {
         if (o.debug && typeof console !== "undefined") console.log(str);
     },
-    toLanguages: function(lng, fallbackLng) {
-        if (fallbackLng === undefined)
-            fallbackLng = o.fallbackLng;
-        fallbackLng = fallbackLng || [];
+    toLanguages: function(lng) {
+        var log = this.log;
 
         var languages = [];
+        var whitelist = o.langWhitelist || false;
+        var addLanguage = function(language){
+          //reject langs not whitelisted
+          if(!whitelist || whitelist.indexOf(language) > -1){
+            languages.push(language);
+          }else{
+            log('rejecting non-whitelisted language: ' + language);
+          }
+        };
         if (typeof lng === 'string' && lng.indexOf('-') > -1) {
             var parts = lng.split('-');
 
@@ -428,16 +435,15 @@ var f = {
                 parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
                 parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
 
-            if (o.load !== 'unspecific') languages.push(lng);
-            if (o.load !== 'current') languages.push(parts[0]);
+            if (o.load !== 'unspecific') addLanguage(lng);
+            if (o.load !== 'current') addLanguage(parts[0]);
         } else {
-            languages.push(lng);
+            addLanguage(lng);
         }
 
         for (var i = 0; i < o.fallbackLng.length; i++) {
             if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(o.fallbackLng[i]);
         }
-
         return languages;
     },
     regexEscape: function(str) {

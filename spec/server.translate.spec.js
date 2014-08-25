@@ -29,7 +29,8 @@ describe('i18next.translate', function() {
       postProcess: '',
       parseMissingKey: '',
       debug: false,
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      langWhitelist: null
     };
   });
 

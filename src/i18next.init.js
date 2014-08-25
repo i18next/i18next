@@ -29,18 +29,15 @@ function init(options, cb) {
     o.interpolationPrefixEscaped = f.regexEscape(o.interpolationPrefix);
     o.interpolationSuffixEscaped = f.regexEscape(o.interpolationSuffix);
 
-    if (!o.lng) o.lng = f.detectLanguage(); 
-    if (o.lng) {
-        // set cookie with lng set (as detectLanguage will set cookie on need)
-        if (o.useCookie) f.cookie.create(o.cookieName, o.lng, o.cookieExpirationTime, o.cookieDomain);
-    } else {
-        o.lng =  o.fallbackLng[0];
-        if (o.useCookie) f.cookie.remove(o.cookieName);
-    }
+    if (!o.lng) o.lng = f.detectLanguage();
 
     languages = f.toLanguages(o.lng);
     currentLng = languages[0];
     f.log('currentLng set to: ' + currentLng);
+
+    if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
+      f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
+    }
 
     var lngTranslate = translate;
     if (options.fixLng) {

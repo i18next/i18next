@@ -38,7 +38,8 @@ describe('i18next.init', function() {
       postProcess: '',
       parseMissingKey: '',
       debug: false,
-      objectTreeKeyHandler: null
+      objectTreeKeyHandler: null,
+      langWhitelist: null
     };
 
     i18n.init(opts, function(t) {

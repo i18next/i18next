@@ -562,7 +562,17 @@
             if (o.debug && typeof console !== "undefined") console.log(str);
         },
         toLanguages: function(lng) {
+            var log = this.log;
             var languages = [];
+            var whitelist = o.langWhitelist || false;
+            var addLanguage = function(language){
+              //reject langs not whitelisted
+              if(!whitelist || whitelist.indexOf(language) > -1){
+                languages.push(language);
+              }else{
+                log('rejecting non-whitelisted language: ' + language);
+              }
+            };
             if (typeof lng === 'string' && lng.indexOf('-') > -1) {
                 var parts = lng.split('-');
     
@@ -570,16 +580,15 @@
                     parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
                     parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
     
-                if (o.load !== 'unspecific') languages.push(lng);
-                if (o.load !== 'current') languages.push(parts[0]);
+                if (o.load !== 'unspecific') addLanguage(lng);
+                if (o.load !== 'current') addLanguage(parts[0]);
             } else {
-                languages.push(lng);
+                addLanguage(lng);
             }
     
             for (var i = 0; i < o.fallbackLng.length; i++) {
                 if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(o.fallbackLng[i]);
             }
-    
             return languages;
         },
         regexEscape: function(str) {
@@ -617,20 +626,18 @@
         o.interpolationPrefixEscaped = f.regexEscape(o.interpolationPrefix);
         o.interpolationSuffixEscaped = f.regexEscape(o.interpolationSuffix);
     
-        if (!o.lng) o.lng = f.detectLanguage(); 
-        if (o.lng) {
-            // set cookie with lng set (as detectLanguage will set cookie on need)
-            if (o.useCookie) f.cookie.create(o.cookieName, o.lng, o.cookieExpirationTime, o.cookieDomain);
-        } else {
-            o.lng =  o.fallbackLng[0];
-            if (o.useCookie) f.cookie.remove(o.cookieName);
-        }
+        if (!o.lng) o.lng = f.detectLanguage();
     
         languages = f.toLanguages(o.lng);
         currentLng = languages[0];
         f.log('currentLng set to: ' + currentLng);
     
-        var lngTranslate = translate;
+        if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
+          f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
+        }
+    
+    
+      var lngTranslate = translate;
         if (options.fixLng) {
             lngTranslate = function(key, options) {
                 options = options || {};
@@ -1266,6 +1273,11 @@
         // get from navigator
         if (!detectedLng && typeof navigator !== 'undefined') {
             detectedLng =  (navigator.language) ? navigator.language : navigator.userLanguage;
+        }
+    
+        //fallback
+        if(!detectedLng){
+          detectedLng = o.fallbackLng[0];
         }
         
         return detectedLng;

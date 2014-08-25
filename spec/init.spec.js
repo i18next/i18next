@@ -22,6 +22,8 @@ describe('Initialisation', function() {
 
     //= init/init.varia.spec.js
 
+    //= init/init.whitelist.spec.js
+
   });
 
 });
