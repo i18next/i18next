@@ -273,7 +273,7 @@ function _find(key, options) {
     }
 
     if (needsIndefiniteArticle(options)) {
-        optionsWithoutIndef = f.extend({}, options);
+        var optionsWithoutIndef = f.extend({}, options);
         delete optionsWithoutIndef.indefinite_article;
         optionsWithoutIndef.defaultValue = o.indefiniteNotFound;
         // If we don't have a count, we want the indefinite, if we do have a count, and needsPlural is false
