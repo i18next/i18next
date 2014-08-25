@@ -991,7 +991,7 @@
     }
     
     function _getDefaultValue(key, options) {
-        return (options.defaultValue !== undefined) ? options.defaultValue : key;
+        return (options.defaultValue !== undefined && options.defaultValue !== '') ? options.defaultValue : key;
     }
     
     function _injectSprintfProcessor() {
@@ -1039,7 +1039,7 @@
                 }
             }
         }
-    
+        
         var notFound = _getDefaultValue(key, options)
             , found = _find(key, options)
             , lngs = options.lng ? f.toLanguages(options.lng) : languages
