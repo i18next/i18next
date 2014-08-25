@@ -1,9 +1,5 @@
 describe('with language whitelist', function() {
 
-  afterEach(function(){
-    i18n.init(i18n.functions.extend(opts, { langWhitelist: null}));
-  });
-
   var resStore = {
     'zh-CN':  { translation: { 'string_one': 'good_zh-CN' } },
     en:       { translation: { 'string_one': 'good_en' } },
