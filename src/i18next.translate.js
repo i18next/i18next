@@ -129,7 +129,7 @@ function _translate(potentialKeys, options) {
         options = options || {};
     }
 
-    if (potentialKeys === undefined || potentialKeys === null) return '';
+    if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
 
     if (typeof potentialKeys == 'string') {
         potentialKeys = [potentialKeys];
