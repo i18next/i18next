@@ -293,7 +293,7 @@ var pluralExtensions = {
                 1, 
                 2
             ], 
-            "plurals": function(n) { return Number(n > 1); }
+            "plurals": function(n) { return Number(n >= 2); }
         }, 
         "fur": {
             "name": "Friulian", 
@@ -1096,7 +1096,13 @@ var pluralExtensions = {
                 ext = pluralExtensions.rules[l];
             }
             if (ext) {
-                var i = ext.plurals(c);
+                var i;
+                if (ext.noAbs) {
+                    i = ext.plurals(c);
+                } else {
+                    i = ext.plurals(Math.abs(c));
+                }
+                
                 var number = ext.numbers[i];
                 if (ext.numbers.length === 2 && ext.numbers[0] === 1) {
                     if (number === 2) { 
