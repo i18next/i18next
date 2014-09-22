@@ -1,4 +1,4 @@
-// i18next, v1.7.4
+// i18next, v1.7.5
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -1569,7 +1569,7 @@
             if (c) detectedLng = c;
         }
     
-        // get from localstorage
+        // get from localStorage
         if (!detectedLng && typeof document !== 'undefined' && window.localStorage && o.detectLngFromLocalStorage) {
             detectedLng = window.localStorage.getItem('i18next_lng');
         }
