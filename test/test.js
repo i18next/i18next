@@ -2563,7 +2563,7 @@ describe('i18next', function() {
       });
     
     
-      describe('extended - read options from data attribute', function() {
+      describe('extended - write/read options from data attribute', function() {
     
         var resStore = {
           dev: { translation: {  } },
@@ -2581,6 +2581,33 @@ describe('i18next', function() {
             function(t) {
               $('#container').i18n({ replace: 'replaced' });
               $('#testBtn').text('');
+              done(); 
+            });
+        });
+    
+        it('it should set text with attributes options', function() {
+          $('#container').i18n(); // without option
+          expect($('#testBtn').text()).to.be('replaced ok_from_en-US');
+        });
+        
+      });
+    
+      describe('extended - read options from data attribute', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest': '__replace__ ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest" data-i18n-options={"replace":"replaced"}></button></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { 
+            resStore: resStore,
+            useDataAttrOptions: true
+          }),
+            function(t) {
               done(); 
             });
         });
