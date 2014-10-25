@@ -28,6 +28,7 @@ describe('i18next', function() {
       parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__',
+      defaultVariables: false,
       shortcutFunction: 'sprintf',
       objectTreeKeyHandler: null,
       lngWhitelist: null

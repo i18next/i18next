@@ -32,6 +32,7 @@ describe('i18next', function() {
       parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__',
+      defaultVariables: false,
       shortcutFunction: 'sprintf',
       objectTreeKeyHandler: null,
       lngWhitelist: null
@@ -1889,6 +1890,29 @@ describe('i18next', function() {
           expect(i18n.t('interpolationTest3', 'z')).to.be('The last letter of the english alphabet is z');
         });
         
+      });
+  
+      describe('with default variables', function() {
+      
+        var defaultVariables = {
+          name: 'John'
+        };
+      
+        beforeEach(function(done) {
+          i18n.init(
+            i18n.functions.extend(opts, { defaultVariables: defaultVariables }),
+            function(t) { done(); }
+          );
+        });
+      
+        it('it should use default variable', function() {
+          expect(i18n.t('Hello __name__')).to.be('Hello John');
+        });
+      
+        it('it should replace default variable', function() {
+          expect(i18n.t('Hello __name__', {name: 'Ben'})).to.be('Hello Ben');
+        });
+      
       });
   
     });
