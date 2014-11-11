@@ -288,7 +288,12 @@ function _ajax(options) {
                         },
 
                         json: function () {
-                            return JSON.parse(data);
+                            try {
+                                return JSON.parse(data)
+                            } catch (e) {
+                                f.error('Can not parse JSON. URL: ' + url);
+                                return {};
+                            }
                         }
                     });
                 }
