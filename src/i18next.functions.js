@@ -48,7 +48,7 @@ function addResource(lng, ns, key, value) {
 
     var keys = key.split(o.keyseparator);
     var x = 0;
-    var node = resStore[o.lng][ns];
+    var node = resStore[lng][ns];
     var origRef = node;
 
     while (keys[x]) {
