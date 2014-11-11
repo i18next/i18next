@@ -24,6 +24,8 @@ describe('translation functionality', function() {
 
     //= translate/translate.sprintf.spec.js
 
+    //= translate/translate.defaultVariables.spec.js
+
   });
 
   //= translate/translate.plurals.spec.js

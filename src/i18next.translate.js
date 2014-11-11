@@ -134,6 +134,10 @@ function _translate(potentialKeys, options) {
         options = options || {};
     }
 
+    if (typeof o.defaultVariables == 'object') {
+        options = f.extend({}, o.defaultVariables, options);
+    }
+
     if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
 
     if (typeof potentialKeys == 'string') {

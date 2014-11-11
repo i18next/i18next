@@ -35,6 +35,7 @@ var o = {
 
     interpolationPrefix: '__',
     interpolationSuffix: '__',
+    defaultVariables: false,
     reusePrefix: '$t(',
     reuseSuffix: ')',
     pluralSuffix: '_plural',
