@@ -172,9 +172,9 @@ var pluralExtensions = {
         return rules;
     }()),
 
-    // for demonstration only sl and ar is added but you can add your own pluralExtensions
+    // you can add your own pluralExtensions
     addRule: function(lng, obj) {
-        pluralExtensions.rules[lng] = obj;    
+        pluralExtensions.rules[lng] = obj;
     },
 
     setCurrentLng: function(lng) {
