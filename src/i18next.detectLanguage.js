@@ -27,8 +27,8 @@ function detectLanguage() {
         if (c) detectedLng = c;
     }
 
-    // get from localstorage
-    if (!detectedLng && typeof document !== 'undefined' && window.localstorage && o.detectLngFromLocalStorage) {
+    // get from localStorage
+    if (!detectedLng && typeof document !== 'undefined' && window.localStorage && o.detectLngFromLocalStorage) {
         detectedLng = window.localStorage.getItem('i18next_lng');
     }
 

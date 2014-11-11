@@ -38,7 +38,7 @@ function init(options, cb) {
     if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
         f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
     }
-    if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localstorage) {
+    if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localStorage) {
         window.localStorage.setItem('i18next_lng', currentLng);
     }
 
