@@ -1,5 +1,7 @@
 ### 1.7.4
 - adds option to define defaultOptions, which gets merged into t(options) [issue 307](https://github.com/i18next/i18next/issues/307)
+- optimization of size added by plural rules
+- handle error on json parse when using internal xhr
 
 ### 1.7.4
 - add resource bundle gets deep extend flag i18n.addResourceBundle(lng, ns, { 'deep': { 'key2': 'value2' }}, true);

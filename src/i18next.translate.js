@@ -74,7 +74,7 @@ function hasContext(options) {
 }
 
 function needsPlural(options, lng) {
-    return (options.count !== undefined && typeof options.count != 'string' && pluralExtensions.needsPlural(lng, options.count));
+    return (options.count !== undefined && typeof options.count != 'string'/* && pluralExtensions.needsPlural(lng, options.count)*/);
 }
 
 function needsIndefiniteArticle(options) {
@@ -219,6 +219,7 @@ function _find(key, options) {
     if (lngs[0].toLowerCase() === 'cimode') return notFound;
 
     // passed in lng
+    if (options.lngs) lngs = options.lngs;
     if (options.lng) {
         lngs = f.toLanguages(options.lng, options.fallbackLng);
 
@@ -254,26 +255,40 @@ function _find(key, options) {
     }
 
     if (needsPlural(options, lngs[0])) {
-        optionWithoutCount = f.extend({}, options);
+        optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
         delete optionWithoutCount.count;
         optionWithoutCount.defaultValue = o.pluralNotFound;
 
-        var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
-        var pluralExtension = pluralExtensions.get(lngs[0], options.count);
-        if (pluralExtension >= 0) {
-            pluralKey = pluralKey + '_' + pluralExtension;
-        } else if (pluralExtension === 1) {
-            pluralKey = ns + o.nsseparator + key; // singular
+        var pluralKey;
+        if (!pluralExtensions.needsPlural(lngs[0], options.count)) {
+            pluralKey = ns + o.nsseparator + key;
+        } else {
+            pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
+            var pluralExtension = pluralExtensions.get(lngs[0], options.count);
+            if (pluralExtension >= 0) {
+                pluralKey = pluralKey + '_' + pluralExtension;
+            } else if (pluralExtension === 1) {
+                pluralKey = ns + o.nsseparator + key; // singular
+            }
         }
 
         translated = translate(pluralKey, optionWithoutCount);
+
         if (translated != o.pluralNotFound) {
             return applyReplacement(translated, {
                 count: options.count,
                 interpolationPrefix: options.interpolationPrefix,
                 interpolationSuffix: options.interpolationSuffix
             }); // apply replacement for count only
-        } // else continue translation with original/singular key
+        } else if (lngs.length > 1) {
+            // remove failed lng
+            var clone = lngs.slice();
+            clone.shift();
+            options = f.extend(options, { lngs: clone }); 
+            // retry with fallbacks
+            translated = translate(ns + o.nsseparator + key, options);
+            if (translated != o.pluralNotFound) return translated;
+        }
     }
 
     if (needsIndefiniteArticle(options)) {

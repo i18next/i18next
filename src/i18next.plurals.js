@@ -25,6 +25,7 @@ var _rules = [
     ["cy", "Welsh", [1,2,3,8],8],
     ["da", "Danish", [1,2], 2],
     ["de", "German", [1,2], 2],
+    ["dev", "Development Fallback", [1,2], 2],
     ["dz", "Dzongkha", [1], 3],
     ["el", "Greek", [1,2], 2],
     ["en", "English", [1,2], 2],

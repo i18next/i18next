@@ -1941,7 +1941,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           i18n.init(i18n.functions.extend(opts, { 
               resStore: resStore,
-              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
             }),
             function(t) { done(); });
         });
@@ -1966,7 +1966,46 @@ describe('i18next', function() {
           expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
           expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 items from ns.2');
         });
+    
       });
+    
+      describe('basic usage - singular and plural form on fallbacks', function() {
+        var resStore = {
+          'fr': { 
+            'translation': {}
+          },
+          'en': { 
+            'translation': {
+                pluralTest: 'singular',
+                pluralTest_plural: 'plural',
+                pluralTestWithCount: '__count__ item',
+                pluralTestWithCount_plural: '__count__ items'
+            } 
+          }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { 
+            resStore: resStore,
+            lng: 'fr',
+            fallbackLng: 'en'
+          }),
+          function(t) { done(); });
+        });
+    
+        it('it should provide correct plural or singular form', function() {
+          expect(i18n.t('pluralTest', {count: 0})).to.be('plural');
+          expect(i18n.t('pluralTest', {count: 1})).to.be('singular');
+          expect(i18n.t('pluralTest', {count: 2})).to.be('plural');
+          expect(i18n.t('pluralTest', {count: 7})).to.be('plural');
+    
+          expect(i18n.t('pluralTestWithCount', {count: 0})).to.be('0 items');
+          expect(i18n.t('pluralTestWithCount', {count: 1})).to.be('1 item');
+          expect(i18n.t('pluralTestWithCount', {count: 7})).to.be('7 items');
+        });
+    
+      });
+    
     
       describe('basic usage 2 - singular and plural form in french', function() {
         var resStore = {
