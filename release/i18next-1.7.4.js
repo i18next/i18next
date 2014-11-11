@@ -879,7 +879,7 @@
         if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
             f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
         }
-        if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localstorage) {
+        if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localStorage) {
             window.localStorage.setItem('i18next_lng', currentLng);
         }
     
@@ -1584,8 +1584,8 @@
             if (c) detectedLng = c;
         }
     
-        // get from localstorage
-        if (!detectedLng && typeof document !== 'undefined' && window.localstorage && o.detectLngFromLocalStorage) {
+        // get from localStorage
+        if (!detectedLng && typeof document !== 'undefined' && window.localStorage && o.detectLngFromLocalStorage) {
             detectedLng = window.localStorage.getItem('i18next_lng');
         }
     

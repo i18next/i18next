@@ -205,7 +205,7 @@
 - jquery function for _data-i18n_ attibute
 - post missing translations to the server
 - graceful fallback en-US -> en -> fallbackLng
-- localstorage support
+- localStorage support
 - support for pluralized strings
 - insertion of variables into translations
 - translation nesting
