@@ -197,5 +197,7 @@ sync = {
                 async : o.postAsync
             });
         }
-    }
+    },
+
+    reload: reload
 };

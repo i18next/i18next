@@ -184,3 +184,8 @@ function setLng(lng, options, cb) {
 function lng() {
     return currentLng;
 }
+
+function reload(cb) {
+    resStore = {};
+    setLng(currentLng, cb);
+}
