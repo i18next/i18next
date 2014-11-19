@@ -3,6 +3,11 @@
 - optimization of size added by plural rules
 - handle error on json parse when using internal xhr
 - fixes plural/singular on count if going on fallbacks eg. fr --> en
+- fixes global leak of sync in amd versions
+- apply options.lowerCaseLng to fallbackLng too
+- added hasResourceBundle(lng, ns) to check if bundle exists
+- added experimental i18n.sync.reload --> resets resStore and reloads resources
+- catch issues with localStorage quota
 
 ### 1.7.4
 - add resource bundle gets deep extend flag i18n.addResourceBundle(lng, ns, { 'deep': { 'key2': 'value2' }}, true);

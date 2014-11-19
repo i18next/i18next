@@ -425,11 +425,27 @@ var f = {
     },
     getCountyIndexOfLng: function(lng) {
         var lng_index = 0;
-        if (lng === 'nb-NO' || lng === 'nn-NO') lng_index = 1;
+        if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
         return lng_index;
     },
     toLanguages: function(lng) {
         var log = this.log;
+
+        function applyCase(l) {
+            var ret = l;
+
+            if (typeof l === 'string' && l.indexOf('-') > -1) {
+                var parts = l.split('-');
+
+                ret = o.lowerCaseLng ?
+                    parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                    parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+            } else {
+                ret = o.lowerCaseLng ? l.toLowerCase() : l;
+            }
+
+            return ret;
+        }
 
         var languages = [];
         var whitelist = o.lngWhitelist || false;
@@ -444,18 +460,14 @@ var f = {
         if (typeof lng === 'string' && lng.indexOf('-') > -1) {
             var parts = lng.split('-');
 
-            lng = o.lowerCaseLng ?
-                parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
-                parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
-
-            if (o.load !== 'unspecific') addLanguage(lng);
-            if (o.load !== 'current') addLanguage(parts[this.getCountyIndexOfLng(lng)]);
+            if (o.load !== 'unspecific') addLanguage(applyCase(lng));
+            if (o.load !== 'current') addLanguage(applyCase(parts[this.getCountyIndexOfLng(lng)]));
         } else {
-            addLanguage(lng);
+            addLanguage(applyCase(lng));
         }
 
         for (var i = 0; i < o.fallbackLng.length; i++) {
-            if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(o.fallbackLng[i]);
+            if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
         }
         return languages;
     },
@@ -467,6 +479,17 @@ var f = {
             return strOrFn.replace(/\$/g, "$$$$");
         } else {
             return strOrFn;
+        }
+    },
+    localStorage: {
+        setItem: function(key, value) {
+            if (window.localStorage) {
+                try {
+                    window.localStorage.setItem(key, value);
+                } catch (e) {
+                    f.log('failed to set value for key "' + key + '" to localStorage.');
+                }
+            }
         }
     }
 };

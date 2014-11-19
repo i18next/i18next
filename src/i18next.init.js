@@ -39,7 +39,7 @@ function init(options, cb) {
         f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
     }
     if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localStorage) {
-        window.localStorage.setItem('i18next_lng', currentLng);
+        f.localStorage.setItem('i18next_lng', currentLng);
     }
 
     var lngTranslate = translate;
