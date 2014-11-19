@@ -1,4 +1,4 @@
-# Searching for Contributors
+# Searching Contributors
 
 looking for contributors interested in helping the project (long term):
 
