@@ -1,6 +1,12 @@
 # Contribution
 
-- looking for contributors interested in helping the project (long term)
+looking for contributors interested in helping the project (long term):
+
+- getting stuff fixed faster
+- we might start work on a version 2.0.0 (supporting old API - but rewrite to optimize size, drop old browser support, better modularization, ...)
+- update docs to be generated out of wiki pages?!?
+- creating an icon for i18next organisation on github and the project
+- ...
 
 # Introduction
 
