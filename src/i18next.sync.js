@@ -1,4 +1,4 @@
-sync = {
+var sync = {
 
     load: function(lngs, options, cb) {
         if (options.useLocalStorage) {
