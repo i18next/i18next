@@ -92,6 +92,27 @@ describe('adding resources after init', function() {
 
     });
 
+    describe('check if exists', function() {
+
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+          function(t) { 
+            i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+            i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+            done(); 
+          });
+      });
+
+      it('it should return true for existing bundle', function() {
+        expect(i18n.hasResourceBundle('en-US', 'translation')).to.be.ok();
+      });
+
+      it('it should return false for non-existing bundle', function() {
+        expect(i18n.hasResourceBundle('de-CH', 'translation')).to.not.be.ok();
+      });
+
+    });
+
   });
 
 });
