@@ -1,3 +1,7 @@
+# Contribution
+
+- looking for contributors interested in helping the project (long term)
+
 # Introduction
 
 Project goal is to provide an easy way to translate a website on clientside:
