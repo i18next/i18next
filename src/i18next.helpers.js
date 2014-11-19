@@ -480,5 +480,16 @@ var f = {
         } else {
             return strOrFn;
         }
+    },
+    localStorage: {
+        setItem: function(key, value) {
+            if (window.localStorage) {
+                try {
+                    window.localStorage.setItem(key, value);
+                } catch (e) {
+                    f.log('failed to set value for key "' + key + '" to localStorage.');
+                }
+            }
+        }
     }
 };

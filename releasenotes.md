@@ -7,6 +7,7 @@
 - apply options.lowerCaseLng to fallbackLng too
 - added hasResourceBundle(lng, ns) to check if bundle exists
 - added experimental i18n.sync.reload --> resets resStore and reloads resources
+- catch issues with localStorage quota
 
 ### 1.7.4
 - add resource bundle gets deep extend flag i18n.addResourceBundle(lng, ns, { 'deep': { 'key2': 'value2' }}, true);

@@ -55,7 +55,7 @@ sync = {
         if(window.localStorage) {
             for (var m in store) {
                 store[m].i18nStamp = new Date().getTime();
-                window.localStorage.setItem('res_' + m, JSON.stringify(store[m]));
+                f.localStorage.setItem('res_' + m, JSON.stringify(store[m]));
             }
         }
         return;
