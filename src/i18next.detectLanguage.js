@@ -8,19 +8,17 @@ function detectLanguage() {
     if (typeof window !== 'undefined') {
         (function() {
             var query = window.location.search.substring(1);
-            var parms = query.split('&');
-            for (var i=0; i<parms.length; i++) {
-                var pos = parms[i].indexOf('=');
+            var params = query.split('&');
+            for (var i=0; i<params.length; i++) {
+                var pos = params[i].indexOf('=');
                 if (pos > 0) {
-                    var key = parms[i].substring(0,pos);
-                    var val = parms[i].substring(pos+1);
-                    qsParm[key] = val;
+                    var key = params[i].substring(0,pos);
+                    if (key == o.detectLngQS) {
+                        userLngChoices.push(params[i].substring(pos+1));
+                    }
                 }
             }
         })();
-        if (qsParm[o.detectLngQS]) {
-            userLngChoices.push(qsParm[o.detectLngQS]);
-        }
     }
 
     // get from cookie
