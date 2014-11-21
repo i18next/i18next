@@ -47,12 +47,23 @@ function detectLanguage() {
         }
     }
 
-    for (var i=0;i<userLngChoices.length;i++) {
-        if (whitelist.indexOf(userLngChoices[i]) > -1) {
-            detectedLng = userLngChoices[i];
-            break;
+    (function() {
+        for (var i=0;i<userLngChoices.length;i++) {
+            var lng = userLngChoices[i];
+
+            if (lng.indexOf('-') > -1) {
+                var parts = lng.split('-');
+                lng = o.lowerCaseLng ?
+                    parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                    parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+            }
+
+            if (whitelist.indexOf(lng) > -1) {
+                detectedLng = lng;
+                break;
+            }
         }
-    }
+    })();
 
     //fallback
     if (!detectedLng){
