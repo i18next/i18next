@@ -1,5 +1,7 @@
 function detectLanguage() {
     var detectedLng;
+    var whitelist = o.lngWhitelist || [];
+    var userLngChoices = [];
 
     // get from qs
     var qsParm = [];
@@ -17,28 +19,45 @@ function detectLanguage() {
             }
         })();
         if (qsParm[o.detectLngQS]) {
-            detectedLng = qsParm[o.detectLngQS];
+            userLngChoices.push(qsParm[o.detectLngQS]);
         }
     }
 
     // get from cookie
-    if (!detectedLng && typeof document !== 'undefined' && o.useCookie ) {
+    if (o.useCookie && typeof document !== 'undefined') {
         var c = f.cookie.read(o.cookieName);
-        if (c) detectedLng = c;
+        if (c) userLngChoices.push(c);
     }
 
     // get from localStorage
-    if (!detectedLng && typeof document !== 'undefined' && window.localStorage && o.detectLngFromLocalStorage) {
-        detectedLng = window.localStorage.getItem('i18next_lng');
+    if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
+        userLngChoices.push(window.localStorage.getItem('i18next_lng'));
     }
 
     // get from navigator
-    if (!detectedLng && typeof navigator !== 'undefined') {
-        detectedLng = (navigator.language) ? navigator.language : navigator.userLanguage;
+    if (typeof navigator !== 'undefined') {
+        if (navigator.languages) { // chrome only; not an array, so can't use .push.apply instead of iterating
+            for (var i=0;i<navigator.languages.length;i++) {
+                userLngChoices.push(navigator.languages[i]);
+            }
+        }
+        if (navigator.userLanguage) {
+            userLngChoices.push(navigator.userLanguage);
+        }
+        if (navigator.language) {
+            userLngChoices.push(navigator.language);
+        }
+    }
+
+    for (var i=0;i<userLngChoices.length;i++) {
+        if (whitelist.indexOf(userLngChoices[i]) > -1) {
+            detectedLng = userLngChoices[i];
+            break;
+        }
     }
 
     //fallback
-    if(!detectedLng){
+    if (!detectedLng){
       detectedLng = o.fallbackLng[0];
     }
     
