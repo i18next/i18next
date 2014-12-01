@@ -1,4 +1,4 @@
-// i18next, v1.7.4
+// i18next, v1.7.5
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -32,6 +32,7 @@ describe('i18next', function() {
       parseMissingKey: '',
       interpolationPrefix: '__',
       interpolationSuffix: '__',
+      defaultVariables: false,
       shortcutFunction: 'sprintf',
       objectTreeKeyHandler: null,
       lngWhitelist: null
@@ -248,6 +249,27 @@ describe('i18next', function() {
             it('it should add the new namespace to the namespace array', function() {
               expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
               expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+            });
+      
+          });
+      
+          describe('check if exists', function() {
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+                function(t) { 
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                  done(); 
+                });
+            });
+      
+            it('it should return true for existing bundle', function() {
+              expect(i18n.hasResourceBundle('en-US', 'translation')).to.be.ok();
+            });
+      
+            it('it should return false for non-existing bundle', function() {
+              expect(i18n.hasResourceBundle('de-CH', 'translation')).to.not.be.ok();
             });
       
           });
@@ -1891,6 +1913,29 @@ describe('i18next', function() {
         
       });
   
+      describe('with default variables', function() {
+      
+        var defaultVariables = {
+          name: 'John'
+        };
+      
+        beforeEach(function(done) {
+          i18n.init(
+            i18n.functions.extend(opts, { defaultVariables: defaultVariables }),
+            function(t) { done(); }
+          );
+        });
+      
+        it('it should use default variable', function() {
+          expect(i18n.t('Hello __name__')).to.be('Hello John');
+        });
+      
+        it('it should replace default variable', function() {
+          expect(i18n.t('Hello __name__', {name: 'Ben'})).to.be('Hello Ben');
+        });
+      
+      });
+  
     });
   
     describe('plural usage', function() {
@@ -1917,7 +1962,7 @@ describe('i18next', function() {
         beforeEach(function(done) {
           i18n.init(i18n.functions.extend(opts, { 
               resStore: resStore,
-              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
             }),
             function(t) { done(); });
         });
@@ -1942,7 +1987,46 @@ describe('i18next', function() {
           expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
           expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 items from ns.2');
         });
+    
       });
+    
+      describe('basic usage - singular and plural form on fallbacks', function() {
+        var resStore = {
+          'fr': { 
+            'translation': {}
+          },
+          'en': { 
+            'translation': {
+                pluralTest: 'singular',
+                pluralTest_plural: 'plural',
+                pluralTestWithCount: '__count__ item',
+                pluralTestWithCount_plural: '__count__ items'
+            } 
+          }
+        };
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { 
+            resStore: resStore,
+            lng: 'fr',
+            fallbackLng: 'en'
+          }),
+          function(t) { done(); });
+        });
+    
+        it('it should provide correct plural or singular form', function() {
+          expect(i18n.t('pluralTest', {count: 0})).to.be('plural');
+          expect(i18n.t('pluralTest', {count: 1})).to.be('singular');
+          expect(i18n.t('pluralTest', {count: 2})).to.be('plural');
+          expect(i18n.t('pluralTest', {count: 7})).to.be('plural');
+    
+          expect(i18n.t('pluralTestWithCount', {count: 0})).to.be('0 items');
+          expect(i18n.t('pluralTestWithCount', {count: 1})).to.be('1 item');
+          expect(i18n.t('pluralTestWithCount', {count: 7})).to.be('7 items');
+        });
+    
+      });
+    
     
       describe('basic usage 2 - singular and plural form in french', function() {
         var resStore = {
@@ -2563,7 +2647,7 @@ describe('i18next', function() {
       });
     
     
-      describe('extended - read options from data attribute', function() {
+      describe('extended - write/read options from data attribute', function() {
     
         var resStore = {
           dev: { translation: {  } },
@@ -2581,6 +2665,33 @@ describe('i18next', function() {
             function(t) {
               $('#container').i18n({ replace: 'replaced' });
               $('#testBtn').text('');
+              done(); 
+            });
+        });
+    
+        it('it should set text with attributes options', function() {
+          $('#container').i18n(); // without option
+          expect($('#testBtn').text()).to.be('replaced ok_from_en-US');
+        });
+        
+      });
+    
+      describe('extended - read options from data attribute', function() {
+    
+        var resStore = {
+          dev: { translation: {  } },
+          en: { translation: {  } },            
+          'en-US': { translation: { 'simpleTest': '__replace__ ok_from_en-US' } }
+        };
+        
+        beforeEach(function(done) {
+          setFixtures('<div id="container"><button id="testBtn" ' + opts.selectorAttr + '="[title]simpleTest;simpleTest" data-i18n-options={"replace":"replaced"}></button></div>');
+    
+          i18n.init(i18n.functions.extend(opts, { 
+            resStore: resStore,
+            useDataAttrOptions: true
+          }),
+            function(t) {
               done(); 
             });
         });

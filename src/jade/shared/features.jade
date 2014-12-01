@@ -80,11 +80,35 @@
           |   }
           | };
 
+
       .feature-description
         p The translation will be joined with '\n'.
         p
           span.badge.badge-info Hint:
           |  This might be useful in combination with post processing.
+
+.row-fluid
+  .span4
+    h4.feature-title arrays in json
+
+  .span8
+    .feature
+      pre
+        code
+          | // given resources in arabic
+          | {           
+          |   'en-US': { 
+          |     translation: {  
+          |       people: [
+          |         { name: "tom" },
+          |         { name: "steve" }
+          |       ] 
+          |     } 
+          |   }
+          | };
+          | 
+          | i18n.t("key.0.name"); // -> tom
+          
 
 .row-fluid
   .span4
@@ -101,7 +125,7 @@
           | 
           | i18n.t("key", { defaultValue: "my text" }); // -> my text
           | 
-          | // or shorter given i18next.init({ shorcutFunction: 'defaultValue' });
+          | // or shorter given i18next.init({ shortcutFunction: 'defaultValue' });
           | i18n.t("key", "my defalut value");
 
       .feature-description
@@ -258,7 +282,7 @@
           | i18n.t("key1", { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] });
           | i18n.t("key2", { postProcess: 'sprintf', sprintf: { users: [{name: 'Dolly'}, {name: 'Molly'}, {name: 'Polly'}] } } );
           |
-          | // or simpler given i18next.init({ shorcutFunction: 'sprintf' }); 
+          | // or simpler given i18next.init({ shortcutFunction: 'sprintf' }); 
           | i18n.t("key1", 'a', 'b', 'c', 'd');
 
       .feature-description
