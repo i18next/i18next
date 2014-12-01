@@ -1688,7 +1688,7 @@
                         parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
                 }
     
-                if (whitelist.indexOf(lng) > -1) {
+                if (whitelist.length === 0 || whitelist.indexOf(lng) > -1) {
                     detectedLng = lng;
                     break;
                 }
