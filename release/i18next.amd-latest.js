@@ -1,4 +1,4 @@
-// i18next, v1.7.4
+// i18next, v1.7.5
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -92,7 +92,8 @@
         , currentLng
         , replacementCounter = 0
         , languages = []
-        , initialized = false;
+        , initialized = false
+        , sync = {};
 
     sync = {
     
@@ -151,7 +152,7 @@
             if(window.localStorage) {
                 for (var m in store) {
                     store[m].i18nStamp = new Date().getTime();
-                    window.localStorage.setItem('res_' + m, JSON.stringify(store[m]));
+                    f.localStorage.setItem('res_' + m, JSON.stringify(store[m]));
                 }
             }
             return;
@@ -293,7 +294,9 @@
                     async : o.postAsync
                 });
             }
-        }
+        },
+    
+        reload: reload
     };
     // defaults
     var o = {
@@ -332,6 +335,7 @@
     
         interpolationPrefix: '__',
         interpolationSuffix: '__',
+        defaultVariables: false,
         reusePrefix: '$t(',
         reuseSuffix: ')',
         pluralSuffix: '_plural',
@@ -646,7 +650,12 @@
                             },
     
                             json: function () {
-                                return JSON.parse(data);
+                                try {
+                                    return JSON.parse(data)
+                                } catch (e) {
+                                    f.error('Can not parse JSON. URL: ' + url);
+                                    return {};
+                                }
                             }
                         });
                     }
@@ -778,11 +787,27 @@
         },
         getCountyIndexOfLng: function(lng) {
             var lng_index = 0;
-            if (lng === 'nb-NO' || lng === 'nn-NO') lng_index = 1;
+            if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
             return lng_index;
         },
         toLanguages: function(lng) {
             var log = this.log;
+    
+            function applyCase(l) {
+                var ret = l;
+    
+                if (typeof l === 'string' && l.indexOf('-') > -1) {
+                    var parts = l.split('-');
+    
+                    ret = o.lowerCaseLng ?
+                        parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                        parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+                } else {
+                    ret = o.lowerCaseLng ? l.toLowerCase() : l;
+                }
+    
+                return ret;
+            }
     
             var languages = [];
             var whitelist = o.lngWhitelist || false;
@@ -797,18 +822,14 @@
             if (typeof lng === 'string' && lng.indexOf('-') > -1) {
                 var parts = lng.split('-');
     
-                lng = o.lowerCaseLng ?
-                    parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
-                    parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
-    
-                if (o.load !== 'unspecific') addLanguage(lng);
-                if (o.load !== 'current') addLanguage(parts[this.getCountyIndexOfLng(lng)]);
+                if (o.load !== 'unspecific') addLanguage(applyCase(lng));
+                if (o.load !== 'current') addLanguage(applyCase(parts[this.getCountyIndexOfLng(lng)]));
             } else {
-                addLanguage(lng);
+                addLanguage(applyCase(lng));
             }
     
             for (var i = 0; i < o.fallbackLng.length; i++) {
-                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(o.fallbackLng[i]);
+                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
             }
             return languages;
         },
@@ -820,6 +841,17 @@
                 return strOrFn.replace(/\$/g, "$$$$");
             } else {
                 return strOrFn;
+            }
+        },
+        localStorage: {
+            setItem: function(key, value) {
+                if (window.localStorage) {
+                    try {
+                        window.localStorage.setItem(key, value);
+                    } catch (e) {
+                        f.log('failed to set value for key "' + key + '" to localStorage.');
+                    }
+                }
             }
         }
     };
@@ -863,8 +895,8 @@
         if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
             f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
         }
-        if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localstorage) {
-            window.localStorage.setItem('i18next_lng', currentLng);
+        if (o.detectLngFromLocalStorage && typeof document !== 'undefined' && window.localStorage) {
+            f.localStorage.setItem('i18next_lng', currentLng);
         }
     
         var lngTranslate = translate;
@@ -949,6 +981,24 @@
         }
     }
     
+    function hasResourceBundle(lng, ns) {
+        if (typeof ns !== 'string') {
+            ns = o.ns.defaultNs;
+        }
+    
+        resStore[lng] = resStore[lng] || {};
+        var res = resStore[lng][ns] || {};
+    
+        var hasValues = false;
+        for(var prop in res) {
+            if (res.hasOwnProperty(prop)) {
+                hasValues = true;
+            }
+        }
+    
+        return hasValues;
+    }
+    
     function removeResourceBundle(lng, ns) {
         if (typeof ns !== 'string') {
             ns = o.ns.defaultNs;
@@ -971,7 +1021,7 @@
     
         var keys = key.split(o.keyseparator);
         var x = 0;
-        var node = resStore[o.lng][ns];
+        var node = resStore[lng][ns];
         var origRef = node;
     
         while (keys[x]) {
@@ -1088,6 +1138,11 @@
     
     function lng() {
         return currentLng;
+    }
+    
+    function reload(cb) {
+        resStore = {};
+        setLng(currentLng, cb);
     }
     function addJqueryFunct() {
         // $.t shortcut
@@ -1255,7 +1310,7 @@
     }
     
     function needsPlural(options, lng) {
-        return (options.count !== undefined && typeof options.count != 'string' && pluralExtensions.needsPlural(lng, options.count));
+        return (options.count !== undefined && typeof options.count != 'string'/* && pluralExtensions.needsPlural(lng, options.count)*/);
     }
     
     function needsIndefiniteArticle(options) {
@@ -1315,9 +1370,13 @@
             options = options || {};
         }
     
+        if (typeof o.defaultVariables === 'object') {
+            options = f.extend({}, o.defaultVariables, options);
+        }
+    
         if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
     
-        if (typeof potentialKeys == 'string') {
+        if (typeof potentialKeys === 'string') {
             potentialKeys = [potentialKeys];
         }
     
@@ -1396,6 +1455,7 @@
         if (lngs[0].toLowerCase() === 'cimode') return notFound;
     
         // passed in lng
+        if (options.lngs) lngs = options.lngs;
         if (options.lng) {
             lngs = f.toLanguages(options.lng, options.fallbackLng);
     
@@ -1431,26 +1491,40 @@
         }
     
         if (needsPlural(options, lngs[0])) {
-            optionWithoutCount = f.extend({}, options);
+            optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
             delete optionWithoutCount.count;
             optionWithoutCount.defaultValue = o.pluralNotFound;
     
-            var pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
-            var pluralExtension = pluralExtensions.get(lngs[0], options.count);
-            if (pluralExtension >= 0) {
-                pluralKey = pluralKey + '_' + pluralExtension;
-            } else if (pluralExtension === 1) {
-                pluralKey = ns + o.nsseparator + key; // singular
+            var pluralKey;
+            if (!pluralExtensions.needsPlural(lngs[0], options.count)) {
+                pluralKey = ns + o.nsseparator + key;
+            } else {
+                pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
+                var pluralExtension = pluralExtensions.get(lngs[0], options.count);
+                if (pluralExtension >= 0) {
+                    pluralKey = pluralKey + '_' + pluralExtension;
+                } else if (pluralExtension === 1) {
+                    pluralKey = ns + o.nsseparator + key; // singular
+                }
             }
     
             translated = translate(pluralKey, optionWithoutCount);
+    
             if (translated != o.pluralNotFound) {
                 return applyReplacement(translated, {
                     count: options.count,
                     interpolationPrefix: options.interpolationPrefix,
                     interpolationSuffix: options.interpolationSuffix
                 }); // apply replacement for count only
-            } // else continue translation with original/singular key
+            } else if (lngs.length > 1) {
+                // remove failed lng
+                var clone = lngs.slice();
+                clone.shift();
+                options = f.extend(options, { lngs: clone }); 
+                // retry with fallbacks
+                translated = translate(ns + o.nsseparator + key, options);
+                if (translated != o.pluralNotFound) return translated;
+            }
         }
     
         if (needsIndefiniteArticle(options)) {
@@ -1541,1107 +1615,256 @@
     }
     function detectLanguage() {
         var detectedLng;
+        var whitelist = o.lngWhitelist || [];
+        var userLngChoices = [];
     
         // get from qs
         var qsParm = [];
         if (typeof window !== 'undefined') {
             (function() {
                 var query = window.location.search.substring(1);
-                var parms = query.split('&');
-                for (var i=0; i<parms.length; i++) {
-                    var pos = parms[i].indexOf('=');
+                var params = query.split('&');
+                for (var i=0; i<params.length; i++) {
+                    var pos = params[i].indexOf('=');
                     if (pos > 0) {
-                        var key = parms[i].substring(0,pos);
-                        var val = parms[i].substring(pos+1);
-                        qsParm[key] = val;
+                        var key = params[i].substring(0,pos);
+                        if (key == o.detectLngQS) {
+                            userLngChoices.push(params[i].substring(pos+1));
+                        }
                     }
                 }
             })();
-            if (qsParm[o.detectLngQS]) {
-                detectedLng = qsParm[o.detectLngQS];
-            }
         }
     
         // get from cookie
-        if (!detectedLng && typeof document !== 'undefined' && o.useCookie ) {
+        if (o.useCookie && typeof document !== 'undefined') {
             var c = f.cookie.read(o.cookieName);
-            if (c) detectedLng = c;
+            if (c) userLngChoices.push(c);
         }
     
-        // get from localstorage
-        if (!detectedLng && typeof document !== 'undefined' && window.localstorage && o.detectLngFromLocalStorage) {
-            detectedLng = window.localStorage.getItem('i18next_lng');
+        // get from localStorage
+        if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
+            userLngChoices.push(window.localStorage.getItem('i18next_lng'));
         }
     
         // get from navigator
-        if (!detectedLng && typeof navigator !== 'undefined') {
-            detectedLng = (navigator.language) ? navigator.language : navigator.userLanguage;
+        if (typeof navigator !== 'undefined') {
+            if (navigator.languages) { // chrome only; not an array, so can't use .push.apply instead of iterating
+                for (var i=0;i<navigator.languages.length;i++) {
+                    userLngChoices.push(navigator.languages[i]);
+                }
+            }
+            if (navigator.userLanguage) {
+                userLngChoices.push(navigator.userLanguage);
+            }
+            if (navigator.language) {
+                userLngChoices.push(navigator.language);
+            }
         }
     
+        (function() {
+            for (var i=0;i<userLngChoices.length;i++) {
+                var lng = userLngChoices[i];
+    
+                if (lng.indexOf('-') > -1) {
+                    var parts = lng.split('-');
+                    lng = o.lowerCaseLng ?
+                        parts[0].toLowerCase() +  '-' + parts[1].toLowerCase() :
+                        parts[0].toLowerCase() +  '-' + parts[1].toUpperCase();
+                }
+    
+                if (whitelist.indexOf(lng) > -1) {
+                    detectedLng = lng;
+                    break;
+                }
+            }
+        })();
+    
         //fallback
-        if(!detectedLng){
+        if (!detectedLng){
           detectedLng = o.fallbackLng[0];
         }
         
         return detectedLng;
     }
     // definition http://translate.sourceforge.net/wiki/l10n/pluralforms
+    
+    /* [code, name, numbers, pluralsType] */
+    var _rules = [
+        ["ach", "Acholi", [1,2], 1],
+        ["af", "Afrikaans",[1,2], 2],
+        ["ak", "Akan", [1,2], 1],
+        ["am", "Amharic", [1,2], 1],
+        ["an", "Aragonese",[1,2], 2],
+        ["ar", "Arabic", [0,1,2,3,11,100],5],
+        ["arn", "Mapudungun",[1,2], 1],
+        ["ast", "Asturian", [1,2], 2],
+        ["ay", "Aymará", [1], 3],
+        ["az", "Azerbaijani",[1,2],2],
+        ["be", "Belarusian",[1,2,5],4],
+        ["bg", "Bulgarian",[1,2], 2],
+        ["bn", "Bengali", [1,2], 2],
+        ["bo", "Tibetan", [1], 3],
+        ["br", "Breton", [1,2], 1],
+        ["bs", "Bosnian", [1,2,5],4],
+        ["ca", "Catalan", [1,2], 2],
+        ["cgg", "Chiga", [1], 3],
+        ["cs", "Czech", [1,2,5],6],
+        ["csb", "Kashubian",[1,2,5],7],
+        ["cy", "Welsh", [1,2,3,8],8],
+        ["da", "Danish", [1,2], 2],
+        ["de", "German", [1,2], 2],
+        ["dev", "Development Fallback", [1,2], 2],
+        ["dz", "Dzongkha", [1], 3],
+        ["el", "Greek", [1,2], 2],
+        ["en", "English", [1,2], 2],
+        ["eo", "Esperanto",[1,2], 2],
+        ["es", "Spanish", [1,2], 2],
+        ["es_ar","Argentinean Spanish", [1,2], 2],
+        ["et", "Estonian", [1,2], 2],
+        ["eu", "Basque", [1,2], 2],
+        ["fa", "Persian", [1], 3],
+        ["fi", "Finnish", [1,2], 2],
+        ["fil", "Filipino", [1,2], 1],
+        ["fo", "Faroese", [1,2], 2],
+        ["fr", "French", [1,2], 9],
+        ["fur", "Friulian", [1,2], 2],
+        ["fy", "Frisian", [1,2], 2],
+        ["ga", "Irish", [1,2,3,7,11],10],
+        ["gd", "Scottish Gaelic",[1,2,3,20],11],
+        ["gl", "Galician", [1,2], 2],
+        ["gu", "Gujarati", [1,2], 2],
+        ["gun", "Gun", [1,2], 1],
+        ["ha", "Hausa", [1,2], 2],
+        ["he", "Hebrew", [1,2], 2],
+        ["hi", "Hindi", [1,2], 2],
+        ["hr", "Croatian", [1,2,5],4],
+        ["hu", "Hungarian",[1,2], 2],
+        ["hy", "Armenian", [1,2], 2],
+        ["ia", "Interlingua",[1,2],2],
+        ["id", "Indonesian",[1], 3],
+        ["is", "Icelandic",[1,2], 12],
+        ["it", "Italian", [1,2], 2],
+        ["ja", "Japanese", [1], 3],
+        ["jbo", "Lojban", [1], 3],
+        ["jv", "Javanese", [0,1], 13],
+        ["ka", "Georgian", [1], 3],
+        ["kk", "Kazakh", [1], 3],
+        ["km", "Khmer", [1], 3],
+        ["kn", "Kannada", [1,2], 2],
+        ["ko", "Korean", [1], 3],
+        ["ku", "Kurdish", [1,2], 2],
+        ["kw", "Cornish", [1,2,3,4],14],
+        ["ky", "Kyrgyz", [1], 3],
+        ["lb", "Letzeburgesch",[1,2],2],
+        ["ln", "Lingala", [1,2], 1],
+        ["lo", "Lao", [1], 3],
+        ["lt", "Lithuanian",[1,2,10],15],
+        ["lv", "Latvian", [1,2,0],16],
+        ["mai", "Maithili", [1,2], 2],
+        ["mfe", "Mauritian Creole",[1,2],1],
+        ["mg", "Malagasy", [1,2], 1],
+        ["mi", "Maori", [1,2], 1],
+        ["mk", "Macedonian",[1,2],17],
+        ["ml", "Malayalam",[1,2], 2],
+        ["mn", "Mongolian",[1,2], 2],
+        ["mnk", "Mandinka", [0,1,2],18],
+        ["mr", "Marathi", [1,2], 2],
+        ["ms", "Malay", [1], 3],
+        ["mt", "Maltese", [1,2,11,20],19],
+        ["nah", "Nahuatl", [1,2], 2],
+        ["nap", "Neapolitan",[1,2], 2],
+        ["nb", "Norwegian Bokmal",[1,2],2],
+        ["ne", "Nepali", [1,2], 2],
+        ["nl", "Dutch", [1,2], 2],
+        ["nn", "Norwegian Nynorsk",[1,2],2],
+        ["no", "Norwegian",[1,2], 2],
+        ["nso", "Northern Sotho",[1,2],2],
+        ["oc", "Occitan", [1,2], 1],
+        ["or", "Oriya", [2,1], 2],
+        ["pa", "Punjabi", [1,2], 2],
+        ["pap", "Papiamento",[1,2], 2],
+        ["pl", "Polish", [1,2,5],7],
+        ["pms", "Piemontese",[1,2], 2],
+        ["ps", "Pashto", [1,2], 2],
+        ["pt", "Portuguese",[1,2], 2],
+        ["pt_br","Brazilian Portuguese",[1,2], 2],
+        ["rm", "Romansh", [1,2], 2],
+        ["ro", "Romanian", [1,2,20],20],
+        ["ru", "Russian", [1,2,5],4],
+        ["sah", "Yakut", [1], 3],
+        ["sco", "Scots", [1,2], 2],
+        ["se", "Northern Sami",[1,2], 2],
+        ["si", "Sinhala", [1,2], 2],
+        ["sk", "Slovak", [1,2,5],6],
+        ["sl", "Slovenian",[5,1,2,3],21],
+        ["so", "Somali", [1,2], 2],
+        ["son", "Songhay", [1,2], 2],
+        ["sq", "Albanian", [1,2], 2],
+        ["sr", "Serbian", [1,2,5],4],
+        ["su", "Sundanese",[1], 3],
+        ["sv", "Swedish", [1,2], 2],
+        ["sw", "Swahili", [1,2], 2],
+        ["ta", "Tamil", [1,2], 2],
+        ["te", "Telugu", [1,2], 2],
+        ["tg", "Tajik", [1,2], 1],
+        ["th", "Thai", [1], 3],
+        ["ti", "Tigrinya", [1,2], 1],
+        ["tk", "Turkmen", [1,2], 2],
+        ["tr", "Turkish", [1,2], 1],
+        ["tt", "Tatar", [1], 3],
+        ["ug", "Uyghur", [1], 3],
+        ["uk", "Ukrainian",[1,2,5],4],
+        ["ur", "Urdu", [1,2], 2],
+        ["uz", "Uzbek", [1,2], 1],
+        ["vi", "Vietnamese",[1], 3],
+        ["wa", "Walloon", [1,2], 1],
+        ["wo", "Wolof", [1], 3],
+        ["yo", "Yoruba", [1,2], 2],
+        ["zh", "Chinese", [1], 3]
+    ];
+    
+    var _rulesPluralsTypes = {
+        1: function(n) {return Number(n > 1);},
+        2: function(n) {return Number(n != 1);},
+        3: function(n) {return 0;},
+        4: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);},
+        5: function(n) {return Number(n===0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);},
+        6: function(n) {return Number((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);},
+        7: function(n) {return Number(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);},
+        8: function(n) {return Number((n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3);},
+        9: function(n) {return Number(n >= 2);},
+        10: function(n) {return Number(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4) ;},
+        11: function(n) {return Number((n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3);},
+        12: function(n) {return Number(n%10!=1 || n%100==11);},
+        13: function(n) {return Number(n !== 0);},
+        14: function(n) {return Number((n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3);},
+        15: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);},
+        16: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2);},
+        17: function(n) {return Number(n==1 || n%10==1 ? 0 : 1);},
+        18: function(n) {return Number(0 ? 0 : n==1 ? 1 : 2);},
+        19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
+        20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
+        21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
+    };
+    
     var pluralExtensions = {
     
-        rules: {
-            "ach": {
-                "name": "Acholi", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "af": {
-                "name": "Afrikaans", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ak": {
-                "name": "Akan", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "am": {
-                "name": "Amharic", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "an": {
-                "name": "Aragonese", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ar": {
-                "name": "Arabic", 
-                "numbers": [
-                    0, 
-                    1, 
-                    2, 
-                    3, 
-                    11, 
-                    100
-                ], 
-                "plurals": function(n) { return Number(n===0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5); }
-            }, 
-            "arn": {
-                "name": "Mapudungun", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "ast": {
-                "name": "Asturian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ay": {
-                "name": "Aymar\u00e1", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "az": {
-                "name": "Azerbaijani", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "be": {
-                "name": "Belarusian", 
-                "numbers": [
-                    1, 
-                    2, 
-                    5
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "bg": {
-                "name": "Bulgarian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "bn": {
-                "name": "Bengali", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "bo": {
-                "name": "Tibetan", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "br": {
-                "name": "Breton", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "bs": {
-                "name": "Bosnian", 
-                "numbers": [
-                    1, 
-                    2, 
-                    5
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "ca": {
-                "name": "Catalan", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "cgg": {
-                "name": "Chiga", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "cs": {
-                "name": "Czech", 
-                "numbers": [
-                    1, 
-                    2, 
-                    5
-                ], 
-                "plurals": function(n) { return Number((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2); }
-            }, 
-            "csb": {
-                "name": "Kashubian", 
-                "numbers": [
-                    1, 
-                    2, 
-                    5
-                ], 
-                "plurals": function(n) { return Number(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "cy": {
-                "name": "Welsh", 
-                "numbers": [
-                    1, 
-                    2, 
-                    3, 
-                    8
-                ], 
-                "plurals": function(n) { return Number((n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3); }
-            }, 
-            "da": {
-                "name": "Danish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "de": {
-                "name": "German", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "dz": {
-                "name": "Dzongkha", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "el": {
-                "name": "Greek", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "en": {
-                "name": "English", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "eo": {
-                "name": "Esperanto", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "es": {
-                "name": "Spanish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "es_ar": {
-                "name": "Argentinean Spanish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "et": {
-                "name": "Estonian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "eu": {
-                "name": "Basque", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "fa": {
-                "name": "Persian", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "fi": {
-                "name": "Finnish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "fil": {
-                "name": "Filipino", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "fo": {
-                "name": "Faroese", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "fr": {
-                "name": "French", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n >= 2); }
-            }, 
-            "fur": {
-                "name": "Friulian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "fy": {
-                "name": "Frisian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ga": {
-                "name": "Irish", 
-                "numbers": [
-                    1, 
-                    2,
-                    3,
-                    7, 
-                    11
-                ], 
-                "plurals": function(n) { return Number(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4) ;}
-            }, 
-            "gd": {
-                "name": "Scottish Gaelic", 
-                "numbers": [
-                    1, 
-                    2, 
-                    3,
-                    20
-                ], 
-                "plurals": function(n) { return Number((n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3); }
-            }, 
-            "gl": {
-                "name": "Galician", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "gu": {
-                "name": "Gujarati", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "gun": {
-                "name": "Gun", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "ha": {
-                "name": "Hausa", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "he": {
-                "name": "Hebrew", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "hi": {
-                "name": "Hindi", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "hr": {
-                "name": "Croatian", 
-                "numbers": [
-                    1, 
-                    2,
-                    5
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "hu": {
-                "name": "Hungarian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "hy": {
-                "name": "Armenian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ia": {
-                "name": "Interlingua", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "id": {
-                "name": "Indonesian", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "is": {
-                "name": "Icelandic", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n%10!=1 || n%100==11); }
-            }, 
-            "it": {
-                "name": "Italian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ja": {
-                "name": "Japanese", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "jbo": {
-                "name": "Lojban", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "jv": {
-                "name": "Javanese", 
-                "numbers": [
-                    0, 
-                    1
-                ], 
-                "plurals": function(n) { return Number(n !== 0); }
-            }, 
-            "ka": {
-                "name": "Georgian", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "kk": {
-                "name": "Kazakh", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "km": {
-                "name": "Khmer", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "kn": {
-                "name": "Kannada", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ko": {
-                "name": "Korean", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "ku": {
-                "name": "Kurdish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "kw": {
-                "name": "Cornish", 
-                "numbers": [
-                    1, 
-                    2, 
-                    3,
-                    4
-                ], 
-                "plurals": function(n) { return Number((n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3); }
-            }, 
-            "ky": {
-                "name": "Kyrgyz", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "lb": {
-                "name": "Letzeburgesch", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ln": {
-                "name": "Lingala", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "lo": {
-                "name": "Lao", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "lt": {
-                "name": "Lithuanian", 
-                "numbers": [
-                    1, 
-                    2,
-                    10
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "lv": {
-                "name": "Latvian", 
-                "numbers": [
-                    1, 
-                    2, 
-                    0
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2); }
-            }, 
-            "mai": {
-                "name": "Maithili", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "mfe": {
-                "name": "Mauritian Creole", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "mg": {
-                "name": "Malagasy", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "mi": {
-                "name": "Maori", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "mk": {
-                "name": "Macedonian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n==1 || n%10==1 ? 0 : 1); }
-            }, 
-            "ml": {
-                "name": "Malayalam", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "mn": {
-                "name": "Mongolian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "mnk": {
-                "name": "Mandinka", 
-                "numbers": [
-                    0, 
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(0 ? 0 : n==1 ? 1 : 2); }
-            }, 
-            "mr": {
-                "name": "Marathi", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ms": {
-                "name": "Malay", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "mt": {
-                "name": "Maltese", 
-                "numbers": [
-                    1, 
-                    2, 
-                    11, 
-                    20
-                ], 
-                "plurals": function(n) { return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3); }
-            }, 
-            "nah": {
-                "name": "Nahuatl", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "nap": {
-                "name": "Neapolitan", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "nb": {
-                "name": "Norwegian Bokmal", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ne": {
-                "name": "Nepali", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "nl": {
-                "name": "Dutch", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "nn": {
-                "name": "Norwegian Nynorsk", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "no": {
-                "name": "Norwegian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "nso": {
-                "name": "Northern Sotho", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "oc": {
-                "name": "Occitan", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "or": {
-                "name": "Oriya", 
-                "numbers": [
-                    2, 
-                    1
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "pa": {
-                "name": "Punjabi", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "pap": {
-                "name": "Papiamento", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "pl": {
-                "name": "Polish", 
-                "numbers": [
-                    1, 
-                    2,
-                    5
-                ], 
-                "plurals": function(n) { return Number(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "pms": {
-                "name": "Piemontese", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ps": {
-                "name": "Pashto", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "pt": {
-                "name": "Portuguese", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "pt_br": {
-                "name": "Brazilian Portuguese", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "rm": {
-                "name": "Romansh", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ro": {
-                "name": "Romanian", 
-                "numbers": [
-                    1, 
-                    2,
-                    20
-                ], 
-                "plurals": function(n) { return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2); }
-            }, 
-            "ru": {
-                "name": "Russian", 
-                "numbers": [
-                    1, 
-                    2, 
-                    5
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "sah": {
-                "name": "Yakut", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "sco": {
-                "name": "Scots", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "se": {
-                "name": "Northern Sami", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "si": {
-                "name": "Sinhala", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "sk": {
-                "name": "Slovak", 
-                "numbers": [
-                    1, 
-                    2, 
-                    5
-                ], 
-                "plurals": function(n) { return Number((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2); }
-            }, 
-            "sl": {
-                "name": "Slovenian", 
-                "numbers": [
-                    5, 
-                    1, 
-                    2, 
-                    3
-                ], 
-                "plurals": function(n) { return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
-            }, 
-            "so": {
-                "name": "Somali", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "son": {
-                "name": "Songhay", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "sq": {
-                "name": "Albanian", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "sr": {
-                "name": "Serbian", 
-                "numbers": [
-                    1, 
-                    2,
-                    5
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "su": {
-                "name": "Sundanese", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "sv": {
-                "name": "Swedish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "sw": {
-                "name": "Swahili", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "ta": {
-                "name": "Tamil", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "te": {
-                "name": "Telugu", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "tg": {
-                "name": "Tajik", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "th": {
-                "name": "Thai", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "ti": {
-                "name": "Tigrinya", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "tk": {
-                "name": "Turkmen", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "tr": {
-                "name": "Turkish", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "tt": {
-                "name": "Tatar", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "ug": {
-                "name": "Uyghur", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "uk": {
-                "name": "Ukrainian", 
-                "numbers": [
-                    1, 
-                    2,
-                    5
-                ], 
-                "plurals": function(n) { return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); }
-            }, 
-            "ur": {
-                "name": "Urdu", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "uz": {
-                "name": "Uzbek", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "vi": {
-                "name": "Vietnamese", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "wa": {
-                "name": "Walloon", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n > 1); }
-            }, 
-            "wo": {
-                "name": "Wolof", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
-            }, 
-            "yo": {
-                "name": "Yoruba", 
-                "numbers": [
-                    1, 
-                    2
-                ], 
-                "plurals": function(n) { return Number(n != 1); }
-            }, 
-            "zh": {
-                "name": "Chinese", 
-                "numbers": [
-                    1
-                ], 
-                "plurals": function(n) { return 0; }
+        rules: (function () {
+            var l, rules = {};
+            for (l=_rules.length; l-- ;) {
+                rules[_rules[l][0]] = {
+                    name: _rules[l][1],
+                    numbers: _rules[l][2],
+                    plurals: _rulesPluralsTypes[_rules[l][3]]
+                }
             }
-        },
+            return rules;
+        }()),
     
-        // for demonstration only sl and ar is added but you can add your own pluralExtensions
+        // you can add your own pluralExtensions
         addRule: function(lng, obj) {
-            pluralExtensions.rules[lng] = obj;    
+            pluralExtensions.rules[lng] = obj;
         },
     
         setCurrentLng: function(lng) {
@@ -2853,6 +2076,7 @@
     i18n.setLng = setLng;
     i18n.preload = preload;
     i18n.addResourceBundle = addResourceBundle;
+    i18n.hasResourceBundle = hasResourceBundle;
     i18n.addResource = addResource;
     i18n.addResources = addResources;
     i18n.removeResourceBundle = removeResourceBundle;

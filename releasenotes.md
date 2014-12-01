@@ -1,4 +1,4 @@
-### 1.7.4
+### 1.7.5
 - adds option to define defaultOptions, which gets merged into t(options) [issue 307](https://github.com/i18next/i18next/issues/307)
 - optimization of size added by plural rules
 - handle error on json parse when using internal xhr

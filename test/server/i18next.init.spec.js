@@ -1,4 +1,4 @@
-// i18next, v1.7.4
+// i18next, v1.7.5
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -193,6 +193,27 @@ describe('i18next.init', function() {
           it('it should add the new namespace to the namespace array', function() {
             expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
             expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+          });
+    
+        });
+    
+        describe('check if exists', function() {
+    
+          beforeEach(function(done) {
+            i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+              function(t) { 
+                i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+                i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                done(); 
+              });
+          });
+    
+          it('it should return true for existing bundle', function() {
+            expect(i18n.hasResourceBundle('en-US', 'translation')).to.be.ok();
+          });
+    
+          it('it should return false for non-existing bundle', function() {
+            expect(i18n.hasResourceBundle('de-CH', 'translation')).to.not.be.ok();
           });
     
         });
