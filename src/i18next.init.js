@@ -10,6 +10,12 @@ function init(options, cb) {
     f.extend(o, options);
     delete o.fixLng; /* passed in each time */
 
+    // override functions: .log(), .detectLanguage(), etc
+    if (o.functions) {
+        delete o.functions;
+        f.extend(f, options.functions);
+    }
+
     // create namespace object if namespace is passed in as string
     if (typeof o.ns == 'string') {
         o.ns = { namespaces: [o.ns], defaultNs: o.ns};
