@@ -1,7 +1,7 @@
 {
   "author": "jamuhl"
   , "name": "i18next-client"
-  , "version": "1.7.6"
+  , "version": "1.7.7"
   , "private": false
   , "main": "i18next.js"
   , "browser": "i18next.js"

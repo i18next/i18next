@@ -1,4 +1,4 @@
-// i18next, v1.7.5
+// i18next, v1.7.7
 // Copyright (c)2014 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -882,6 +882,12 @@
         f.extend(o, options);
         delete o.fixLng; /* passed in each time */
     
+        // override functions: .log(), .detectLanguage(), etc
+        if (o.functions) {
+            delete o.functions;
+            f.extend(f, options.functions);
+        }
+    
         // create namespace object if namespace is passed in as string
         if (typeof o.ns == 'string') {
             o.ns = { namespaces: [o.ns], defaultNs: o.ns};
@@ -1508,6 +1514,7 @@
         if (needsPlural(options, lngs[0])) {
             optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
             delete optionWithoutCount.count;
+            delete optionWithoutCount.lng;
             optionWithoutCount.defaultValue = o.pluralNotFound;
     
             var pluralKey;
@@ -1535,10 +1542,13 @@
                 // remove failed lng
                 var clone = lngs.slice();
                 clone.shift();
-                options = f.extend(options, { lngs: clone }); 
+                options = f.extend(options, { lngs: clone });
+                delete options.lng;
                 // retry with fallbacks
                 translated = translate(ns + o.nsseparator + key, options);
                 if (translated != o.pluralNotFound) return translated;
+            } else {
+                return translated;
             }
         }
     
@@ -1612,7 +1622,7 @@
                 for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
                     found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
     
-                    if (found) {
+                    if (found || (found==="" && o.fallbackOnEmpty === false)) {
                         /* compare value without namespace */
                         var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
                           , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;

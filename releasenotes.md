@@ -1,5 +1,6 @@
 ### 1.7.7
 - fixes issue with stack overflow on t(lng, count)
+- fixes empty value fallback when processing secondary ns 
 
 ### 1.7.6
 - fixes lng detection (i18next-client on npm)
