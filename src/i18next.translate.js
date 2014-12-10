@@ -365,7 +365,7 @@ function _find(key, options) {
             for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
                 found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
 
-                if (found) {
+                if (found || (found==="" && o.fallbackOnEmpty === false)) {
                     /* compare value without namespace */
                     var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
                       , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;
