@@ -1990,6 +1990,43 @@ describe('i18next', function() {
     
       });
     
+      describe('Plurals with passing lng to translation function', function() {
+    
+        var resStore = {
+          'nl': {
+            'translation': {
+                pluralTestWithCount: '__count__ item',
+                pluralTestWithCount_plural: '__count__ items'
+            } 
+          }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, {
+              supportedLngs: ['nl'],
+              resStore: resStore
+            }),
+            function(t) { done(); });
+        });
+    
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { 
+              resStore: resStore
+            }),
+            function(t) { done(); });
+        });
+        it('should return the correct string for key', function() {
+          var resStore = {
+            nl: {
+              test: '__count__ items'
+            }
+          };
+    
+          expect(i18n.t('pluralTestWithCount', {count: 12, lng: 'nl'})).to.equal('12 items');
+          expect(i18n.t('pluralTestWithCount', {count: 0, lng: 'nl'})).to.equal('0 items');
+        });
+      });
+    
       describe('basic usage - singular and plural form on fallbacks', function() {
         var resStore = {
           'fr': { 

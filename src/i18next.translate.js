@@ -257,6 +257,7 @@ function _find(key, options) {
     if (needsPlural(options, lngs[0])) {
         optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
         delete optionWithoutCount.count;
+        delete optionWithoutCount.lng;
         optionWithoutCount.defaultValue = o.pluralNotFound;
 
         var pluralKey;
@@ -284,10 +285,13 @@ function _find(key, options) {
             // remove failed lng
             var clone = lngs.slice();
             clone.shift();
-            options = f.extend(options, { lngs: clone }); 
+            options = f.extend(options, { lngs: clone });
+            delete options.lng;
             // retry with fallbacks
             translated = translate(ns + o.nsseparator + key, options);
             if (translated != o.pluralNotFound) return translated;
+        } else {
+            return translated;
         }
     }
 
