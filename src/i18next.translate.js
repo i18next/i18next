@@ -140,6 +140,10 @@ function _translate(potentialKeys, options) {
 
     if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
 
+    if (typeof potentialKeys === 'number') {
+        potentialKeys = String(potentialKeys);
+    }
+
     if (typeof potentialKeys === 'string') {
         potentialKeys = [potentialKeys];
     }
