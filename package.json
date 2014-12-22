@@ -21,6 +21,7 @@
     , "zipstream": ">=0.2.1"
     , "underscore": ">=0.2.1"
   }
+  , "repository": "https://github.com/i18next/i18next/"
   , "scripts": {
     "test": "testacular start"
   }
