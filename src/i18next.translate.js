@@ -176,11 +176,27 @@ function _translate(potentialKeys, options) {
         }
     }
 
-    var postProcessor = options.postProcess || o.postProcess;
-    if (found !== undefined && postProcessor) {
-        if (postProcessors[postProcessor]) {
-            found = postProcessors[postProcessor](found, key, options);
-        }
+    var postProcessorsToApply;
+    if (typeof o.postProcess === 'string' && o.postProcess !== '') {
+        postProcessorsToApply = [o.postProcess];
+    } else if (typeof o.postProcess === 'array' || typeof o.postProcess === 'object') {
+        postProcessorsToApply = o.postProcess;
+    } else {
+        postProcessorsToApply = [];
+    }
+
+    if (typeof options.postProcess === 'string' && options.postProcess !== '') {
+        postProcessorsToApply = postProcessorsToApply.concat([options.postProcess]);
+    } else if (typeof options.postProcess === 'array' || typeof options.postProcess === 'object') {
+        postProcessorsToApply = postProcessorsToApply.concat(options.postProcess);
+    }
+
+    if (found !== undefined && postProcessorsToApply.length) {
+        postProcessorsToApply.forEach(function(postProcessor) {
+            if (postProcessors[postProcessor]) {
+                found = postProcessors[postProcessor](found, key, options);
+            }
+        });
     }
 
     // process notFound if function exists
@@ -197,9 +213,13 @@ function _translate(potentialKeys, options) {
         notFound = applyReplacement(notFound, options);
         notFound = applyReuse(notFound, options);
 
-        if (postProcessor && postProcessors[postProcessor]) {
+        if (postProcessorsToApply.length) {
             var val = _getDefaultValue(key, options);
-            found = postProcessors[postProcessor](val, key, options);
+            postProcessorsToApply.forEach(function(postProcessor) {
+                if (postProcessors[postProcessor]) {
+                    found = postProcessors[postProcessor](val, key, options);
+                }
+            });
         }
     }
 
