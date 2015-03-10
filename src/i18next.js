@@ -1,9 +1,8 @@
-(function() {
+(function(root) {
 
     //= i18next.shim.js
 
-    var root = this
-      , $ = root.jQuery || root.Zepto
+    var $ = root.jQuery || root.Zepto
       , i18n = {}
       , resStore = {}
       , currentLng
@@ -28,4 +27,4 @@
     //= i18next.postProcessor.sprintf.js
     //= i18next.api.js
 
-})();
+})(typeof exports === 'undefined' ? window : exports);
