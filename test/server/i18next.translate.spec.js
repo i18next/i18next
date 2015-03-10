@@ -63,6 +63,11 @@ describe('i18next.translate', function() {
     it('it should not break on undefined key', function() {
       expect(i18n.t(undefined)).to.be('');
     });
+  
+    it('it should stringify first on number key', function() {
+      expect(i18n.t(1)).to.be(i18n.t('1'));
+      expect(i18n.t(1.1)).to.be(i18n.t('1.1'));
+    });   
     
   });
 
