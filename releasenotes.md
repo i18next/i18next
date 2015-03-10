@@ -2,6 +2,7 @@
 - fixes issue [issue 360](https://github.com/i18next/i18next/issues/360) 
 - expose applyReplacement on api
 - save resources to localStorage when useLocaleStore is true
+- add support on key is a number
 
 ### 1.7.7
 - fixes issue with stack overflow on t(lng, count)
