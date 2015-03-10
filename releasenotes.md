@@ -5,7 +5,8 @@
 - add support on key is a number
 - added getResourceBundle to API
 - allow multiple post-processors
-- fallback to singular if no plural is found fixes issue [issue 356](https://github.com/i18next/i18next/issues/356) 
+- fallback to singular if no plural is found fixes issue [issue 356](https://github.com/i18next/i18next/issues/356)
+- access localstorage always with try catch fixes issue [issue 353](https://github.com/i18next/i18next/issues/353)
 
 ### 1.7.7
 - fixes issue with stack overflow on t(lng, count)

@@ -35,7 +35,7 @@ sync = {
             var todo = lngs.length;
 
             f.each(lngs, function(key, lng) {
-                var local = window.localStorage.getItem('res_' + lng);
+                var local = f.localStorage.getItem('res_' + lng);
 
                 if (local) {
                     local = JSON.parse(local);

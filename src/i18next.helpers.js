@@ -490,6 +490,16 @@ var f = {
                     f.log('failed to set value for key "' + key + '" to localStorage.');
                 }
             }
+        },
+        getItem: function(key, value) {
+            if (window.localStorage) {
+                try {
+                    return window.localStorage.getItem(key, value);
+                } catch (e) {
+                    f.log('failed to get value for key "' + key + '" from localStorage.');
+                    return undefined;
+                }
+            }
         }
     }
 };

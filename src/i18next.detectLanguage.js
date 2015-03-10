@@ -29,7 +29,7 @@ function detectLanguage() {
 
     // get from localStorage
     if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
-        userLngChoices.push(window.localStorage.getItem('i18next_lng'));
+        userLngChoices.push(f.localStorage.getItem('i18next_lng'));
     }
 
     // get from navigator
