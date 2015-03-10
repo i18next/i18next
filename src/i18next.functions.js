@@ -24,6 +24,9 @@ function addResourceBundle(lng, ns, resources, deep) {
     } else {
         f.extend(resStore[lng][ns], resources);
     }
+    if (o.useLocalStorage) {
+        sync._storeLocal(resStore);
+    }
 }
 
 function hasResourceBundle(lng, ns) {
@@ -51,6 +54,9 @@ function removeResourceBundle(lng, ns) {
 
     resStore[lng] = resStore[lng] || {};
     resStore[lng][ns] = {};
+    if (o.useLocalStorage) {
+        sync._storeLocal(resStore);
+    }
 }
 
 function addResource(lng, ns, key, value) {
@@ -79,6 +85,9 @@ function addResource(lng, ns, key, value) {
             node = node[keys[x]];
         }
         x++;
+    }
+    if (o.useLocalStorage) {
+        sync._storeLocal(resStore);
     }
 }
 
