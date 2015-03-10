@@ -126,13 +126,13 @@ describe('with namespace', function() {
         var spy; 
 
         beforeEach(function(done) {
-          spy = sinon.spy(i18n.options, 'missingKeyHandler');
           i18n.init(i18n.functions.extend(opts, { 
             fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
             resStore: resStore,
             sendMissing: true, /* must be changed to saveMissing */
             ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
             function(t) { 
+              spy = sinon.spy(i18n.options, 'missingKeyHandler');
               t('ns.common:notExisting');
               done(); 
             });
