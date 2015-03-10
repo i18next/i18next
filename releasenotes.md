@@ -1,5 +1,6 @@
 ### 1.7.8
-- fixes issue [issue 360](https://github.com/i18next/i18next/issues/360) passing exports or window
+- fixes issue [issue 360](https://github.com/i18next/i18next/issues/360) 
+- expose applyReplacement on api
 
 ### 1.7.7
 - fixes issue with stack overflow on t(lng, count)
