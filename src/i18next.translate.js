@@ -281,6 +281,7 @@ function _find(key, options) {
     if (needsPlural(options, lngs[0])) {
         optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
         delete optionWithoutCount.count;
+        optionWithoutCount._origLng = optionWithoutCount._origLng || optionWithoutCount.lng || lngs[0];
         delete optionWithoutCount.lng;
         optionWithoutCount.defaultValue = o.pluralNotFound;
 
@@ -310,12 +311,21 @@ function _find(key, options) {
             var clone = lngs.slice();
             clone.shift();
             options = f.extend(options, { lngs: clone });
+            options._origLng = optionWithoutCount._origLng;
             delete options.lng;
             // retry with fallbacks
             translated = translate(ns + o.nsseparator + key, options);
             if (translated != o.pluralNotFound) return translated;
         } else {
-            return translated;
+            optionWithoutCount.lng = optionWithoutCount._origLng;
+            delete optionWithoutCount._origLng;
+            translated = translate(ns + o.nsseparator + key, optionWithoutCount);
+            
+            return applyReplacement(translated, {
+                count: options.count,
+                interpolationPrefix: options.interpolationPrefix,
+                interpolationSuffix: options.interpolationSuffix
+            });
         }
     }
 
