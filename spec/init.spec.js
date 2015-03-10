@@ -8,6 +8,8 @@ describe('Initialisation', function() {
 
     //= init/init.addResourceOrResourceBundle.spec.js
 
+    //= init/init.getResourceBundle.spec.js
+
     //= init/init.removeResourceBundle.spec.js
 
     //= init/init.loadBehaviour.spec.js
