@@ -4,6 +4,7 @@
 - save resources to localStorage when useLocaleStore is true
 - add support on key is a number
 - added getResourceBundle to API
+- allow multiple post-processors
 
 ### 1.7.7
 - fixes issue with stack overflow on t(lng, count)
