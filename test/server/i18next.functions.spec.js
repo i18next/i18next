@@ -1,5 +1,5 @@
 // i18next, v1.7.7
-// Copyright (c)2014 Jan Mühlemann (jamuhl).
+// Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 //////////////////////
@@ -168,6 +168,10 @@ describe('i18next.functions', function() {
   
       it('it should postprocess on missing value', function() {
         expect(i18n.t('notFound2', {postProcess: 'myProcessor2'})).to.be('notFound2 ok');
+      });
+  
+      it('it should postprocess with multiple post processors', function() {
+        expect(i18n.t('simpleTest', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
       });
   
       describe('or setting it as default on init', function() {

@@ -1020,6 +1020,10 @@ describe('i18next', function() {
           expect(i18n.t('notFound2', {postProcess: 'myProcessor2'})).to.be('notFound2 ok');
         });
     
+        it('it should postprocess with multiple post processors', function() {
+          expect(i18n.t('simpleTest', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
+        });
+    
         describe('or setting it as default on init', function() {
     
           beforeEach(function(done) {
