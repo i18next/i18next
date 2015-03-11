@@ -96,6 +96,10 @@ module.exports = function(grunt) {
         src: ['src/amd.jquery.js'],
         dest: 'bin/i18next.amd.withJQuery-latest.js'
       },
+      commonjsjquery: {
+        src: ['src/commonjs.jquery.js'],
+        dest: 'bin/i18next.commonjs.withJQuery-latest.js'
+      },
       spec: {
         src: ['spec/spec.js'],
         dest: 'test/test.js'
@@ -134,6 +138,10 @@ module.exports = function(grunt) {
         src: ['bin/i18next.amd.withJQuery-latest.js'],
         dest: 'release/i18next.amd.withJQuery-<%= meta.version %>.min.js'
       },
+      commonjsjquery: {
+        src: ['bin/i18next.commonjs.withJQuery-latest.js'],
+        dest: 'release/i18next.commonjs.withJQuery-<%= meta.version %>.min.js'
+      },
       release_latest: {
         src: ['bin/i18next-latest.js'],
         dest: 'release/i18next-latest.min.js'
@@ -146,6 +154,10 @@ module.exports = function(grunt) {
         src: ['bin/i18next.amd.withJQuery-latest.js'],
         dest: 'release/i18next.amd.withJQuery-latest.min.js'
       },
+      commonjsjquery_latest: {
+        src: ['bin/i18next.commonjs.withJQuery-latest.js'],
+        dest: 'release/i18next.commonjs.withJQuery-latest.min.js'
+      },
       release_latest_root: {
         src: ['bin/i18next-latest.js'],
         dest: './i18next.min.js'
@@ -157,6 +169,10 @@ module.exports = function(grunt) {
       amdjquery_latest_root: {
         src: ['bin/i18next.amd.withJQuery-latest.js'],
         dest: './i18next.amd.withJQuery.min.js'
+      },
+      commonjsjquery_latest_root: {
+        src: ['bin/i18next.commonjs.withJQuery-latest.js'],
+        dest: './i18next.commonjs.withJQuery.min.js'
       }
     },
 
@@ -174,6 +190,9 @@ module.exports = function(grunt) {
               if (src == 'i18next.amd.withJQuery-latest.js') {
                 dest += 'i18next.amd.withJQuery-' + version + '.js';
               }
+              if (src == 'i18next.commonjs.withJQuery-latest.js') {
+                dest += 'i18next.commonjs.withJQuery-' + version + '.js';
+              }
               return dest;
             }
           },
@@ -188,6 +207,9 @@ module.exports = function(grunt) {
               }
               if (src == 'i18next.amd.withJQuery-latest.js') {
                 dest += 'i18next.amd.withJQuery.js';
+              }
+              if (src == 'i18next.commonjs.withJQuery-latest.js') {
+                dest += 'i18next.commonjs.withJQuery.js';
               }
               return dest;
             }
