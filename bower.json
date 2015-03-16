@@ -1,6 +1,6 @@
 {
   "name": "i18next",
-  "version": "1.7.7",
+  "version": "1.8.0",
   "main": "./i18next.js",
   "dependencies": {},
   "ignore": [

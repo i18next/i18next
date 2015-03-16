@@ -1,4 +1,4 @@
-// i18next, v1.7.7
+// i18next, v1.8.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -499,13 +499,13 @@ describe('i18next.init', function() {
             var spy; 
     
             beforeEach(function(done) {
-              spy = sinon.spy(i18n.options, 'missingKeyHandler');
               i18n.init(i18n.functions.extend(opts, { 
                 fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                 resStore: resStore,
                 sendMissing: true, /* must be changed to saveMissing */
                 ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                 function(t) { 
+                  spy = sinon.spy(i18n.options, 'missingKeyHandler');
                   t('ns.common:notExisting');
                   done(); 
                 });

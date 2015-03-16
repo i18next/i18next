@@ -1,4 +1,4 @@
-// i18next, v1.7.7
+// i18next, v1.8.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -779,6 +779,40 @@ describe('i18next.translate', function() {
   
         expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
         expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 items from ns.2');
+      });
+  
+    });
+  
+    describe('fallback on count with non-plurals', function() {
+      var resStore = {
+        dev: { 'ns.2': {
+              pluralTestWithCount: '__count__ item from ns.2'
+          }},
+        en: { },            
+        'en-US': { 
+          'ns.1': {
+              pluralTestWithCount: '__count__ item'
+          } 
+        }
+      };
+      
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { 
+            resStore: resStore,
+            ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
+          }),
+          function(t) { done(); });
+      });
+  
+      it('it should provide correct singular form', function() {
+        expect(i18n.t('pluralTestWithCount', {count: 0})).to.be('0 item');
+        expect(i18n.t('pluralTestWithCount', {count: 1})).to.be('1 item');
+        expect(i18n.t('pluralTestWithCount', {count: 7})).to.be('7 item');
+      });
+  
+      it('it should provide correct singular form for second namespace', function() {
+        expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
+        expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 item from ns.2');
       });
   
     });

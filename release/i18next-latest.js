@@ -1,8 +1,8 @@
-// i18next, v1.7.7
-// Copyright (c)2014 Jan Mühlemann (jamuhl).
+// i18next, v1.8.0
+// Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
-(function() {
+(function(root) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {
@@ -76,8 +76,7 @@
         }
     }
 
-    var root = this
-      , $ = root.jQuery || root.Zepto
+    var $ = root.jQuery || root.Zepto
       , i18n = {}
       , resStore = {}
       , currentLng
@@ -92,16 +91,6 @@
     // If we're not in CommonJS, add `i18n` to the
     // global object or to jquery.
     if (typeof module !== 'undefined' && module.exports) {
-        if (!$) {
-          try {
-            $ = require('jquery');
-          } catch(e) {
-            // just ignore
-          }
-        }
-        if ($) {
-            $.i18n = $.i18n || i18n;
-        }
         module.exports = i18n;
     } else {
         if ($) {
@@ -147,7 +136,7 @@
                 var todo = lngs.length;
     
                 f.each(lngs, function(key, lng) {
-                    var local = window.localStorage.getItem('res_' + lng);
+                    var local = f.localStorage.getItem('res_' + lng);
     
                     if (local) {
                         local = JSON.parse(local);
@@ -867,6 +856,16 @@
                         f.log('failed to set value for key "' + key + '" to localStorage.');
                     }
                 }
+            },
+            getItem: function(key, value) {
+                if (window.localStorage) {
+                    try {
+                        return window.localStorage.getItem(key, value);
+                    } catch (e) {
+                        f.log('failed to get value for key "' + key + '" from localStorage.');
+                        return undefined;
+                    }
+                }
             }
         }
     };
@@ -1000,6 +999,9 @@
         } else {
             f.extend(resStore[lng][ns], resources);
         }
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
+        }
     }
     
     function hasResourceBundle(lng, ns) {
@@ -1020,6 +1022,15 @@
         return hasValues;
     }
     
+    function getResourceBundle(lng, ns) {
+        if (typeof ns !== 'string') {
+            ns = o.ns.defaultNs;
+        }
+    
+        resStore[lng] = resStore[lng] || {};
+        return f.extend({}, resStore[lng][ns]);
+    }
+    
     function removeResourceBundle(lng, ns) {
         if (typeof ns !== 'string') {
             ns = o.ns.defaultNs;
@@ -1027,6 +1038,9 @@
     
         resStore[lng] = resStore[lng] || {};
         resStore[lng][ns] = {};
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
+        }
     }
     
     function addResource(lng, ns, key, value) {
@@ -1055,6 +1069,9 @@
                 node = node[keys[x]];
             }
             x++;
+        }
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
         }
     }
     
@@ -1397,6 +1414,10 @@
     
         if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
     
+        if (typeof potentialKeys === 'number') {
+            potentialKeys = String(potentialKeys);
+        }
+    
         if (typeof potentialKeys === 'string') {
             potentialKeys = [potentialKeys];
         }
@@ -1433,11 +1454,27 @@
             }
         }
     
-        var postProcessor = options.postProcess || o.postProcess;
-        if (found !== undefined && postProcessor) {
-            if (postProcessors[postProcessor]) {
-                found = postProcessors[postProcessor](found, key, options);
-            }
+        var postProcessorsToApply;
+        if (typeof o.postProcess === 'string' && o.postProcess !== '') {
+            postProcessorsToApply = [o.postProcess];
+        } else if (typeof o.postProcess === 'array' || typeof o.postProcess === 'object') {
+            postProcessorsToApply = o.postProcess;
+        } else {
+            postProcessorsToApply = [];
+        }
+    
+        if (typeof options.postProcess === 'string' && options.postProcess !== '') {
+            postProcessorsToApply = postProcessorsToApply.concat([options.postProcess]);
+        } else if (typeof options.postProcess === 'array' || typeof options.postProcess === 'object') {
+            postProcessorsToApply = postProcessorsToApply.concat(options.postProcess);
+        }
+    
+        if (found !== undefined && postProcessorsToApply.length) {
+            postProcessorsToApply.forEach(function(postProcessor) {
+                if (postProcessors[postProcessor]) {
+                    found = postProcessors[postProcessor](found, key, options);
+                }
+            });
         }
     
         // process notFound if function exists
@@ -1454,9 +1491,13 @@
             notFound = applyReplacement(notFound, options);
             notFound = applyReuse(notFound, options);
     
-            if (postProcessor && postProcessors[postProcessor]) {
+            if (postProcessorsToApply.length) {
                 var val = _getDefaultValue(key, options);
-                found = postProcessors[postProcessor](val, key, options);
+                postProcessorsToApply.forEach(function(postProcessor) {
+                    if (postProcessors[postProcessor]) {
+                        found = postProcessors[postProcessor](val, key, options);
+                    }
+                });
             }
         }
     
@@ -1514,6 +1555,7 @@
         if (needsPlural(options, lngs[0])) {
             optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
             delete optionWithoutCount.count;
+            optionWithoutCount._origLng = optionWithoutCount._origLng || optionWithoutCount.lng || lngs[0];
             delete optionWithoutCount.lng;
             optionWithoutCount.defaultValue = o.pluralNotFound;
     
@@ -1543,12 +1585,21 @@
                 var clone = lngs.slice();
                 clone.shift();
                 options = f.extend(options, { lngs: clone });
+                options._origLng = optionWithoutCount._origLng;
                 delete options.lng;
                 // retry with fallbacks
                 translated = translate(ns + o.nsseparator + key, options);
                 if (translated != o.pluralNotFound) return translated;
             } else {
-                return translated;
+                optionWithoutCount.lng = optionWithoutCount._origLng;
+                delete optionWithoutCount._origLng;
+                translated = translate(ns + o.nsseparator + key, optionWithoutCount);
+                
+                return applyReplacement(translated, {
+                    count: options.count,
+                    interpolationPrefix: options.interpolationPrefix,
+                    interpolationSuffix: options.interpolationSuffix
+                });
             }
         }
     
@@ -1669,7 +1720,7 @@
     
         // get from localStorage
         if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
-            userLngChoices.push(window.localStorage.getItem('i18next_lng'));
+            userLngChoices.push(f.localStorage.getItem('i18next_lng'));
         }
     
         // get from navigator
@@ -2102,6 +2153,7 @@
     i18n.preload = preload;
     i18n.addResourceBundle = addResourceBundle;
     i18n.hasResourceBundle = hasResourceBundle;
+    i18n.getResourceBundle = getResourceBundle;
     i18n.addResource = addResource;
     i18n.addResources = addResources;
     i18n.removeResourceBundle = removeResourceBundle;
@@ -2117,6 +2169,7 @@
     i18n.functions = f;
     i18n.lng = lng;
     i18n.addPostProcessor = addPostProcessor;
+    i18n.applyReplacement = f.applyReplacement;
     i18n.options = o;
 
-})();
+})(typeof exports === 'undefined' ? window : exports);
