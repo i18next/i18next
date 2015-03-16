@@ -1,5 +1,5 @@
-// i18next, v1.7.7
-// Copyright (c)2014 Jan Mühlemann (jamuhl).
+// i18next, v1.8.0
+// Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 describe('i18next', function() {
@@ -274,6 +274,48 @@ describe('i18next', function() {
       
           });
       
+        });
+      
+      });
+  
+      describe('getting resources after init', function() {
+      
+        var resStore = {
+          dev: { translation: { 'test': 'ok_from_dev' } },
+          en: { translation: { 'test': 'ok_from_en' } },            
+          'en-US': { translation: { 'test': 'ok_from_en-US' } }
+        };
+      
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore }), function() {
+              done();
+          });
+        });
+      
+        it('it should return resources for existing bundle', function() {
+          var devTranslation = i18n.getResourceBundle('dev', 'translation');
+          var enTranslation = i18n.getResourceBundle('en', 'translation');
+          var enUSTranslation = i18n.getResourceBundle('en-US', 'translation');
+          expect(devTranslation.test).to.be('ok_from_dev');
+          expect(enTranslation.test).to.be('ok_from_en');
+          expect(enUSTranslation.test).to.be('ok_from_en-US');
+        });
+      
+        it('it should return empty object for non-existing bundle', function() {
+          var nonExisting = i18n.getResourceBundle('en-GB', 'translation');
+          expect(Object.keys(nonExisting).length).to.be(0);
+        });
+      
+        it('it should use default namespace when namespace argument is left out', function() {
+          var enTranslation = i18n.getResourceBundle('en');
+          expect(enTranslation.test).to.be('ok_from_en');
+        });
+      
+        it('it should return a clone of the resources', function() {
+          var enTranslation = i18n.getResourceBundle('en');
+          enTranslation.test = 'ok_from_en_changed';
+          expect(enTranslation.test).to.be('ok_from_en_changed');
+          expect(resStore.en.translation.test).to.be('ok_from_en');
         });
       
       });
@@ -567,13 +609,13 @@ describe('i18next', function() {
               var spy; 
       
               beforeEach(function(done) {
-                spy = sinon.spy(i18n.options, 'missingKeyHandler');
                 i18n.init(i18n.functions.extend(opts, { 
                   fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
                   resStore: resStore,
                   sendMissing: true, /* must be changed to saveMissing */
                   ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                   function(t) { 
+                    spy = sinon.spy(i18n.options, 'missingKeyHandler');
                     t('ns.common:notExisting');
                     done(); 
                   });
@@ -978,6 +1020,10 @@ describe('i18next', function() {
           expect(i18n.t('notFound2', {postProcess: 'myProcessor2'})).to.be('notFound2 ok');
         });
     
+        it('it should postprocess with multiple post processors', function() {
+          expect(i18n.t('simpleTest', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
+        });
+    
         describe('or setting it as default on init', function() {
     
           beforeEach(function(done) {
@@ -1210,6 +1256,11 @@ describe('i18next', function() {
       it('it should not break on undefined key', function() {
         expect(i18n.t(undefined)).to.be('');
       });
+    
+      it('it should stringify first on number key', function() {
+        expect(i18n.t(1)).to.be(i18n.t('1'));
+        expect(i18n.t(1.1)).to.be(i18n.t('1.1'));
+      });   
       
     });
   
@@ -1986,6 +2037,40 @@ describe('i18next', function() {
     
           expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
           expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 items from ns.2');
+        });
+    
+      });
+    
+      describe('fallback on count with non-plurals', function() {
+        var resStore = {
+          dev: { 'ns.2': {
+                pluralTestWithCount: '__count__ item from ns.2'
+            }},
+          en: { },            
+          'en-US': { 
+            'ns.1': {
+                pluralTestWithCount: '__count__ item'
+            } 
+          }
+        };
+        
+        beforeEach(function(done) {
+          i18n.init(i18n.functions.extend(opts, { 
+              resStore: resStore,
+              ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
+            }),
+            function(t) { done(); });
+        });
+    
+        it('it should provide correct singular form', function() {
+          expect(i18n.t('pluralTestWithCount', {count: 0})).to.be('0 item');
+          expect(i18n.t('pluralTestWithCount', {count: 1})).to.be('1 item');
+          expect(i18n.t('pluralTestWithCount', {count: 7})).to.be('7 item');
+        });
+    
+        it('it should provide correct singular form for second namespace', function() {
+          expect(i18n.t('ns.2:pluralTestWithCount', {count: 1})).to.be('1 item from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', {count: 7})).to.be('7 item from ns.2');
         });
     
       });
