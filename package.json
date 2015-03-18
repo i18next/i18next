@@ -6,7 +6,7 @@
   , "main": "i18next.js"
   , "browser": "i18next.js"
   , "engines": {
-        "node": "~v0.4.12"
+        "node": "^0.4.12"
     }
   , "dependencies": { }
   , "devDependencies": {
