@@ -1,4 +1,4 @@
-### 1.8.1
+### 1.8.2
 - fixes build of commonjs with jquery file
 
 ### 1.8.0
