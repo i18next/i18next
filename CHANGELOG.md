@@ -1,3 +1,6 @@
+### 1.8.1
+- fixes build of commonjs with jquery file
+
 ### 1.8.0
 - [BREAKING] adds custom build for commonjs with jquery...default will be without require for jquery
 - fixes issue [issue 360](https://github.com/i18next/i18next/issues/360) 

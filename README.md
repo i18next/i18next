@@ -20,6 +20,8 @@ Project goal is to provide an easy way to translate a website on clientside:
 
 Check out the [documentation](http://i18next.com)
 
+Check [CHANGELOG](https://github.com/i18next/i18next/blob/master/CHANGELOG.md) for changes.
+
 # Usage
 
 Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('ns.special' and 'ns.common'):
