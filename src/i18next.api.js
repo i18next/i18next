@@ -22,3 +22,4 @@ i18n.lng = lng;
 i18n.addPostProcessor = addPostProcessor;
 i18n.applyReplacement = f.applyReplacement;
 i18n.options = o;
+i18n.noConflict = noConflict;

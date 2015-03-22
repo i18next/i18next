@@ -207,3 +207,14 @@ function reload(cb) {
     resStore = {};
     setLng(currentLng, cb);
 }
+
+function noConflict() {
+    
+    window.i18next = window.i18n;
+
+    if (conflictReference) {
+        window.i18n = conflictReference;
+    } else {
+        delete window.i18n;
+    }
+}

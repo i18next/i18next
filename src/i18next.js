@@ -9,7 +9,8 @@
       , replacementCounter = 0
       , languages = []
       , initialized = false
-      , sync = {};
+      , sync = {}
+      , conflictReference = null;
 
 
 
