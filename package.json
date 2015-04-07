@@ -24,6 +24,6 @@
   },
   "repository": "https://github.com/i18next/i18next/",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt && grunt testacular:ci"
   }
 }
