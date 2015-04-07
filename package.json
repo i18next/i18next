@@ -23,6 +23,6 @@
   },
   "repository": "https://github.com/i18next/i18next/",
   "scripts": {
-    "test": "testacular start"
+    "test": "grunt test"
   }
 }
