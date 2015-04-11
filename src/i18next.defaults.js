@@ -16,11 +16,12 @@ var o = {
     fallbackOnNull: true,
     fallbackOnEmpty: false,
     fallbackToDefaultNS: false,
+    showKeyIfEmpty: false,
     nsseparator: ':',
     keyseparator: '.',
     selectorAttr: 'data-i18n',
     debug: false,
-    
+
     resGetPath: 'locales/__lng__/__ns__.json',
     resPostPath: 'locales/add/__lng__/__ns__',
 

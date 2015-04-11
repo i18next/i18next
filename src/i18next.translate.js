@@ -320,7 +320,7 @@ function _find(key, options) {
             optionWithoutCount.lng = optionWithoutCount._origLng;
             delete optionWithoutCount._origLng;
             translated = translate(ns + o.nsseparator + key, optionWithoutCount);
-            
+
             return applyReplacement(translated, {
                 count: options.count,
                 interpolationPrefix: options.interpolationPrefix,
@@ -354,7 +354,7 @@ function _find(key, options) {
             value = value && value[keys[x]];
             x++;
         }
-        if (value !== undefined) {
+        if (value !== undefined && (!o.showKeyIfEmpty || value !== '')) {
             var valueType = Object.prototype.toString.apply(value);
             if (typeof value === 'string') {
                 value = applyReplacement(value, options);
