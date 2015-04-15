@@ -1,28 +1,28 @@
 {
-  "author": "jamuhl"
-  , "name": "i18next-client"
-  , "version": "1.8.2"
-  , "private": false
-  , "main": "i18next.js"
-  , "browser": "i18next.js"
-  , "engines": {
-        "node": "^0.4.12"
-    }
-  , "dependencies": { }
-  , "devDependencies": {
-      "grunt": "~0.4.1"
-    , "grunt-rigger": "~0.5.0"
-    , "grunt-contrib": ">=0.1.0"
-    , "grunt-shell": ">=0.1.0"
-    , "gruntacular": ">=0.1.0"
-    , "express": ">= 0.0.1"
-    , "async": ">= 0.1.18"
-    , "lodash": ">= 0.5.x"
-    , "zipstream": ">=0.2.1"
-    , "underscore": ">=0.2.1"
-  }
-  , "repository": "https://github.com/i18next/i18next/"
-  , "scripts": {
+  "author": "jamuhl",
+  "name": "i18next-client",
+  "version": "1.8.2",
+  "private": false,
+  "main": "i18next.js",
+  "browser": "i18next.js",
+  "engines": {
+    "node": "^0.4.12"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-rigger": "~0.5.0",
+    "grunt-contrib": ">=0.1.0",
+    "grunt-shell": ">=0.1.0",
+    "gruntacular": ">=0.1.0",
+    "express": ">= 0.0.1",
+    "async": ">= 0.1.18",
+    "lodash": ">= 0.5.x",
+    "zipstream": ">=0.2.1",
+    "underscore": ">=0.2.1"
+  },
+  "repository": "https://github.com/i18next/i18next/",
+  "scripts": {
     "test": "testacular start"
   }
 }

@@ -9,7 +9,10 @@ var o = {
     fallbackNS: [],
     detectLngQS: 'setLng',
     detectLngFromLocalStorage: false,
-    ns: 'translation',
+    ns: {
+        namespaces: ['translation'],
+        defaultNs: 'translation'
+    },
     fallbackOnNull: true,
     fallbackOnEmpty: false,
     fallbackToDefaultNS: false,
