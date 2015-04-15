@@ -1,11 +1,11 @@
 function init(options, cb) {
-    
+
     if (typeof options === 'function') {
         cb = options;
         options = {};
     }
     options = options || {};
-    
+
     // override defaults with passed in options
     f.extend(o, options);
     delete o.fixLng; /* passed in each time */
@@ -101,4 +101,8 @@ function init(options, cb) {
     });
 
     if (deferred) return deferred.promise();
+}
+
+function isInitialized() {
+    return initialized;
 }

@@ -1,5 +1,6 @@
 // public api interface
 i18n.init = init;
+i18n.isInitialized = isInitialized;
 i18n.setLng = setLng;
 i18n.preload = preload;
 i18n.addResourceBundle = addResourceBundle;
