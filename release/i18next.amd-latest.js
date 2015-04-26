@@ -1,4 +1,4 @@
-// i18next, v1.8.1
+// i18next, v1.8.2
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -309,7 +309,10 @@
         fallbackNS: [],
         detectLngQS: 'setLng',
         detectLngFromLocalStorage: false,
-        ns: 'translation',
+        ns: {
+            namespaces: ['translation'],
+            defaultNs: 'translation'
+        },
         fallbackOnNull: true,
         fallbackOnEmpty: false,
         fallbackToDefaultNS: false,
