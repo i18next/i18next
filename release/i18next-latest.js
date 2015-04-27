@@ -1723,7 +1723,10 @@
     
         // get from localStorage
         if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
-            userLngChoices.push(f.localStorage.getItem('i18next_lng'));
+            var lang = f.localStorage.getItem('i18next_lng');
+            if (lang) {
+                userLngChoices.push(lang);
+            }
         }
     
         // get from navigator
