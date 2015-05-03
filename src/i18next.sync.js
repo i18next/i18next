@@ -118,7 +118,8 @@ sync = {
                         loadComplete('failed loading resource.json error: ' + error);
                     },
                     dataType: "json",
-                    async : options.getAsync
+                    async : options.getAsync,
+                    timeout: options.timeout
                 });
             }    
         }
@@ -146,7 +147,8 @@ sync = {
                 done(error, {});
             },
             dataType: "json",
-            async : options.getAsync
+            async : options.getAsync,
+            timeout: options.timeout
         });
     },
 
@@ -194,7 +196,8 @@ sync = {
                     f.log('failed posting missing key \'' + key + '\' to: ' + item.url);
                 },
                 dataType: "json",
-                async : o.postAsync
+                async : o.postAsync,
+                timeout: o.timeout
             });
         }
     },
