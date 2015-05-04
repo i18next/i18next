@@ -119,7 +119,7 @@ sync = {
                     },
                     dataType: "json",
                     async : options.getAsync,
-                    timeout: options.timeout
+                    timeout: options.ajaxTimeout
                 });
             }    
         }
@@ -148,7 +148,7 @@ sync = {
             },
             dataType: "json",
             async : options.getAsync,
-            timeout: options.timeout
+            timeout: options.ajaxTimeout
         });
     },
 
@@ -197,7 +197,7 @@ sync = {
                 },
                 dataType: "json",
                 async : o.postAsync,
-                timeout: o.timeout
+                timeout: o.ajaxTimeout
             });
         }
     },
