@@ -1,4 +1,4 @@
-// i18next, v1.8.2
+// i18next, v1.9.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -218,6 +218,7 @@
                     // load all needed stuff once
                     f.ajax({
                         url: url,
+                        cache: options.cache,
                         success: function(data, status, xhr) {
                             f.log('loaded: ' + url);
                             loadComplete(null, data);
@@ -227,7 +228,8 @@
                             loadComplete('failed loading resource.json error: ' + error);
                         },
                         dataType: "json",
-                        async : options.getAsync
+                        async : options.getAsync,
+                        timeout: options.ajaxTimeout
                     });
                 }    
             }
@@ -237,6 +239,7 @@
             var url = applyReplacement(options.resGetPath, { lng: lng, ns: ns });
             f.ajax({
                 url: url,
+                cache: options.cache,
                 success: function(data, status, xhr) {
                     f.log('loaded: ' + url);
                     done(null, data);
@@ -255,7 +258,8 @@
                     done(error, {});
                 },
                 dataType: "json",
-                async : options.getAsync
+                async : options.getAsync,
+                timeout: options.ajaxTimeout
             });
         },
     
@@ -303,7 +307,8 @@
                         f.log('failed posting missing key \'' + key + '\' to: ' + item.url);
                     },
                     dataType: "json",
-                    async : o.postAsync
+                    async : o.postAsync,
+                    timeout: o.ajaxTimeout
                 });
             }
         },
@@ -328,11 +333,12 @@
         fallbackOnNull: true,
         fallbackOnEmpty: false,
         fallbackToDefaultNS: false,
+        showKeyIfEmpty: false,
         nsseparator: ':',
         keyseparator: '.',
         selectorAttr: 'data-i18n',
         debug: false,
-        
+    
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
     
@@ -372,6 +378,7 @@
         postProcess: undefined,
         parseMissingKey: undefined,
         missingKeyHandler: sync.postMissing,
+        ajaxTimeout: 0,
     
         shortcutFunction: 'sprintf' // or: defaultValue
     };
@@ -881,13 +888,13 @@
         }
     };
     function init(options, cb) {
-        
+    
         if (typeof options === 'function') {
             cb = options;
             options = {};
         }
         options = options || {};
-        
+    
         // override defaults with passed in options
         f.extend(o, options);
         delete o.fixLng; /* passed in each time */
@@ -983,6 +990,10 @@
         });
     
         if (deferred) return deferred.promise();
+    }
+    
+    function isInitialized() {
+        return initialized;
     }
     function preload(lngs, cb) {
         if (typeof lngs === 'string') lngs = [lngs];
@@ -1192,6 +1203,17 @@
     function reload(cb) {
         resStore = {};
         setLng(currentLng, cb);
+    }
+    
+    function noConflict() {
+        
+        window.i18next = window.i18n;
+    
+        if (conflictReference) {
+            window.i18n = conflictReference;
+        } else {
+            delete window.i18n;
+        }
     }
     function addJqueryFunct() {
         // $.t shortcut
@@ -1605,7 +1627,7 @@
                 optionWithoutCount.lng = optionWithoutCount._origLng;
                 delete optionWithoutCount._origLng;
                 translated = translate(ns + o.nsseparator + key, optionWithoutCount);
-                
+    
                 return applyReplacement(translated, {
                     count: options.count,
                     interpolationPrefix: options.interpolationPrefix,
@@ -1639,7 +1661,7 @@
                 value = value && value[keys[x]];
                 x++;
             }
-            if (value !== undefined) {
+            if (value !== undefined && (!o.showKeyIfEmpty || value !== '')) {
                 var valueType = Object.prototype.toString.apply(value);
                 if (typeof value === 'string') {
                     value = applyReplacement(value, options);
@@ -1693,6 +1715,7 @@
                     }
                 }
             } else {
+                options.ns = o.ns.defaultNs;
                 found = _find(key, options); // fallback to default NS
             }
             options.isFallbackLookup = false;
@@ -2163,6 +2186,7 @@
     });
     // public api interface
     i18n.init = init;
+    i18n.isInitialized = isInitialized;
     i18n.setLng = setLng;
     i18n.preload = preload;
     i18n.addResourceBundle = addResourceBundle;
@@ -2185,5 +2209,6 @@
     i18n.addPostProcessor = addPostProcessor;
     i18n.applyReplacement = f.applyReplacement;
     i18n.options = o;
+    i18n.noConflict = noConflict;
 
 })(typeof exports === 'undefined' ? window : exports);
