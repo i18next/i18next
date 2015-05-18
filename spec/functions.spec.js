@@ -12,4 +12,6 @@ describe('basic functionality', function() {
 
   //= functions/functions.objectTreeKeyHandler.spec.js
 
+  //= functions/functions.noConflict.spec.js
+
 });

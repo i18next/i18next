@@ -8,5 +8,8 @@ if (typeof module !== 'undefined' && module.exports) {
         $.i18n = $.i18n || i18n;
     }
     
-    root.i18n = root.i18n || i18n;
+    if (root.i18n) {
+    	conflictReference = root.i18n;
+    }
+    root.i18n = i18n;
 }

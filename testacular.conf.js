@@ -15,6 +15,7 @@ files = [
   'test/libs/sinon-1.3.4.js',
   'test/libs/expect.js',
   'test/libs/jsfixtures.js',
+  'test/libs/fake.conflict.lib.js',
   'bin/i18next-latest.js',
   'test/test.js'
   
