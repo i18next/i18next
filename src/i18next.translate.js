@@ -408,6 +408,7 @@ function _find(key, options) {
                 }
             }
         } else {
+            options.ns = o.ns.defaultNs;
             found = _find(key, options); // fallback to default NS
         }
         options.isFallbackLookup = false;
