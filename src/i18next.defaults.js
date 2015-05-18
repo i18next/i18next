@@ -61,6 +61,7 @@ var o = {
     postProcess: undefined,
     parseMissingKey: undefined,
     missingKeyHandler: sync.postMissing,
+    ajaxTimeout: 0,
 
     shortcutFunction: 'sprintf' // or: defaultValue
 };
