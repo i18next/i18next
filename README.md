@@ -26,87 +26,101 @@ Check [CHANGELOG](https://github.com/i18next/i18next/blob/master/CHANGELOG.md) f
 
 Assuming we loaded __en-US__, __en__ and __dev__ resources for two namespaces ('ns.special' and 'ns.common'):
 
-	// given loaded and merged dictionaries in i18next.js to:
-	{
-	    "en_US": {
-	        "ns.special": {
-	            "app": {
-	                "name": "i18n",
-	                "insert": "you are __youAre__",
-	                "child": "__count__ child",
-	                "child_plural": "__count__ children"
-	            }
-	        },
-	        "ns.common": {}
-	    },
-	    "en": {
-	        "ns.special": {
-	            "app": {
-	                "area": "Area 51"
-	            }
-	        },
-	        "ns.common": {}
-	    },
-	    "dev": {
-	        "ns.common": {
-	            "app": {
-	                "company": {
-	                    "name": "my company"
-	                }
-	            },
-	            "add": "add"
-	        },
-	        "ns.special": {
-	            "nav": {
-	                "1": "link1",
-	                "2": "link2",
-	                "home": "home"
-	            }
-	        }
-	    }
-	}
+```javascript
+// given loaded and merged dictionaries in i18next.js to:
+{
+    "en_US": {
+        "ns.special": {
+            "app": {
+                "name": "i18n",
+                "insert": "you are __youAre__",
+                "child": "__count__ child",
+                "child_plural": "__count__ children"
+            }
+        },
+        "ns.common": {}
+    },
+    "en": {
+        "ns.special": {
+            "app": {
+                "area": "Area 51"
+            }
+        },
+        "ns.common": {}
+    },
+    "dev": {
+        "ns.common": {
+            "app": {
+                "company": {
+                    "name": "my company"
+                }
+            },
+            "add": "add"
+        },
+        "ns.special": {
+            "nav": {
+                "1": "link1",
+                "2": "link2",
+                "home": "home"
+            }
+        }
+    }
+}
+```
 
 ## you can translate using `$.t(key, [options])`
 
-	$.i18n.init({
-	    lng: 'en-US',
-	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
-	}, function() {
-	    $.t('app.name'); // -> i18n (from en-US resourcefile)
-	    $.t('app.area'); // -> Area 51 (from en resourcefile)
-	    $.t('ns.common:app.company.name'); // -> my company (from dev resourcefile)
-	    $.t('ns.common:add'); // -> add (from dev resourcefile)
-	});
+```javascript
+$.i18n.init({
+    lng: 'en-US',
+    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
+}, function() {
+    $.t('app.name'); // -> i18n (from en-US resourcefile)
+    $.t('app.area'); // -> Area 51 (from en resourcefile)
+    $.t('ns.common:app.company.name'); // -> my company (from dev resourcefile)
+    $.t('ns.common:add'); // -> add (from dev resourcefile)
+});
+```	
 
 ### insert values into your translation
 
-	$.t('app.insert', {youAre: 'great'}) // -> you are great
+```javascript
+$.t('app.insert', {youAre: 'great'}) // -> you are great
+```
 
 ### support for plurals
 
-	$.t('app.child', {count: 1}) // -> 1 child
-	$.t('app.child', {count: 3}) // -> 3 children
+```javascript
+$.t('app.child', {count: 1}) // -> 1 child
+$.t('app.child', {count: 3}) // -> 3 children
+```
 
 ### support for key priority when you need to try multiple keys, using the first one that exists.
 
-	$.t(['app.missingKey', 'app.existingKey'], {greeting: "hello"}) // -> I am the existing key: hello
+```javascript
+$.t(['app.missingKey', 'app.existingKey'], {greeting: "hello"}) // -> I am the existing key: hello
+```
 
 ## or you can just `$('.mySelector').i18n()` assuming you have added the `data-i18n="key"` attribute to your elements
 
+```html
 	// given
 	<ul class="nav">
 		<li class="active"><a href="#" data-i18n="nav.home">home</a></li>
 		<li><a href="#" data-i18n="nav.1">link1</a></li>
 		<li><a href="#" data-i18n="nav.2">link2</a></li>
 	</ul>
+```
 
-	// Run the following javascript to translate all elements having the _data-i18n_ attribute:
-	$.i18n.init({
-	    lng: 'en-US',
-	    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
-	}, function() {
-	    $('.nav').i18n();
-	});
+```javascript
+// Run the following javascript to translate all elements having the _data-i18n_ attribute:
+$.i18n.init({
+    lng: 'en-US',
+    ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'}
+}, function() {
+    $('.nav').i18n();
+});
+```
 
 For missing keys (if the option 'addMissing' is set to true) will be send to server with actual text as defaultValue.
 
