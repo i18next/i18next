@@ -109,6 +109,7 @@ sync = {
                 // load all needed stuff once
                 f.ajax({
                     url: url,
+                    cache: options.cache,
                     success: function(data, status, xhr) {
                         f.log('loaded: ' + url);
                         loadComplete(null, data);
@@ -128,6 +129,7 @@ sync = {
         var url = applyReplacement(options.resGetPath, { lng: lng, ns: ns });
         f.ajax({
             url: url,
+            cache: options.cache,
             success: function(data, status, xhr) {
                 f.log('loaded: ' + url);
                 done(null, data);
