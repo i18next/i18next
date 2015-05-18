@@ -1,4 +1,4 @@
-// i18next, v1.8.0
+// i18next, v1.9.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -542,6 +542,11 @@ describe('i18next', function() {
               expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_en-US');
               expect(i18n.t('ns.common:simple_en')).to.be('ok_from_en');
               expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_dev');
+      
+              // ns in options
+              expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_en-US');
+              expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_en');
+              expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_dev');
             });
       
           });
@@ -1226,6 +1231,19 @@ describe('i18next', function() {
         expect(i18n.t('simpleTest')).to.be('a value');
       });
     
+    });
+  
+    describe('Global variable conflict', function () {
+    
+      it('it should rename global "window.i18n" to "window.i18next"' + 
+        ' and restore window.i18n conflicting reference', function () {
+    
+        window.i18n.noConflict();
+    
+        expect(window.i18n.isFakeConflictingLib).to.be(true);
+        expect(window.i18next).to.be.an(Object);
+        expect(window.i18next.t).to.be.a(Function);
+      });
     });
   
   });
