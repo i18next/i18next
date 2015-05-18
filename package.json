@@ -1,12 +1,12 @@
 {
   "author": "jamuhl",
   "name": "i18next-client",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "private": false,
   "main": "i18next.js",
   "browser": "i18next.js",
   "engines": {
-    "node": "^0.4.12"
+    "node": ">=0.4.12"
   },
   "dependencies": {},
   "devDependencies": {

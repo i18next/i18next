@@ -1,9 +1,19 @@
+
+### 1.9.0
+- i18n.noConflict() [PR 371](https://github.com/i18next/i18next/pull/371)
+- fix fallback to default namepsace when namespace passed as an option [PR 375](https://github.com/i18next/i18next/pull/375)
+- cache option for ajax requests [PR 376](https://github.com/i18next/i18next/pull/376)
+- option to show key on value is empty string [PR 379](https://github.com/i18next/i18next/pull/379)
+- Add isInitialized method [PR 380](https://github.com/i18next/i18next/pull/380)
+- Null check for detectLngFromLocalStorage [PR 384](https://github.com/i18next/i18next/pull/384)
+- support for adding timeout in configuration for ajax request [PR 387](https://github.com/i18next/i18next/pull/387)
+
 ### 1.8.2
 - fixes build of commonjs with jquery file
 
 ### 1.8.0
 - [BREAKING] adds custom build for commonjs with jquery...default will be without require for jquery
-- fixes issue [issue 360](https://github.com/i18next/i18next/issues/360) 
+- fixes issue [issue 360](https://github.com/i18next/i18next/issues/360)
 - expose applyReplacement on api
 - save resources to localStorage when useLocaleStore is true
 - add support on key is a number
@@ -14,7 +24,7 @@
 
 ### 1.7.7
 - fixes issue with stack overflow on t(lng, count)
-- fixes empty value fallback when processing secondary ns 
+- fixes empty value fallback when processing secondary ns
 
 ### 1.7.6
 - fixes lng detection (i18next-client on npm)
@@ -80,7 +90,7 @@
 - fixes issue where plural don't get translated if language is passed in t options
 - fixes issue where key or defaultValue aren't postProcessed with itself as value
 - fixes issue with fallbackLng = false in combination with sendMissingTo = fallback
-- fixes namespace fallback loop to only loop if array has really a ns in it 
+- fixes namespace fallback loop to only loop if array has really a ns in it
 
 ### 1.6.2
 - fixes some var typo
@@ -96,7 +106,7 @@
 - defaultValues get postProcessed
 - BREAKING: per default null values in resources get translated to fallback. This can be changed by setting option fallbackOnNull to false
 - PR #81 added support for passing options to nested resources
-- PR #88 added an exists method to check for the existence of a key in the resource store 
+- PR #88 added an exists method to check for the existence of a key in the resource store
 - fixed issue with null value throws in applyReplacement function
 - fixed issue #80 empty string lookup ends in fallback instead of returning result in language
 - fixed issue with null value in resources not returning expected value

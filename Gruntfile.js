@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  var version = '1.8.2';
+  var version = require('./package.json').version;
   // before release:
   // update bower.json, package.json
   // after release:
@@ -20,8 +20,8 @@ module.exports = function(grunt) {
     meta: {
       version: version,
       banner: '// i18next, v<%= meta.version %>\n' +
-        '// Copyright (c)<%= grunt.template.today("yyyy") %> Jan Mühlemann (jamuhl).\n' + 
-        '// Distributed under MIT license\n' + 
+        '// Copyright (c)<%= grunt.template.today("yyyy") %> Jan Mühlemann (jamuhl).\n' +
+        '// Distributed under MIT license\n' +
         '// http://i18next.com\n'
     },
 
@@ -179,7 +179,7 @@ module.exports = function(grunt) {
     copy: {
       js: {
         files: [
-          { expand: true, cwd: 'bin/', src: ['*.js'], dest: 'release/', 
+          { expand: true, cwd: 'bin/', src: ['*.js'], dest: 'release/',
             rename: function(dest, src) { console.log(src + ' -> ' + dest);
               if (src == 'i18next-latest.js') {
                 dest += 'i18next-' + version + '.js';
@@ -197,7 +197,7 @@ module.exports = function(grunt) {
             }
           },
           { expand: true, cwd: 'bin/', src: ['*.js'], dest: 'release/'},
-          { expand: true, cwd: 'bin/', src: ['*.js'], dest: './', 
+          { expand: true, cwd: 'bin/', src: ['*.js'], dest: './',
             rename: function(dest, src) { console.log(src + ' -> ' + dest);
               if (src == 'i18next-latest.js') {
                 dest += 'i18next.js';
@@ -231,7 +231,7 @@ module.exports = function(grunt) {
             flatten: true,
             cwd: 'release/',
             src: [
-              'i18next-<%= meta.version %>.js', 
+              'i18next-<%= meta.version %>.js',
               'i18next-<%= meta.version %>.min.js'
             ],
             dest: 'i18next-<%= meta.version %>/'
@@ -250,9 +250,9 @@ module.exports = function(grunt) {
             flatten: true,
             cwd: 'release/',
             src: [
-              'i18next.amd-<%= meta.version %>.js', 
+              'i18next.amd-<%= meta.version %>.js',
               'i18next.amd-<%= meta.version %>.min.js',
-              'i18next.amd.withJQuery-<%= meta.version %>.js', 
+              'i18next.amd.withJQuery-<%= meta.version %>.js',
               'i18next.amd.withJQuery-<%= meta.version %>.min.js'
             ],
             dest: 'i18next.amd-<%= meta.version %>/'
