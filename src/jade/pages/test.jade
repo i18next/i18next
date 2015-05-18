@@ -35,6 +35,12 @@ html(lang="en")
     include ../includes/layout/endscripts
 
     script
+      // fake conflict
+      window.i18n = {
+        isFakeConflictingLib: true
+      }
+
+      // test run
       $(function() {
         mocha
         .run()
