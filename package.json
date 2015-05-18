@@ -19,10 +19,11 @@
     "async": ">= 0.1.18",
     "lodash": ">= 0.5.x",
     "zipstream": ">=0.2.1",
-    "underscore": ">=0.2.1"
+    "underscore": ">=0.2.1",
+    "phantomjs": "^1.9.16"
   },
   "repository": "https://github.com/i18next/i18next/",
   "scripts": {
-    "test": "testacular start"
+    "test": "grunt && grunt testacular:ci"
   }
 }
