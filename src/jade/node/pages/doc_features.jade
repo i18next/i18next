@@ -10,7 +10,7 @@ html(lang="en")
 
   body
     include ../includes/layout/header
-          
+
     include ../includes/layout/content
       .documentation
         include ../includes/doc_hero
@@ -44,7 +44,7 @@ html(lang="en")
             .feature
               pre
                 code
-                  | i18n.t("my.key", { postProcess: "myProcessorsName" }); 
+                  | i18n.t("my.key", { postProcess: "myProcessorsName" });
 
               .feature-description
                 p i18next will translate the key as usual. Then it passes the translation text to the post processor.
@@ -54,19 +54,19 @@ html(lang="en")
                 pre
                   code
                     | // given resources with array
-                    | {           
-                    |   'en-US': { 
-                    |     translation: {  
+                    | {
+                    |   'en-US': {
+                    |     translation: {
                     |       "markdownKey": [
                     |         "### title",
                     |         "a paragraph",
                     |         "",
                     |         "    // some code"
                     |       ]
-                    |     } 
+                    |     }
                     |   }
                     | };
-                    | 
+                    |
                     | // given registered post processor
                     | i18n.addPostProcessor("markdown", function(val, key, opts) {
                     |    return require("markdown").markdown.toHTML(val);
@@ -79,19 +79,19 @@ html(lang="en")
                 pre
                   code
                     | // given resources with array
-                    | {           
-                    |   'en-US': { 
-                    |     translation: {  
+                    | {
+                    |   'en-US': {
+                    |     translation: {
                     |       "jadeKey": [
                     |         "h1 title",
                     |         "p a paragraph",
                     |         "p another paragraph",
                     |         "    button with nested button"
                     |       ]
-                    |     } 
+                    |     }
                     |   }
                     | };
-                    | 
+                    |
                     | // given registered post processor
                     | i18n.addPostProcessor("jade", function(val, key, opts) {
                     |    return require("jade").compile(val, opts)();
@@ -110,7 +110,7 @@ html(lang="en")
           .span8
             .feature
               pre
-                code 
+                code
                   | i18n.init({ saveMissing: true });
 
               .feature-description
@@ -124,14 +124,14 @@ html(lang="en")
             .feature
               pre
                 code
-                  | var option = { 
+                  | var option = {
                   |   // change path to store file
-                  |   resSetPath: 'locales/__lng__/__ns__.json';
-                  | 
+                  |   resSetPath: 'locales/__lng__/__ns__.json',
+                  |
                   |   // send missing values to
                   |   sendMissingTo: 'fallback|current|all'
                   | };
-                  | 
+                  |
                   | i18n.init(option);
 
                   pre
@@ -141,7 +141,7 @@ html(lang="en")
                 p You can change the Indent of the outputted JSON File by setting jsonIntend on init (default is 4).
 
     include ../includes/layout/extra
-      
+
     include ../includes/layout/footer
-    
+
     include ../includes/layout/endscripts
