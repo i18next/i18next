@@ -9,12 +9,25 @@ html(lang="en")
 
   body
     include ../includes/layout/header
-          
+
     include ../includes/layout/content
       .hero-unit
         h2 Release Notes
 
       :markdown
+        ### v1.9.0
+        - updates i18next-client to 1.9.0
+        - fixes issue with cache control header [issue 169](https://github.com/i18next/i18next-node/issues/169)
+        - Ensure language support in addRoute made optional [PR 174](https://github.com/i18next/i18next-node/pull/174)
+        - Removed pluralExtensions lookup from detectLanguageFromPath [PR 181](https://github.com/i18next/i18next-node/pull/181)
+        - solves issue: method 'exists' not available in req.i18n [issue 187](https://github.com/i18next/i18next-node/issues/187)
+
+        ### v1.7.10
+        - sync.load refactor to reload not yet loaded namespaces - not break on loaded language
+
+        ### v1.7.9
+        - fixes issue with saveMissing [issue 165](https://github.com/i18next/i18next-node/issues/165)
+
         ### v1.7.8
         - update client to 1.7.7
 
@@ -26,15 +39,15 @@ html(lang="en")
         - JSON5 support
         - strip BOM
         - try JSON.parse
-        
+
         ### v1.7.3
         - updated client to 1.7.3
         - fixes issue with using WT with filesync [issue 116](https://github.com/jamuhl/i18next-node/issues/116)
         - fixes issue with detectLngFromPath if route level [pullrequest 121](https://github.com/jamuhl/i18next-node/pull/121)
-        
+
         ### v1.7.1
         - update client for some typos
-        
+
         ### v1.7.0
         - setLng via req.i18n.setLng (same as setting req.lng)
         - support cookie domain (options cookieDomain = '')
@@ -65,18 +78,18 @@ html(lang="en")
         ### v1.6.1
         - support for null values in resources
         - reuse tests from client script
-        
+
         ### v1.6.0
         - supportedLngs now used for all detect functions too
         - sendMissingTo Option is now working on server too
         - option to disable lng lookup from headers
         - fixed setting supported lngs via options
         - fixed setting options for webtranslate
-        
+
         ### v1.5.15
         - fixed missing argument in remove route
         - updated client
-        
+
         ### v1.5.14
         - set cookie name
         - some small fixes
@@ -100,7 +113,7 @@ html(lang="en")
         ### v1.5.9
         - bugfix  throws error on savemissing key
         - force lng from path (issue 32)
-        
+
         ### v1.5.8
         - updated client
         - updated i18next-webtranslate
@@ -111,7 +124,7 @@ html(lang="en")
 
         ### v1.5.6
         - bugfix in detectlng
-        
+
         ### v1.5.5
         - updated client
         - detectLng from route: detectLngFromPath index of route path, eg. 0 -> /en-US/myPage.html, 1 -> /cms/en-US/myPage.html
@@ -122,7 +135,7 @@ html(lang="en")
         - optional arg authenticated for postmissing, change, remove routes
         - integrated i18next-webtranslate
         - backend for couchdb
-        
+
         ### v1.4.1
         - post processing for translation
         - updated client
@@ -182,9 +195,9 @@ html(lang="en")
         - support for pluralized strings
         - insertion of variables into translations
         - translation nestingto translations
-                
+
     include ../includes/layout/extra
-      
+
     include ../includes/layout/footer
-    
+
     include ../includes/layout/endscripts
