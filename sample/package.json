@@ -1,0 +1,11 @@
+{
+  "name": "i18next-client-sample",
+  "engines": {
+    "node": ">=0.4.12"
+  },
+  "dependencies": {
+    "finalhandler": "^0.3.6",
+    "serve-static": "^1.9.3"
+  },
+  "repository": "https://github.com/i18next/i18next/"
+}
