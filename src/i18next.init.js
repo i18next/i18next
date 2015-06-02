@@ -39,7 +39,6 @@ function init(options, cb) {
 
     languages = f.toLanguages(o.lng);
     currentLng = languages[0];
-    f.log('currentLng set to: ' + currentLng);
 
     if (o.useCookie && f.cookie.read(o.cookieName) !== currentLng){ //cookie is unset or invalid
         f.cookie.create(o.cookieName, currentLng, o.cookieExpirationTime, o.cookieDomain);
