@@ -428,8 +428,12 @@ var f = {
         if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
         return lng_index;
     },
-    toLanguages: function(lng) {
+    toLanguages: function(lng, fallbackLng) {
         var log = this.log;
+
+        fallbackLng = fallbackLng || o.fallbackLng;
+        if (typeof fallbackLng === 'string')
+            fallbackLng = [fallbackLng];
 
         function applyCase(l) {
             var ret = l;
@@ -466,8 +470,8 @@ var f = {
             addLanguage(applyCase(lng));
         }
 
-        for (var i = 0; i < o.fallbackLng.length; i++) {
-            if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
+        for (var i = 0; i < fallbackLng.length; i++) {
+            if (languages.indexOf(fallbackLng[i]) === -1 && fallbackLng[i]) languages.push(applyCase(fallbackLng[i]));
         }
         return languages;
     },
