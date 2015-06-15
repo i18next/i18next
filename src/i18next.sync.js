@@ -13,15 +13,15 @@ sync = {
                         f.extend(store, fetched);
                         sync._storeLocal(fetched);
 
-                        cb(null, store);
+                        cb(err, store);
                     });
                 } else {
-                    cb(null, store);
+                    cb(err, store);
                 }
             });
         } else {
             sync._fetch(lngs, options, function(err, store){
-                cb(null, store);
+                cb(err, store);
             });
         }
     },
@@ -98,7 +98,7 @@ sync = {
         } else {
             // Call this once our translation has returned.
             var loadComplete = function(err, data) {
-                cb(null, data);
+                cb(err, data);
             };
 
             if(typeof options.customLoad == 'function'){
