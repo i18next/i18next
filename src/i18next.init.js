@@ -61,7 +61,12 @@ function init(options, cb) {
     pluralExtensions.setCurrentLng(currentLng);
 
     // add JQuery extensions
-    if ($ && o.setJqueryExt) addJqueryFunct();
+    if ($ && o.setJqueryExt) {
+        addJqueryFunct();
+    }
+    else {
+        addJqueryLikeFunctionality();
+    }
 
     // jQuery deferred
     var deferred;
