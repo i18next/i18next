@@ -35,7 +35,7 @@ html(lang="en")
             | });
             | 
             | // with both
-            | i18n.init({ lng: "en-US" }, function(t) { 
+            | i18n.init({ lng: "en-US" }, function(err, t) { 
             |   var x = t("key");
             | });
 
@@ -52,7 +52,7 @@ html(lang="en")
             .feature
               pre
                 code
-                  | i18n.init({ lng: 'en-US' }, function(t) { /* loading done */ });
+                  | i18n.init({ lng: 'en-US' }, function(err, t) { /* loading done */ });
               .feature-description
                 a(name='lookupvalue')
                 p Resources will be resolved in this order:
