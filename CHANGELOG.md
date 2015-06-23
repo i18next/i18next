@@ -1,4 +1,7 @@
 
+### 1.9.1
+- fix fallback lng option during translations [PR 399](https://github.com/i18next/i18next/pull/399)
+
 ### 1.9.0
 - i18n.noConflict() [PR 371](https://github.com/i18next/i18next/pull/371)
 - fix fallback to default namepsace when namespace passed as an option [PR 375](https://github.com/i18next/i18next/pull/375)
