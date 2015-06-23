@@ -7,7 +7,7 @@
 
         define([], factory);
 
-    } 
+    }
 }(this, function () {
 
     //= i18next.shim.js
@@ -27,13 +27,14 @@
     //= i18next.init.js
     //= i18next.functions.js
     //= i18next.jquery.js
+    //= i18next.nojquery.js
     //= i18next.translate.js
     //= i18next.detectLanguage.js
     //= i18next.plurals.js
     //= i18next.postProcessor.js
     //= i18next.postProcessor.sprintf.js
     //= i18next.api.js
-        
-    return i18n; 
+
+    return i18n;
 
 }));

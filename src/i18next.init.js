@@ -62,10 +62,9 @@ function init(options, cb) {
 
     // add JQuery extensions
     if ($ && o.setJqueryExt) {
-        addJqueryFunct();
-    }
-    else {
-        addJqueryLikeFunctionality();
+        addJqueryFunct && addJqueryFunct();
+    } else {
+       addJqueryLikeFunctionality && addJqueryLikeFunctionality();
     }
 
     // jQuery deferred
