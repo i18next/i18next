@@ -1,6 +1,7 @@
 
 ### 1.9.1
 - fix fallback lng option during translations [PR 399](https://github.com/i18next/i18next/pull/399)
+- Adds jquery like functionality without the jquery plugin. [PR 403](https://github.com/i18next/i18next/pull/403)
 
 ### 1.9.0
 - i18n.noConflict() [PR 371](https://github.com/i18next/i18next/pull/371)
