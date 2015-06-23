@@ -15,6 +15,11 @@ html(lang="en")
         h2 Release Notes
 
       :markdown
+        ### v1.10.0
+        - [BREAKING] new callbacks will be node.js conform function(err, t) | Forward the error from sync fetch methods to the init callback function [PR 402](https://github.com/i18next/i18next/pull/402)
+        - update client
+        - Stop unnecessary reloading all namespaces [PR 196](https://github.com/i18next/i18next-node/pull/196)
+      
         ### v1.9.0
         - updates i18next-client to 1.9.0
         - fixes issue with cache control header [issue 169](https://github.com/i18next/i18next-node/issues/169)

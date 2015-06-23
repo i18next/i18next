@@ -31,12 +31,12 @@ html(lang="en")
             | var x = i18n.t("key");
             | 
             | // with callback
-            | i18n.init(function(t) { 
+            | i18n.init(function(err, t) { 
             |   var x = t("key");
             | });
             | 
             | // with both
-            | i18n.init({ lng: "en-US" }, function(t) { 
+            | i18n.init({ lng: "en-US" }, function(err, t) { 
             |   var x = t("key");
             | });
 
@@ -82,7 +82,7 @@ html(lang="en")
             .feature
               pre
                 code
-                  | i18n.setLng('en-US', function(t) { /* loading done */ });
+                  | i18n.setLng('en-US', function(err, t) { /* loading done */ });
               .feature-description
                 p you could fix the language by calling it this way:
                 p
@@ -303,7 +303,7 @@ html(lang="en")
             .feature
               pre
                 code
-                  | i18n.init(function(t) { 
+                  | i18n.init(function(err, t) { 
                   |   var appName = t("key");
                   | });
               .feature-description
@@ -409,7 +409,7 @@ html(lang="en")
                   |   } 
                   | };
                   | 
-                  | i18n.init(option, function(t) {
+                  | i18n.init(option, function(err, t) {
                   |   // access default namespace
                   |   var x = t("any.key.from.app")
                   | 

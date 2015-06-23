@@ -172,7 +172,7 @@ html(lang="en")
 
                     var i18n = require("i18next");
 
-                    i18n.init(function(t) {
+                    i18n.init(function(err, t) {
                       i18n.t("my.key.toLookUp")
                     });
 
