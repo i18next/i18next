@@ -1,4 +1,4 @@
-// i18next, v1.9.0
+// i18next, v1.10.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -650,7 +650,7 @@ describe('i18next.init', function() {
       var cbT;
     
       beforeEach(function(done) {
-        i18n.init(opts, function(t) { cbT = t; done(); });
+        i18n.init(opts, function(err, t) { cbT = t; done(); });
       });
     
       it('it should provide loaded resources for translation', function() {
@@ -666,7 +666,7 @@ describe('i18next.init', function() {
       describe('default behaviour will uppercase specifc country part.', function() {
     
         beforeEach(function() {
-          i18n.init(i18n.functions.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, {
             lng: 'en-us',
             resStore: {
               'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
@@ -687,7 +687,7 @@ describe('i18next.init', function() {
       describe('overridden behaviour will accept lowercased country part.', function() {
     
         beforeEach(function() {
-          i18n.init(i18n.functions.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, {
             lng: 'en-us',
             lowerCaseLng: true,
             resStore: {

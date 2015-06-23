@@ -1,18 +1,8 @@
-// i18next, v1.10.0
+// i18next, v1.9.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
-(function (root, factory) {
-    if (typeof exports === 'object') {
-
-        module.exports = factory();
-
-    } else if (typeof define === 'function' && define.amd) {
-
-        define([], factory);
-
-    } 
-}(this, function () {
+(function(root) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {
@@ -86,15 +76,33 @@
         }
     }
 
-    var $ = undefined
-        , i18n = {}
-        , resStore = {}
-        , currentLng
-        , replacementCounter = 0
-        , languages = []
-        , initialized = false
-        , sync = {};
+    var $ = root.jQuery || root.Zepto
+      , i18n = {}
+      , resStore = {}
+      , currentLng
+      , replacementCounter = 0
+      , languages = []
+      , initialized = false
+      , sync = {}
+      , conflictReference = null;
 
+
+
+    // Export the i18next object for **CommonJS**. 
+    // If we're not in CommonJS, add `i18n` to the
+    // global object or to jquery.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = i18n;
+    } else {
+        if ($) {
+            $.i18n = $.i18n || i18n;
+        }
+        
+        if (root.i18n) {
+        	conflictReference = root.i18n;
+        }
+        root.i18n = i18n;
+    }
     sync = {
     
         load: function(lngs, options, cb) {
@@ -110,15 +118,15 @@
                             f.extend(store, fetched);
                             sync._storeLocal(fetched);
     
-                            cb(err, store);
+                            cb(null, store);
                         });
                     } else {
-                        cb(err, store);
+                        cb(null, store);
                     }
                 });
             } else {
                 sync._fetch(lngs, options, function(err, store){
-                    cb(err, store);
+                    cb(null, store);
                 });
             }
         },
@@ -195,7 +203,7 @@
             } else {
                 // Call this once our translation has returned.
                 var loadComplete = function(err, data) {
-                    cb(err, data);
+                    cb(null, data);
                 };
     
                 if(typeof options.customLoad == 'function'){
@@ -800,12 +808,8 @@
             if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
             return lng_index;
         },
-        toLanguages: function(lng, fallbackLng) {
+        toLanguages: function(lng) {
             var log = this.log;
-    
-            fallbackLng = fallbackLng || o.fallbackLng;
-            if (typeof fallbackLng === 'string')
-                fallbackLng = [fallbackLng];
     
             function applyCase(l) {
                 var ret = l;
@@ -842,8 +846,8 @@
                 addLanguage(applyCase(lng));
             }
     
-            for (var i = 0; i < fallbackLng.length; i++) {
-                if (languages.indexOf(fallbackLng[i]) === -1 && fallbackLng[i]) languages.push(applyCase(fallbackLng[i]));
+            for (var i = 0; i < o.fallbackLng.length; i++) {
+                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
             }
             return languages;
         },
@@ -942,12 +946,7 @@
         pluralExtensions.setCurrentLng(currentLng);
     
         // add JQuery extensions
-        if ($ && o.setJqueryExt) {
-            addJqueryFunct();
-        }
-        else {
-            addJqueryLikeFunctionality();
-        }
+        if ($ && o.setJqueryExt) addJqueryFunct();
     
         // jQuery deferred
         var deferred;
@@ -982,8 +981,8 @@
             resStore = store;
             initialized = true;
     
-            if (cb) cb(err, lngTranslate);
-            if (deferred) (!err ? deferred.resolve : deferred.reject)(err || lngTranslate);
+            if (cb) cb(lngTranslate);
+            if (deferred) deferred.resolve(lngTranslate);
         });
     
         if (deferred) return deferred.promise();
@@ -2207,7 +2206,5 @@
     i18n.applyReplacement = f.applyReplacement;
     i18n.options = o;
     i18n.noConflict = noConflict;
-        
-    return i18n; 
 
-}));
+})(typeof exports === 'undefined' ? window : exports);

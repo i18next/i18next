@@ -1,4 +1,4 @@
-// i18next, v1.9.0
+// i18next, v1.10.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -122,15 +122,15 @@
                             f.extend(store, fetched);
                             sync._storeLocal(fetched);
     
-                            cb(null, store);
+                            cb(err, store);
                         });
                     } else {
-                        cb(null, store);
+                        cb(err, store);
                     }
                 });
             } else {
                 sync._fetch(lngs, options, function(err, store){
-                    cb(null, store);
+                    cb(err, store);
                 });
             }
         },
@@ -207,7 +207,7 @@
             } else {
                 // Call this once our translation has returned.
                 var loadComplete = function(err, data) {
-                    cb(null, data);
+                    cb(err, data);
                 };
     
                 if(typeof options.customLoad == 'function'){
@@ -812,8 +812,12 @@
             if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
             return lng_index;
         },
-        toLanguages: function(lng) {
+        toLanguages: function(lng, fallbackLng) {
             var log = this.log;
+    
+            fallbackLng = fallbackLng || o.fallbackLng;
+            if (typeof fallbackLng === 'string')
+                fallbackLng = [fallbackLng];
     
             function applyCase(l) {
                 var ret = l;
@@ -850,8 +854,8 @@
                 addLanguage(applyCase(lng));
             }
     
-            for (var i = 0; i < o.fallbackLng.length; i++) {
-                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
+            for (var i = 0; i < fallbackLng.length; i++) {
+                if (languages.indexOf(fallbackLng[i]) === -1 && fallbackLng[i]) languages.push(applyCase(fallbackLng[i]));
             }
             return languages;
         },
@@ -950,7 +954,12 @@
         pluralExtensions.setCurrentLng(currentLng);
     
         // add JQuery extensions
-        if ($ && o.setJqueryExt) addJqueryFunct();
+        if ($ && o.setJqueryExt) {
+            addJqueryFunct();
+        }
+        else {
+            addJqueryLikeFunctionality();
+        }
     
         // jQuery deferred
         var deferred;
@@ -985,8 +994,8 @@
             resStore = store;
             initialized = true;
     
-            if (cb) cb(lngTranslate);
-            if (deferred) deferred.resolve(lngTranslate);
+            if (cb) cb(err, lngTranslate);
+            if (deferred) (!err ? deferred.resolve : deferred.reject)(err || lngTranslate);
         });
     
         if (deferred) return deferred.promise();

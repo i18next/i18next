@@ -101,10 +101,8 @@ function init(options, cb) {
         resStore = store;
         initialized = true;
 
-        if (err) return cb(err);
-
-        if (cb) cb(lngTranslate);
-        if (deferred) deferred.resolve(lngTranslate);
+        if (cb) cb(err, lngTranslate);
+        if (deferred) (!err ? deferred.resolve : deferred.reject)(err || lngTranslate);
     });
 
     if (deferred) return deferred.promise();

@@ -3,7 +3,7 @@ describe('using function provided in callback\'s argument', function() {
   var cbT;
 
   beforeEach(function(done) {
-    i18n.init(opts, function(t) { cbT = t; done(); });
+    i18n.init(opts, function(err, t) { cbT = t; done(); });
   });
 
   it('it should provide loaded resources for translation', function() {
@@ -19,7 +19,7 @@ describe('with lowercase flag', function() {
   describe('default behaviour will uppercase specifc country part.', function() {
 
     beforeEach(function() {
-      i18n.init(i18n.functions.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, {
         lng: 'en-us',
         resStore: {
           'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
@@ -40,7 +40,7 @@ describe('with lowercase flag', function() {
   describe('overridden behaviour will accept lowercased country part.', function() {
 
     beforeEach(function() {
-      i18n.init(i18n.functions.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, {
         lng: 'en-us',
         lowerCaseLng: true,
         resStore: {
