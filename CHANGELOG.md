@@ -1,3 +1,7 @@
+### 1.10.0
+- [BREAKING] new callbacks will be node.js conform function(err, t) | Forward the error from sync fetch methods to the init callback function [PR 402](https://github.com/i18next/i18next/pull/402)
+- fix fallback lng option during translations [PR 399](https://github.com/i18next/i18next/pull/399)
+- Adds jquery like functionality without the jquery plugin. [PR 403](https://github.com/i18next/i18next/pull/403)
 
 ### 1.9.1
 - fix fallback lng option during translations [PR 399](https://github.com/i18next/i18next/pull/399)
