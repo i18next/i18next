@@ -77,7 +77,7 @@ function init(options, cb) {
     if (o.resStore) {
         resStore = o.resStore;
         initialized = true;
-        if (cb) cb(lngTranslate);
+        if (cb) cb(null, lngTranslate);
         if (deferred) deferred.resolve(lngTranslate);
         if (deferred) return deferred.promise();
         return;

@@ -1,3 +1,6 @@
+### 1.10.2
+- streamline callback(err, t) for case where resStore is passed in
+
 ### 1.10.1
 - fixes Adds jquery like functionality without the jquery plugin. [PR 403](https://github.com/i18next/i18next/pull/403) by adding it to output
 

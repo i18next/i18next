@@ -1,4 +1,4 @@
-// i18next, v1.10.1
+// i18next, v1.10.2
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -966,7 +966,7 @@
         if (o.resStore) {
             resStore = o.resStore;
             initialized = true;
-            if (cb) cb(lngTranslate);
+            if (cb) cb(null, lngTranslate);
             if (deferred) deferred.resolve(lngTranslate);
             if (deferred) return deferred.promise();
             return;
