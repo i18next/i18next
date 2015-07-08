@@ -63,7 +63,7 @@ describe('i18next.functions', function() {
     it('it should provide resources for set language', function(done) {
       expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
   
-      i18n.setLng('CIMode', function(t) {
+      i18n.setLng('CIMode', function(err, t) {
           expect(t('simpleTest')).to.be('simpleTest');
           done();
       });
@@ -86,7 +86,7 @@ describe('i18next.functions', function() {
     it('it should provide resources for set language', function(done) {
       expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
   
-      i18n.setLng('de-DE', function(t) {
+      i18n.setLng('de-DE', function(err, t) {
           expect(t('simpleTest')).to.be('ok_from_de-DE');
           done();
       });
@@ -94,10 +94,10 @@ describe('i18next.functions', function() {
     });
   
     it('should be possible to call setLng multiple times to get specialized callbacks', function(done) {
-      i18n.setLng('de-DE', { fixLng: true }, function(deDE) {
+      i18n.setLng('de-DE', { fixLng: true }, function(err, deDE) {
           expect(deDE.lng).to.be('de-DE');
   
-          i18n.setLng('en-US', { fixLng: true }, function(enUS) {
+          i18n.setLng('en-US', { fixLng: true }, function(err, enUS) {
               expect(deDE.lng).to.be('de-DE');
               expect(enUS.lng).to.be('en-US');
   

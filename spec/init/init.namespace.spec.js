@@ -42,14 +42,14 @@ describe('with namespace', function() {
     describe('and fallbacking to default namespace', function() {
       var resStore = {
         dev: { 'ns.special': { 'simple_dev': 'ok_from_dev' } },
-        en: { 'ns.special': { 'simple_en': 'ok_from_en' } },            
+        en: { 'ns.special': { 'simple_en': 'ok_from_en' } },
         'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
       };
 
       beforeEach(function(done) {
-        i18n.init(i18n.functions.extend(opts, { 
-          fallbackToDefaultNS: true, 
-          resStore: resStore, 
+        i18n.init(i18n.functions.extend(opts, {
+          fallbackToDefaultNS: true,
+          resStore: resStore,
           ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
           function(t) { done(); });
       });
@@ -70,18 +70,18 @@ describe('with namespace', function() {
 
     describe('and fallbacking to set namespace', function() {
       var resStore = {
-        dev: { 
+        dev: {
           'ns.special': { 'simple_dev': 'ok_from_dev' },
           'ns.fallback': { 'simple_fallback': 'ok_from_fallback' }
         },
-        en: { 'ns.special': { 'simple_en': 'ok_from_en' } },            
+        en: { 'ns.special': { 'simple_en': 'ok_from_en' } },
         'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
       };
 
       beforeEach(function(done) {
-        i18n.init(i18n.functions.extend(opts, { 
-          fallbackNS: 'ns.fallback', 
-          resStore: resStore, 
+        i18n.init(i18n.functions.extend(opts, {
+          fallbackNS: 'ns.fallback',
+          resStore: resStore,
           ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
           function(t) { done(); });
       });
@@ -97,25 +97,25 @@ describe('with namespace', function() {
         dev: {
           'ns.common': {},
           'ns.special': { 'simple_dev': 'ok_from_dev' },
-          'ns.fallback1': { 
+          'ns.fallback1': {
             'simple_fallback': 'ok_from_fallback1',
             'simple_fallback1': 'ok_from_fallback1'
           }
         },
-        en: { 
+        en: {
           'ns.special': { 'simple_en': 'ok_from_en' },
-          'ns.fallback2': { 
+          'ns.fallback2': {
             'simple_fallback': 'ok_from_fallback2',
             'simple_fallback2': 'ok_from_fallback2'
           }
-        },            
+        },
         'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
       };
 
       beforeEach(function(done) {
-        i18n.init(i18n.functions.extend(opts, { 
-          fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
-          resStore: resStore, 
+        i18n.init(i18n.functions.extend(opts, {
+          fallbackNS: ['ns.fallback1', 'ns.fallback2'],
+          resStore: resStore,
           ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
           function(t) { done(); });
       });
@@ -128,18 +128,18 @@ describe('with namespace', function() {
 
       describe('and post missing', function() {
 
-        var spy; 
+        var spy;
 
         beforeEach(function(done) {
-          i18n.init(i18n.functions.extend(opts, { 
-            fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
+          i18n.init(i18n.functions.extend(opts, {
+            fallbackNS: ['ns.fallback1', 'ns.fallback2'],
             resStore: resStore,
             sendMissing: true, /* must be changed to saveMissing */
             ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
-            function(t) { 
+            function(err, t) { 
               spy = sinon.spy(i18n.options, 'missingKeyHandler');
               t('ns.common:notExisting');
-              done(); 
+              done();
             });
         });
 
@@ -197,7 +197,7 @@ describe('with namespace', function() {
       describe('and fallbackToDefaultNS turned on', function() {
 
         beforeEach(function(done) {
-          i18n.init(i18n.functions.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, {
               ns: 'ns.common',
               fallbackToDefaultNS: true
             }),
@@ -217,7 +217,7 @@ describe('with namespace', function() {
 
     describe('with using localStorage', function() {
 
-      var spy; 
+      var spy;
 
       before(function() {
         if (typeof window !== 'undefined') { // safe use on server
@@ -229,8 +229,8 @@ describe('with namespace', function() {
 
       beforeEach(function(done) {
         spy = sinon.spy(i18n.sync, '_fetchOne');
-        i18n.init(i18n.functions.extend(opts, { 
-          useLocalStorage: true 
+        i18n.init(i18n.functions.extend(opts, {
+          useLocalStorage: true
         }), function(t) {
           i18n.setDefaultNamespace('ns.special');
           i18n.loadNamespaces(['ns.common', 'ns.special'], done);
@@ -249,7 +249,7 @@ describe('with namespace', function() {
 
         beforeEach(function(done) {
           spy.reset();
-          i18n.init(i18n.functions.extend(opts, { 
+          i18n.init(i18n.functions.extend(opts, {
             useLocalStorage: true,
             ns: 'translation'
           }), function(t) {

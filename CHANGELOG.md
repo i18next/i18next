@@ -1,3 +1,6 @@
+### 1.10.3
+- fixes issue where lng get fixed on data-i18n-options
+
 ### 1.10.2
 - streamline callback(err, t) for case where resStore is passed in
 

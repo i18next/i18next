@@ -12,7 +12,7 @@ describe('CI mode', function() {
   it('it should provide resources for set language', function(done) {
     expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
 
-    i18n.setLng('CIMode', function(t) {
+    i18n.setLng('CIMode', function(err, t) {
         expect(t('simpleTest')).to.be('simpleTest');
         done();
     });

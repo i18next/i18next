@@ -71,7 +71,13 @@ function addJqueryFunct() {
             parse(target, key, options);
         }
 
-        if (o.useDataAttrOptions === true) ele.data("i18n-options", options);
+        if (o.useDataAttrOptions === true) {
+          var clone = $.extend({lng: 'non', lngs: [], _origLng: 'non'}, options);
+          delete clone.lng;
+          delete clone.lngs;
+          delete clone._origLng;
+          ele.data("i18n-options", clone);
+        }
     }
 
     // fn
@@ -82,7 +88,7 @@ function addJqueryFunct() {
 
             // localize childs
             var elements =  $(this).find('[' + o.selectorAttr + ']');
-            elements.each(function() { 
+            elements.each(function() {
                 localize($(this), options);
             });
         });
