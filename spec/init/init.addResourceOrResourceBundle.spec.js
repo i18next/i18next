@@ -92,6 +92,24 @@ describe('adding resources after init', function() {
 
     });
 
+    describe('with using deep and overwrite switch', function() {
+
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+          function(t) { 
+            i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+            i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1_Overwrite' }, { 'simple_en-US_2': 'ok_from_en-US_2' }}, true, true);
+            done(); 
+          });
+      });
+
+      it('it should add and update the new namespace to the namespace array', function() {
+        expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1_Overwrite');
+        expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+      });
+
+    });
+
     describe('check if exists', function() {
 
       beforeEach(function(done) {
