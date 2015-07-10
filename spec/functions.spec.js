@@ -3,6 +3,8 @@ describe('basic functionality', function() {
   //= functions/functions.CI.spec.js
 
   //= functions/functions.setlng.spec.js
+ 
+  //= functions/functions.dir.spec.js
 
   //= functions/functions.preload.spec.js
 
