@@ -153,7 +153,7 @@ var _rulesPluralsTypes = {
     15: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);},
     16: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2);},
     17: function(n) {return Number(n==1 || n%10==1 ? 0 : 1);},
-    18: function(n) {return Number(0 ? 0 : n==1 ? 1 : 2);},
+    18: function(n) {return Number(n==0 ? 0 : n==1 ? 1 : 2);},
     19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
     20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
     21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
