@@ -150,7 +150,8 @@ sync = {
             },
             dataType: "json",
             async : options.getAsync,
-            timeout: options.ajaxTimeout
+            timeout: options.ajaxTimeout,
+            headers: options.headers
         });
     },
 
