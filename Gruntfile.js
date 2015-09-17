@@ -104,6 +104,10 @@ module.exports = function(grunt) {
         src: ['spec/spec.js'],
         dest: 'test/test.js'
       },
+      compat: {
+        src: ['spec/compat.js'],
+        dest: 'test/backward/compat.js'
+      },
       serverInit: {
         src: ['spec/server.init.spec.js'],
         dest: 'test/server/i18next.init.spec.js'
