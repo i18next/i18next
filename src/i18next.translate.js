@@ -218,10 +218,10 @@ function _translate(potentialKeys, options) {
         notFound = applyReuse(notFound, options);
 
         if (postProcessorsToApply.length) {
-            var val = _getDefaultValue(key, options);
+            found = _getDefaultValue(key, options);
             postProcessorsToApply.forEach(function(postProcessor) {
                 if (postProcessors[postProcessor]) {
-                    found = postProcessors[postProcessor](val, key, options);
+                    found = postProcessors[postProcessor](found, key, options);
                 }
             });
         }
