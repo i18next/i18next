@@ -9,21 +9,28 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
       , unEscapingSuffix = 'HTML'+suffix;
 
     var hash = replacementHash.replace && typeof replacementHash.replace === 'object' ? replacementHash.replace : replacementHash;
-    f.each(hash, function(key, value) {
-        var nextKey = nestedKey ? nestedKey + o.keyseparator + key : key;
-        if (typeof value === 'object' && value !== null) {
-            str = applyReplacement(str, value, nextKey, options);
-        } else {
-            if (options.escapeInterpolation || o.escapeInterpolation) {
-                str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), f.regexReplacementEscape(value));
-                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.regexReplacementEscape(f.escape(value)));
+    var replacementRegex = new RegExp([prefix, '(.+?)', '(HTML)?', suffix].join(''), 'g');
+    var escapeInterpolation = options.escapeInterpolation || o.escapeInterpolation;
+    return str.replace(replacementRegex, function (wholeMatch, keyMatch, htmlMatched) {
+        // Check for recursive matches of object
+        var objectMatching = hash;
+        var keyLeaf = keyMatch;
+        while (keyLeaf.indexOf(o.keyseparator) >= 0 && typeof objectMatching === 'object' && objectMatching) {
+            var propName = keyLeaf.slice(0, keyLeaf.indexOf(o.keyseparator));
+            keyLeaf = keyLeaf.slice(keyLeaf.indexOf(o.keyseparator) + 1);
+            objectMatching = objectMatching[propName];
+        }
+        if (objectMatching && typeof objectMatching === 'object' && objectMatching.hasOwnProperty(keyLeaf)) {
+                var value = objectMatching[keyLeaf];
+            if (escapeInterpolation && !htmlMatched) {
+                return f.escape(objectMatching[keyLeaf]);
             } else {
-                str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.regexReplacementEscape(value));
+                return objectMatching[keyLeaf];
             }
-            // str = options.escapeInterpolation;
+        } else {
+            return wholeMatch;
         }
     });
-    return str;
 }
 
 // append it to functions
