@@ -102,7 +102,7 @@ function addResource(lng, ns, key, value) {
 
 function addResources(lng, ns, resources) {
     if (typeof ns !== 'string') {
-        resource = ns;
+        resources = ns;
         ns = o.ns.defaultNs;
     } else if (o.ns.namespaces.indexOf(ns) < 0) {
         o.ns.namespaces.push(ns);
