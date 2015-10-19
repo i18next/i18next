@@ -8,7 +8,7 @@ function preload(lngs, cb) {
     return init(cb);
 }
 
-function addResourceBundle(lng, ns, resources, deep) {
+function addResourceBundle(lng, ns, resources, deep, overwrite) {
     if (typeof ns !== 'string') {
         resources = ns;
         ns = o.ns.defaultNs;
@@ -20,7 +20,12 @@ function addResourceBundle(lng, ns, resources, deep) {
     resStore[lng][ns] = resStore[lng][ns] || {};
 
     if (deep) {
-        f.deepExtend(resStore[lng][ns], resources);
+        if(overwrite) {
+            f.deepExtendOverwrite(resStore[lng][ns], resources);
+        }
+        else {
+            f.deepExtend(resStore[lng][ns], resources);
+        }
     } else {
         f.extend(resStore[lng][ns], resources);
     }

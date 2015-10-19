@@ -16,6 +16,30 @@ function _deepExtend(target, source) {
     return target;
 }
 
+function _deepExtendOverwrite(target, source)
+{
+    for (var prop in source)
+    {
+        // Overwrite existing value, do not call recursive function on string.
+        if (typeof target[prop] === 'string')
+        {
+            target[prop] = source[prop];
+        }
+        else
+        {
+            if (prop in target)
+            {
+                _deepExtendOverwrite(target[prop], source[prop]);
+            }
+            else
+            {
+                target[prop] = source[prop];
+            }
+        }
+    }
+    return target;
+}
+
 function _each(object, callback, args) {
     var name, i = 0,
         length = object.length,
@@ -412,6 +436,7 @@ var cookie_noop = {
 var f = {
     extend: $ ? $.extend : _extend,
     deepExtend: _deepExtend,
+    deepExtendOverwrite: _deepExtendOverwrite,
     each: $ ? $.each : _each,
     ajax: $ ? $.ajax : (typeof document !== 'undefined' ? _ajax : function() {}),
     cookie: typeof document !== 'undefined' ? _cookie : cookie_noop,
