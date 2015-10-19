@@ -2,13 +2,20 @@
   "author": "jamuhl",
   "name": "i18next-client",
   "license": "MIT",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "private": false,
   "main": "i18next.js",
   "browser": "i18next.js",
   "engines": {
     "node": ">=0.4.12"
   },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "translation",
+    "globalization",
+    "gettext"
+  ],
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",

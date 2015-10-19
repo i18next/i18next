@@ -1,5 +1,6 @@
 ### 1.10.3
 - fixes issue where lng get fixed on data-i18n-options
+- [SECURITY] merges Reimplement XSS-vulnerable sequential replacement code [PR 443](https://github.com/i18next/i18next/pull/443)
 
 ### 1.10.2
 - streamline callback(err, t) for case where resStore is passed in
