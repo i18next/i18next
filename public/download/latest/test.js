@@ -1,4 +1,4 @@
-// i18next, v1.10.0
+// i18next, v1.10.3
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -525,14 +525,14 @@ describe('i18next', function() {
           describe('and fallbacking to default namespace', function() {
             var resStore = {
               dev: { 'ns.special': { 'simple_dev': 'ok_from_dev' } },
-              en: { 'ns.special': { 'simple_en': 'ok_from_en' } },            
+              en: { 'ns.special': { 'simple_en': 'ok_from_en' } },
               'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
             };
       
             beforeEach(function(done) {
-              i18n.init(i18n.functions.extend(opts, { 
-                fallbackToDefaultNS: true, 
-                resStore: resStore, 
+              i18n.init(i18n.functions.extend(opts, {
+                fallbackToDefaultNS: true,
+                resStore: resStore,
                 ns: { namespaces: ['ns.common', 'ns.special'], defaultNs: 'ns.special'} } ),
                 function(t) { done(); });
             });
@@ -553,18 +553,18 @@ describe('i18next', function() {
       
           describe('and fallbacking to set namespace', function() {
             var resStore = {
-              dev: { 
+              dev: {
                 'ns.special': { 'simple_dev': 'ok_from_dev' },
                 'ns.fallback': { 'simple_fallback': 'ok_from_fallback' }
               },
-              en: { 'ns.special': { 'simple_en': 'ok_from_en' } },            
+              en: { 'ns.special': { 'simple_en': 'ok_from_en' } },
               'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
             };
       
             beforeEach(function(done) {
-              i18n.init(i18n.functions.extend(opts, { 
-                fallbackNS: 'ns.fallback', 
-                resStore: resStore, 
+              i18n.init(i18n.functions.extend(opts, {
+                fallbackNS: 'ns.fallback',
+                resStore: resStore,
                 ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                 function(t) { done(); });
             });
@@ -580,25 +580,25 @@ describe('i18next', function() {
               dev: {
                 'ns.common': {},
                 'ns.special': { 'simple_dev': 'ok_from_dev' },
-                'ns.fallback1': { 
+                'ns.fallback1': {
                   'simple_fallback': 'ok_from_fallback1',
                   'simple_fallback1': 'ok_from_fallback1'
                 }
               },
-              en: { 
+              en: {
                 'ns.special': { 'simple_en': 'ok_from_en' },
-                'ns.fallback2': { 
+                'ns.fallback2': {
                   'simple_fallback': 'ok_from_fallback2',
                   'simple_fallback2': 'ok_from_fallback2'
                 }
-              },            
+              },
               'en-US': { 'ns.special': { 'simple_en-US': 'ok_from_en-US' } }
             };
       
             beforeEach(function(done) {
-              i18n.init(i18n.functions.extend(opts, { 
-                fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
-                resStore: resStore, 
+              i18n.init(i18n.functions.extend(opts, {
+                fallbackNS: ['ns.fallback1', 'ns.fallback2'],
+                resStore: resStore,
                 ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
                 function(t) { done(); });
             });
@@ -611,18 +611,18 @@ describe('i18next', function() {
       
             describe('and post missing', function() {
       
-              var spy; 
+              var spy;
       
               beforeEach(function(done) {
-                i18n.init(i18n.functions.extend(opts, { 
-                  fallbackNS: ['ns.fallback1', 'ns.fallback2'], 
+                i18n.init(i18n.functions.extend(opts, {
+                  fallbackNS: ['ns.fallback1', 'ns.fallback2'],
                   resStore: resStore,
                   sendMissing: true, /* must be changed to saveMissing */
                   ns: { namespaces: ['ns.common', 'ns.special', 'ns.fallback'], defaultNs: 'ns.special'} } ),
-                  function(t) { 
+                  function(err, t) { 
                     spy = sinon.spy(i18n.options, 'missingKeyHandler');
                     t('ns.common:notExisting');
-                    done(); 
+                    done();
                   });
               });
       
@@ -680,7 +680,7 @@ describe('i18next', function() {
             describe('and fallbackToDefaultNS turned on', function() {
       
               beforeEach(function(done) {
-                i18n.init(i18n.functions.extend(opts, { 
+                i18n.init(i18n.functions.extend(opts, {
                     ns: 'ns.common',
                     fallbackToDefaultNS: true
                   }),
@@ -700,7 +700,7 @@ describe('i18next', function() {
       
           describe('with using localStorage', function() {
       
-            var spy; 
+            var spy;
       
             before(function() {
               if (typeof window !== 'undefined') { // safe use on server
@@ -712,8 +712,8 @@ describe('i18next', function() {
       
             beforeEach(function(done) {
               spy = sinon.spy(i18n.sync, '_fetchOne');
-              i18n.init(i18n.functions.extend(opts, { 
-                useLocalStorage: true 
+              i18n.init(i18n.functions.extend(opts, {
+                useLocalStorage: true
               }), function(t) {
                 i18n.setDefaultNamespace('ns.special');
                 i18n.loadNamespaces(['ns.common', 'ns.special'], done);
@@ -732,7 +732,7 @@ describe('i18next', function() {
       
               beforeEach(function(done) {
                 spy.reset();
-                i18n.init(i18n.functions.extend(opts, { 
+                i18n.init(i18n.functions.extend(opts, {
                   useLocalStorage: true,
                   ns: 'translation'
                 }), function(t) {
@@ -918,7 +918,7 @@ describe('i18next', function() {
       it('it should provide resources for set language', function(done) {
         expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
     
-        i18n.setLng('CIMode', function(t) {
+        i18n.setLng('CIMode', function(err, t) {
             expect(t('simpleTest')).to.be('simpleTest');
             done();
         });
@@ -941,7 +941,7 @@ describe('i18next', function() {
       it('it should provide resources for set language', function(done) {
         expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
     
-        i18n.setLng('de-DE', function(t) {
+        i18n.setLng('de-DE', function(err, t) {
             expect(t('simpleTest')).to.be('ok_from_de-DE');
             done();
         });
@@ -949,10 +949,10 @@ describe('i18next', function() {
       });
     
       it('should be possible to call setLng multiple times to get specialized callbacks', function(done) {
-        i18n.setLng('de-DE', { fixLng: true }, function(deDE) {
+        i18n.setLng('de-DE', { fixLng: true }, function(err, deDE) {
             expect(deDE.lng).to.be('de-DE');
     
-            i18n.setLng('en-US', { fixLng: true }, function(enUS) {
+            i18n.setLng('en-US', { fixLng: true }, function(err, enUS) {
                 expect(deDE.lng).to.be('de-DE');
                 expect(enUS.lng).to.be('en-US');
     
@@ -1881,7 +1881,8 @@ describe('i18next', function() {
               interpolationTest1: 'added __toAdd__',
               interpolationTest5: 'added __toAddHTML__',
               interpolationTest6: 'added __child.oneHTML__',
-              interpolationTest7: 'added __toAddHTML__ __toAdd__'
+              interpolationTest7: 'added __toAddHTML__ __toAdd__',
+              interpolationTest8: 'added __toAdd1__ __toAdd2__',
             } 
           }
         };
@@ -1900,6 +1901,10 @@ describe('i18next', function() {
         it("it should not escape when HTML is suffixed", function() {
           expect(i18n.t('interpolationTest5', {toAdd: '<html>'})).to.be('added <html>');
           expect(i18n.t('interpolationTest6', { child: { one: '<1>'}})).to.be('added <1>');
+        });
+      
+        it("should not accept interpolations from inside interpolations", function() {
+            expect(i18n.t('interpolationTest8', { toAdd1: '__toAdd2HTML__', toAdd2: '<html>'})).to.be('added __toAdd2HTML__ &lt;html&gt;');
         });
       
         it("it should support both escaping and not escaping HTML", function() {

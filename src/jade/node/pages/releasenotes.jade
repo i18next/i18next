@@ -15,6 +15,22 @@ html(lang="en")
         h2 Release Notes
 
       :markdown
+        ### v1.10.5
+        - [SECURITY] update client to include - merges Reimplement XSS-vulnerable sequential replacement code [PR 443](https://github.com/i18next/i18next/pull/443)
+
+        ### v1.10.4
+        - fixes appending lng in resStore if a namespace is omitted
+
+        ### v1.10.3
+        - allows backends to promote an error having err.i18nSkipOnError that will prevent setting an empty resource set and allows a reload on next access this way (usable in remotesync if remote in unavailable)
+
+        ### v1.10.2
+        - update client
+        - fixes fetchOne issue overwriting already loaded resources
+
+        ### v1.10.1
+        - fixes client version
+
         ### v1.10.0
         - [BREAKING] new callbacks will be node.js conform function(err, t) | Forward the error from sync fetch methods to the init callback function [PR 402](https://github.com/i18next/i18next/pull/402)
         - update client
