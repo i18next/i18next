@@ -1,4 +1,4 @@
-// i18next, v1.10.2
+// i18next, v1.10.3
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -1911,7 +1911,8 @@ describe('i18next', function() {
               interpolationTest1: 'added __toAdd__',
               interpolationTest5: 'added __toAddHTML__',
               interpolationTest6: 'added __child.oneHTML__',
-              interpolationTest7: 'added __toAddHTML__ __toAdd__'
+              interpolationTest7: 'added __toAddHTML__ __toAdd__',
+              interpolationTest8: 'added __toAdd1__ __toAdd2__',
             } 
           }
         };
@@ -1930,6 +1931,10 @@ describe('i18next', function() {
         it("it should not escape when HTML is suffixed", function() {
           expect(i18n.t('interpolationTest5', {toAdd: '<html>'})).to.be('added <html>');
           expect(i18n.t('interpolationTest6', { child: { one: '<1>'}})).to.be('added <1>');
+        });
+      
+        it("should not accept interpolations from inside interpolations", function() {
+            expect(i18n.t('interpolationTest8', { toAdd1: '__toAdd2HTML__', toAdd2: '<html>'})).to.be('added __toAdd2HTML__ &lt;html&gt;');
         });
       
         it("it should support both escaping and not escaping HTML", function() {

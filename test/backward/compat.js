@@ -1,4 +1,4 @@
-// i18next, v1.10.2
+// i18next, v1.10.3
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -170,7 +170,7 @@ describe('i18next', function() {
         var resStore = {
           dev: { translation: { 'simple_dev': 'ok_from_dev' } },
           en: { translation: { 'simple_en': 'ok_from_en' } }//,            
-          // 'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
+          //'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
         };
       
         describe('resources', function() {
@@ -248,8 +248,6 @@ describe('i18next', function() {
                 function(t) { 
                   i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
                   i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
-                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3' }}, true);
-                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3-overwrite' }}, true);
                   done(); 
                 });
             });
@@ -258,34 +256,6 @@ describe('i18next', function() {
               expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
               expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
             });
-      
-            it('it should not overwrite any existing entries if the overwrite switch is off', function() {
-              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3');
-            });
-      
-          });
-      
-          describe('with using deep switch and overwrite switch', function() {
-      
-            beforeEach(function(done) {
-              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
-                function(t) { 
-                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
-                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
-                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3' }}, true);
-                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3-overwrite' }}, true, true);
-                  done(); 
-                });
-            });
-      
-            it('it should add the new namespace to the namespace array', function() {
-              expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
-              expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
-            });
-      
-            it('it should overwrite any existing entries if the overwrite switch is on', function() {
-              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3-overwrite');
-            })
       
           });
       
@@ -1917,7 +1887,8 @@ describe('i18next', function() {
               interpolationTest1: 'added __toAdd__',
               interpolationTest5: 'added __toAddHTML__',
               interpolationTest6: 'added __child.oneHTML__',
-              interpolationTest7: 'added __toAddHTML__ __toAdd__'
+              interpolationTest7: 'added __toAddHTML__ __toAdd__',
+              interpolationTest8: 'added __toAdd1__ __toAdd2__',
             } 
           }
         };
@@ -1936,6 +1907,10 @@ describe('i18next', function() {
         it("it should not escape when HTML is suffixed", function() {
           expect(i18n.t('interpolationTest5', {toAdd: '<html>'})).to.be('added <html>');
           expect(i18n.t('interpolationTest6', { child: { one: '<1>'}})).to.be('added <1>');
+        });
+      
+        it("should not accept interpolations from inside interpolations", function() {
+            expect(i18n.t('interpolationTest8', { toAdd1: '__toAdd2HTML__', toAdd2: '<html>'})).to.be('added __toAdd2HTML__ &lt;html&gt;');
         });
       
         it("it should support both escaping and not escaping HTML", function() {
