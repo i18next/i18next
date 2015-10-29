@@ -1,4 +1,4 @@
-// i18next, v1.10.3
+// i18next, v1.11.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -164,7 +164,7 @@ describe('i18next', function() {
         var resStore = {
           dev: { translation: { 'simple_dev': 'ok_from_dev' } },
           en: { translation: { 'simple_en': 'ok_from_en' } }//,            
-          //'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
+          // 'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
         };
       
         describe('resources', function() {
@@ -242,6 +242,8 @@ describe('i18next', function() {
                 function(t) { 
                   i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
                   i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3-overwrite' }}, true);
                   done(); 
                 });
             });
@@ -250,6 +252,34 @@ describe('i18next', function() {
               expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
               expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
             });
+      
+            it('it should not overwrite any existing entries if the overwrite switch is off', function() {
+              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3');
+            });
+      
+          });
+      
+          describe('with using deep switch and overwrite switch', function() {
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+                function(t) { 
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3-overwrite' }}, true, true);
+                  done(); 
+                });
+            });
+      
+            it('it should add the new namespace to the namespace array', function() {
+              expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
+              expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+            });
+      
+            it('it should overwrite any existing entries if the overwrite switch is on', function() {
+              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3-overwrite');
+            })
       
           });
       
@@ -965,6 +995,29 @@ describe('i18next', function() {
       })
     
     });
+   
+    describe('determining language directionality', function(){
+            
+      i18n.init();
+    
+      it('returns ltr for en-US', function(){
+        i18n.setLng('en-US');
+        expect(i18n.dir()).to.equal('ltr');
+      });
+    
+      it('returns ltr for unknown language', function(){
+        i18n.setLng('unknown');
+        expect(i18n.dir()).to.equal('ltr');
+      });
+    
+      it('returns rtl for ar, ar-IR', function(){
+        i18n.setLng('ar');
+        expect(i18n.dir()).to.equal('rtl');
+        i18n.setLng('ar-IR');
+        expect(i18n.dir()).to.equal('rtl');
+      })
+    
+    });
   
     describe('preloading multiple languages', function() {
     
@@ -1027,6 +1080,10 @@ describe('i18next', function() {
     
         it('it should postprocess with multiple post processors', function() {
           expect(i18n.t('simpleTest', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
+        });
+    
+        it('it should postprocess on missing value with multiple post processes', function() {
+          expect(i18n.t('notFound2', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
         });
     
         describe('or setting it as default on init', function() {
