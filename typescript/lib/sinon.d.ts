@@ -1,11 +1,11 @@
 /// <reference path="jquery.d.ts" />
 
 interface spy {
-    called: bool;
+    called: boolean;
     getCall(x: number): any;
     fakeServer: ISinonFakeServer;
-    calledOnce: bool;
-    calledWith(x: any, message: string): bool;
+    calledOnce: boolean;
+    calledWith(x: any, message: string): boolean;
 }
 
 interface IJsonReponse {
