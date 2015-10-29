@@ -6,6 +6,7 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
 
     var prefix = options.interpolationPrefix ? f.regexEscape(options.interpolationPrefix) : o.interpolationPrefixEscaped
       , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped
+      , keyseparator = options.keyseparator || o.keyseparator
       , unEscapingSuffix = 'HTML'+suffix;
 
     var hash = replacementHash.replace && typeof replacementHash.replace === 'object' ? replacementHash.replace : replacementHash;
@@ -15,9 +16,9 @@ function applyReplacement(str, replacementHash, nestedKey, options) {
         // Check for recursive matches of object
         var objectMatching = hash;
         var keyLeaf = keyMatch;
-        while (keyLeaf.indexOf(o.keyseparator) >= 0 && typeof objectMatching === 'object' && objectMatching) {
-            var propName = keyLeaf.slice(0, keyLeaf.indexOf(o.keyseparator));
-            keyLeaf = keyLeaf.slice(keyLeaf.indexOf(o.keyseparator) + 1);
+        while (keyLeaf.indexOf(keyseparator) >= 0 && typeof objectMatching === 'object' && objectMatching) {
+            var propName = keyLeaf.slice(0, keyLeaf.indexOf(keyseparator));
+            keyLeaf = keyLeaf.slice(keyLeaf.indexOf(keyseparator) + 1);
             objectMatching = objectMatching[propName];
         }
         if (objectMatching && typeof objectMatching === 'object' && objectMatching.hasOwnProperty(keyLeaf)) {
@@ -168,13 +169,14 @@ function _translate(potentialKeys, options) {
 
     var notFound = _getDefaultValue(key, options)
         , found = _find(key, options)
+        , nsseparator = options.nsseparator || o.nsseparator
         , lngs = options.lng ? f.toLanguages(options.lng, options.fallbackLng) : languages
         , ns = options.ns || o.ns.defaultNs
         , parts;
 
     // split ns and key
-    if (key.indexOf(o.nsseparator) > -1) {
-        parts = key.split(o.nsseparator);
+    if (key.indexOf(nsseparator) > -1) {
+        parts = key.split(nsseparator);
         ns = parts[0];
         key = parts[1];
     }
@@ -212,8 +214,8 @@ function _translate(potentialKeys, options) {
 
     // process notFound if function exists
     var splitNotFound = notFound;
-    if (notFound.indexOf(o.nsseparator) > -1) {
-        parts = notFound.split(o.nsseparator);
+    if (notFound.indexOf(nsseparator) > -1) {
+        parts = notFound.split(nsseparator);
         splitNotFound = parts[1];
     }
     if (splitNotFound === key && o.parseMissingKey) {
@@ -266,8 +268,9 @@ function _find(key, options) {
     }
 
     var ns = options.ns || o.ns.defaultNs;
-    if (key.indexOf(o.nsseparator) > -1) {
-        var parts = key.split(o.nsseparator);
+    var nsseparator = options.nsseparator || o.nsseparator;
+    if (key.indexOf(nsseparator) > -1) {
+        var parts = key.split(nsseparator);
         ns = parts[0];
         key = parts[1];
     }
@@ -277,7 +280,7 @@ function _find(key, options) {
         delete optionWithoutCount.context;
         optionWithoutCount.defaultValue = o.contextNotFound;
 
-        var contextKey = ns + o.nsseparator + key + '_' + options.context;
+        var contextKey = ns + nsseparator + key + '_' + options.context;
 
         translated = translate(contextKey, optionWithoutCount);
         if (translated != o.contextNotFound) {
@@ -294,14 +297,14 @@ function _find(key, options) {
 
         var pluralKey;
         if (!pluralExtensions.needsPlural(lngs[0], options.count)) {
-            pluralKey = ns + o.nsseparator + key;
+            pluralKey = ns + nsseparator + key;
         } else {
-            pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
+            pluralKey = ns + nsseparator + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(lngs[0], options.count);
             if (pluralExtension >= 0) {
                 pluralKey = pluralKey + '_' + pluralExtension;
             } else if (pluralExtension === 1) {
-                pluralKey = ns + o.nsseparator + key; // singular
+                pluralKey = ns + nsseparator + key; // singular
             }
         }
 
@@ -321,12 +324,12 @@ function _find(key, options) {
             options._origLng = optionWithoutCount._origLng;
             delete options.lng;
             // retry with fallbacks
-            translated = translate(ns + o.nsseparator + key, options);
+            translated = translate(ns + nsseparator + key, options);
             if (translated != o.pluralNotFound) return translated;
         } else {
             optionWithoutCount.lng = optionWithoutCount._origLng;
             delete optionWithoutCount._origLng;
-            translated = translate(ns + o.nsseparator + key, optionWithoutCount);
+            translated = translate(ns + nsseparator + key, optionWithoutCount);
 
             return applyReplacement(translated, {
                 count: options.count,
@@ -341,7 +344,7 @@ function _find(key, options) {
         delete optionsWithoutIndef.indefinite_article;
         optionsWithoutIndef.defaultValue = o.indefiniteNotFound;
         // If we don't have a count, we want the indefinite, if we do have a count, and needsPlural is false
-        var indefiniteKey = ns + o.nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
+        var indefiniteKey = ns + nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
         translated = translate(indefiniteKey, optionsWithoutIndef);
         if (translated != o.indefiniteNotFound) {
             return translated;
@@ -349,7 +352,8 @@ function _find(key, options) {
     }
 
     var found;
-    var keys = key.split(o.keyseparator);
+    var keyseparator = options.keyseparator || o.keyseparator;
+    var keys = key.split(keyseparator);
     for (var i = 0, len = lngs.length; i < len; i++ ) {
         if (found !== undefined) break;
 
@@ -384,7 +388,7 @@ function _find(key, options) {
                 } else if (valueType !== '[object Number]' && valueType !== '[object Function]' && valueType !== '[object RegExp]') {
                     var copy = (valueType === '[object Array]') ? [] : {}; // apply child translation on a copy
                     f.each(value, function(m) {
-                        copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
+                        copy[m] = _translate(ns + nsseparator + key + keyseparator + m, options);
                     });
                     value = copy;
                 }
@@ -404,12 +408,12 @@ function _find(key, options) {
         if (o.fallbackNS.length) {
 
             for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
-                found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
+                found = _find(o.fallbackNS[y] + nsseparator + key, options);
 
                 if (found || (found==="" && o.fallbackOnEmpty === false)) {
                     /* compare value without namespace */
-                    var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
-                      , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;
+                    var foundValue = found.indexOf(nsseparator) > -1 ? found.split(nsseparator)[1] : found
+                      , notFoundValue = notFound.indexOf(nsseparator) > -1 ? notFound.split(nsseparator)[1] : notFound;
 
                     if (foundValue !== notFoundValue) break;
                 }
