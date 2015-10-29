@@ -164,7 +164,7 @@ describe('i18next', function() {
         var resStore = {
           dev: { translation: { 'simple_dev': 'ok_from_dev' } },
           en: { translation: { 'simple_en': 'ok_from_en' } }//,            
-          //'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
+          // 'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
         };
       
         describe('resources', function() {
@@ -242,6 +242,8 @@ describe('i18next', function() {
                 function(t) { 
                   i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
                   i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3-overwrite' }}, true);
                   done(); 
                 });
             });
@@ -250,6 +252,34 @@ describe('i18next', function() {
               expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
               expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
             });
+      
+            it('it should not overwrite any existing entries if the overwrite switch is off', function() {
+              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3');
+            });
+      
+          });
+      
+          describe('with using deep switch and overwrite switch', function() {
+      
+            beforeEach(function(done) {
+              i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
+                function(t) { 
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_1': 'ok_from_en-US_1' }});
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_2': 'ok_from_en-US_2' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3' }}, true);
+                  i18n.addResourceBundle('en-US', 'translation', { 'deep': { 'simple_en-US_3': 'ok_from_en-US_3-overwrite' }}, true, true);
+                  done(); 
+                });
+            });
+      
+            it('it should add the new namespace to the namespace array', function() {
+              expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
+              expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+            });
+      
+            it('it should overwrite any existing entries if the overwrite switch is on', function() {
+              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3-overwrite');
+            })
       
           });
       
