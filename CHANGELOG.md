@@ -1,3 +1,13 @@
+### 1.11.0
+- Add nsseparator and keyseparator as options to translation function [PR 446](https://github.com/i18next/i18next/pull/446)
+- Resolves issue #448 - TypeScript errors [PR 449](https://github.com/i18next/i18next/pull/449)
+- Fixing _deepExtend to handle keys deep existing in source and target [PR 444](https://github.com/i18next/i18next/pull/444)
+- `resource` to `resources` in addResources function [PR 440](https://github.com/i18next/i18next/pull/440)
+- Runs multiple post processes for missing translations [PR 438](https://github.com/i18next/i18next/pull/438)
+- Add support to override Ajax HTTP headers [PR 431](https://github.com/i18next/i18next/pull/431)
+- Fixed mnk plural definition [PR 427](https://github.com/i18next/i18next/pull/427)
+- Add dir function to return directionality of current language, closes… [PR 413](https://github.com/i18next/i18next/pull/413)
+
 ### 1.10.3
 - fixes issue where lng get fixed on data-i18n-options
 - [SECURITY] merges Reimplement XSS-vulnerable sequential replacement code [PR 443](https://github.com/i18next/i18next/pull/443)

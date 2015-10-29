@@ -1,4 +1,4 @@
-// i18next, v1.10.3
+// i18next, v1.11.0
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -247,7 +247,8 @@
                 },
                 dataType: "json",
                 async : options.getAsync,
-                timeout: options.ajaxTimeout
+                timeout: options.ajaxTimeout,
+                headers: options.headers
             });
         },
     
@@ -379,12 +380,20 @@
         return target;
     }
     
-    function _deepExtend(target, source) {
+    function _deepExtend(target, source, overwrite) {
         for (var prop in source)
-            if (prop in target)
-                _deepExtend(target[prop], source[prop]);
-            else
+            if (prop in target) {
+                // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
+                if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+                    if (overwrite) {
+                        target[prop] = source[prop];
+                    }
+                } else {
+                    _deepExtend(target[prop], source[prop], overwrite);
+                }
+            } else {
                 target[prop] = source[prop];
+            }
         return target;
     }
     
@@ -1001,7 +1010,7 @@
         return init(cb);
     }
     
-    function addResourceBundle(lng, ns, resources, deep) {
+    function addResourceBundle(lng, ns, resources, deep, overwrite) {
         if (typeof ns !== 'string') {
             resources = ns;
             ns = o.ns.defaultNs;
@@ -1013,7 +1022,7 @@
         resStore[lng][ns] = resStore[lng][ns] || {};
     
         if (deep) {
-            f.deepExtend(resStore[lng][ns], resources);
+            f.deepExtend(resStore[lng][ns], resources, overwrite);
         } else {
             f.extend(resStore[lng][ns], resources);
         }
@@ -1095,7 +1104,7 @@
     
     function addResources(lng, ns, resources) {
         if (typeof ns !== 'string') {
-            resource = ns;
+            resources = ns;
             ns = o.ns.defaultNs;
         } else if (o.ns.namespaces.indexOf(ns) < 0) {
             o.ns.namespaces.push(ns);
@@ -1194,6 +1203,22 @@
     
     function lng() {
         return currentLng;
+    }
+    
+    function dir() {   
+        var rtlLangs = [ "ar", "shu", "sqr", "ssh", "xaa", "yhd", "yud", "aao", "abh", "abv", "acm",
+            "acq", "acw", "acx", "acy", "adf", "ads", "aeb", "aec", "afb", "ajp", "apc", "apd", "arb",
+            "arq", "ars", "ary", "arz", "auz", "avl", "ayh", "ayl", "ayn", "ayp", "bbz", "pga", "he",
+            "iw", "ps", "pbt", "pbu", "pst", "prp", "prd", "ur", "ydd", "yds", "yih", "ji", "yi", "hbo",
+            "men", "xmn", "fa", "jpr", "peo", "pes", "prs", "dv", "sam"
+        ];
+    
+        if ( rtlLangs.some( function( lang ) {
+                return new RegExp( '^' + lang ).test( currentLng );
+            } ) ) {
+            return 'rtl';
+        }
+        return 'ltr';
     }
     
     function reload(cb) {
@@ -1378,6 +1403,7 @@
     
         var prefix = options.interpolationPrefix ? f.regexEscape(options.interpolationPrefix) : o.interpolationPrefixEscaped
           , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped
+          , keyseparator = options.keyseparator || o.keyseparator
           , unEscapingSuffix = 'HTML'+suffix;
     
         var hash = replacementHash.replace && typeof replacementHash.replace === 'object' ? replacementHash.replace : replacementHash;
@@ -1387,9 +1413,9 @@
             // Check for recursive matches of object
             var objectMatching = hash;
             var keyLeaf = keyMatch;
-            while (keyLeaf.indexOf(o.keyseparator) >= 0 && typeof objectMatching === 'object' && objectMatching) {
-                var propName = keyLeaf.slice(0, keyLeaf.indexOf(o.keyseparator));
-                keyLeaf = keyLeaf.slice(keyLeaf.indexOf(o.keyseparator) + 1);
+            while (keyLeaf.indexOf(keyseparator) >= 0 && typeof objectMatching === 'object' && objectMatching) {
+                var propName = keyLeaf.slice(0, keyLeaf.indexOf(keyseparator));
+                keyLeaf = keyLeaf.slice(keyLeaf.indexOf(keyseparator) + 1);
                 objectMatching = objectMatching[propName];
             }
             if (objectMatching && typeof objectMatching === 'object' && objectMatching.hasOwnProperty(keyLeaf)) {
@@ -1540,13 +1566,14 @@
     
         var notFound = _getDefaultValue(key, options)
             , found = _find(key, options)
+            , nsseparator = options.nsseparator || o.nsseparator
             , lngs = options.lng ? f.toLanguages(options.lng, options.fallbackLng) : languages
             , ns = options.ns || o.ns.defaultNs
             , parts;
     
         // split ns and key
-        if (key.indexOf(o.nsseparator) > -1) {
-            parts = key.split(o.nsseparator);
+        if (key.indexOf(nsseparator) > -1) {
+            parts = key.split(nsseparator);
             ns = parts[0];
             key = parts[1];
         }
@@ -1584,8 +1611,8 @@
     
         // process notFound if function exists
         var splitNotFound = notFound;
-        if (notFound.indexOf(o.nsseparator) > -1) {
-            parts = notFound.split(o.nsseparator);
+        if (notFound.indexOf(nsseparator) > -1) {
+            parts = notFound.split(nsseparator);
             splitNotFound = parts[1];
         }
         if (splitNotFound === key && o.parseMissingKey) {
@@ -1597,10 +1624,10 @@
             notFound = applyReuse(notFound, options);
     
             if (postProcessorsToApply.length) {
-                var val = _getDefaultValue(key, options);
+                found = _getDefaultValue(key, options);
                 postProcessorsToApply.forEach(function(postProcessor) {
                     if (postProcessors[postProcessor]) {
-                        found = postProcessors[postProcessor](val, key, options);
+                        found = postProcessors[postProcessor](found, key, options);
                     }
                 });
             }
@@ -1638,8 +1665,9 @@
         }
     
         var ns = options.ns || o.ns.defaultNs;
-        if (key.indexOf(o.nsseparator) > -1) {
-            var parts = key.split(o.nsseparator);
+        var nsseparator = options.nsseparator || o.nsseparator;
+        if (key.indexOf(nsseparator) > -1) {
+            var parts = key.split(nsseparator);
             ns = parts[0];
             key = parts[1];
         }
@@ -1649,7 +1677,7 @@
             delete optionWithoutCount.context;
             optionWithoutCount.defaultValue = o.contextNotFound;
     
-            var contextKey = ns + o.nsseparator + key + '_' + options.context;
+            var contextKey = ns + nsseparator + key + '_' + options.context;
     
             translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
@@ -1666,14 +1694,14 @@
     
             var pluralKey;
             if (!pluralExtensions.needsPlural(lngs[0], options.count)) {
-                pluralKey = ns + o.nsseparator + key;
+                pluralKey = ns + nsseparator + key;
             } else {
-                pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
+                pluralKey = ns + nsseparator + key + o.pluralSuffix;
                 var pluralExtension = pluralExtensions.get(lngs[0], options.count);
                 if (pluralExtension >= 0) {
                     pluralKey = pluralKey + '_' + pluralExtension;
                 } else if (pluralExtension === 1) {
-                    pluralKey = ns + o.nsseparator + key; // singular
+                    pluralKey = ns + nsseparator + key; // singular
                 }
             }
     
@@ -1693,12 +1721,12 @@
                 options._origLng = optionWithoutCount._origLng;
                 delete options.lng;
                 // retry with fallbacks
-                translated = translate(ns + o.nsseparator + key, options);
+                translated = translate(ns + nsseparator + key, options);
                 if (translated != o.pluralNotFound) return translated;
             } else {
                 optionWithoutCount.lng = optionWithoutCount._origLng;
                 delete optionWithoutCount._origLng;
-                translated = translate(ns + o.nsseparator + key, optionWithoutCount);
+                translated = translate(ns + nsseparator + key, optionWithoutCount);
     
                 return applyReplacement(translated, {
                     count: options.count,
@@ -1713,7 +1741,7 @@
             delete optionsWithoutIndef.indefinite_article;
             optionsWithoutIndef.defaultValue = o.indefiniteNotFound;
             // If we don't have a count, we want the indefinite, if we do have a count, and needsPlural is false
-            var indefiniteKey = ns + o.nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
+            var indefiniteKey = ns + nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
             translated = translate(indefiniteKey, optionsWithoutIndef);
             if (translated != o.indefiniteNotFound) {
                 return translated;
@@ -1721,7 +1749,8 @@
         }
     
         var found;
-        var keys = key.split(o.keyseparator);
+        var keyseparator = options.keyseparator || o.keyseparator;
+        var keys = key.split(keyseparator);
         for (var i = 0, len = lngs.length; i < len; i++ ) {
             if (found !== undefined) break;
     
@@ -1756,7 +1785,7 @@
                     } else if (valueType !== '[object Number]' && valueType !== '[object Function]' && valueType !== '[object RegExp]') {
                         var copy = (valueType === '[object Array]') ? [] : {}; // apply child translation on a copy
                         f.each(value, function(m) {
-                            copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
+                            copy[m] = _translate(ns + nsseparator + key + keyseparator + m, options);
                         });
                         value = copy;
                     }
@@ -1776,12 +1805,12 @@
             if (o.fallbackNS.length) {
     
                 for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
-                    found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
+                    found = _find(o.fallbackNS[y] + nsseparator + key, options);
     
                     if (found || (found==="" && o.fallbackOnEmpty === false)) {
                         /* compare value without namespace */
-                        var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
-                          , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;
+                        var foundValue = found.indexOf(nsseparator) > -1 ? found.split(nsseparator)[1] : found
+                          , notFoundValue = notFound.indexOf(nsseparator) > -1 ? notFound.split(nsseparator)[1] : notFound;
     
                         if (foundValue !== notFoundValue) break;
                     }
@@ -2027,7 +2056,7 @@
         15: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);},
         16: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2);},
         17: function(n) {return Number(n==1 || n%10==1 ? 0 : 1);},
-        18: function(n) {return Number(0 ? 0 : n==1 ? 1 : 2);},
+        18: function(n) {return Number(n==0 ? 0 : n==1 ? 1 : 2);},
         19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
         20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
         21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
@@ -2278,6 +2307,7 @@
     i18n.sync = sync;
     i18n.functions = f;
     i18n.lng = lng;
+    i18n.dir = dir;
     i18n.addPostProcessor = addPostProcessor;
     i18n.applyReplacement = f.applyReplacement;
     i18n.options = o;
