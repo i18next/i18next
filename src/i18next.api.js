@@ -20,6 +20,7 @@ i18n.pluralExtensions = pluralExtensions;
 i18n.sync = sync;
 i18n.functions = f;
 i18n.lng = lng;
+i18n.dir = dir;
 i18n.addPostProcessor = addPostProcessor;
 i18n.applyReplacement = f.applyReplacement;
 i18n.options = o;
