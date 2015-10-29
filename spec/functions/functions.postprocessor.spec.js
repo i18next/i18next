@@ -36,6 +36,10 @@ describe('postprocessing tranlation', function() {
       expect(i18n.t('simpleTest', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
     });
 
+    it('it should postprocess on missing value with multiple post processes', function() {
+      expect(i18n.t('notFound2', {postProcess: ['myProcessor', 'myProcessor2']})).to.be('ok_from_postprocessor ok');
+    });
+
     describe('or setting it as default on init', function() {
 
       beforeEach(function(done) {
