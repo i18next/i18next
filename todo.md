@@ -30,6 +30,8 @@ beta:
 release:
 [ ] jquery integration
 [ ] test creation of instance more
+[ ] cdnjs (https://github.com/cdnjs/cdnjs/tree/master/ajax/libs/i18next)
+[ ] jsDelivr (https://github.com/jsdelivr/jsdelivr/blob/master/files/i18next/update.json)
 
 later:
 [ ] more test out of compat
