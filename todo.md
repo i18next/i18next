@@ -26,7 +26,7 @@ beta:
 [x] move modules to i18next.modules stop exposing them on root object -> copy them on cloning
 [x] loading translation failed...only do warning not error
 [x] node language detector
-[ ] enable greenkeeper
+[ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
 
 release:
 [ ] jquery integration
