@@ -1,12 +1,12 @@
-# Searching Contributors
+# PREVIEW TO v2.0.0
 
-looking for contributors interested in helping the project (long term):
+Currently i work hard on getting out v2.0.0 of i18next. It's a complete rewrite of the current code base and will assert i18next is ready for the next things that will come.
 
-- getting stuff fixed faster
-- we might start work on a version 2.0.0 (supporting old API - but rewrite to optimize size, drop old browser support, better modularization, ...)
-- update docs to be generated out of wiki pages?!?
-- creating an icon for i18next organisation on github and the project
-- ...
+Current state is still alpha - but i highly encourage maintainers of projects using i18next - to take the early chance to play with the upcoming version.
+
+For people using i18next in production i recommend waiting for first beta version to play around.
+
+more info could be found on: [Migration Guide](http://i18next.github.io/i18next.com/docs/migration/)
 
 # Introduction
 
@@ -80,7 +80,7 @@ $.i18n.init({
     $.t('ns.common:app.company.name'); // -> my company (from dev resourcefile)
     $.t('ns.common:add'); // -> add (from dev resourcefile)
 });
-```	
+```
 
 ### insert values into your translation
 
@@ -144,7 +144,7 @@ To build your own copy of i18next, check out the repository and:
     npm install -g grunt-cli
     npm install
     grunt
-    
+
 The grunt command will build i18next into the bin/ and release/ folders.
 
 # License (MIT)
