@@ -16,7 +16,7 @@ beta:
 [x] key and namespace separator
 [x] allow separator override in translation options
 [x] logger
-[ ] add deprecation WARNINGS
+[ ] add deprecation WARNINGS for apis appended
 [ ] move XHR test to repo -> expose lib on this so we could grab eg. interpolator there
 [x] think about reintroducing array joining in translation -> options + json compat
 [x] have json v1 compatibility change the interpolation prefix/suffix
