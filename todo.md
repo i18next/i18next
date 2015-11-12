@@ -26,12 +26,14 @@ beta:
 [x] move modules to i18next.modules stop exposing them on root object -> copy them on cloning
 [x] loading translation failed...only do warning not error
 [x] node language detector
+[ ] enable greenkeeper
 
 release:
 [ ] jquery integration
 [ ] test creation of instance more
 [ ] cdnjs (https://github.com/cdnjs/cdnjs/tree/master/ajax/libs/i18next)
 [ ] jsDelivr (https://github.com/jsdelivr/jsdelivr/blob/master/files/i18next/update.json)
+[ ] travis.ci
 
 later:
 [ ] more test out of compat
