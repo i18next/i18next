@@ -1,3 +1,6 @@
+### 1.11.1
+- fixes issue in nesting using multiple namespaces and lookups in fallback namespaces
+
 ### 1.11.0
 - Add nsseparator and keyseparator as options to translation function [PR 446](https://github.com/i18next/i18next/pull/446)
 - Resolves issue #448 - TypeScript errors [PR 449](https://github.com/i18next/i18next/pull/449)

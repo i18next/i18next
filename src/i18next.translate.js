@@ -44,6 +44,7 @@ function applyReuse(translated, options) {
 
     var opts = f.extend({}, options);
     delete opts.postProcess;
+    delete opts.isFallbackLookup;
 
     while (translated.indexOf(o.reusePrefix) != -1) {
         replacementCounter++;

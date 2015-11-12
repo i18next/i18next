@@ -1,10 +1,10 @@
 describe('resource nesting', function() {
   var resStore = {
     dev: { translation: { nesting1: '1 $t(nesting2)' } },
-    en: { translation: { nesting2: '2 $t(nesting3)' } },            
+    en: { translation: { nesting2: '2 $t(nesting3)' } },
     'en-US': { translation: {  nesting3: '3' } }
   };
-  
+
   beforeEach(function(done) {
     i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
       function(t) { done(); });
@@ -38,16 +38,16 @@ describe('resource nesting', function() {
 
   describe('with setting new options', function() {
     var resStore = {
-      dev: { translation: { 
+      dev: { translation: {
         nesting1: '$t(nesting2, {"count": __girls__}) and __count__ boy',
-        nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys' 
+        nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys'
       } },
       en: { translation: {
         nesting2: '__count__ girl',
-        nesting2_plural: '__count__ girls' 
+        nesting2_plural: '__count__ girls'
       } }
     };
-    
+
     beforeEach(function(done) {
       i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
         function(t) { done(); });
@@ -59,4 +59,24 @@ describe('resource nesting', function() {
     });
   });
 
+});
+
+describe('resource nesting with multiple namespaces and fallbackNS', function() {
+  var resStore = {
+    dev: { translation1: { nesting1: '1 $t(nesting2)' } },
+    en: { translation: { nesting2: '2 $t(nesting3)' } },
+    'en-US': { translation: {  nesting3: '3' } }
+  };
+
+  beforeEach(function(done) {
+    i18n.init(i18n.functions.extend(opts, {
+      resStore: resStore,
+      ns: { namespaces: ['translation1', 'translation'], defaultNs: 'translation1'},
+      fallbackNS: ['translation']
+    }), function(t) { done(); });
+  });
+
+  it('it should translate nested value', function() {
+    expect(i18n.t('translation1:nesting1')).to.be('1 2 3');
+  });
 });
