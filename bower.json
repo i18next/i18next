@@ -1,0 +1,21 @@
+{
+  "name": "i18next",
+  "version": "2.0.0-alpha.23",
+  "main": "./bin/index.js",
+  "dependencies": {},
+  "ignore": [
+    "test/",
+    "lib/",
+    "src/",
+    "coverage/",
+    ".babelrc",
+    ".gitignore",
+    ".editorconfig",
+    ".eslintignore",
+    ".eslintrc",
+    ".npmignore",
+    "gulpfile.js",
+    "package.json",
+    "karma.conf.js"
+  ]
+}
