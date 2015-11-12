@@ -1,4 +1,4 @@
-// i18next, v1.11.0
+// i18next, v1.11.1
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -1453,6 +1453,7 @@
     
         var opts = f.extend({}, options);
         delete opts.postProcess;
+        delete opts.isFallbackLookup;
     
         while (translated.indexOf(o.reusePrefix) != -1) {
             replacementCounter++;
@@ -1508,11 +1509,14 @@
     }
     
     function translate(key, options) {
-        options = options || {};
-    
         if (!initialized) {
             f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
-            return options.defaultValue || '';
+    
+            if (options && options.defaultValue) {
+                return options.detaultValue;
+            } else {
+                return '';
+            }
         };
         replacementCounter = 0;
         return _translate.apply(null, arguments);
@@ -1538,7 +1542,7 @@
     }
     
     function _translate(potentialKeys, options) {
-        if (options && typeof options !== 'object') {
+        if (typeof options !== 'undefined' && typeof options !== 'object') {
             if (o.shortcutFunction === 'sprintf') {
                 // mh: gettext like sprintf syntax found, automatically create sprintf processor
                 options = _injectSprintfProcessor.apply(null, arguments);

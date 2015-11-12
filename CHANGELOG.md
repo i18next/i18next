@@ -1,5 +1,6 @@
 ### 1.11.1
 - fixes issue in nesting using multiple namespaces and lookups in fallback namespaces
+- Fix use of sprintf as shortcutFunction when first argument falsey [PR 453](https://github.com/i18next/i18next/pull/453)
 
 ### 1.11.0
 - Add nsseparator and keyseparator as options to translation function [PR 446](https://github.com/i18next/i18next/pull/446)
