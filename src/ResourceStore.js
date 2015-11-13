@@ -14,6 +14,13 @@ class ResourceStore extends EventEmitter {
     }
   }
 
+  removeNamespaces(ns) {
+    var index = this.options.ns.indexOf(ns);
+    if (index > -1) {
+      this.options.ns.splice(index, 1);
+    }
+  }
+
   getResource(lng, ns, key, options = {}) {
     let keySeparator = options.keySeparator || this.options.keySeparator || '.';
 
@@ -80,6 +87,7 @@ class ResourceStore extends EventEmitter {
     if (this.hasResourceBundle(lng, ns)) {
       delete this.data[lng][ns];
     }
+    this.removeNamespaces(ns);
 
     this.emit('removed', lng, ns);
   }
