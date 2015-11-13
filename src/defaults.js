@@ -2,7 +2,7 @@ let noop = function() {};
 
 export function get() {
   return {
-    debug: true,
+    debug: false,
 
     ns: 'translation',
     fallbackLng: 'dev',

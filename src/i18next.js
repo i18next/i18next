@@ -33,7 +33,7 @@ class I18n extends EventEmitter {
     } else if (options.compatibilityJSON === 'v1') {
       this.options = utils.defaults({}, transformOptions(compat.convertJSONOptions(options)), getDefaults());
     } else {
-      this.options = utils.defaults(this.options, transformOptions(options), getDefaults());
+      this.options = utils.defaults({}, transformOptions(options), this.options, getDefaults());
     }
     if (!callback) callback = () => {};
 
@@ -132,7 +132,7 @@ class I18n extends EventEmitter {
       this.modules.cache = module;
     }
 
-    if (module.type === 'logger' || (module.log && module.warn && module.warn) {
+    if (module.type === 'logger' || (module.log && module.warn && module.warn)) {
       this.modules.logger = module;
     }
 
