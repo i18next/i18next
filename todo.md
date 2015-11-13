@@ -16,19 +16,20 @@ beta:
 [x] key and namespace separator
 [x] allow separator override in translation options
 [x] logger
-[ ] add deprecation WARNINGS for apis appended
+[x] add deprecation WARNINGS for apis appended
 [x] move XHR test to repo -> expose lib on this so we could grab eg. interpolator there
 [x] think about reintroducing array joining in translation -> options + json compat
 [x] have json v1 compatibility change the interpolation prefix/suffix
-[ ] localStorage on adding in resourceStore
+[x] localStorage on adding in resourceStore
 [x] simplify logger have prefix on outer class - logger internal as singleton or class
 [x] getFixedT optional fix namespace too
 [x] move modules to i18next.modules stop exposing them on root object -> copy them on cloning
 [x] loading translation failed...only do warning not error
 [x] node language detector
-[ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
+
 
 release:
+[ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
 [ ] jquery integration
 [ ] test creation of instance more
 [ ] cdnjs (https://github.com/cdnjs/cdnjs/tree/master/ajax/libs/i18next)

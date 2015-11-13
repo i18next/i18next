@@ -59,7 +59,7 @@ class Logger {
   }
 
   deprecate() {
-    if (typeof args[0] === 'string') args[0] = 'WARNING DEPRECATED: ' + this.prefix + ' ' + args[0];
+    if (typeof arguments[0] === 'string') arguments[0] = 'WARNING DEPRECATED: ' + this.prefix + ' ' + arguments[0];
     if (this.debug) this.logger.warn(arguments);
   }
 

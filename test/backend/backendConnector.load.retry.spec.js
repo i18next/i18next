@@ -7,7 +7,7 @@ describe('BackendConnector load retry', () => {
   let connector;
 
   before(() => {
-    connector = new BackendConnector(new BackendMock(), null, new ResourceStore(), {
+    connector = new BackendConnector(new BackendMock(), new ResourceStore(), {
       interpolator: new Interpolator()
     }, {
       backend: { loadPath: 'http://localhost:9876/locales/{{lng}}/{{ns}}.json' }

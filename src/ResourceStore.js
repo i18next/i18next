@@ -28,7 +28,7 @@ class ResourceStore extends EventEmitter {
     return utils.getPath(this.data, path);
   }
 
-  addResource(lng, ns, key, value) {
+  addResource(lng, ns, key, value, options = { silent: false }) {
     let path = [lng, ns];
     if (key) path = path.concat(key.split(this.options.keySeparator || '.'));
 
@@ -42,16 +42,14 @@ class ResourceStore extends EventEmitter {
 
     utils.setPath(this.data, path, value);
 
-    // TODO: evtl. just emit event
-    // if (o.useLocalStorage) {
-    //     sync._storeLocal(resStore);
-    // }
+    if (!options.silent) this.emit('added', lng, ns);
   }
 
   addResources(lng, ns, resources) {
     for (var m in resources) {
-      if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m]);
+      if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m], { silent: true });
     }
+    this.emit('added', lng, ns);
   }
 
   addResourceBundle(lng, ns, resources, deep, overwrite) {
@@ -75,10 +73,7 @@ class ResourceStore extends EventEmitter {
 
     utils.setPath(this.data, path, pack);
 
-    // TODO: evtl. just emit event
-    // if (o.useLocalStorage) {
-    //     sync._storeLocal(resStore);
-    // }
+    this.emit('added', lng, ns);
   }
 
   removeResourceBundle(lng, ns) {
@@ -86,9 +81,7 @@ class ResourceStore extends EventEmitter {
       delete this.data[lng][ns];
     }
 
-    // TODO: if (o.useLocalStorage) {
-    //     sync._storeLocal(resStore);
-    // }
+    this.emit('removed', lng, ns);
   }
 
   hasResourceBundle(lng, ns) {

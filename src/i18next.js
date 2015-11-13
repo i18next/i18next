@@ -7,6 +7,7 @@ import LanguageUtils from './LanguageUtils';
 import PluralResolver from './PluralResolver';
 import Interpolator from './Interpolator';
 import BackendConnector from './BackendConnector';
+import CacheConnector from './CacheConnector';
 import { get as getDefaults, transformOptions } from './defaults';
 import postProcessor from './postProcessor';
 
@@ -38,6 +39,7 @@ class I18n extends EventEmitter {
     if (!callback) callback = () => {};
 
     function createClassOnDemand(ClassOrObject) {
+      if (!ClassOrObject) return;
       if (typeof ClassOrObject === 'function') return new ClassOrObject();
       return ClassOrObject;
     }
@@ -56,16 +58,28 @@ class I18n extends EventEmitter {
       var s = this.services;
       s.logger = baseLogger;
       s.resourceStore = this.store;
+      s.resourceStore.on('added removed', (lng, ns) => {
+        s.cacheConnector.save();
+      });
       s.languageUtils = lu;
       s.pluralResolver = new PluralResolver(lu, {prepend: '_', compatibilityJSON:  this.options.compatibilityJSON});
       s.interpolator = new Interpolator(this.options);
-      if (this.modules.backend) {
-        s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), createClassOnDemand(this.modules.cache), s.resourceStore, s, this.options);
-        // pipe events from backendConnector
-        s.backendConnector.on('*', (event, ...args) => {
-          this.emit(event, ...args);
-        });
-      }
+
+      s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
+      // pipe events from backendConnector
+      s.backendConnector.on('*', (event, ...args) => {
+        this.emit(event, ...args);
+      });
+
+      s.backendConnector.on('loaded', (loaded) => {
+        s.cacheConnector.save();
+      });
+
+      s.cacheConnector = new CacheConnector(createClassOnDemand(this.modules.cache), s.resourceStore, s, this.options);
+      // pipe events from backendConnector
+      s.cacheConnector.on('*', (event, ...args) => {
+        this.emit(event, ...args);
+      });
 
       if (this.modules.languageDetector) {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
@@ -99,7 +113,7 @@ class I18n extends EventEmitter {
   loadResources(callback) {
     if (!callback) callback = () => {};
 
-    if (!this.options.resources && this.services.backendConnector) {
+    if (!this.options.resources) {
       let toLoad = [];
 
       let append = lng => {
@@ -117,7 +131,9 @@ class I18n extends EventEmitter {
         });
       }
 
-      this.services.backendConnector.load(toLoad, this.options.ns, callback);
+      this.services.cacheConnector.load(toLoad, this.options.ns, () => {
+        this.services.backendConnector.load(toLoad, this.options.ns, callback);
+      });
     } else {
       callback(null);
     }
@@ -145,16 +161,6 @@ class I18n extends EventEmitter {
     }
 
     return this;
-  }
-
-  // TODO: COMPATIBILITY remove this
-  addPostProcessor(name, fc) {
-    // TODO: deprecation warning
-    this.use({
-      type: 'postProcessor',
-      name: name,
-      process: fc
-    });
   }
 
   changeLanguage(lng, callback) {
@@ -234,7 +240,7 @@ class I18n extends EventEmitter {
     ];
 
     return ltrLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) ? 'ltr' : 'rtl';
-}
+  }
 
   createInstance(options = {}, callback) {
     return new I18n(options, callback);

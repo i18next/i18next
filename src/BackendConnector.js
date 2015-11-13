@@ -3,10 +3,9 @@ import baseLogger from './logger';
 import EventEmitter from './EventEmitter';
 
 class Connector  extends EventEmitter {
-  constructor(backend, cache, store, services, options = {}) {
+  constructor(backend, store, services, options = {}) {
     super();
     this.backend = backend;
-    this.cache = cache;
     this.store = store;
     this.services = services;
     this.options = options;
@@ -14,16 +13,14 @@ class Connector  extends EventEmitter {
 
     this.pending = {};
 
-    this.backend.init(services, options.backend, options);
-    if (this.cache) this.cache.init(services, options.cache, options);
+    this.backend && this.backend.init(services, options.backend, options);
   }
 
   load(languages, namespaces, callback) {
+    if (!this.backend) return callback && callback();
+
     if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
-
-    // first try loading data from cache
-    this.loadFromCache(languages);
 
     // load with multi-load
     if (this.options.backend.allowMultiLoading && this.backend.readMulti) {
@@ -74,7 +71,6 @@ class Connector  extends EventEmitter {
             });
           }
 
-          this.saveToCache();
           this.emit('loaded', loaded);
           callback(err);
         });
@@ -98,7 +94,6 @@ class Connector  extends EventEmitter {
       function done() {
         todo--;
         if (!todo) {
-          this.saveToCache();
           this.emit('loaded', loaded);
           callback();
         }
@@ -143,34 +138,12 @@ class Connector  extends EventEmitter {
     }
   }
 
-  loadFromCache(languages) {
-    if (this.cache && this.options.cache && this.options.cache.enabled) {
-      this.cache.load(languages, (err, data) => {
-        if (err) this.logger.error(`loading languages ${languages.join(', ')} from cache failed`, err);
-        if (data) {
-          for(var l in data) {
-            for (var n in data[l]) {
-              if (n === 'i18nStamp') continue;
-              let bundle = data[l][n];
-              if (bundle) this.store.addResourceBundle(l, n, bundle);
-            }
-          }
-        }
-      });
-    }
-  }
-
-  saveToCache() {
-    if (this.cache && this.options.cache && this.options.cache.enabled) this.cache.save(this.store.data);
-  }
-
   saveMissing(languages, namespace, key, fallbackValue) {
-    if (this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
+    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
 
     // write to store to avoid resending
     this.store.addResource(languages[0], namespace, key, fallbackValue);
   }
 }
-
 
 export default Connector;
