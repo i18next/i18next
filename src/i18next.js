@@ -132,7 +132,7 @@ class I18n extends EventEmitter {
       this.modules.cache = module;
     }
 
-    if (module.type === 'logger') {
+    if (module.type === 'logger' || (module.log && module.warn && module.warn) {
       this.modules.logger = module;
     }
 
@@ -170,7 +170,7 @@ class I18n extends EventEmitter {
     if (lng) {
       this.language = lng;
       this.languages = this.services.languageUtils.toResolveHierarchy(lng);
-      
+
       this.translator.changeLanguage(lng);
 
       if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(lng);
