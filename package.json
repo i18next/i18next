@@ -4,9 +4,12 @@
   "description": "i18next internationalization framework",
   "main": "./bin/index.js",
   "keywords": [
-    "i18n",
+    "i18next",
     "internationalization",
+    "i18n",
     "translation",
+    "localization",
+    "l10n",
     "globalization",
     "gettext"
   ],
