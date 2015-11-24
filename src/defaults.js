@@ -32,7 +32,7 @@ export function get() {
     },
 
     interpolation: {
-      escapeValue: false,
+      escapeValue: true,
       prefix: '{{',
       suffix: '}}',
       // prefixEscaped: '{{',
