@@ -5,6 +5,7 @@ export function get() {
     debug: false,
 
     ns: 'translation',
+    defaultNS: 'translation',
     fallbackLng: 'dev',
     fallbackNS : false, // string or array of namespaces
 
