@@ -65,7 +65,7 @@ class Connector  extends EventEmitter {
                   utils.pushPath(loaded, [l], n);
                 }
                 // set not pending
-                utils.setPath(this.pending, [lng, ns], false);
+                utils.setPath(this.pending, [l, n], false);
                 if (!bundle) this.logger.error(`loading namespace ${n} for language ${l} via multiloading failed`);
               });
             });
