@@ -5,6 +5,7 @@ export function get() {
     debug: false,
 
     ns: 'translation',
+    defaultNS: 'translation',
     fallbackLng: 'dev',
     fallbackNS : false, // string or array of namespaces
 
@@ -32,7 +33,7 @@ export function get() {
     },
 
     interpolation: {
-      escapeValue: false,
+      escapeValue: true,
       prefix: '{{',
       suffix: '}}',
       // prefixEscaped: '{{',
