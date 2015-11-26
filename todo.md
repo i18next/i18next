@@ -39,7 +39,9 @@ release:
 later:
 [ ] more test out of compat
 [ ] forced reset and reload of store
-[ ] indefinit plurals
+[ ] indefinit plurals ---> solution parse the value like:
+    key_indefinit: "[1] a value; [2-4] a few values; [>4] a lot of values;"
+    split char options, condition regex
 
 onDemand:
 [ ] introduce meta information on load -> loadedOn, res.statusCode
