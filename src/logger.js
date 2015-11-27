@@ -64,7 +64,7 @@ class Logger {
   }
 
   create(moduleName) {
-    let sub = new Logger(this.concreteLogger, {...{prefix: this.prefix + ':' + moduleName + ':'}, ...this.options});
+    let sub = new Logger(this.logger, {...{prefix: this.prefix + ':' + moduleName + ':'}, ...this.options});
     this.subs.push(sub);
 
     return sub;
