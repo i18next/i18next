@@ -26,7 +26,7 @@ export function get() {
     returnObjects: false,
     joinArrays: false, // or string to join array
     returnedObjectHandler: noop, // function(key, value, options) triggered if key returns object but returnObjects is set to false
-    parseMissingKeyHandler: noop, // function(key) parsed a key that was not found in t() before returning
+    parseMissingKeyHandler: false, // function(key) parsed a key that was not found in t() before returning
     appendNamespaceToMissingKey: false,
     overloadTranslationOptionHandler: function(args) {
       return { defaultValue: args[1] };
