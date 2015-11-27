@@ -106,8 +106,7 @@ class Translator extends EventEmitter {
 
       // save missing
       if (usedKey || usedDefault) {
-        this.logger.log('missingKey', lngs, namespace, key, res);
-        this.emit('missingKey', lngs, namespace, key, res);
+        this.logger.log('missingKey', lng, namespace, key, res);
 
         if (this.options.saveMissing) {
           var lngs = [];
@@ -126,6 +125,8 @@ class Translator extends EventEmitter {
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
             this.backendConnector.saveMissing(lngs, namespace, key, res);
           }
+
+          this.emit('missingKey', lngs, namespace, key, res);
         }
       }
 
