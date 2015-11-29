@@ -55,6 +55,7 @@ class Connector  extends EventEmitter {
           }
 
           if (err) this.logger.warn(`loading namespaces ${ns.join(', ')} for languages ${lng.join(', ')} via multiloading failed`, err);
+          if (!err && data) this.logger.log(`loaded namespaces ${ns.join(', ')} for languages ${lng.join(', ')} via multiloading`, data);
 
           if (data) {
             toLoadLanguages.forEach(l => {
@@ -112,6 +113,7 @@ class Connector  extends EventEmitter {
           }
 
           if (err) this.logger.warn(`loading namespace ${ns} for language ${lng} failed`, err);
+          if (!err && data) this.logger.log(`loaded namespace ${ns} for language ${lng}`, data);
 
           // set not pending
           utils.setPath(this.pending, [lng, ns], false);
