@@ -2117,7 +2117,7 @@
             if (ext && ext.numbers.length <= 1) {
                 return false;
             } else {
-                return this.get(lng, count) !== 1;
+                return true;
             }
         },
     
