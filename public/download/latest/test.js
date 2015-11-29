@@ -1,4 +1,4 @@
-// i18next, v1.11.0
+// i18next, v1.11.1
 // Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
@@ -1746,10 +1746,10 @@ describe('i18next', function() {
     describe('resource nesting', function() {
       var resStore = {
         dev: { translation: { nesting1: '1 $t(nesting2)' } },
-        en: { translation: { nesting2: '2 $t(nesting3)' } },            
+        en: { translation: { nesting2: '2 $t(nesting3)' } },
         'en-US': { translation: {  nesting3: '3' } }
       };
-      
+    
       beforeEach(function(done) {
         i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
           function(t) { done(); });
@@ -1783,16 +1783,16 @@ describe('i18next', function() {
     
       describe('with setting new options', function() {
         var resStore = {
-          dev: { translation: { 
+          dev: { translation: {
             nesting1: '$t(nesting2, {"count": __girls__}) and __count__ boy',
-            nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys' 
+            nesting1_plural: '$t(nesting2, {"count": __girls__}) and __count__ boys'
           } },
           en: { translation: {
             nesting2: '__count__ girl',
-            nesting2_plural: '__count__ girls' 
+            nesting2_plural: '__count__ girls'
           } }
         };
-        
+    
         beforeEach(function(done) {
           i18n.init(i18n.functions.extend(opts, { resStore: resStore }),
             function(t) { done(); });
@@ -1804,6 +1804,26 @@ describe('i18next', function() {
         });
       });
     
+    });
+    
+    describe('resource nesting with multiple namespaces and fallbackNS', function() {
+      var resStore = {
+        dev: { translation1: { nesting1: '1 $t(nesting2)' } },
+        en: { translation: { nesting2: '2 $t(nesting3)' } },
+        'en-US': { translation: {  nesting3: '3' } }
+      };
+    
+      beforeEach(function(done) {
+        i18n.init(i18n.functions.extend(opts, {
+          resStore: resStore,
+          ns: { namespaces: ['translation1', 'translation'], defaultNs: 'translation1'},
+          fallbackNS: ['translation']
+        }), function(t) { done(); });
+      });
+    
+      it('it should translate nested value', function() {
+        expect(i18n.t('translation1:nesting1')).to.be('1 2 3');
+      });
     });
   
     describe('interpolation - replacing values inside a string', function() {
@@ -2022,7 +2042,8 @@ describe('i18next', function() {
             translation: {                      
               interpolationTest1: 'The first 4 letters of the english alphabet are: %s, %s, %s and %s',
               interpolationTest2: 'Hello %(users[0].name)s, %(users[1].name)s and %(users[2].name)s',
-              interpolationTest3: 'The last letter of the english alphabet is %s'
+              interpolationTest3: 'The last letter of the english alphabet is %s',
+              interpolationTest4: 'Water freezes at %d degrees'
             } 
           }
         };
@@ -2040,6 +2061,7 @@ describe('i18next', function() {
         it('it should recognize the sprintf syntax and automatically add the sprintf processor', function() {
           expect(i18n.t('interpolationTest1', 'a', 'b', 'c', 'd')).to.be('The first 4 letters of the english alphabet are: a, b, c and d');
           expect(i18n.t('interpolationTest3', 'z')).to.be('The last letter of the english alphabet is z');
+          expect(i18n.t('interpolationTest4', 0)).to.be('Water freezes at 0 degrees');
         });
         
       });
