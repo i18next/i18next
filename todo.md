@@ -30,6 +30,9 @@ beta:
 
 release:
 [ ] get size down...eg. plurals remove lng names combine formats to new arrays [de, en,...]
+    replace extend and default
+    { ...{moo: 2, bar: 4 }, ...defaults } // extend
+    , { ...defaults, ...{moo: 2, bar: 4 } } // defaults
 [ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
 [x] jquery integration
 [ ] test creation of instance more
