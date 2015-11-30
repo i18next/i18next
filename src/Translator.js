@@ -134,7 +134,7 @@ class Translator extends EventEmitter {
       res = this.extendTranslation(res, key, options);
 
       // append namespace if still key
-      if (usedKey && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;
+      if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;
 
       // parseMissingKeyHandler
       if (usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
@@ -159,7 +159,7 @@ class Translator extends EventEmitter {
     let postProcess = options.postProcess || this.options.postProcess;
     let postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
-    if (res !== undefined && postProcessorNames && postProcessorNames.length) res = postProcessor.handle(postProcessorNames, res, key, options);
+    if (res !== undefined && postProcessorNames && postProcessorNames.length) res = postProcessor.handle(postProcessorNames, res, key, options, this);
 
     return res;
   }
