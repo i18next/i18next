@@ -11,8 +11,6 @@ class Connector  extends EventEmitter {
     this.options = options;
     this.logger = baseLogger.create('cacheConnector');
 
-    this.pending = {};
-
     this.cache && this.cache.init(services, options.cache, options);
   }
 

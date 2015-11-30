@@ -29,6 +29,7 @@ beta:
 
 
 release:
+[ ] get size down...eg. plurals remove lng names combine formats to new arrays [de, en,...]
 [ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
 [x] jquery integration
 [ ] test creation of instance more
