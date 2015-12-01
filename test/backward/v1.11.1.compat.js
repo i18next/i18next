@@ -9,8 +9,22 @@ import sprintf from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import * as utils from '../../src/utils';
 
+let arr = [];
+let each = arr.forEach;
+let slice = arr.slice;
+export function extend(obj) {
+  each.call(slice.call(arguments, 1), function(source) {
+    if (source) {
+      for (var prop in source) {
+        obj[prop] = source[prop];
+      }
+    }
+  });
+  return obj;
+}
+
 i18n.functions = {
-  extend: utils.extend
+  extend: extend
 };
 
 let xhr = new XHR();

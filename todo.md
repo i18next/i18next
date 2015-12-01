@@ -33,6 +33,10 @@ release:
     replace extend and default
     { ...{moo: 2, bar: 4 }, ...defaults } // extend
     , { ...defaults, ...{moo: 2, bar: 4 } } // defaults
+
+    done: utils, pluralRules
+
+
 [ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
 [x] jquery integration
 [ ] test creation of instance more

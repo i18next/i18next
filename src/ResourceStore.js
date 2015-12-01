@@ -75,7 +75,7 @@ class ResourceStore extends EventEmitter {
     if (deep) {
       utils.deepExtend(pack, resources, overwrite);
     } else {
-      utils.extend(pack, resources);
+      pack = {...pack, ...resources};
     }
 
     utils.setPath(this.data, path, pack);
@@ -100,7 +100,7 @@ class ResourceStore extends EventEmitter {
     if (!ns) ns = this.options.defaultNS;
 
     // TODO: COMPATIBILITY remove extend in v2.1.0
-    if (this.options.compatibilityAPI === 'v1') return utils.extend({}, this.getResource(lng, ns)) || {};
+    if (this.options.compatibilityAPI === 'v1') return {...{}, ...this.getResource(lng, ns)};
 
     return this.getResource(lng, ns);
   }

@@ -1,4 +1,3 @@
-import * as utils from './utils';
 import baseLogger from './logger';
 import EventEmitter from './EventEmitter';
 import postProcessor from './postProcessor';
@@ -151,7 +150,7 @@ class Translator extends EventEmitter {
 
     // interpolate
     let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-    if (this.options.interpolation.defaultVariables) data = utils.defaults(data, this.options.interpolation.defaultVariables);
+    if (this.options.interpolation.defaultVariables) data = {...this.options.interpolation.defaultVariables, ...data};
     res = this.interpolator.interpolate(res, data);
     if (options.interpolation) this.interpolator.reset();
 

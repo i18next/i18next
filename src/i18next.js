@@ -1,4 +1,3 @@
-import * as utils from './utils';
 import baseLogger from './logger';
 import EventEmitter from './EventEmitter';
 import ResourceStore from './ResourceStore';
@@ -30,11 +29,11 @@ class I18n extends EventEmitter {
       options = {};
     }
     if (options.compatibilityAPI === 'v1') {
-      this.options = utils.defaults({}, transformOptions(compat.convertAPIOptions(options)), getDefaults());
+      this.options = {...getDefaults(), ...transformOptions(compat.convertAPIOptions(options)), ...{}};
     } else if (options.compatibilityJSON === 'v1') {
-      this.options = utils.defaults({}, transformOptions(compat.convertJSONOptions(options)), getDefaults());
+      this.options = {...getDefaults(), ...transformOptions(compat.convertJSONOptions(options)), ...{}};
     } else {
-      this.options = utils.defaults({}, transformOptions(options), this.options, getDefaults());
+      this.options = {...getDefaults(), ...this.options, ...transformOptions(options)};
     }
     if (!callback) callback = () => {};
 
@@ -247,7 +246,7 @@ class I18n extends EventEmitter {
   }
 
   cloneInstance(options = {}, callback) {
-    let clone = new I18n(utils.extend(options, this.options, {isClone: true}), callback);
+    let clone = new I18n({...options, ...this.options, ...{isClone: true}}, callback);
     const membersToCopy = ['store', 'translator', 'services', 'language'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];
