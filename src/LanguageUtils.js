@@ -5,7 +5,7 @@ class LanguageUtil {
     this.options = options;
 
     this.whitelist = this.options.whitelist || false;
-    this.logger = baseLogger.create('codeUtils');
+    this.logger = baseLogger.create('languageUtils');
   }
 
   getLanguagePartFromCode(code) {
