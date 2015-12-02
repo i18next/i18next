@@ -29,13 +29,9 @@ class Translator extends EventEmitter {
   }
 
   translate(keys, options = {}) {
-    if (options !== undefined && typeof options !== 'object') {
+    if (typeof options !== 'object') {
       options = this.options.overloadTranslationOptionHandler(arguments);
-    } else {
-      options = options || {};
-    }
-
-    if (this.options.compatibilityAPI === 'v1') {
+    } else if (this.options.compatibilityAPI === 'v1') {
       options = compat.convertTOptions(options);
     }
 
