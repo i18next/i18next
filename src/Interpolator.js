@@ -12,16 +12,18 @@ class Interpolator {
     if (reset) this.options = options;
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
-    this.escapeValue = options.interpolation.escapeValue;
+    let iOpts = options.interpolation;
 
-    this.prefix = options.interpolation.prefix ? utils.regexEscape(options.interpolation.prefix) : options.interpolation.prefixEscaped || '{{';
-    this.suffix = options.interpolation.suffix ? utils.regexEscape(options.interpolation.suffix) : options.interpolation.suffixEscaped || '}}';
+    this.escapeValue = iOpts.escapeValue;
 
-    this.unescapePrefix = options.interpolation.unescapeSuffix ? '' : options.interpolation.unescapePrefix || '-';
-    this.unescapeSuffix = this.unescapePrefix ? '' : options.interpolation.unescapeSuffix || '';
+    this.prefix = iOpts.prefix ? utils.regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
+    this.suffix = iOpts.suffix ? utils.regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
 
-    this.nestingPrefix = options.interpolation.nestingPrefix ? utils.regexEscape(options.interpolation.nestingPrefix) : options.interpolation.nestingPrefixEscaped || '$t(';
-    this.nestingSuffix = options.interpolation.nestingSuffix ? utils.regexEscape(options.interpolation.nestingSuffix) : options.interpolation.nestingSuffixEscaped || ')';
+    this.unescapePrefix = iOpts.unescapeSuffix ? '' : iOpts.unescapePrefix || '-';
+    this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
+
+    this.nestingPrefix = iOpts.nestingPrefix ? utils.regexEscape(iOpts.nestingPrefix) : iOpts.nestingPrefixEscaped || '$t(';
+    this.nestingSuffix = iOpts.nestingSuffix ? utils.regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || ')';
 
     // the regexp
     let regexpStr = this.prefix + '(.+?)' + this.suffix;

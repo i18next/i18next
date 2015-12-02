@@ -40,27 +40,25 @@ class Logger {
   }
 
   log() {
-    if (!this.debug) return;
-
-    if (typeof arguments[0] === 'string') arguments[0] = this.prefix + ' ' + arguments[0];
-    this.logger.log(arguments);
+    this.forward(arguments, 'log', '', true);
   }
 
   warn() {
-    if (!this.debug) return;
-
-    if (typeof arguments[0] === 'string') arguments[0] = this.prefix + ' ' + arguments[0];
-    this.logger.warn(arguments);
+    this.forward(arguments, 'warn', '', true);
   }
 
   error() {
-    if (typeof arguments[0] === 'string') arguments[0] = this.prefix + ' ' + arguments[0];
-    this.logger.error(arguments);
+    this.forward(arguments, 'error', '');
   }
 
   deprecate() {
-    if (typeof arguments[0] === 'string') arguments[0] = 'WARNING DEPRECATED: ' + this.prefix + ' ' + arguments[0];
-    if (this.debug) this.logger.warn(arguments);
+    this.forward(arguments, 'warn', 'WARNING DEPRECATED: ', true);
+  }
+
+  forward(args, lvl, prefix, debugOnly) {
+    if (debugOnly && !this.debug) return;
+    if (typeof args[0] === 'string') args[0] = prefix + this.prefix + ' ' + args[0];
+    this.logger[lvl](args);
   }
 
   create(moduleName) {

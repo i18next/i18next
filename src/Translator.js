@@ -2,16 +2,14 @@ import baseLogger from './logger';
 import EventEmitter from './EventEmitter';
 import postProcessor from './postProcessor';
 import * as compat from './compatibility/v1';
+import * as utils from './utils';
 
 class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
 
-    if (services.resourceStore) this.resourceStore = services.resourceStore;
-    if (services.languageUtils) this.languageUtils = services.languageUtils;
-    if (services.pluralResolver) this.pluralResolver = services.pluralResolver;
-    if (services.interpolator) this.interpolator = services.interpolator;
-    if (services.backendConnector) this.backendConnector = services.backendConnector;
+    utils.copy(['resourceStore','languageUtils','pluralResolver','interpolator','backendConnector'], services, this);
+
     this.options = options;
     this.logger = baseLogger.create('translator');
   }
@@ -28,6 +26,23 @@ class Translator extends EventEmitter {
     return this.resolve(key, options) !== undefined;
   }
 
+  extractFromKey(key, options) {
+    let nsSeparator = options.nsSeparator || this.options.nsSeparator || ':';
+
+    let namespaces = options.ns || this.options.defaultNS;
+    if (key.indexOf(nsSeparator) > -1) {
+      const parts = key.split(nsSeparator);
+      namespaces = parts[0];
+      key = parts[1];
+    }
+    if (typeof namespaces === 'string') namespaces = [namespaces];
+
+    return {
+      key: key,
+      namespaces: namespaces
+    };
+  }
+
   translate(keys, options = {}) {
     if (typeof options !== 'object') {
       options = this.options.overloadTranslationOptionHandler(arguments);
@@ -39,24 +54,16 @@ class Translator extends EventEmitter {
     if (keys === undefined || keys === null || keys === '') return '';
     if (typeof keys === 'number') keys = String(keys);
     if (typeof keys === 'string') keys = [keys];
-    let key = keys[keys.length - 1];
 
     // return key on CIMode
     let lng = options.lng || this.language;
-    if (lng && lng.toLowerCase() === 'cimode') return key;
+    if (lng && lng.toLowerCase() === 'cimode') return keys[keys.length - 1];
 
     // separators
-    let nsSeparator = options.nsSeparator || this.options.nsSeparator || ':';
     let keySeparator = options.keySeparator || this.options.keySeparator || '.';
 
     // get namespace(s)
-    let namespaces = options.ns || this.options.defaultNS;
-    if (key.indexOf(nsSeparator) > -1) {
-      const parts = key.split(nsSeparator);
-      namespaces = parts[0];
-      key = parts[1];
-    }
-    if (typeof namespaces === 'string') namespaces = [namespaces];
+    let { key, namespaces } = this.extractFromKey(keys[keys.length - 1], options);
     let namespace = namespaces[namespaces.length - 1];
 
     // resolve from store
@@ -165,24 +172,16 @@ class Translator extends EventEmitter {
     if (typeof keys === 'string') keys = [keys];
 
     // forEach possible key
-    keys.forEach(key => {
+    keys.forEach(k => {
       if (this.isValidLookup(found)) return;
 
-      let namespaces = options.ns || this.options.defaultNS;
-      let nsSeparator = options.nsSeparator || this.options.nsSeparator || ':';
-      if (key.indexOf(nsSeparator) > -1) {
-        const parts = key.split(nsSeparator);
-        namespaces = parts[0];
-        key = parts[1];
-      }
-      if (typeof namespaces === 'string') namespaces = [namespaces];
+      let { key, namespaces } = this.extractFromKey(k, options);
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
       let needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       let needsContextHandling = options.context !== undefined && typeof options.context === 'string' && options.context !== '';
 
-      let codes = this.languageUtils.toResolveHierarchy(options.lng || this.language);
-      if (options.lngs) codes = options.lngs;
+      let codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language);
 
       namespaces.forEach(ns => {
         if (this.isValidLookup(found)) return;

@@ -3,6 +3,12 @@ export function makeString(object) {
   return '' + object;
 }
 
+export function copy(a, s, t) {
+  a.forEach(m => {
+    if (s[m]) t[m] = s[m];
+  });
+}
+
 function getLastOfPath(object, path, Empty) {
   function cleanKey(key) {
     return (key && key.indexOf('###') > -1) ? key.replace(/###/g, '.') : key;
