@@ -16,11 +16,12 @@ class Connector  extends EventEmitter {
 
   load(languages, namespaces, callback) {
     if (!this.cache) return callback && callback();
+    let options = {...this.cache.options, ...this.options.cache};
 
     if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    if (this.options.cache && this.options.cache.enabled) {
+    if (options.enabled) {
       this.cache.load(languages, (err, data) => {
         if (err) this.logger.error(`loading languages ${languages.join(', ')} from cache failed`, err);
         if (data) {

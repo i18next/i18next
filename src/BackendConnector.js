@@ -18,12 +18,13 @@ class Connector  extends EventEmitter {
 
   load(languages, namespaces, callback) {
     if (!this.backend) return callback && callback();
+    let options = {...this.backend.options, ...this.options.backend};
 
     if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
     // load with multi-load
-    if (this.options.backend.allowMultiLoading && this.backend.readMulti) {
+    if (options.allowMultiLoading && this.backend.readMulti) {
       let loaded = {};
 
       // find what needs to be loaded
