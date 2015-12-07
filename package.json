@@ -2,7 +2,7 @@
   "author": "jamuhl",
   "name": "i18next-client",
   "license": "MIT",
-  "version": "1.11.1",
+  "version": "1.11.2",
   "private": false,
   "main": "i18next.js",
   "browser": "i18next.js",
