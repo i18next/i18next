@@ -1,10 +1,34 @@
-# PREVIEW TO v2.0.0
+# PREVIEW TO v2.0.0 beta
 
-Currently i work hard on getting out v2.0.0 of i18next. It's a complete rewrite of the current code base and will assert i18next is ready for the next things that will come.
+Currently we work hard on getting out [v2.0.0 of i18next](https://github.com/i18next/i18next/tree/2.0.0). It's a complete rewrite of the current code base from 2011 and will assert i18next is ready for the next big things that will come.
 
-Current state is still alpha - but i highly encourage maintainers of projects using i18next - to take the early chance to play with the upcoming version.
+Current state is **beta**.
 
-For people using i18next in production i recommend waiting for first beta version to play around.
+- [Getting started](http://i18next.github.io/i18next.com/docs/)
+- [API](http://i18next.github.io/i18next.com/docs/api/)
+- [Translate](http://i18next.github.io/i18next.com/translate/)
+- [Migration Guide](http://i18next.github.io/i18next.com/docs/migration/)
+
+Source can be loaded via [npm](https://www.npmjs.com/package/i18next), bower or [downloaded](https://github.com/i18next/i18next/blob/2.0.0/i18next.min.js) from this repo.
+
+
+```bash
+# npm
+$ npm install i18next@beta
+
+# bower
+$ bower install i18next/i18next#2.0.0
+```
+
+---------
+
+We highly encourage maintainers of modules using i18next to migrate to v2.
+
+
+In our company we already use v2.0.0 in production, so for people starting a new project we recommend directly using v2.
+
+For people already using i18next in production we recommend to wait for first release - but still feel free to play with it and giving early feedback before the release gets finalized.
+
 
 more info could be found on: [Migration Guide](http://i18next.github.io/i18next.com/docs/migration/)
 

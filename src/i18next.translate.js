@@ -193,7 +193,9 @@ function _translate(potentialKeys, options) {
         }
     }
 
-    var postProcessorsToApply;
+    var postProcessorsToApply,
+        postProcessor,
+        j;
     if (typeof o.postProcess === 'string' && o.postProcess !== '') {
         postProcessorsToApply = [o.postProcess];
     } else if (typeof o.postProcess === 'array' || typeof o.postProcess === 'object') {
@@ -209,11 +211,12 @@ function _translate(potentialKeys, options) {
     }
 
     if (found !== undefined && postProcessorsToApply.length) {
-        postProcessorsToApply.forEach(function(postProcessor) {
+        for (j = 0; j < postProcessorsToApply.length; j += 1) {
+            postProcessor = postProcessorsToApply[j];
             if (postProcessors[postProcessor]) {
                 found = postProcessors[postProcessor](found, key, options);
             }
-        });
+        }
     }
 
     // process notFound if function exists
@@ -232,11 +235,12 @@ function _translate(potentialKeys, options) {
 
         if (postProcessorsToApply.length) {
             found = _getDefaultValue(key, options);
-            postProcessorsToApply.forEach(function(postProcessor) {
+            for (j = 0; j < postProcessorsToApply.length; j += 1) {
+                postProcessor = postProcessorsToApply[j];
                 if (postProcessors[postProcessor]) {
                     found = postProcessors[postProcessor](found, key, options);
                 }
-            });
+            }
         }
     }
 
