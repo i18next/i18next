@@ -1,8 +1,12 @@
 # DEPRECATED
 
-With v2 of i18next it's no longer needed to separate the node.js version from the main i18next main repo.
+With v2 of i18next it's no longer needed to separate the node.js version. So there is no more i18next-client needed.
 
-i18next-node can be replaced with:
+i18next-client can be replaced with:
+
+```
+$ npm install i18next
+```
 
 - [i18next](https://github.com/i18next/i18next)
 
