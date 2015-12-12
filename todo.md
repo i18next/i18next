@@ -29,7 +29,7 @@ beta:
 
 
 release:
-[ ] get size down...eg. plurals remove lng names combine formats to new arrays [de, en,...]
+[x] get size down...eg. plurals remove lng names combine formats to new arrays [de, en,...]
     replace extend and default
     { ...{moo: 2, bar: 4 }, ...defaults } // extend
     , { ...defaults, ...{moo: 2, bar: 4 } } // defaults
@@ -37,14 +37,13 @@ release:
     done: utils, pluralRules
 
 
+later:
 [ ] enable https://www.npmjs.com/package/greenkeeper, https://david-dm.org/
 [x] jquery integration
 [ ] test creation of instance more
 [ ] cdnjs (https://github.com/cdnjs/cdnjs/tree/master/ajax/libs/i18next)
 [ ] jsDelivr (https://github.com/jsdelivr/jsdelivr/blob/master/files/i18next/update.json)
 [ ] travis.ci
-
-later:
 [ ] more test out of compat
 [ ] forced reset and reload of store
 [ ] indefinit plurals ---> solution parse the value like:
@@ -53,3 +52,11 @@ later:
 
 onDemand:
 [ ] introduce meta information on load -> loadedOn, res.statusCode
+
+
+
+# running test coverage
+
+1) assert browserify-istanbul and karma-coverage in node_modules have istanbul removed from dependencies
+2) assert we use gotwarlost/istanbul#source-map for now until https://github.com/karma-runner/karma-coverage/issues/157 gets solved
+3) run gulp test (gulp tdd will not run coverage report)
