@@ -48,7 +48,7 @@ class LanguageUtil {
     if (typeof code === 'string' && code.indexOf('-') > -1) {
       if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
       if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
-    } else {
+    } else if (typeof code === 'string') {
       addCode(this.formatLanguageCode(code));
     }
 

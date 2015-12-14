@@ -1,3 +1,8 @@
+### 2.0.1
+- assert defaults are arrays where needed
+- assert calling lngUtils.toResolveHierarchy does not add undefined as code if called without code param
+
+
 ### 2.0.0
 - complete rewrite of i18next codebase
 

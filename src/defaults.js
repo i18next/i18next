@@ -2,9 +2,9 @@ export function get() {
   return {
     debug: false,
 
-    ns: 'translation',
-    defaultNS: 'translation',
-    fallbackLng: 'dev',
+    ns: ['translation'],
+    defaultNS: ['translation'],
+    fallbackLng: ['dev'],
     fallbackNS : false, // string or array of namespaces
 
     whitelist: false, // array with whitelisted languages
