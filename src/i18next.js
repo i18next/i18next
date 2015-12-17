@@ -164,8 +164,10 @@ class I18n extends EventEmitter {
 
   changeLanguage(lng, callback) {
     let done = (err) => {
-      this.emit('languageChanged', lng);
-      this.logger.log('languageChanged', lng);
+      if (lng) {
+        this.emit('languageChanged', lng);
+        this.logger.log('languageChanged', lng);
+      }
 
       if (callback) callback(err, (...args) => { return this.t.apply(this, args); });
     };

@@ -90,6 +90,7 @@ class Translator extends EventEmitter {
     // array special treatment
     else if (joinArrays && resType === '[object Array]') {
       res = res.join(joinArrays);
+      if (res) res = this.extendTranslation(res, key, options);
     }
     // string, empty or null
     else {

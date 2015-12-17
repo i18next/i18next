@@ -1,3 +1,7 @@
+### 2.0.2
+- don't log lng changed if no lng was detected
+- extend result on arrayJoins
+
 ### 2.0.1
 - assert defaults are arrays where needed
 - assert calling lngUtils.toResolveHierarchy does not add undefined as code if called without code param
