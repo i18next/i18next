@@ -1,4 +1,4 @@
-### 2.0.2
+### 2.0.4
 - don't log lng changed if no lng was detected
 - extend result on arrayJoins
 
