@@ -32,7 +32,7 @@ function compile(watch) {
   }
 
   function rebundle() {
-    bundler.bundle()
+    return bundler.bundle()
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source(output))
       .pipe(buffer())
@@ -49,7 +49,7 @@ function compile(watch) {
     });
   }
 
-  rebundle();
+  return rebundle();
 }
 
 gulp.task('eslint', function () {
@@ -88,7 +88,7 @@ gulp.task('babel', function () {
     .pipe(gulp.dest('./lib'));
 });
 
-gulp.task('rename', function () {
+gulp.task('rename', ['concat', 'babel'], function () {
   return gulp
     .src('./bin/index.js')
     .pipe(rename('./' + standaloneName + '.min.js'))
@@ -148,7 +148,7 @@ function inc(version) {
         default: false
     }))
     .pipe(cb(function() {
-      git.push('origin','2.0.0', {args: ' --tags'}, function (err) {
+      git.push('origin','master', {args: ' --tags'}, function (err) {
         if (err) throw err;
       });
     }))

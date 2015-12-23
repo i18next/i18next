@@ -46,6 +46,24 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - nesting', () => {
+    var ip;
+
+    before(() => {
+      ip = new Interpolator({});
+    });
+
+    var tests = [
+      {args: ['test $t(test)', function() { return 'success'; } ], expected: 'test success'}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly nests for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(ip.nest.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('interpolate() - backwards compatible', () => {
     var ip;
 

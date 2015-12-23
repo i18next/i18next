@@ -1,3 +1,10 @@
+### 2.0.5
+- fixing allow nesting on interpolated nesting vars
+
+### 2.0.4
+- don't log lng changed if no lng was detected
+- extend result on arrayJoins
+
 ### 2.0.1
 - assert defaults are arrays where needed
 - assert calling lngUtils.toResolveHierarchy does not add undefined as code if called without code param

@@ -90,6 +90,7 @@ class Translator extends EventEmitter {
     // array special treatment
     else if (joinArrays && resType === '[object Array]') {
       res = res.join(joinArrays);
+      if (res) res = this.extendTranslation(res, key, options);
     }
     // string, empty or null
     else {
@@ -148,13 +149,15 @@ class Translator extends EventEmitter {
 
   extendTranslation(res, key, options) {
     if (options.interpolation) this.interpolator.init(options);
-    // nesting
-    res = this.interpolator.nest(res, (...args) => { return this.translate.apply(this, args); }, options);
 
     // interpolate
     let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
     if (this.options.interpolation.defaultVariables) data = {...this.options.interpolation.defaultVariables, ...data};
     res = this.interpolator.interpolate(res, data);
+
+    // nesting
+    res = this.interpolator.nest(res, (...args) => { return this.translate.apply(this, args); }, options);
+
     if (options.interpolation) this.interpolator.reset();
 
     // post process
