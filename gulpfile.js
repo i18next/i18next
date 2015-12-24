@@ -148,7 +148,7 @@ function inc(version) {
         default: false
     }))
     .pipe(cb(function() {
-      git.push('origin','master', {args: ' --tags'}, function (err) {
+      git.push('origin','master', {args: ' --tags  --force'}, function (err) {
         if (err) throw err;
       });
     }))
