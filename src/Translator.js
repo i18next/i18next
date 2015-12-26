@@ -164,7 +164,7 @@ class Translator extends EventEmitter {
     let postProcess = options.postProcess || this.options.postProcess;
     let postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
-    if (res !== undefined && postProcessorNames && postProcessorNames.length) res = postProcessor.handle(postProcessorNames, res, key, options, this);
+    if (res !== undefined && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) res = postProcessor.handle(postProcessorNames, res, key, options, this);
 
     return res;
   }

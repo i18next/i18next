@@ -68,8 +68,11 @@ class Interpolator {
     return str;
   }
 
-  nest(str, fc, options) {
+  nest(str, fc, options = {}) {
     let match, value;
+
+    let clonedOptions = JSON.parse(JSON.stringify(options));
+    clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -82,10 +85,10 @@ class Interpolator {
       let p = key.split(',');
       key = p.shift();
       let optionsString = p.join(',');
-      optionsString = this.interpolate(optionsString, options);
+      optionsString = this.interpolate(optionsString, clonedOptions);
 
       try {
-        options = JSON.parse(optionsString);
+        clonedOptions = JSON.parse(optionsString);
       } catch (e) {
         this.logger.error(`failed parsing options string in nesting for key ${key}`, e);
       }
@@ -95,7 +98,7 @@ class Interpolator {
 
     // regular escape on demand
     while(match = this.nestingRegexp.exec(str)) {
-      value = fc(handleHasOptions.call(this, match[1].trim()), options);
+      value = fc(handleHasOptions.call(this, match[1].trim()), clonedOptions);
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
         this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);

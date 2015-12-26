@@ -1,3 +1,7 @@
+### 2.0.10
+- fixing build chain
+- do not post process on nested translation resolve
+
 ### 2.0.5
 - fixing allow nesting on interpolated nesting vars
 
