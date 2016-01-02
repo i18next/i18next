@@ -143,7 +143,6 @@ describe('i18next', function() {
       });
 
       describe('with dynamic route', function() {
-
         beforeEach(function(done) {
 
           var res = {
