@@ -1,3 +1,6 @@
+### 2.0.12
+- enhance callback on load from backend...wait for pendings
+
 ### 2.0.10
 - fixing build chain
 - do not post process on nested translation resolve

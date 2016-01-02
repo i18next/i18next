@@ -28,7 +28,7 @@ class Connector  extends EventEmitter {
 
   queueLoad(languages, namespaces, callback) {
     // find what needs to be loaded
-    let toLoad = [], toLoadLanguages = [], toLoadNamespaces = [];
+    let toLoad = [], pending = [], toLoadLanguages = [], toLoadNamespaces = [];
 
     languages.forEach(lng => {
       let hasAllNamespaces = true;
@@ -38,11 +38,14 @@ class Connector  extends EventEmitter {
 
         if (this.store.hasResourceBundle(lng, ns)) {
           this.state[name] = 2; // loaded
-        } else if (this.state[name] !== 2){
+        } else if (this.state[name] === 1) {
+          if (pending.indexOf(name) < 0) pending.push(name);
+        } else {
           this.state[name] = 1; // pending
 
           hasAllNamespaces = false;
 
+          if (pending.indexOf(name) < 0) pending.push(name);
           if (toLoad.indexOf(name) < 0) toLoad.push(name);
           if (toLoadNamespaces.indexOf(ns) < 0) toLoadNamespaces.push(ns);
         }
@@ -53,7 +56,7 @@ class Connector  extends EventEmitter {
 
     if (toLoad.length) {
       this.queue.push({
-        pending: [].concat(toLoad),
+        pending: pending,
         loaded: {},
         errors: [],
         callback: callback
