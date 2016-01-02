@@ -65,6 +65,7 @@ class Connector  extends EventEmitter {
 
     return {
       toLoad: toLoad,
+      pending: pending,
       toLoadLanguages: toLoadLanguages,
       toLoadNamespaces: toLoadNamespaces
     };
@@ -119,7 +120,10 @@ class Connector  extends EventEmitter {
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
     let toLoad = this.queueLoad(languages, namespaces, callback);
-    if (!toLoad.toLoad.length) callback();
+    if (!toLoad.toLoad.length) {
+      if (!toLoad.pending.length) callback(); // nothing to load and no pendings...callback now
+      return; // pendings will trigger callback
+    }
 
     // load with multi-load
     if (options.allowMultiLoading && this.backend.readMulti) {
