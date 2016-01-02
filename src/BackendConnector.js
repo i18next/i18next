@@ -54,7 +54,7 @@ class Connector  extends EventEmitter {
       if (!hasAllNamespaces) toLoadLanguages.push(lng);
     });
 
-    if (toLoad.length) {
+    if (toLoad.length || pending.length) {
       this.queue.push({
         pending: pending,
         loaded: {},
