@@ -1,5 +1,7 @@
 # i18next
 
+[![Build Status](https://travis-ci.org/i18next/i18next.svg?branch=master)](https://travis-ci.org/i18next/i18next)
+
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
 
 The current v2 release is a big milestone in keeping continuity for your translation projects by keeping a stable, modern API.
