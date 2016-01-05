@@ -1,6 +1,7 @@
 # i18next
 
 [![Build Status](https://travis-ci.org/i18next/i18next.svg?branch=master)](https://travis-ci.org/i18next/i18next)
+[![npm version](https://img.shields.io/npm/v/i18next.svg?style=flat-square)](https://www.npmjs.com/package/i18next)
 
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
 
