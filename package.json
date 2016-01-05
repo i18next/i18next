@@ -63,7 +63,7 @@
     "yargs": "3.29.0"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test_ci"
   },
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT"
