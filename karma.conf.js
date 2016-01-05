@@ -42,12 +42,12 @@ module.exports = function(karma) {
     browserify: {
       debug: true,
       transform: [
-        'babelify', /*'brfs',*/ 'browserify-istanbul'
+        'babelify', /*'brfs',*/ /*'browserify-istanbul'*/
       ]
     },
 
     coverageReporter: {
-      type : 'html', // disabled - erroring now, https://github.com/karma-runner/karma-coverage/issues/157
+      type : 'lcov', //'html', // disabled - erroring now, https://github.com/karma-runner/karma-coverage/issues/157
       dir : 'coverage/'
     }
   });
