@@ -1,5 +1,10 @@
 # i18next
 
+[![Travis](https://img.shields.io/travis/i18next/i18next.svg?style=flat-square)](https://travis-ci.org/i18next/i18next)
+[![Coveralls](https://img.shields.io/coveralls/i18next/i18next.svg?style=flat-square)](https://coveralls.io/github/i18next/i18next)
+[![npm version](https://img.shields.io/npm/v/i18next.svg?style=flat-square)](https://www.npmjs.com/package/i18next)
+[![David](https://img.shields.io/david/i18next/i18next.svg?style=flat-square)](https://david-dm.org/i18next/i18next)
+
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
 
 The current v2 release is a big milestone in keeping continuity for your translation projects by keeping a stable, modern API.
