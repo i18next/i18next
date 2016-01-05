@@ -73,7 +73,7 @@ gulp.task('test_forCI', function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true,
-    reporters: [ 'coverage', 'coveralls' ],
+    reporters: [ 'coverage', 'coveralls', 'spec' ],
   }, done).start();
 });
 
@@ -190,4 +190,4 @@ gulp.task('default', ['watch']);
 gulp.task('build', ['concat', 'babel', 'rename']);
 gulp.task('publish', ['bump']);
 
-gulp.task('test_ci', ['test_forCI', 'test_compat_ci']);
+gulp.task('test_ci', ['test_forCI']);

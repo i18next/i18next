@@ -19,7 +19,7 @@ module.exports = function(karma) {
 
     preprocessors: {
       'test/**/*.spec.js': [ 'browserify' ],
-      'src/**/*.js': [ 'browserify' ]
+      'src/**/*.js': [ 'browserify', 'coverage' ]
     },
 
     browsers: [ 'PhantomJS' ],
@@ -42,7 +42,7 @@ module.exports = function(karma) {
     browserify: {
       debug: true,
       transform: [
-        'babelify', /*'brfs',*/ /*'browserify-istanbul'*/
+        'babelify', /*'brfs',*/ 'browserify-istanbul'
       ]
     },
 
