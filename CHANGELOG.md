@@ -1,3 +1,6 @@
+### 2.0.15
+- avoid loading of resources for lng=cimode
+
 ### 2.0.14
 - enhance callback on load from backend...wait for pendings
 
