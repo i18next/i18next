@@ -69,11 +69,11 @@ gulp.task('test', function (done) {
   }, done).start();
 });
 
-gulp.task('test_withoutCoverate', function (done) {
+gulp.task('test_forCI', function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true,
-    reporters: [ 'spec' ],
+    reporters: [ 'coverage', 'coveralls', 'spec' ],
   }, done).start();
 });
 
@@ -190,4 +190,4 @@ gulp.task('default', ['watch']);
 gulp.task('build', ['concat', 'babel', 'rename']);
 gulp.task('publish', ['bump']);
 
-gulp.task('test_ci', ['test_withoutCoverate', 'test_compat_ci']);
+gulp.task('test_ci', ['test_forCI']);

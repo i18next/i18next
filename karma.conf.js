@@ -19,7 +19,7 @@ module.exports = function(karma) {
 
     preprocessors: {
       'test/**/*.spec.js': [ 'browserify' ],
-      'src/**/*.js': [ 'browserify' ]
+      'src/**/*.js': [ 'browserify', 'coverage' ]
     },
 
     browsers: [ 'PhantomJS' ],
@@ -47,7 +47,7 @@ module.exports = function(karma) {
     },
 
     coverageReporter: {
-      type : 'html', // disabled - erroring now, https://github.com/karma-runner/karma-coverage/issues/157
+      type : 'lcov', //'html', // disabled - erroring now, https://github.com/karma-runner/karma-coverage/issues/157
       dir : 'coverage/'
     }
   });
