@@ -1,3 +1,7 @@
+### 2.0.16
+- adds addResource to i18next API
+- fix init of i18next without options, callback
+
 ### 2.0.15
 - avoid loading of resources for lng=cimode
 
