@@ -28,6 +28,8 @@ class I18n extends EventEmitter {
       callback = options;
       options = {};
     }
+    if (!options) options = {};
+    
     if (options.compatibilityAPI === 'v1') {
       this.options = {...getDefaults(), ...transformOptions(compat.convertAPIOptions(options)), ...{}};
     } else if (options.compatibilityJSON === 'v1') {
@@ -93,7 +95,7 @@ class I18n extends EventEmitter {
     }
 
     // append api
-    const storeApi = ['addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle'];
+    const storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle'];
     storeApi.forEach(fcName => {
       this[fcName] = function() { return this.store[fcName].apply(this.store, arguments); };
     });
