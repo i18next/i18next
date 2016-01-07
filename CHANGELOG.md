@@ -1,5 +1,6 @@
 ### 2.0.17
 - adds cimode to options.whitelist if set
+- emits failedLoading on load error
 
 ### 2.0.16
 - adds addResource to i18next API
