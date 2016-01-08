@@ -1,5 +1,10 @@
 ### 2.0.17
+<<<<<<< HEAD
 - check for fallbackLng exist
+=======
+- adds cimode to options.whitelist if set
+- emits failedLoading on load error
+>>>>>>> 6f17fcc43fb050020e3c397846893a462f7af177
 
 ### 2.0.16
 - adds addResource to i18next API

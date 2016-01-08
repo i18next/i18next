@@ -74,6 +74,8 @@ class Connector  extends EventEmitter {
   loaded(name, err, data) {
     const [lng, ns] = name.split('|');
 
+    if (err) this.emit('failedLoading', lng, ns, err);
+
     if (data) {
       this.store.addResourceBundle(lng, ns, data);
     }
