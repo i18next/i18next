@@ -113,7 +113,7 @@ class Translator extends EventEmitter {
 
         if (this.options.saveMissing) {
           var lngs = [];
-          if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng[0]) {
+          if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng && this.options.fallbackLng[0]) {
             for (let i = 0; i < this.options.fallbackLng.length; i++) {
               lngs.push(this.options.fallbackLng[i]);
             }

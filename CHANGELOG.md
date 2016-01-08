@@ -1,3 +1,6 @@
+### 2.0.17
+- check for fallbackLng exist
+
 ### 2.0.16
 - adds addResource to i18next API
 - fix init of i18next without options, callback
