@@ -1,10 +1,12 @@
-### 2.0.17
-<<<<<<< HEAD
+### 2.0.19
+- do not callback err in backendConnector if no backend is specified
+
+### 2.0.18
 - check for fallbackLng exist
-=======
+
+### 2.0.17
 - adds cimode to options.whitelist if set
 - emits failedLoading on load error
->>>>>>> 6f17fcc43fb050020e3c397846893a462f7af177
 
 ### 2.0.16
 - adds addResource to i18next API

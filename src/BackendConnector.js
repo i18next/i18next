@@ -115,7 +115,10 @@ class Connector  extends EventEmitter {
   }
 
   load(languages, namespaces, callback) {
-    if (!this.backend) return callback && callback('no backend was defined.');
+    if (!this.backend) {
+      this.logger.warn('No backend was added via i18next.use. Will not load resources.')
+      return callback && callback();
+    }
     let options = {...this.backend.options, ...this.options.backend};
 
     if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
