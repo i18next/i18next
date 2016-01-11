@@ -1,3 +1,6 @@
+### 2.0.20
+- pass full options to detectors as third arg
+
 ### 2.0.19
 - do not callback err in backendConnector if no backend is specified
 
