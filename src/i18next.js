@@ -15,7 +15,7 @@ import * as compat from './compatibility/v1';
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
-    this.options = options;
+    this.options = transformOptions(options);
     this.services = {};
     this.logger = baseLogger;
     this.modules = {};
@@ -29,7 +29,7 @@ class I18n extends EventEmitter {
       options = {};
     }
     if (!options) options = {};
-    
+
     if (options.compatibilityAPI === 'v1') {
       this.options = {...getDefaults(), ...transformOptions(compat.convertAPIOptions(options)), ...{}};
     } else if (options.compatibilityJSON === 'v1') {
