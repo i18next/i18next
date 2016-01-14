@@ -95,6 +95,11 @@ class Connector  extends EventEmitter {
         q.done = true;
       }
     });
+
+    // remove done load requests
+    this.queue = this.queue.filter(q => {
+      return !q.done;
+    });
   }
 
   read(lng, ns, fcName, tried, wait, callback) {

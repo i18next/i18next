@@ -1,3 +1,6 @@
+### next
+- clear done load request in backendConnector
+
 ### 2.0.20
 - pass full options to detectors as third arg
 
