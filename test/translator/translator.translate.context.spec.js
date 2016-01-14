@@ -33,6 +33,7 @@ describe('Translator', () => {
         pluralResolver: new PluralResolver(lu, {prepend: '_'}),
         interpolator: new Interpolator()
       }, {
+        contextSeparator: '_',
         interpolation: {
           interpolateResult: true,
           interpolateDefaultValue: true,

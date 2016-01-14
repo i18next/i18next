@@ -1,3 +1,6 @@
+### 2.0.22
+- add options for context, pluralSeparator
+
 ### 2.0.21
 - clear done load request in backendConnector
 

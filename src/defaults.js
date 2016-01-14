@@ -13,6 +13,8 @@ export function get() {
 
     keySeparator: '.',
     nsSeparator: ':',
+    pluralSeparator: '_',
+    contextSeparator: '_',
 
     saveMissing: false, // enable to send missing values
     saveMissingTo: 'fallback', // 'current' || 'all'

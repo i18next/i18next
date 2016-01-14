@@ -63,7 +63,7 @@ class I18n extends EventEmitter {
         s.cacheConnector.save();
       });
       s.languageUtils = lu;
-      s.pluralResolver = new PluralResolver(lu, {prepend: '_', compatibilityJSON:  this.options.compatibilityJSON});
+      s.pluralResolver = new PluralResolver(lu, {prepend: this.options.pluralSeparator, compatibilityJSON:  this.options.compatibilityJSON});
       s.interpolator = new Interpolator(this.options);
 
       s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
