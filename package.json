@@ -24,7 +24,7 @@
     "babel": "5.8.21",
     "babel-eslint": "4.1.0",
     "babelify": "6.2.0",
-    "brfs": "1.4.2",
+    "brfs": "1.4.3",
     "browserify": "12.0.1",
     "browserify-istanbul": "0.2.1",
     "chai": "2.3.0",
