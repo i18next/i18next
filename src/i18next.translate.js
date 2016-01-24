@@ -301,12 +301,12 @@ function _find(key, options) {
         delete optionWithoutCount.count;
         optionWithoutCount._origLng = optionWithoutCount._origLng || optionWithoutCount.lng || lngs[0];
         delete optionWithoutCount.lng;
-        optionWithoutCount.defaultValue = o.pluralNotFound;
 
         var pluralKey;
         if (!pluralExtensions.needsPlural(lngs[0], options.count)) {
             pluralKey = ns + nsseparator + key;
         } else {
+            optionWithoutCount.defaultValue = o.pluralNotFound;
             pluralKey = ns + nsseparator + key + o.pluralSuffix;
             var pluralExtension = pluralExtensions.get(lngs[0], options.count);
             if (pluralExtension >= 0) {
@@ -336,6 +336,7 @@ function _find(key, options) {
             if (translated != o.pluralNotFound) return translated;
         } else {
             optionWithoutCount.lng = optionWithoutCount._origLng;
+            optionWithoutCount.defaultValue = optionWithoutCount.defaultPluralValue || o.pluralNotFound;
             delete optionWithoutCount._origLng;
             translated = translate(ns + nsseparator + key, optionWithoutCount);
 

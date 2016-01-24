@@ -2,25 +2,25 @@ describe('plural usage', function() {
 
   describe('basic usage - singular and plural form', function() {
     var resStore = {
-      dev: { 'ns.2': {                      
+      dev: { 'ns.2': {
             pluralTest: 'singular from ns.2',
             pluralTest_plural: 'plural from ns.2',
             pluralTestWithCount: '__count__ item from ns.2',
             pluralTestWithCount_plural: '__count__ items from ns.2'
         }},
-      en: { },            
-      'en-US': { 
-        'ns.1': {                      
+      en: { },
+      'en-US': {
+        'ns.1': {
             pluralTest: 'singular',
             pluralTest_plural: 'plural',
             pluralTestWithCount: '__count__ item',
             pluralTestWithCount_plural: '__count__ items'
-        } 
+        }
       }
     };
-    
+
     beforeEach(function(done) {
-      i18n.init(i18n.functions.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, {
           resStore: resStore,
           ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
         }),
@@ -55,16 +55,16 @@ describe('plural usage', function() {
       dev: { 'ns.2': {
             pluralTestWithCount: '__count__ item from ns.2'
         }},
-      en: { },            
-      'en-US': { 
+      en: { },
+      'en-US': {
         'ns.1': {
             pluralTestWithCount: '__count__ item'
-        } 
+        }
       }
     };
-    
+
     beforeEach(function(done) {
-      i18n.init(i18n.functions.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, {
           resStore: resStore,
           ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
         }),
@@ -91,10 +91,10 @@ describe('plural usage', function() {
         'translation': {
             pluralTestWithCount: '__count__ item',
             pluralTestWithCount_plural: '__count__ items'
-        } 
+        }
       }
     };
-    
+
     beforeEach(function(done) {
       i18n.init(i18n.functions.extend(opts, {
           supportedLngs: ['nl'],
@@ -104,7 +104,7 @@ describe('plural usage', function() {
     });
 
     beforeEach(function(done) {
-      i18n.init(i18n.functions.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, {
           resStore: resStore
         }),
         function(t) { done(); });
@@ -123,21 +123,21 @@ describe('plural usage', function() {
 
   describe('basic usage - singular and plural form on fallbacks', function() {
     var resStore = {
-      'fr': { 
+      'fr': {
         'translation': {}
       },
-      'en': { 
+      'en': {
         'translation': {
             pluralTest: 'singular',
             pluralTest_plural: 'plural',
             pluralTestWithCount: '__count__ item',
             pluralTestWithCount_plural: '__count__ items'
-        } 
+        }
       }
     };
 
     beforeEach(function(done) {
-      i18n.init(i18n.functions.extend(opts, { 
+      i18n.init(i18n.functions.extend(opts, {
         resStore: resStore,
         lng: 'fr',
         fallbackLng: 'en'
@@ -161,28 +161,28 @@ describe('plural usage', function() {
 
   describe('basic usage 2 - singular and plural form in french', function() {
     var resStore = {
-      dev: { 'ns.2': {                      
+      dev: { 'ns.2': {
             pluralTest: 'singular from ns.2',
             pluralTest_plural: 'plural from ns.2',
             pluralTestWithCount: '__count__ item from ns.2',
             pluralTestWithCount_plural: '__count__ items from ns.2'
         }},
-      en: { },            
-      'fr': { 
-        'ns.1': {                      
+      en: { },
+      'fr': {
+        'ns.1': {
             pluralTest: 'singular',
             pluralTest_plural: 'plural',
             pluralTestWithCount: '__count__ item',
             pluralTestWithCount_plural: '__count__ items'
-        } 
+        }
       }
     };
-    
+
     beforeEach(function(done) {
       i18n.init(i18n.functions.extend(opts, {
           lng: 'fr',
           resStore: resStore,
-          ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'} 
+          ns: { namespaces: ['ns.1', 'ns.2'], defaultNs: 'ns.1'}
         }),
         function(t) { done(); });
     });
@@ -202,18 +202,18 @@ describe('plural usage', function() {
   describe('extended usage - multiple plural forms - ar', function() {
     var resStore = {
         dev: { translation: { } },
-        ar: { translation: { 
+        ar: { translation: {
             key: 'singular',
             key_plural_0: 'zero',
             key_plural_2: 'two',
             key_plural_3: 'few',
             key_plural_11: 'many',
             key_plural_100: 'plural'
-          } 
-        },            
+          }
+        },
         'ar-??': { translation: { } }
     };
-    
+
     beforeEach(function(done) {
       i18n.init(i18n.functions.extend(opts, { lng: 'ar', resStore: resStore }),
         function(t) { done(); });
@@ -236,15 +236,15 @@ describe('plural usage', function() {
   describe('extended usage - multiple plural forms - ru', function() {
     var resStore = {
         dev: { translation: { } },
-        ru: { translation: { 
+        ru: { translation: {
             key: '1,21,31',
             key_plural_2: '2,3,4',
             key_plural_5: '0,5,6'
-          } 
-        },            
+          }
+        },
         'ru-??': { translation: { } }
     };
-    
+
     beforeEach(function(done) {
       i18n.init(i18n.functions.extend(opts, { lng: 'ru', resStore: resStore }),
         function(t) { done(); });
@@ -266,19 +266,36 @@ describe('plural usage', function() {
     });
   });
 
+  describe('basic usage - plural fallback', function() {
+    var resStore = {
+        en: { translation: {} }
+    };
+
+    beforeEach(function(done) {
+      i18n.init(i18n.functions.extend(opts, { lng: 'en', resStore: resStore }),
+        function(t) { done(); });
+    });
+    it('it should fall back to default singular value with count of 1', function() {
+      expect(i18n.t('otherKey', { lng: 'en', count: 2, defaultValue: 'singular', defaultPluralValue: 'plural' })).to.be('plural');
+    });
+    it('it should fall back to default plural value with count of 2', function() {
+      expect(i18n.t('otherKey', { lng: 'en', count: 2, defaultValue: 'singular', defaultPluralValue: 'plural' })).to.be('singular');
+    });
+  });
+
   describe('extended usage - ask for a key in a language with a different plural form', function() {
     var resStore = {
         en: { translation: {
             key:'singular_en',
             key_plural:'plural_en'
-          } 
+          }
         },
-        zh: { translation: { 
+        zh: { translation: {
             key: 'singular_zh'
           }
         }
     };
-    
+
     beforeEach(function(done) {
       i18n.init(i18n.functions.extend(opts, { lng: 'zh', resStore: resStore }),
         function(t) { done(); });
