@@ -61,7 +61,7 @@
     "karma-sinon": "1.0.4",
     "karma-spec-reporter": "0.0.23",
     "mocha": "2.3.4",
-    "phantomjs": "1.9.19",
+    "phantomjs": "2.1.1",
     "sinon": "1.17.2",
     "vinyl-buffer": "1.0.0",
     "vinyl-source-stream": "1.1.0",
