@@ -12,13 +12,19 @@ describe('Translator', () => {
     before(() => {
       const rs = new ResourceStore({
         en: {
-          translation: {
-            test: ['test_en_1', 'test_en_2']
+          common: {
+            test: ['common_test_en_1', 'common_test_en_2']
+          },
+          special: {
+            test: ['special_test_en_1', 'special_test_en_2']
           }
         },
         de: {
-          translation: {
-            test: ['test_de_1', 'test_de_2']
+          common: {
+            test: ['common_test_de_1', 'common_test_de_2']
+          },
+          special: {
+            test: ['special_test_de_1', 'special_test_de_2']
           }
         }
       });
@@ -30,8 +36,8 @@ describe('Translator', () => {
         interpolator: new Interpolator()
       }, {
         returnObjects: true,
-        ns: 'translation',
-        defaultNS: 'translation',
+        ns: ['common', 'special'],
+        defaultNS: 'common',
         interpolation: {
           interpolateResult: true,
           interpolateDefaultValue: true,
@@ -42,7 +48,8 @@ describe('Translator', () => {
     });
 
     var tests = [
-      {args: ['translation:test'], expected: [ 'test_en_1', 'test_en_2' ]},
+      {args: ['common:test'], expected: [ 'common_test_en_1', 'common_test_en_2' ]},
+      {args: ['special:test'], expected: [ 'special_test_en_1', 'special_test_en_2' ]}
     ];
 
     tests.forEach((test) => {

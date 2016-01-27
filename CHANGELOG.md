@@ -1,3 +1,6 @@
+### 2.0.23
+- fixes returnObjects in case of multiple namespaces
+
 ### 2.0.22
 - add options for context, pluralSeparator
 
