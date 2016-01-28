@@ -35,7 +35,7 @@
     "gulp-bump": "1.0.0",
     "gulp-eslint": "1.1.1",
     "gulp-filter": "3.0.1",
-    "gulp-git": "1.6.1",
+    "gulp-git": "1.7.0",
     "gulp-if": "2.0.0",
     "gulp-prompt": "0.1.2",
     "gulp-rename": "1.2.2",
