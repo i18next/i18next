@@ -31,7 +31,7 @@
     "coveralls": "2.11.6",
     "eslint": "1.2.1",
     "gulp": "3.9.0",
-    "gulp-babel": "5.2.1",
+    "gulp-babel": "6.1.2",
     "gulp-bump": "1.0.0",
     "gulp-eslint": "1.1.1",
     "gulp-filter": "3.0.1",
