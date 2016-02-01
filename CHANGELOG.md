@@ -1,3 +1,6 @@
+### 2.0.24
+- fixes unneeded reload of resources that failed to load
+
 ### 2.0.23
 - fixes returnObjects in case of multiple namespaces
 

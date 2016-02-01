@@ -38,6 +38,8 @@ class Connector  extends EventEmitter {
 
         if (this.store.hasResourceBundle(lng, ns)) {
           this.state[name] = 2; // loaded
+        } else if (this.state[name] < 0) {
+          // nothing to do for err
         } else if (this.state[name] === 1) {
           if (pending.indexOf(name) < 0) pending.push(name);
         } else {
