@@ -49,7 +49,7 @@ class ResourceStore extends EventEmitter {
 
     utils.setPath(this.data, path, value);
 
-    if (!options.silent) this.emit('added', lng, ns);
+    if (!options.silent) this.emit('added', lng, ns, key, value);
   }
 
   addResources(lng, ns, resources) {
