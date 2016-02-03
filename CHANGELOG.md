@@ -1,3 +1,6 @@
+### 2.0.25
+- extended emitted arguments on 'added' event
+
 ### 2.0.24
 - fixes unneeded reload of resources that failed to load
 

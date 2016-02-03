@@ -56,7 +56,7 @@ class ResourceStore extends EventEmitter {
     for (var m in resources) {
       if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m], { silent: true });
     }
-    this.emit('added', lng, ns);
+    this.emit('added', lng, ns, resources);
   }
 
   addResourceBundle(lng, ns, resources, deep, overwrite) {
@@ -80,7 +80,7 @@ class ResourceStore extends EventEmitter {
 
     utils.setPath(this.data, path, pack);
 
-    this.emit('added', lng, ns);
+    this.emit('added', lng, ns, resources);
   }
 
   removeResourceBundle(lng, ns) {

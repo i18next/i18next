@@ -551,8 +551,8 @@ describe('i18next', function() {
               function(t) { done(); });
           });
 
-          it('it should reload the preloaded languages', function() {
-            expect(spy.callCount).to.be(1); // de-DE the missing one
+          it('it should not reload the preloaded languages', function() {
+            expect(spy.callCount).to.be(0); // de-DE the missing one
           });
 
         });
