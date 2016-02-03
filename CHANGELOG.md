@@ -1,4 +1,4 @@
-### 2.0.25
+### 2.0.26
 - extended emitted arguments on 'added' event
 
 ### 2.0.24
