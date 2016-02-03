@@ -1,6 +1,6 @@
 {
   "name": "i18next",
-  "version": "2.0.25",
+  "version": "2.0.26",
   "description": "i18next internationalization framework",
   "main": "./bin/index.js",
   "keywords": [
