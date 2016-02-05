@@ -1,3 +1,6 @@
+### 2.1.0
+- allow keySeparator, nsSeparator = false to turn that off
+
 ### 2.0.26
 - extended emitted arguments on 'added' event
 

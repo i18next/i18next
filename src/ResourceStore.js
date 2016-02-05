@@ -22,11 +22,12 @@ class ResourceStore extends EventEmitter {
   }
 
   getResource(lng, ns, key, options = {}) {
-    let keySeparator = options.keySeparator || this.options.keySeparator || '.';
+    let keySeparator = options.keySeparator || this.options.keySeparator;
+    if (keySeparator === undefined) keySeparator = '.';
 
     let path = [lng, ns];
     if (key && typeof key !== 'string') path = path.concat(key);
-    if (key && typeof key === 'string') path = path.concat(key.split(keySeparator));
+    if (key && typeof key === 'string') path = path.concat(keySeparator ? key.split(keySeparator) : key);
 
     if (lng.indexOf('.') > -1) {
       path = lng.split('.');
@@ -36,8 +37,11 @@ class ResourceStore extends EventEmitter {
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {
+    let keySeparator = this.options.keySeparator;
+    if (keySeparator === undefined) keySeparator = '.';
+
     let path = [lng, ns];
-    if (key) path = path.concat(key.split(this.options.keySeparator || '.'));
+    if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
 
     if (lng.indexOf('.') > -1) {
       path = lng.split('.');

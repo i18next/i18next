@@ -27,10 +27,11 @@ class Translator extends EventEmitter {
   }
 
   extractFromKey(key, options) {
-    let nsSeparator = options.nsSeparator || this.options.nsSeparator || ':';
+    let nsSeparator = options.nsSeparator || this.options.nsSeparator
+    if (nsSeparator === undefined ) nsSeparator = ':';
 
     let namespaces = options.ns || this.options.defaultNS;
-    if (key.indexOf(nsSeparator) > -1) {
+    if (nsSeparator && key.indexOf(nsSeparator) > -1) {
       const parts = key.split(nsSeparator);
       namespaces = parts[0];
       key = parts[1];
@@ -164,7 +165,12 @@ class Translator extends EventEmitter {
     let postProcess = options.postProcess || this.options.postProcess;
     let postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
-    if (res !== undefined && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) res = postProcessor.handle(postProcessorNames, res, key, options, this);
+    if (res !== undefined &&
+        postProcessorNames &&
+        postProcessorNames.length &&
+        options.applyPostProcessor !== false) {
+      res = postProcessor.handle(postProcessorNames, res, key, options, this);
+    }
 
     return res;
   }
