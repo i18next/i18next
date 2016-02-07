@@ -21,7 +21,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "babel": "5.8.21",
+    "babel": "6.3.26",
     "babel-eslint": "4.1.8",
     "babelify": "6.2.0",
     "brfs": "1.4.3",
