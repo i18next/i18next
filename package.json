@@ -48,7 +48,7 @@
     "i18next-localstorage-cache": "0.0.4",
     "i18next-sprintf-postprocessor": "0.0.6",
     "i18next-xhr-backend": "0.3.0",
-    "karma": "0.13.19",
+    "karma": "0.13.20",
     "karma-browserify": "5.0.1",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "0.2.2",
