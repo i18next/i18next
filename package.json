@@ -56,7 +56,7 @@
     "karma-coverage": "douglasduteil/karma-coverage#next",
     "karma-coveralls": "1.1.2",
     "karma-expect": "1.1.1",
-    "karma-mocha": "0.2.1",
+    "karma-mocha": "0.2.2",
     "karma-phantomjs-launcher": "1.0.0",
     "karma-sinon": "1.0.4",
     "karma-spec-reporter": "0.0.23",
