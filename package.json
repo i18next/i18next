@@ -2,7 +2,7 @@
   "name": "i18next",
   "version": "2.1.0",
   "description": "i18next internationalization framework",
-  "main": "./bin/index.js",
+  "main": "./lib/index.js",
   "keywords": [
     "i18next",
     "internationalization",
