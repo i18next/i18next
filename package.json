@@ -29,7 +29,7 @@
     "browserify-istanbul": "0.2.1",
     "chai": "3.5.0",
     "coveralls": "2.11.6",
-    "eslint": "1.10.3",
+    "eslint": "2.2.0",
     "gulp": "3.9.0",
     "gulp-babel": "5.2.1",
     "gulp-bump": "1.0.0",
