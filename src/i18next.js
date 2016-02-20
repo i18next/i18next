@@ -109,6 +109,8 @@ class I18n extends EventEmitter {
 
       callback(err, t);
     });
+
+    return this;
   }
 
   loadResources(callback) {

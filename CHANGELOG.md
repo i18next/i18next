@@ -1,3 +1,7 @@
+### next
+- return instance after init for further chaning
+- make init optional on backend, cache
+
 ### 2.1.0
 - allow keySeparator, nsSeparator = false to turn that off
 

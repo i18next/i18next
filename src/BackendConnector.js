@@ -23,7 +23,7 @@ class Connector  extends EventEmitter {
     this.state = {};
     this.queue = [];
 
-    this.backend && this.backend.init(services, options.backend, options);
+    this.backend && this.backend.init && this.backend.init(services, options.backend, options);
   }
 
   queueLoad(languages, namespaces, callback) {
