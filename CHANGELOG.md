@@ -1,4 +1,4 @@
-### next
+### 2.2.0
 - return instance after init for further chaning
 - make init optional on backend, cache
 - package.json entry points now to /lib not to mangled version...this might be the better solution for most use cases (build chains built on npm, webpack, browserify, node,...)
