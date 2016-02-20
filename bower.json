@@ -1,6 +1,6 @@
 {
   "name": "i18next",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "./bin/index.js",
   "dependencies": {},
   "ignore": [
