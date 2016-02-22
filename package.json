@@ -42,7 +42,7 @@
     "gulp-shell": "0.5.2",
     "gulp-sourcemaps": "1.6.0",
     "gulp-tag-version": "1.3.0",
-    "gulp-uglify": "1.5.2",
+    "gulp-uglify": "1.5.3",
     "istanbul": "gotwarlost/istanbul#source-map",
     "i18next-browser-languagedetector": "0.0.14",
     "i18next-localstorage-cache": "0.0.4",
