@@ -26,7 +26,7 @@
     "babelify": "6.2.0",
     "brfs": "1.4.3",
     "browserify": "12.0.1",
-    "browserify-istanbul": "0.2.1",
+    "browserify-istanbul": "1.0.0",
     "chai": "3.5.0",
     "coveralls": "2.11.6",
     "eslint": "2.2.0",
