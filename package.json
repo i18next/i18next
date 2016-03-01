@@ -34,7 +34,7 @@
     "gulp-babel": "5.2.1",
     "gulp-bump": "1.0.0",
     "gulp-eslint": "2.0.0",
-    "gulp-filter": "3.0.1",
+    "gulp-filter": "4.0.0",
     "gulp-git": "1.7.0",
     "gulp-if": "2.0.0",
     "gulp-prompt": "0.1.2",
