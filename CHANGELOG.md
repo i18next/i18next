@@ -1,3 +1,6 @@
+### 2.3.1
+- build /dist/es with included babelhelpers
+
 ### 2.3.0
 - change build chain to use rollup...allows 'js:next' and reduces build from 45kb to 33kb minified (/lib --> /dist/commonjs folder, new /dist/es for rollup,...)
 - fixes detection when using both context and pluralization and context not found. [#851](https://github.com/i18next/i18next/pull/581)
