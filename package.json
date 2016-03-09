@@ -2,7 +2,7 @@
   "name": "i18next",
   "version": "2.3.1",
   "description": "i18next internationalization framework",
-  "main": "dist/commonjs/index.js",
+  "main": "./index.js",
   "jsnext:main": "dist/es/index.js",
   "keywords": [
     "i18next",

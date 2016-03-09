@@ -1,3 +1,6 @@
+### 2.3.2
+- add index to make export compatible again
+
 ### 2.3.1
 - build /dist/es with included babelhelpers
 
