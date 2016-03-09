@@ -15,7 +15,7 @@ module.exports = function(karma) {
       '/locales': 'http://localhost:9876/base/test/locales'
     },
 
-    reporters: [ 'spec'/*, 'coverage' */],
+    reporters: [ 'coverage', 'coveralls', 'spec' ],
 
     preprocessors: {
       'test/**/*.spec.js': [ 'browserify' ],

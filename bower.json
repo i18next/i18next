@@ -1,11 +1,10 @@
 {
   "name": "i18next",
-  "version": "2.2.0",
-  "main": "./bin/index.js",
+  "main": "./i18next.min.js",
   "dependencies": {},
   "ignore": [
     "test/",
-    "lib/",
+    "dist/",
     "src/",
     "coverage/",
     ".babelrc",

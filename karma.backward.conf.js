@@ -38,7 +38,7 @@ module.exports = function(karma) {
     // browserify configuration
     browserify: {
       debug: true,
-      transform: [ 'babelify', 'brfs' ]
+      transform: [ 'babelify'/*, 'brfs' */]
     }
   });
 };
