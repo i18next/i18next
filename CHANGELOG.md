@@ -1,3 +1,6 @@
+### next
+- change build chain to use rollup...allows 'js:next' and reduces build from 45kb to 33kb minified
+
 ### 2.2.0
 - return instance after init for further chaning
 - make init optional on backend, cache
