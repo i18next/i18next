@@ -900,11 +900,17 @@
 	            var finalKey = key;
 	            var finalKeys = [finalKey];
 
+	            var pluralSuffix = void 0;
+	            if (needsPluralHandling) pluralSuffix = _this3.pluralResolver.getSuffix(code, options.count);
+
+	            // fallback for plural if context not found
+	            if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
+
 	            // get key for context if needed
 	            if (needsContextHandling) finalKeys.push(finalKey += '' + _this3.options.contextSeparator + options.context);
 
 	            // get key for plural if needed
-	            if (needsPluralHandling) finalKeys.push(finalKey += _this3.pluralResolver.getSuffix(code, options.count));
+	            if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
 
 	            // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
 	            var possibleKey = void 0;
