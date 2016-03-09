@@ -44,6 +44,7 @@ describe('Translator', () => {
     });
 
     var tests = [
+      {args: ['translation:test', { context: 'unknown' }], expected: 'test_en'},
       {args: ['translation:test', { context: 'male' }], expected: 'test_male_en'},
       {args: ['translation:test', { context: 'female' }], expected: 'test_female_en'},
       {args: ['translation:test', { context: 'male', lngs: ['en-US', 'en'] }], expected: 'test_male_en'},

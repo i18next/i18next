@@ -201,11 +201,17 @@ class Translator extends EventEmitter {
           let finalKey = key;
           let finalKeys = [finalKey];
 
+          let pluralSuffix;
+          if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, options.count);
+
+          // fallback for plural if context not found
+          if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
+
           // get key for context if needed
           if (needsContextHandling) finalKeys.push(finalKey += `${this.options.contextSeparator}${options.context}`);
 
           // get key for plural if needed
-          if (needsPluralHandling) finalKeys.push(finalKey += this.pluralResolver.getSuffix(code, options.count));
+          if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
           let possibleKey;
