@@ -37,7 +37,7 @@
     "eslint": "2.2.0",
     "eslint-config-airbnb": "6.0.2",
     "i18next-browser-languagedetector": "0.0.14",
-    "i18next-localstorage-cache": "0.0.4",
+    "i18next-localstorage-cache": "0.2.2",
     "i18next-sprintf-postprocessor": "0.1.0",
     "i18next-xhr-backend": "0.3.0",
     "istanbul": "gotwarlost/istanbul#source-map",
