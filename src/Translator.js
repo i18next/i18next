@@ -95,12 +95,14 @@ class Translator extends EventEmitter {
     }
     // string, empty or null
     else {
+      let usedKey = false;
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
         res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
         res = key;
+        usedKey = true;
 
         this.logger.log('missingKey', lng, namespace, key, res);
 
