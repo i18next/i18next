@@ -9,6 +9,7 @@ const compress = argv.uglify;
 const babelOptions = {
   exclude: 'node_modules/**',
   presets: ['es2015-rollup', 'stage-0'],
+  plugins: ['transform-proto-to-assign'],
   babelrc: false
 };
 
