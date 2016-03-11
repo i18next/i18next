@@ -62,25 +62,27 @@ let _rulesPluralsTypes = {
 };
 /* eslint-enable */
 
+function createRules() {
+  var l, rules = {};
+  sets.forEach((set) => {
+    set.lngs.forEach((l) =>
+      rules[l] = {
+        numbers: set.nr,
+        plurals: _rulesPluralsTypes[set.fc]
+    });
+  });
+  return rules;
+}
+
 class PluralResolver {
   constructor(languageUtils, options = {}) {
     this.languageUtils = languageUtils;
     this.options = options;
 
     this.logger = baseLogger.create('pluralResolver');
-  }
 
-  rules = (function () {
-    var l, rules = {};
-    sets.forEach((set) => {
-      set.lngs.forEach((l) =>
-        rules[l] = {
-          numbers: set.nr,
-          plurals: _rulesPluralsTypes[set.fc]
-      });
-    });
-    return rules;
-  }())
+    this.rules = createRules();
+  }
 
   addRule(lng, obj) {
     this.rules[lng] = obj;

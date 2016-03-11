@@ -1088,29 +1088,31 @@
 	};
 	/* eslint-enable */
 
+	function createRules() {
+	  var l,
+	      rules = {};
+	  sets.forEach(function (set) {
+	    set.lngs.forEach(function (l) {
+	      return rules[l] = {
+	        numbers: set.nr,
+	        plurals: _rulesPluralsTypes[set.fc]
+	      };
+	    });
+	  });
+	  return rules;
+	}
+
 	var PluralResolver = function () {
 	  function PluralResolver(languageUtils) {
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 	    babelHelpers.classCallCheck(this, PluralResolver);
 
-	    this.rules = function () {
-	      var l,
-	          rules = {};
-	      sets.forEach(function (set) {
-	        set.lngs.forEach(function (l) {
-	          return rules[l] = {
-	            numbers: set.nr,
-	            plurals: _rulesPluralsTypes[set.fc]
-	          };
-	        });
-	      });
-	      return rules;
-	    }();
-
 	    this.languageUtils = languageUtils;
 	    this.options = options;
 
 	    this.logger = baseLogger.create('pluralResolver');
+
+	    this.rules = createRules();
 	  }
 
 	  babelHelpers.createClass(PluralResolver, [{

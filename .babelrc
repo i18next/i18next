@@ -4,10 +4,12 @@
       "presets": [ "es2015", "stage-0" ]
     },
     "rollup": {
-      "presets": [ "es2015-rollup", "stage-0"  ]
+      "presets": [ "es2015-rollup", "stage-0"  ],
+      "plugins": [ "transform-proto-to-assign" ]
     },
     "jsnext": {
-      "presets": [ "es2015-native-modules", "stage-0"  ]
+      "presets": [ "es2015-native-modules", "stage-0"  ],
+      "plugins": [ "transform-proto-to-assign" ]
     }
   }
 }
