@@ -1,3 +1,6 @@
+### 2.3.4
+- get babel 6 output IE compatible: https://jsfiddle.net/jamuhl/2qc7oLf8/
+
 ### 2.3.2
 - add index to make export compatible again
 
