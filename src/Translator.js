@@ -95,23 +95,18 @@ class Translator extends EventEmitter {
     }
     // string, empty or null
     else {
-      let usedDefault = false,
-          usedKey = false;
-
+      let usedKey = false;
       // fallback value
-      if (!this.isValidLookup(res) && options.defaultValue) {
-        usedDefault = true;
+      if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
         res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
-        usedKey = true;
         res = key;
-      }
+        usedKey = true;
 
-      // save missing
-      if (usedKey || usedDefault) {
         this.logger.log('missingKey', lng, namespace, key, res);
 
+        // save missing
         if (this.options.saveMissing) {
           var lngs = [];
           if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng && this.options.fallbackLng[0]) {
