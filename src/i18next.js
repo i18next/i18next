@@ -231,9 +231,9 @@ class I18n extends EventEmitter {
 
   loadLanguages(lngs, callback) {
     if (typeof lngs === 'string') lngs = [lngs];
-    var preloaded = this.options.preload || [];
+    const preloaded = this.options.preload || [];
 
-    var newLngs = lngs.filter(function (lng) {
+    const newLngs = lngs.filter(lng => {
       return preloaded.indexOf(lng) < 0;
     });
     // Exit early if all given languages are already preloaded
