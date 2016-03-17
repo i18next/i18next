@@ -1,3 +1,6 @@
+### 2.3.5
+- Only add language to preload array when new [#613](https://github.com/i18next/i18next/pull/613/files)
+
 ### 2.3.4
 - get babel 6 output IE compatible: https://jsfiddle.net/jamuhl/2qc7oLf8/
 
