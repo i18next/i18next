@@ -23,7 +23,7 @@
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "6.6.5",
-    "babel-core": "6.4.5",
+    "babel-core": "6.7.2",
     "babel-eslint": "6.0.0-beta.5",
     "babel-plugin-transform-es2015-classes": "6.6.5",
     "babel-plugin-transform-proto-to-assign": "6.6.5",
