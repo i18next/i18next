@@ -37,7 +37,7 @@
     "chai": "3.5.0",
     "coveralls": "2.11.8",
     "eslint": "2.4.0",
-    "eslint-config-airbnb": "6.0.2",
+    "eslint-config-airbnb": "6.2.0",
     "i18next-browser-languagedetector": "0.2.2",
     "i18next-localstorage-cache": "0.2.2",
     "i18next-sprintf-postprocessor": "0.2.2",
