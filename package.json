@@ -35,7 +35,7 @@
     "browserify": "13.0.0",
     "browserify-istanbul": "2.0.0",
     "chai": "3.5.0",
-    "coveralls": "2.11.8",
+    "coveralls": "2.11.9",
     "eslint": "2.4.0",
     "eslint-config-airbnb": "6.0.2",
     "i18next-browser-languagedetector": "0.2.2",
