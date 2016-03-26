@@ -888,6 +888,10 @@
 	  return Translator;
 	}(EventEmitter);
 
+	function capitalize(string) {
+	  return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+
 	var LanguageUtil = function () {
 	  function LanguageUtil(options) {
 	    babelHelpers.classCallCheck(this, LanguageUtil);
@@ -901,21 +905,38 @@
 	  LanguageUtil.prototype.getLanguagePartFromCode = function getLanguagePartFromCode(code) {
 	    if (code.indexOf('-') < 0) return code;
 
-	    var specialCases = ['nb-NO', 'nn-NO', 'nb-no', 'nn-no'];
+	    var specialCases = ['NB-NO', 'NN-NO', 'nb-NO', 'nn-NO', 'nb-no', 'nn-no'];
 	    var p = code.split('-');
 	    return this.formatLanguageCode(specialCases.indexOf(code) > -1 ? p[1].toLowerCase() : p[0]);
 	  };
 
 	  LanguageUtil.prototype.formatLanguageCode = function formatLanguageCode(code) {
+	    // http://www.iana.org/assignments/language-tags/language-tags.xhtml
 	    if (typeof code === 'string' && code.indexOf('-') > -1) {
-	      var _code$split = code.split('-');
+	      var specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
+	      var p = code.split('-');
 
-	      var _code$split2 = babelHelpers.slicedToArray(_code$split, 2);
+	      if (this.options.lowerCaseLng) {
+	        p = p.map(function (part) {
+	          return part.toLowerCase();
+	        });
+	      } else if (p.length === 2) {
+	        p[0] = p[0].toLowerCase();
+	        p[1] = p[1].toUpperCase();
 
-	      var head = _code$split2[0];
-	      var tail = _code$split2[1];
+	        if (specialCases.indexOf(p[1].toLowerCase()) > -1) p[1] = capitalize(p[1].toLowerCase());
+	      } else if (p.length === 3) {
+	        p[0] = p[0].toLowerCase();
 
-	      return this.options.lowerCaseLng ? head.toLowerCase() + '-' + tail.toLowerCase() : head.toLowerCase() + '-' + tail.toUpperCase();
+	        // if lenght 2 guess it's a country
+	        if (p[1].length === 2) p[1] = p[1].toUpperCase();
+	        if (p[0] !== 'sgn' && p[2].length === 2) p[2] = p[2].toUpperCase();
+
+	        if (specialCases.indexOf(p[1].toLowerCase()) > -1) p[1] = capitalize(p[1].toLowerCase());
+	        if (specialCases.indexOf(p[2].toLowerCase()) > -1) p[2] = capitalize(p[2].toLowerCase());
+	      }
+
+	      return p.join('-');
 	    } else {
 	      return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
 	    }
@@ -1691,12 +1712,14 @@
 	    // TODO: COMPATIBILITY remove this
 	    if (this.options.compatibilityAPI === 'v1') appendBackwardsAPI(this);
 
-	    this.changeLanguage(this.options.lng, function (err, t) {
-	      _this2.emit('initialized', _this2.options);
-	      _this2.logger.log('initialized', _this2.options);
+	    setTimeout(function () {
+	      _this2.changeLanguage(_this2.options.lng, function (err, t) {
+	        _this2.emit('initialized', _this2.options);
+	        _this2.logger.log('initialized', _this2.options);
 
-	      callback(err, t);
-	    });
+	        callback(err, t);
+	      });
+	    }, 10);
 
 	    return this;
 	  };

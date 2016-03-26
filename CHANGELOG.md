@@ -1,5 +1,6 @@
 ### 2.4.0
 - support now language code variants with scripts and other exotic forms: zh-Hans-MO, sgn-BE-fr, de-AT-1996,...
+- trigger of changeLanguage, load of data with a setTimeout to allow other operations meanwhile
 
 ### 2.3.5
 - Only add language to preload array when new [#613](https://github.com/i18next/i18next/pull/613/files)

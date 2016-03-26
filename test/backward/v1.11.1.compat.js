@@ -931,20 +931,20 @@ describe('i18next', function() {
 
         describe('default behaviour will uppercase specifc country part.', function() {
 
-          beforeEach(function() {
+          beforeEach(function(done) {
             i18n.init(i18n.functions.extend(opts, {
               lng: 'en-us',
               resStore: {
                 'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
               }
-            }, function(t) { done(); }) );
+            }), function(t) { done(); });
           });
 
           it('it should translate the uppercased lng value', function() {
             expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
           });
 
-          it('it should get uppercased set language', function() {console.log(i18n.lng)
+          it('it should get uppercased set language', function() {
             expect(i18n.lng()).to.be('en-US');
           });
 
@@ -952,14 +952,14 @@ describe('i18next', function() {
 
         describe('overridden behaviour will accept lowercased country part.', function() {
 
-          beforeEach(function() {
+          beforeEach(function(done) {
             i18n.init(i18n.functions.extend(opts, {
               lng: 'en-us',
               lowerCaseLng: true,
               resStore: {
                 'en-us': { translation: { 'simple_en-us': 'ok_from_en-us' } }
               }
-            }, function(t) { done(); }) );
+            }), function(t) { done(); });
           });
 
           it('it should translate the lowercase lng value', function() {
@@ -983,16 +983,20 @@ describe('i18next', function() {
           'en-US':  { translation: { 'string_one': 'BAD_en-ZH' } }
         };
 
-        it('should degrade UNwhitelisted 2-part lang code (en-US) to WHITELISTED 1-part (en)', function() {
-          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'en-US' }));
-          expect(i18n.lng()).to.be('en');
-          expect(i18n.t('string_one')).to.be('good_en');
+        it('should degrade UNwhitelisted 2-part lang code (en-US) to WHITELISTED 1-part (en)', function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'en-US' }), function() {
+            expect(i18n.lng()).to.be('en');
+            expect(i18n.t('string_one')).to.be('good_en');
+            done();
+          });
         });
 
-        it('should NOT degrade WHITELISTED 2-part lang code (zh-CN) to UNwhitelisted 1-part (en)', function() {
-          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }));
-          expect(i18n.lng()).to.be('zh-CN');
-          expect(i18n.t('string_one')).to.be('good_zh-CN');
+        it('should NOT degrade WHITELISTED 2-part lang code (zh-CN) to UNwhitelisted 1-part (en)', function(done) {
+          i18n.init(i18n.functions.extend(opts, { resStore: resStore, lngWhitelist: ['en', 'zh-CN'], lng: 'zh-CN' }), function() {
+            expect(i18n.lng()).to.be('zh-CN');
+            expect(i18n.t('string_one')).to.be('good_zh-CN');
+            done();
+          });
         });
 
       });
