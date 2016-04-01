@@ -103,14 +103,20 @@ class I18n extends EventEmitter {
     // TODO: COMPATIBILITY remove this
     if (this.options.compatibilityAPI === 'v1') compat.appendBackwardsAPI(this);
 
-    setTimeout(() => {
+    const load = () => {
       this.changeLanguage(this.options.lng, (err, t) => {
         this.emit('initialized', this.options);
         this.logger.log('initialized', this.options);
 
         callback(err, t);
       });
-    }, 10);
+    }
+
+    if (this.options.resources) {
+      load();
+    } else {
+      setTimeout(load, 10);
+    }
 
     return this;
   }

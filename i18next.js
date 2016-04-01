@@ -1712,14 +1712,20 @@
 	    // TODO: COMPATIBILITY remove this
 	    if (this.options.compatibilityAPI === 'v1') appendBackwardsAPI(this);
 
-	    setTimeout(function () {
+	    var load = function load() {
 	      _this2.changeLanguage(_this2.options.lng, function (err, t) {
 	        _this2.emit('initialized', _this2.options);
 	        _this2.logger.log('initialized', _this2.options);
 
 	        callback(err, t);
 	      });
-	    }, 10);
+	    };
+
+	    if (this.options.resources) {
+	      load();
+	    } else {
+	      setTimeout(load, 10);
+	    }
 
 	    return this;
 	  };

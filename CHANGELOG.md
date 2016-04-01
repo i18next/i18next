@@ -1,3 +1,6 @@
+### 2.4.1
+- if passing resources don't immidiate loading fixes [#636](https://github.com/i18next/i18next/issues/636)
+
 ### 2.4.0
 - support now language code variants with scripts and other exotic forms: zh-Hans-MO, sgn-BE-fr, de-AT-1996,...
 - trigger of changeLanguage, load of data with a setTimeout to allow other operations meanwhile
