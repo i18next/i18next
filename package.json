@@ -58,7 +58,7 @@
     "karma-spec-reporter": "0.0.24",
     "mkdirp": "0.5.1",
     "mocha": "2.4.5",
-    "phantomjs": "1.9.19",
+    "phantomjs": "2.1.7",
     "rimraf": "2.5.2",
     "rollup": "0.25.6",
     "rollup-plugin-babel": "2.4.0",
