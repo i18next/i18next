@@ -849,7 +849,7 @@ describe('i18next', function() {
 
       });
 
-      describe.only('using localStorage', function() {
+      describe('using localStorage', function() {
 
         var spy;
 
