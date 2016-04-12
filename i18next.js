@@ -734,7 +734,7 @@
 	              usedKey = false;
 
 	          // fallback value
-	          if (!this.isValidLookup(res) && options.defaultValue) {
+	          if (!this.isValidLookup(res) && 'defaultValue' in options) {
 	            usedDefault = true;
 	            res = options.defaultValue;
 	          }
