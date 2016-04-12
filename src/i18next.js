@@ -112,10 +112,10 @@ class I18n extends EventEmitter {
       });
     }
 
-    if (this.options.resources) {
+    if (this.options.resources || !this.options.initImmediate) {
       load();
     } else {
-      setTimeout(load, 10);
+      setTimeout(load, 0);
     }
 
     return this;

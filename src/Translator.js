@@ -99,7 +99,7 @@ class Translator extends EventEmitter {
           usedKey = false;
 
       // fallback value
-      if (!this.isValidLookup(res) && options.defaultValue) {
+      if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
         usedDefault = true;
         res = options.defaultValue;
       }

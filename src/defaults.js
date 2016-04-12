@@ -1,6 +1,7 @@
 export function get() {
   return {
     debug: false,
+    initImmediate: true,
 
     ns: ['translation'],
     defaultNS: ['translation'],

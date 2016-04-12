@@ -734,7 +734,7 @@
 	              usedKey = false;
 
 	          // fallback value
-	          if (!this.isValidLookup(res) && options.defaultValue) {
+	          if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
 	            usedDefault = true;
 	            res = options.defaultValue;
 	          }
@@ -1536,6 +1536,7 @@
 	function get() {
 	  return {
 	    debug: false,
+	    initImmediate: true,
 
 	    ns: ['translation'],
 	    defaultNS: ['translation'],
@@ -1721,10 +1722,10 @@
 	      });
 	    };
 
-	    if (this.options.resources) {
+	    if (this.options.resources || !this.options.initImmediate) {
 	      load();
 	    } else {
-	      setTimeout(load, 10);
+	      setTimeout(load, 0);
 	    }
 
 	    return this;
