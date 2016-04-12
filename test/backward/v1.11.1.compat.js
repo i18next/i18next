@@ -28,7 +28,11 @@ i18n.functions = {
 };
 
 let xhr = new XHR();
+
 let cache = new Cache();
+cache.debouncedStore = cache.store; // store without debounce
+
+
 i18n
   .use(xhr)
   .use(cache)
@@ -845,7 +849,7 @@ describe('i18next', function() {
 
       });
 
-      describe('using localStorage', function() {
+      describe.only('using localStorage', function() {
 
         var spy;
 
