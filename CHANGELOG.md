@@ -1,3 +1,6 @@
+### 2.5.1
+- fixes rtl support [#656](https://github.com/i18next/i18next/pull/656/files)
+
 ### 2.5.0
 - allow null or empty string as defaultValue
 - init option `initImmediate (default: true)` to init without immediate
