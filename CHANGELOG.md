@@ -1,3 +1,6 @@
+### next
+- don't call saveMissing if no lng
+
 ### 2.5.1
 - fixes rtl support [#656](https://github.com/i18next/i18next/pull/656/files)
 
