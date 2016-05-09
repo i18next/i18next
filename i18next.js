@@ -1094,30 +1094,63 @@
 	  };
 
 	  PluralResolver.prototype.getSuffix = function getSuffix(code, count) {
+	    var _this = this;
+
 	    var rule = this.getRule(code);
 
 	    if (rule) {
-	      if (rule.numbers.length === 1) return ''; // only singular
+	      var _ret = function () {
+	        if (rule.numbers.length === 1) return {
+	            v: ''
+	          }; // only singular
 
-	      var idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-	      var suffix = rule.numbers[idx];
+	        var idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
+	        var suffix = rule.numbers[idx];
 
-	      // special treatment for lngs only having singular and plural
-	      if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
-	        if (suffix === 2) {
-	          suffix = 'plural';
-	        } else if (suffix === 1) {
-	          suffix = '';
+	        // special treatment for lngs only having singular and plural
+	        if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+	          if (suffix === 2) {
+	            suffix = 'plural';
+	          } else if (suffix === 1) {
+	            suffix = '';
+	          }
 	        }
-	      }
 
-	      // COMPATIBILITY JSON
-	      if (this.options.compatibilityJSON === 'v1') {
-	        if (suffix === 1) return '';
-	        if (typeof suffix === 'number') return '_plural_' + suffix.toString();
-	      }
+	        var returnSuffix = function returnSuffix() {
+	          return _this.options.prepend && suffix.toString() ? _this.options.prepend + suffix.toString() : suffix.toString();
+	        };
 
-	      return this.options.prepend && suffix.toString() ? this.options.prepend + suffix.toString() : suffix.toString();
+	        // COMPATIBILITY JSON
+	        // v1
+	        if (_this.options.compatibilityJSON === 'v1') {
+	          if (suffix === 1) return {
+	              v: ''
+	            };
+	          if (typeof suffix === 'number') return {
+	              v: '_plural_' + suffix.toString()
+	            };
+	          return {
+	            v: returnSuffix()
+	          };
+	        }
+	        // v2
+	        else if (_this.options.compatibilityJSON === 'v2' || rule.numbers.length === 2 && rule.numbers[0] === 1) {
+	            return {
+	              v: returnSuffix()
+	            };
+	          }
+	          // v3 - gettext index
+	          else if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+	              return {
+	                v: returnSuffix()
+	              };
+	            }
+	        return {
+	          v: _this.options.prepend && idx.toString() ? _this.options.prepend + idx.toString() : idx.toString()
+	        };
+	      }();
+
+	      if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      this.logger.warn('no plural rule found for: ' + code);
 	      return '';

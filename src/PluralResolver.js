@@ -116,13 +116,26 @@ class PluralResolver {
         }
       }
 
+      const returnSuffix = () => (
+        this.options.prepend && suffix.toString() ? this.options.prepend + suffix.toString() : suffix.toString()
+      );
+
       // COMPATIBILITY JSON
+      // v1
       if (this.options.compatibilityJSON === 'v1') {
         if (suffix === 1) return '';
         if (typeof suffix === 'number') return '_plural_' + suffix.toString();
+        return returnSuffix();
       }
-
-      return this.options.prepend && suffix.toString() ? this.options.prepend + suffix.toString() : suffix.toString();
+      // v2
+      else if (this.options.compatibilityJSON === 'v2' || (rule.numbers.length === 2 && rule.numbers[0] === 1)) {
+        return returnSuffix();
+      }
+      // v3 - gettext index
+      else if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+        return returnSuffix();
+      }
+      return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
     } else {
       this.logger.warn('no plural rule found for: ' + code);
       return '';

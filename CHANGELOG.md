@@ -1,4 +1,5 @@
-### next
+### 3.0.0
+- **[BREAKING]** per default i18next uses now the same index as used in gettext for plurals. eg. for arabic suffixes are 0,1,2,3,4,5 instead of 0,1,2,3,11,100. You can enforce old behaviour by setting compatibilityJSON = 'v2' on i18next init.
 - don't call saveMissing if no lng
 
 ### 2.5.1

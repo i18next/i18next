@@ -59,10 +59,10 @@ describe('PluralResolver', () => {
       {args: ['ar', 3], expected: '3'},
       {args: ['ar', 4], expected: '3'},
       {args: ['ar', 104], expected: '3'},
-      {args: ['ar', 11], expected: '11'},
-      {args: ['ar', 99], expected: '11'},
-      {args: ['ar', 199], expected: '11'},
-      {args: ['ar', 100], expected: '100'}
+      {args: ['ar', 11], expected: '4'},
+      {args: ['ar', 99], expected: '4'},
+      {args: ['ar', 199], expected: '4'},
+      {args: ['ar', 100], expected: '5'}
     ];
 
     tests.forEach((test) => {
