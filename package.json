@@ -44,7 +44,7 @@
     "i18next-xhr-backend": "0.5.4",
     "istanbul": "gotwarlost/istanbul#source-map",
     "karma": "0.13.22",
-    "karma-browserify": "5.0.3",
+    "karma-browserify": "5.0.5",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "0.2.3",
     "karma-cli": "0.1.2",
