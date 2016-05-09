@@ -27,6 +27,6 @@ export default {
     npm({ jsnext: true })
   ].concat(compress ? uglify() : []),
   moduleName: 'i18next',
-  moduleId: 'i18next',
+  //moduleId: 'i18next',
   dest
 };
