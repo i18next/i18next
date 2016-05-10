@@ -747,27 +747,27 @@
 	          if (usedKey || usedDefault) {
 	            this.logger.log('missingKey', lng, namespace, key, res);
 
-	            if (this.options.saveMissing) {
-	              var lngs = [];
-	              if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng && this.options.fallbackLng[0]) {
-	                for (var i = 0; i < this.options.fallbackLng.length; i++) {
-	                  lngs.push(this.options.fallbackLng[i]);
-	                }
-	              } else if (this.options.saveMissingTo === 'all') {
-	                lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);
-	              } else {
-	                //(this.options.saveMissingTo === 'current' || (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng[0] === false) ) {
-	                lngs.push(options.lng || this.language);
+	            var lngs = [];
+	            if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng && this.options.fallbackLng[0]) {
+	              for (var i = 0; i < this.options.fallbackLng.length; i++) {
+	                lngs.push(this.options.fallbackLng[i]);
 	              }
+	            } else if (this.options.saveMissingTo === 'all') {
+	              lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);
+	            } else {
+	              //(this.options.saveMissingTo === 'current' || (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng[0] === false) ) {
+	              lngs.push(options.lng || this.language);
+	            }
 
+	            if (this.options.saveMissing) {
 	              if (this.options.missingKeyHandler) {
 	                this.options.missingKeyHandler(lngs, namespace, key, res);
 	              } else if (this.backendConnector && this.backendConnector.saveMissing) {
 	                this.backendConnector.saveMissing(lngs, namespace, key, res);
 	              }
-
-	              this.emit('missingKey', lngs, namespace, key, res);
 	            }
+
+	            this.emit('missingKey', lngs, namespace, key, res);
 	          }
 
 	          // extend
