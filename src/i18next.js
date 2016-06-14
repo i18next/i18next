@@ -152,6 +152,12 @@ class I18n extends EventEmitter {
     }
   }
 
+  reloadResources(lngs, ns) {
+    if (!lngs) lngs = this.languages;
+    if (!ns) ns = this.options.ns;
+    this.services.backendConnector.reload(lngs, ns);
+  }
+
   use(module) {
     if (module.type === 'backend') {
       this.modules.backend = module;

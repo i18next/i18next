@@ -1474,7 +1474,7 @@
 	    // load one by one
 	    else {
 	        (function () {
-	          var read = function read(name) {
+	          var readOne = function readOne(name) {
 	            var _this6 = this;
 
 	            var _name$split5 = name.split('|');
@@ -1496,7 +1496,72 @@
 	          ;
 
 	          toLoad.toLoad.forEach(function (name) {
-	            read.call(_this5, name);
+	            readOne.call(_this5, name);
+	          });
+	        })();
+	      }
+	  };
+
+	  Connector.prototype.reload = function reload(languages, namespaces) {
+	    var _this7 = this;
+
+	    if (!this.backend) {
+	      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
+	    }
+	    var options = babelHelpers.extends({}, this.backend.options, this.options.backend);
+
+	    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
+	    if (typeof namespaces === 'string') namespaces = [namespaces];
+
+	    // load with multi-load
+	    if (options.allowMultiLoading && this.backend.readMulti) {
+	      this.read(languages, namespaces, 'readMulti', null, null, function (err, data) {
+	        if (err) _this7.logger.warn('reloading namespaces ' + namespaces.join(', ') + ' for languages ' + languages.join(', ') + ' via multiloading failed', err);
+	        if (!err && data) _this7.logger.log('reloaded namespaces ' + namespaces.join(', ') + ' for languages ' + languages.join(', ') + ' via multiloading', data);
+
+	        languages.forEach(function (l) {
+	          namespaces.forEach(function (n) {
+	            var bundle = getPath(data, [l, n]);
+	            if (bundle) {
+	              _this7.loaded(l + '|' + n, err, bundle);
+	            } else {
+	              var _err2 = 'reloading namespace ' + n + ' for language ' + l + ' via multiloading failed';
+	              _this7.loaded(l + '|' + n, _err2);
+	              _this7.logger.error(_err2);
+	            }
+	          });
+	        });
+	      });
+	    }
+
+	    // load one by one
+	    else {
+	        (function () {
+	          var readOne = function readOne(name) {
+	            var _this8 = this;
+
+	            var _name$split7 = name.split('|');
+
+	            var _name$split8 = babelHelpers.slicedToArray(_name$split7, 2);
+
+	            var lng = _name$split8[0];
+	            var ns = _name$split8[1];
+
+
+	            this.read(lng, ns, 'read', null, null, function (err, data) {
+	              if (err) _this8.logger.warn('reloading namespace ' + ns + ' for language ' + lng + ' failed', err);
+	              if (!err && data) _this8.logger.log('reloaded namespace ' + ns + ' for language ' + lng, data);
+
+	              _this8.loaded(name, err, data);
+	            });
+	          };
+
+	          ;
+
+	          languages.forEach(function (l) {
+	            namespaces.forEach(function (n) {
+	              readOne.call(_this7, l + '|' + n);
+	            });
 	          });
 	        })();
 	      }
@@ -1802,6 +1867,12 @@
 	    } else {
 	      callback(null);
 	    }
+	  };
+
+	  I18n.prototype.reloadResources = function reloadResources(lngs, ns) {
+	    if (!lngs) lngs = this.languages;
+	    if (!ns) ns = this.options.ns;
+	    this.services.backendConnector.reload(lngs, ns);
 	  };
 
 	  I18n.prototype.use = function use(module) {

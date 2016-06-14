@@ -11,7 +11,7 @@ function remove(arr, what) {
   }
 }
 
-class Connector  extends EventEmitter {
+class Connector extends EventEmitter {
   constructor(backend, store, services, options = {}) {
     super();
     this.backend = backend;
@@ -160,7 +160,7 @@ class Connector  extends EventEmitter {
 
     // load one by one
     else {
-      function read(name) {
+      function readOne(name) {
         const [lng, ns] = name.split('|');
 
         this.read(lng, ns, 'read', null, null, (err, data) => {
@@ -172,10 +172,62 @@ class Connector  extends EventEmitter {
       };
 
       toLoad.toLoad.forEach(name => {
-        read.call(this, name);
+        readOne.call(this, name);
       });
     }
   }
+
+  reload(languages, namespaces) {
+    if (!this.backend) {
+      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
+    }
+    let options = {...this.backend.options, ...this.options.backend};
+
+    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
+    if (typeof namespaces === 'string') namespaces = [namespaces];
+
+    // load with multi-load
+    if (options.allowMultiLoading && this.backend.readMulti) {
+      this.read(languages, namespaces, 'readMulti', null, null, (err, data) => {
+        if (err) this.logger.warn(`reloading namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading failed`, err);
+        if (!err && data) this.logger.log(`reloaded namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading`, data);
+
+        languages.forEach(l => {
+          namespaces.forEach(n => {
+            let bundle = utils.getPath(data, [l, n]);
+            if (bundle) {
+              this.loaded(`${l}|${n}`, err, bundle);
+            } else {
+              let err = `reloading namespace ${n} for language ${l} via multiloading failed`;
+              this.loaded(`${l}|${n}`, err);
+              this.logger.error(err);
+            }
+          });
+        });
+      });
+    }
+
+    // load one by one
+    else {
+      function readOne(name) {
+        const [lng, ns] = name.split('|');
+
+        this.read(lng, ns, 'read', null, null, (err, data) => {
+          if (err) this.logger.warn(`reloading namespace ${ns} for language ${lng} failed`, err);
+          if (!err && data) this.logger.log(`reloaded namespace ${ns} for language ${lng}`, data);
+
+          this.loaded(name, err, data);
+        });
+      };
+
+      languages.forEach(l => {
+        namespaces.forEach(n => {
+          readOne.call(this, `${l}|${n}`);
+        });
+      });
+    }
+  }
+
 
   saveMissing(languages, namespace, key, fallbackValue) {
     if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);

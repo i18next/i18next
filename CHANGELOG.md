@@ -1,3 +1,6 @@
+### 3.2.0
+- adds api function i18next.reloadResources(), i18next.reloadResources(lngs, ns) to trigger a reload of translations
+
 ### 3.1.0
 - emits missingKey always (like console.log) even if saveMissing is of -> use missingKeyHandler if you only want the trigger only on saveMissing: true
 
