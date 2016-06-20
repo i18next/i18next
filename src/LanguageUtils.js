@@ -50,9 +50,11 @@ class LanguageUtil {
     }
   }
 
-  isWhitelisted(code) {
-    if (this.options.load === 'languageOnly') code = this.getLanguagePartFromCode(code);
-    return (!this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1) ? true : false;
+  isWhitelisted(code, exactMatch) {
+     if (this.options.load === 'languageOnly' || (this.options.nonExplicitWhitelist && !exactMatch)) {
+            code = this.getLanguagePartFromCode(code);
+         }
+     return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1 ? true : false;
   }
 
   toResolveHierarchy(code, fallbackCode) {
@@ -60,8 +62,8 @@ class LanguageUtil {
     if (typeof fallbackCode === 'string') fallbackCode = [fallbackCode];
 
     let codes = [];
-    let addCode = (code) => {
-      if (this.isWhitelisted(code)) {
+    let addCode = (code, exactMatch = false) => {
+      if (this.isWhitelisted(code, exactMatch)) {
         codes.push(code);
       } else {
         this.logger.warn('rejecting non-whitelisted language code: ' + code);
@@ -69,7 +71,7 @@ class LanguageUtil {
     };
 
     if (typeof code === 'string' && code.indexOf('-') > -1) {
-      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
+      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code), true);
       if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
     } else if (typeof code === 'string') {
       addCode(this.formatLanguageCode(code));
