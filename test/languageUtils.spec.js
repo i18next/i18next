@@ -152,4 +152,26 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('toResolveHierarchy() - non explicit whitelist ', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({ fallbackLng: ['en'], whitelist: ['de', 'en', 'zh', 'zh-HK'] , nonExplicitWhitelist: true});
+    });
+
+    var tests = [
+      {args: ['en'], expected: ['en']},
+      {args: ['de'], expected: ['de', 'en']},
+      {args: ['de-AT'], expected: ['de', 'en']},
+      {args: ['zh-HK'], expected: ['zh-HK', 'zh', 'en']},
+      {args: ['zh-CN'], expected: ['zh', 'en']}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
 });
