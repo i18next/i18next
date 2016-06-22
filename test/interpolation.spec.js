@@ -37,6 +37,7 @@ describe('Interpolator', () => {
       {args: ['test {{test}}', {test: '<a>foo</a>'}], expected: 'test &lt;a&gt;foo&lt;&#x2F;a&gt;'},
       {args: ['test {{test.deep}}', {test: {deep: '<a>foo</a>'}}], expected: 'test &lt;a&gt;foo&lt;&#x2F;a&gt;'},
       {args: ['test {{- test.deep}}', {test: {deep: '<a>foo</a>'}}], expected: 'test <a>foo</a>'},
+      {args: ['test {{- test}} {{- test2}} {{- test3}}', {test:' ', test2: '<span>test2</span>', test3:'<span>test3</span>'}], expected: 'test   <span>test2</span> <span>test3</span>'},
     ];
 
     tests.forEach((test) => {

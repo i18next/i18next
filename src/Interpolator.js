@@ -48,12 +48,15 @@ class Interpolator {
     }
 
     // unescape if has unescapePrefix/Suffix
+    var unescapedReplacements = str;
     while(match = this.regexpUnescape.exec(str)) {
       let value = utils.getPath(data, match[1].trim());
-      str = str.replace(match[0], value);
+      unescapedReplacements = unescapedReplacements.replace(match[0], value);
     }
+    str = unescapedReplacements;
 
     // regular escape on demand
+    var escapedRelacements = str;
     while(match = this.regexp.exec(str)) {
       value = utils.getPath(data, match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
@@ -62,9 +65,9 @@ class Interpolator {
         value = '';
       }
       value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
-      str = str.replace(match[0], value);
-      this.regexp.lastIndex = 0;
+      escapedRelacements = escapedRelacements.replace(match[0], value);
     }
+    str = escapedRelacements ;
     return str;
   }
 
