@@ -44,7 +44,7 @@
     "i18next-browser-languagedetector": "0.2.2",
     "i18next-localstorage-cache": "0.3.0",
     "i18next-sprintf-postprocessor": "0.2.2",
-    "i18next-xhr-backend": "0.5.4",
+    "i18next-xhr-backend": "0.5.5",
     "istanbul": "gotwarlost/istanbul#source-map",
     "karma": "0.13.22",
     "karma-browserify": "5.0.5",
