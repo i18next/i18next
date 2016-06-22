@@ -60,7 +60,7 @@
     "karma-sinon": "1.0.5",
     "karma-spec-reporter": "0.0.26",
     "mkdirp": "0.5.1",
-    "mocha": "2.4.5",
+    "mocha": "2.5.3",
     "phantomjs-prebuilt": "2.1.7",
     "rimraf": "2.5.2",
     "rollup": "0.32.0",
