@@ -1,3 +1,6 @@
+### 3.3.0
+- allows option `nonExplicitWhitelist` on init [#741](https://github.com/i18next/i18next/pull/741)
+
 ### 3.2.0
 - adds api function i18next.reloadResources(), i18next.reloadResources(lngs, ns) to trigger a reload of translations
 

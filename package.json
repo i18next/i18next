@@ -65,7 +65,7 @@
     "rimraf": "2.5.2",
     "rollup": "0.32.0",
     "rollup-plugin-babel": "2.5.1",
-    "rollup-plugin-npm": "2.0.0",
+    "rollup-plugin-node-resolve": "1.7.0",
     "rollup-plugin-uglify": "1.0.0",
     "sinon": "1.17.4",
     "yargs": "4.7.1"

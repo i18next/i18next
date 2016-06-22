@@ -4,20 +4,19 @@
 	(global.i18next = factory());
 }(this, function () { 'use strict';
 
-	var babelHelpers = {};
-	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
 	  return typeof obj;
 	} : function (obj) {
 	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
 	};
 
-	babelHelpers.classCallCheck = function (instance, Constructor) {
+	var classCallCheck = function (instance, Constructor) {
 	  if (!(instance instanceof Constructor)) {
 	    throw new TypeError("Cannot call a class as a function");
 	  }
 	};
 
-	babelHelpers.extends = Object.assign || function (target) {
+	var _extends = Object.assign || function (target) {
 	  for (var i = 1; i < arguments.length; i++) {
 	    var source = arguments[i];
 
@@ -31,7 +30,7 @@
 	  return target;
 	};
 
-	babelHelpers.inherits = function (subClass, superClass) {
+	var inherits = function (subClass, superClass) {
 	  if (typeof superClass !== "function" && superClass !== null) {
 	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
 	  }
@@ -47,7 +46,7 @@
 	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	};
 
-	babelHelpers.possibleConstructorReturn = function (self, call) {
+	var possibleConstructorReturn = function (self, call) {
 	  if (!self) {
 	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
 	  }
@@ -55,7 +54,7 @@
 	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
 	};
 
-	babelHelpers.slicedToArray = function () {
+	var slicedToArray = function () {
 	  function sliceIterator(arr, i) {
 	    var _arr = [];
 	    var _n = true;
@@ -93,8 +92,6 @@
 	  };
 	}();
 
-	babelHelpers;
-
 	var consoleLogger = {
 	  type: 'logger',
 
@@ -115,7 +112,7 @@
 	var Logger = function () {
 	  function Logger(concreteLogger) {
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-	    babelHelpers.classCallCheck(this, Logger);
+	    classCallCheck(this, Logger);
 
 	    this.subs = [];
 	    this.init(concreteLogger, options);
@@ -160,7 +157,7 @@
 	  };
 
 	  Logger.prototype.create = function create(moduleName) {
-	    var sub = new Logger(this.logger, babelHelpers.extends({ prefix: this.prefix + ':' + moduleName + ':' }, this.options));
+	    var sub = new Logger(this.logger, _extends({ prefix: this.prefix + ':' + moduleName + ':' }, this.options));
 	    this.subs.push(sub);
 
 	    return sub;
@@ -179,7 +176,7 @@
 
 	var EventEmitter = function () {
 		function EventEmitter() {
-			babelHelpers.classCallCheck(this, EventEmitter);
+			classCallCheck(this, EventEmitter);
 
 			this.observers = {};
 		}
@@ -341,14 +338,14 @@
 	}
 
 	var ResourceStore = function (_EventEmitter) {
-	  babelHelpers.inherits(ResourceStore, _EventEmitter);
+	  inherits(ResourceStore, _EventEmitter);
 
 	  function ResourceStore() {
 	    var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? { ns: ['translation'], defaultNS: 'translation' } : arguments[1];
-	    babelHelpers.classCallCheck(this, ResourceStore);
+	    classCallCheck(this, ResourceStore);
 
-	    var _this = babelHelpers.possibleConstructorReturn(this, _EventEmitter.call(this));
+	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
 
 	    _this.data = data;
 	    _this.options = options;
@@ -430,7 +427,7 @@
 	    if (deep) {
 	      deepExtend(pack, resources, overwrite);
 	    } else {
-	      pack = babelHelpers.extends({}, pack, resources);
+	      pack = _extends({}, pack, resources);
 	    }
 
 	    setPath(this.data, path, pack);
@@ -455,7 +452,7 @@
 	    if (!ns) ns = this.options.defaultNS;
 
 	    // TODO: COMPATIBILITY remove extend in v2.1.0
-	    if (this.options.compatibilityAPI === 'v1') return babelHelpers.extends({}, this.getResource(lng, ns));
+	    if (this.options.compatibilityAPI === 'v1') return _extends({}, this.getResource(lng, ns));
 
 	    return this.getResource(lng, ns);
 	  };
@@ -625,13 +622,13 @@
 	}
 
 	var Translator = function (_EventEmitter) {
-	  babelHelpers.inherits(Translator, _EventEmitter);
+	  inherits(Translator, _EventEmitter);
 
 	  function Translator(services) {
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-	    babelHelpers.classCallCheck(this, Translator);
+	    classCallCheck(this, Translator);
 
-	    var _this = babelHelpers.possibleConstructorReturn(this, _EventEmitter.call(this));
+	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
 
 	    copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector'], services, _this);
 
@@ -675,7 +672,7 @@
 	  Translator.prototype.translate = function translate(keys) {
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-	    if ((typeof options === 'undefined' ? 'undefined' : babelHelpers.typeof(options)) !== 'object') {
+	    if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object') {
 	      options = this.options.overloadTranslationOptionHandler(arguments);
 	    } else if (this.options.compatibilityAPI === 'v1') {
 	      options = convertTOptions(options);
@@ -719,7 +716,7 @@
 	      var copy = resType === '[object Array]' ? [] : {}; // apply child translation on a copy
 
 	      for (var m in res) {
-	        copy[m] = this.translate('' + key + keySeparator + m, babelHelpers.extends({ joinArrays: false, ns: namespaces }, options));
+	        copy[m] = this.translate('' + key + keySeparator + m, _extends({ joinArrays: false, ns: namespaces }, options));
 	      }
 	      res = copy;
 	    }
@@ -791,7 +788,7 @@
 
 	    // interpolate
 	    var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-	    if (this.options.interpolation.defaultVariables) data = babelHelpers.extends({}, this.options.interpolation.defaultVariables, data);
+	    if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
 	    res = this.interpolator.interpolate(res, data);
 
 	    // nesting
@@ -894,7 +891,7 @@
 
 	var LanguageUtil = function () {
 	  function LanguageUtil(options) {
-	    babelHelpers.classCallCheck(this, LanguageUtil);
+	    classCallCheck(this, LanguageUtil);
 
 	    this.options = options;
 
@@ -942,8 +939,10 @@
 	    }
 	  };
 
-	  LanguageUtil.prototype.isWhitelisted = function isWhitelisted(code) {
-	    if (this.options.load === 'languageOnly') code = this.getLanguagePartFromCode(code);
+	  LanguageUtil.prototype.isWhitelisted = function isWhitelisted(code, exactMatch) {
+	    if (this.options.load === 'languageOnly' || this.options.nonExplicitWhitelist && !exactMatch) {
+	      code = this.getLanguagePartFromCode(code);
+	    }
 	    return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1 ? true : false;
 	  };
 
@@ -955,7 +954,9 @@
 
 	    var codes = [];
 	    var addCode = function addCode(code) {
-	      if (_this.isWhitelisted(code)) {
+	      var exactMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+
+	      if (_this.isWhitelisted(code, exactMatch)) {
 	        codes.push(code);
 	      } else {
 	        _this.logger.warn('rejecting non-whitelisted language code: ' + code);
@@ -963,7 +964,7 @@
 	    };
 
 	    if (typeof code === 'string' && code.indexOf('-') > -1) {
-	      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
+	      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code), true);
 	      if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
 	    } else if (typeof code === 'string') {
 	      addCode(this.formatLanguageCode(code));
@@ -1069,7 +1070,7 @@
 	var PluralResolver = function () {
 	  function PluralResolver(languageUtils) {
 	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-	    babelHelpers.classCallCheck(this, PluralResolver);
+	    classCallCheck(this, PluralResolver);
 
 	    this.languageUtils = languageUtils;
 	    this.options = options;
@@ -1150,7 +1151,7 @@
 	        };
 	      }();
 
-	      if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      this.logger.warn('no plural rule found for: ' + code);
 	      return '';
@@ -1165,7 +1166,7 @@
 	var Interpolator = function () {
 	  function Interpolator() {
 	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	    babelHelpers.classCallCheck(this, Interpolator);
+	    classCallCheck(this, Interpolator);
 
 	    this.logger = baseLogger.create('interpolator');
 
@@ -1295,13 +1296,13 @@
 	}
 
 	var Connector = function (_EventEmitter) {
-	  babelHelpers.inherits(Connector, _EventEmitter);
+	  inherits(Connector, _EventEmitter);
 
 	  function Connector(backend, store, services) {
 	    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-	    babelHelpers.classCallCheck(this, Connector);
+	    classCallCheck(this, Connector);
 
-	    var _this = babelHelpers.possibleConstructorReturn(this, _EventEmitter.call(this));
+	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
 
 	    _this.backend = backend;
 	    _this.store = store;
@@ -1373,7 +1374,7 @@
 
 	    var _name$split = name.split('|');
 
-	    var _name$split2 = babelHelpers.slicedToArray(_name$split, 2);
+	    var _name$split2 = slicedToArray(_name$split, 2);
 
 	    var lng = _name$split2[0];
 	    var ns = _name$split2[1];
@@ -1433,7 +1434,7 @@
 	      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
 	      return callback && callback();
 	    }
-	    var options = babelHelpers.extends({}, this.backend.options, this.options.backend);
+	    var options = _extends({}, this.backend.options, this.options.backend);
 
 	    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
 	    if (typeof namespaces === 'string') namespaces = [namespaces];
@@ -1453,7 +1454,7 @@
 	        toLoad.toLoad.forEach(function (name) {
 	          var _name$split3 = name.split('|');
 
-	          var _name$split4 = babelHelpers.slicedToArray(_name$split3, 2);
+	          var _name$split4 = slicedToArray(_name$split3, 2);
 
 	          var l = _name$split4[0];
 	          var n = _name$split4[1];
@@ -1479,7 +1480,7 @@
 
 	            var _name$split5 = name.split('|');
 
-	            var _name$split6 = babelHelpers.slicedToArray(_name$split5, 2);
+	            var _name$split6 = slicedToArray(_name$split5, 2);
 
 	            var lng = _name$split6[0];
 	            var ns = _name$split6[1];
@@ -1508,7 +1509,7 @@
 	    if (!this.backend) {
 	      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
 	    }
-	    var options = babelHelpers.extends({}, this.backend.options, this.options.backend);
+	    var options = _extends({}, this.backend.options, this.options.backend);
 
 	    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
 	    if (typeof namespaces === 'string') namespaces = [namespaces];
@@ -1542,7 +1543,7 @@
 
 	            var _name$split7 = name.split('|');
 
-	            var _name$split8 = babelHelpers.slicedToArray(_name$split7, 2);
+	            var _name$split8 = slicedToArray(_name$split7, 2);
 
 	            var lng = _name$split8[0];
 	            var ns = _name$split8[1];
@@ -1579,13 +1580,13 @@
 	}(EventEmitter);
 
 	var Connector$1 = function (_EventEmitter) {
-	  babelHelpers.inherits(Connector, _EventEmitter);
+	  inherits(Connector, _EventEmitter);
 
 	  function Connector(cache, store, services) {
 	    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-	    babelHelpers.classCallCheck(this, Connector);
+	    classCallCheck(this, Connector);
 
-	    var _this = babelHelpers.possibleConstructorReturn(this, _EventEmitter.call(this));
+	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
 
 	    _this.cache = cache;
 	    _this.store = store;
@@ -1601,7 +1602,7 @@
 	    var _this2 = this;
 
 	    if (!this.cache) return callback && callback();
-	    var options = babelHelpers.extends({}, this.cache.options, this.options.cache);
+	    var options = _extends({}, this.cache.options, this.options.cache);
 
 	    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
 	    if (typeof namespaces === 'string') namespaces = [namespaces];
@@ -1632,7 +1633,7 @@
 	  return Connector;
 	}(EventEmitter);
 
-	function get() {
+	function get$1() {
 	  return {
 	    debug: false,
 	    initImmediate: true,
@@ -1643,6 +1644,7 @@
 	    fallbackNS: false, // string or array of namespaces
 
 	    whitelist: false, // array with whitelisted languages
+	    nonExplicitWhitelist: false,
 	    load: 'all', // | currentOnly | languageOnly
 	    preload: false, // array with preload languages
 
@@ -1698,14 +1700,14 @@
 	}
 
 	var I18n = function (_EventEmitter) {
-	  babelHelpers.inherits(I18n, _EventEmitter);
+	  inherits(I18n, _EventEmitter);
 
 	  function I18n() {
 	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    var callback = arguments[1];
-	    babelHelpers.classCallCheck(this, I18n);
+	    classCallCheck(this, I18n);
 
-	    var _this = babelHelpers.possibleConstructorReturn(this, _EventEmitter.call(this));
+	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
 
 	    _this.options = transformOptions(options);
 	    _this.services = {};
@@ -1726,11 +1728,11 @@
 	    if (!options) options = {};
 
 	    if (options.compatibilityAPI === 'v1') {
-	      this.options = babelHelpers.extends({}, get(), transformOptions(convertAPIOptions(options)), {});
+	      this.options = _extends({}, get$1(), transformOptions(convertAPIOptions(options)), {});
 	    } else if (options.compatibilityJSON === 'v1') {
-	      this.options = babelHelpers.extends({}, get(), transformOptions(convertJSONOptions(options)), {});
+	      this.options = _extends({}, get$1(), transformOptions(convertJSONOptions(options)), {});
 	    } else {
-	      this.options = babelHelpers.extends({}, get(), this.options, transformOptions(options));
+	      this.options = _extends({}, get$1(), this.options, transformOptions(options));
 	    }
 	    if (!callback) callback = function callback() {};
 
@@ -1863,7 +1865,7 @@
 	        });
 	      }();
 
-	      if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
+	      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	    } else {
 	      callback(null);
 	    }
@@ -2007,7 +2009,7 @@
 	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    var callback = arguments[1];
 
-	    var clone = new I18n(babelHelpers.extends({}, options, this.options, { isClone: true }), callback);
+	    var clone = new I18n(_extends({}, options, this.options, { isClone: true }), callback);
 	    var membersToCopy = ['store', 'translator', 'services', 'language'];
 	    membersToCopy.forEach(function (m) {
 	      clone[m] = _this7[m];
