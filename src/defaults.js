@@ -9,6 +9,7 @@ export function get() {
     fallbackNS : false, // string or array of namespaces
 
     whitelist: false, // array with whitelisted languages
+    nonExplicitWhitelist: false,
     load: 'all', // | currentOnly | languageOnly
     preload: false, // array with preload languages
 
