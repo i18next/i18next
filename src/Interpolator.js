@@ -51,6 +51,7 @@ class Interpolator {
     while(match = this.regexpUnescape.exec(str)) {
       let value = utils.getPath(data, match[1].trim());
       str = str.replace(match[0], value);
+      this.regexpUnescape.lastIndex = 0;
     }
 
     // regular escape on demand
