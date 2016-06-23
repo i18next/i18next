@@ -1,3 +1,6 @@
+### 3.3.1
+- fixed an issue with several unescaped key in the interpolation string [#746](https://github.com/i18next/i18next/pull/746)
+
 ### 3.3.0
 - allows option `nonExplicitWhitelist` on init [#741](https://github.com/i18next/i18next/pull/741)
 

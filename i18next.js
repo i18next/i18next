@@ -1220,6 +1220,7 @@
 	    while (match = this.regexpUnescape.exec(str)) {
 	      var _value = getPath(data, match[1].trim());
 	      str = str.replace(match[0], _value);
+	      this.regexpUnescape.lastIndex = 0;
 	    }
 
 	    // regular escape on demand
