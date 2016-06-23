@@ -63,7 +63,7 @@
     "mocha": "2.5.3",
     "phantomjs-prebuilt": "2.1.7",
     "rimraf": "2.5.2",
-    "rollup": "0.32.2",
+    "rollup": "0.32.3",
     "rollup-plugin-babel": "2.5.1",
     "rollup-plugin-node-resolve": "1.7.0",
     "rollup-plugin-uglify": "1.0.0",
