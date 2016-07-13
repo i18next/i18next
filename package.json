@@ -68,7 +68,7 @@
     "rollup-plugin-node-resolve": "1.7.0",
     "rollup-plugin-uglify": "1.0.0",
     "sinon": "1.17.4",
-    "yargs": "4.7.1"
+    "yargs": "4.8.0"
   },
   "scripts": {
     "test": "npm run test:new && npm run test:compat",
