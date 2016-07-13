@@ -46,7 +46,7 @@
     "i18next-sprintf-postprocessor": "0.2.2",
     "i18next-xhr-backend": "0.6.0",
     "istanbul": "gotwarlost/istanbul#source-map",
-    "karma": "0.13.22",
+    "karma": "1.1.0",
     "karma-browserify": "5.0.5",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "1.0.1",
