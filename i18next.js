@@ -789,7 +789,7 @@
 	    // interpolate
 	    var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
 	    if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
-	    res = this.interpolator.interpolate(res, data);
+	    res = this.interpolator.interpolate(res, data, this.language);
 
 	    // nesting
 	    res = this.interpolator.nest(res, function () {
@@ -1177,7 +1177,12 @@
 	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    var reset = arguments[1];
 
-	    if (reset) this.options = options;
+	    if (reset) {
+	      this.options = options;
+	      this.format = options.interpolation && options.interpolation.format || function (value) {
+	        return value;
+	      };
+	    }
 	    if (!options.interpolation) options.interpolation = { escapeValue: true };
 
 	    var iOpts = options.interpolation;
@@ -1186,6 +1191,7 @@
 
 	    this.prefix = iOpts.prefix ? regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
 	    this.suffix = iOpts.suffix ? regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
+	    this.formatSeparator = iOpts.formatSeparator ? regexEscape(iOpts.formatSeparator) : iOpts.formatSeparator || ',';
 
 	    this.unescapePrefix = iOpts.unescapeSuffix ? '' : iOpts.unescapePrefix || '-';
 	    this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
@@ -1208,7 +1214,9 @@
 	    if (this.options) this.init(this.options);
 	  };
 
-	  Interpolator.prototype.interpolate = function interpolate(str, data) {
+	  Interpolator.prototype.interpolate = function interpolate(str, data, lng) {
+	    var _this = this;
+
 	    var match = void 0,
 	        value = void 0;
 
@@ -1216,16 +1224,27 @@
 	      return val.replace(/\$/g, '$$$$');
 	    }
 
+	    var handleFormat = function handleFormat(key) {
+	      if (key.indexOf(_this.formatSeparator) < 0) return getPath(data, key);
+
+	      var p = key.split(_this.formatSeparator);
+
+	      var k = p[0].trim();
+	      var f = p[1].trim();
+
+	      return _this.format(getPath(data, k), f, lng);
+	    };
+
 	    // unescape if has unescapePrefix/Suffix
 	    while (match = this.regexpUnescape.exec(str)) {
-	      var _value = getPath(data, match[1].trim());
+	      var _value = handleFormat(match[1].trim());
 	      str = str.replace(match[0], _value);
 	      this.regexpUnescape.lastIndex = 0;
 	    }
 
 	    // regular escape on demand
 	    while (match = this.regexp.exec(str)) {
-	      value = getPath(data, match[1].trim());
+	      value = handleFormat(match[1].trim());
 	      if (typeof value !== 'string') value = makeString(value);
 	      if (!value) {
 	        this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
@@ -1672,8 +1691,12 @@
 
 	    interpolation: {
 	      escapeValue: true,
+	      format: function format(value, _format, lng) {
+	        return value;
+	      },
 	      prefix: '{{',
 	      suffix: '}}',
+	      formatSeparator: ',',
 	      // prefixEscaped: '{{',
 	      // suffixEscaped: '}}',
 	      // unescapeSuffix: '',

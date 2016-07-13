@@ -9,15 +9,19 @@ class Interpolator {
   }
 
   init(options = {}, reset) {
-    if (reset) this.options = options;
+    if (reset) {
+      this.options = options;
+      this.format = (options.interpolation && options.interpolation.format) || function(value) {return value};
+    }
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
-    let iOpts = options.interpolation;
+    const iOpts = options.interpolation;
 
     this.escapeValue = iOpts.escapeValue;
 
     this.prefix = iOpts.prefix ? utils.regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
     this.suffix = iOpts.suffix ? utils.regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
+    this.formatSeparator = iOpts.formatSeparator ? utils.regexEscape(iOpts.formatSeparator) : iOpts.formatSeparator || ',';
 
     this.unescapePrefix = iOpts.unescapeSuffix ? '' : iOpts.unescapePrefix || '-';
     this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
@@ -26,13 +30,13 @@ class Interpolator {
     this.nestingSuffix = iOpts.nestingSuffix ? utils.regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
 
     // the regexp
-    let regexpStr = this.prefix + '(.+?)' + this.suffix;
+    const regexpStr = this.prefix + '(.+?)' + this.suffix;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    let regexpUnescapeStr = this.prefix + this.unescapePrefix + '(.+?)' + this.unescapeSuffix + this.suffix;
+    const regexpUnescapeStr = this.prefix + this.unescapePrefix + '(.+?)' + this.unescapeSuffix + this.suffix;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
-    let nestingRegexpStr = this.nestingPrefix + '(.+?)' + this.nestingSuffix;
+    const nestingRegexpStr = this.nestingPrefix + '(.+?)' + this.nestingSuffix;
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
   }
 
@@ -40,23 +44,34 @@ class Interpolator {
     if (this.options) this.init(this.options);
   }
 
-  interpolate(str, data) {
+  interpolate(str, data, lng) {
     let match, value;
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
     }
 
+    const handleFormat = (key) => {
+      if (key.indexOf(this.formatSeparator) < 0) return utils.getPath(data, key);
+
+      const p = key.split(this.formatSeparator);
+
+      const k = p[0].trim();
+      const f = p[1].trim();
+
+      return this.format(utils.getPath(data, k), f, lng);
+    }
+
     // unescape if has unescapePrefix/Suffix
     while(match = this.regexpUnescape.exec(str)) {
-      let value = utils.getPath(data, match[1].trim());
+      let value = handleFormat(match[1].trim());
       str = str.replace(match[0], value);
       this.regexpUnescape.lastIndex = 0;
     }
 
     // regular escape on demand
     while(match = this.regexp.exec(str)) {
-      value = utils.getPath(data, match[1].trim());
+      value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
         this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);

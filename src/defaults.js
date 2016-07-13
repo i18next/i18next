@@ -36,8 +36,10 @@ export function get() {
 
     interpolation: {
       escapeValue: true,
+      format: function(value, format, lng) { return value },
       prefix: '{{',
       suffix: '}}',
+      formatSeparator: ',',
       // prefixEscaped: '{{',
       // suffixEscaped: '}}',
       // unescapeSuffix: '',
