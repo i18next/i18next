@@ -106,6 +106,9 @@ class Translator extends EventEmitter {
       if (!this.isValidLookup(res)) {
         usedKey = true;
         res = key;
+        
+        // Fall back on plural hint
+        if (options.pluralHint && options.count && options.count > 1) res = options.pluralHint;
       }
 
       // save missing
