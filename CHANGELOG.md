@@ -1,3 +1,6 @@
+### 3.4.1
+- fix issue with format containing formatSeparator for interpolation formatting
+
 ### 3.4.0
 - adds formatting 'format this: {{var, formatRule}}' having a function on options.interpolation.format: function(value, format, lng) { return value } like suggested here [#774](https://github.com/i18next/i18next/issues/774)
 

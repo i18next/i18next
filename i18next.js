@@ -1228,9 +1228,8 @@
 	      if (key.indexOf(_this.formatSeparator) < 0) return getPath(data, key);
 
 	      var p = key.split(_this.formatSeparator);
-
-	      var k = p[0].trim();
-	      var f = p[1].trim();
+	      var k = p.shift().trim();
+	      var f = p.join(_this.formatSeparator).trim();
 
 	      return _this.format(getPath(data, k), f, lng);
 	    };
