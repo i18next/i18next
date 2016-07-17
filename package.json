@@ -69,7 +69,7 @@
     "rollup-plugin-uglify": "1.0.1",
     "sinon": "1.17.4",
     "watchify": "3.7.0",
-    "yargs": "4.8.0"
+    "yargs": "4.8.1"
   },
   "scripts": {
     "test": "npm run test:new && npm run test:compat",
