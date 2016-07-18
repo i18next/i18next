@@ -11,7 +11,7 @@ i18next is a very popular internationalization framework for browser or any othe
 --------------
 **News**
 
-Having done a big rewrite of i18next in spring we are proud to announce the next big step to get your webproject translated with less effort. We just released [locize](locize.com) a translation management system built around the i18next ecosystem.
+Having done a big rewrite of i18next in spring we are proud to announce the next big step to get your webproject translated with less effort. We just released [locize](http://locize.com/) a translation management system built around the i18next ecosystem.
 
 With using locize you directly support the future of i18next.
 
