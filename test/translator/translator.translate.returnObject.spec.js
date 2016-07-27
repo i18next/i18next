@@ -13,7 +13,10 @@ describe('Translator', () => {
       const rs = new ResourceStore({
         en: {
           common: {
-            test: ['common_test_en_1', 'common_test_en_2']
+            test: ['common_test_en_1', 'common_test_en_2'],
+            something: {
+              range: '[{{min}}..{{max}}]'
+            }
           },
           special: {
             test: ['special_test_en_1', 'special_test_en_2']
@@ -49,7 +52,11 @@ describe('Translator', () => {
 
     var tests = [
       {args: ['common:test'], expected: [ 'common_test_en_1', 'common_test_en_2' ]},
-      {args: ['special:test'], expected: [ 'special_test_en_1', 'special_test_en_2' ]}
+      {args: ['special:test'], expected: [ 'special_test_en_1', 'special_test_en_2' ]},
+
+      // should not overwrite store value
+      {args: ['common:something'], expected: { range: '[..]' }},
+      {args: ['common:something.range', { min: '1', max: '1000' }], expected: '[1..1000]'},
     ];
 
     tests.forEach((test) => {
