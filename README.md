@@ -8,6 +8,8 @@
 
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
 
+![ecosystem](http://i18next.com/img/frameworks.png)
+
 --------------
 **News**
 
