@@ -1,3 +1,6 @@
+### 3.4.2
+- assert dir function does not crash if no language available
+
 ### 3.4.1
 - fix issue with format containing formatSeparator for interpolation formatting
 

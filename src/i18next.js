@@ -259,6 +259,7 @@ class I18n extends EventEmitter {
 
   dir(lng) {
     if (!lng) lng = this.language;
+    if (!lng) return 'rtl';
 
     const rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm',
       'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb',
