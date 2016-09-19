@@ -30,6 +30,15 @@ class Interpolator {
     this.nestingSuffix = iOpts.nestingSuffix ? utils.regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
 
     // the regexp
+    this.resetRegExp();
+  }
+
+  reset() {
+    if (this.options) this.init(this.options);
+  }
+
+  resetRegExp() {
+    // the regexp
     const regexpStr = this.prefix + '(.+?)' + this.suffix;
     this.regexp = new RegExp(regexpStr, 'g');
 
@@ -38,10 +47,6 @@ class Interpolator {
 
     const nestingRegexpStr = this.nestingPrefix + '(.+?)' + this.nestingSuffix;
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
-  }
-
-  reset() {
-    if (this.options) this.init(this.options);
   }
 
   interpolate(str, data, lng) {
@@ -60,6 +65,8 @@ class Interpolator {
 
       return this.format(utils.getPath(data, k), f, lng);
     }
+
+    this.resetRegExp();
 
     // unescape if has unescapePrefix/Suffix
     while(match = this.regexpUnescape.exec(str)) {
