@@ -36,6 +36,7 @@ describe('Interpolator', () => {
           format: function(value, format, lng) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
+            if (format === 'throw') throw new Error('Formatter error');
             return value;
           }
         }
@@ -51,6 +52,16 @@ describe('Interpolator', () => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
+    });
+
+    it('correctly manage exception in formatter', () => {
+      expect(() => {
+        ip.interpolate.apply(ip,  ['test {{test, throw}}', {test: 'up'}])
+      }).to.throw(Error, 'Formatter error');
+
+      const test = tests[0];
+
+      expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
     });
   });
 
