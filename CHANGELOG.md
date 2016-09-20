@@ -1,3 +1,6 @@
+### 3.4.3
+- Fix Interpolator formatter exception error propagation due to not reset RegExp indices [#820](https://github.com/i18next/i18next/issues/820)
+
 ### 3.4.2
 - assert dir function does not crash if no language available
 

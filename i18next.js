@@ -1200,6 +1200,15 @@
 	    this.nestingSuffix = iOpts.nestingSuffix ? regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || regexEscape(')');
 
 	    // the regexp
+	    this.resetRegExp();
+	  };
+
+	  Interpolator.prototype.reset = function reset() {
+	    if (this.options) this.init(this.options);
+	  };
+
+	  Interpolator.prototype.resetRegExp = function resetRegExp() {
+	    // the regexp
 	    var regexpStr = this.prefix + '(.+?)' + this.suffix;
 	    this.regexp = new RegExp(regexpStr, 'g');
 
@@ -1208,10 +1217,6 @@
 
 	    var nestingRegexpStr = this.nestingPrefix + '(.+?)' + this.nestingSuffix;
 	    this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
-	  };
-
-	  Interpolator.prototype.reset = function reset() {
-	    if (this.options) this.init(this.options);
 	  };
 
 	  Interpolator.prototype.interpolate = function interpolate(str, data, lng) {
@@ -1233,6 +1238,8 @@
 
 	      return _this.format(getPath(data, k), f, lng);
 	    };
+
+	    this.resetRegExp();
 
 	    // unescape if has unescapePrefix/Suffix
 	    while (match = this.regexpUnescape.exec(str)) {
