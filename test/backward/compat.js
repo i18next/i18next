@@ -1,5 +1,5 @@
-// i18next, v1.11.2
-// Copyright (c)2015 Jan Mühlemann (jamuhl).
+// i18next, v1.11.5
+// Copyright (c)2016 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 import i18n from '../../src/i18next.js';

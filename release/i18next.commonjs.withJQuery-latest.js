@@ -1,5 +1,5 @@
-// i18next, v1.11.2
-// Copyright (c)2015 Jan Mühlemann (jamuhl).
+// i18next, v1.11.5
+// Copyright (c)2016 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
 (function(root) {
@@ -1306,7 +1306,12 @@
             }
     
             if (!options && o.useDataAttrOptions === true) {
-                options = ele.data("i18n-options");
+                var tmp = ele.attr("data-i18n-options");
+                if(!(tmp === undefined)){
+                    options = jQuery.parseJSON(tmp);
+                }else{
+                    options = ele.data("i18n-options");
+                }
             }
             options = options || {};
     

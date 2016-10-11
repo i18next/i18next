@@ -1,3 +1,6 @@
+### 1.11.5
+- Fix to get the updated data values for version 1.11.x with jquery. [PR 824](https://github.com/i18next/i18next/pull/824)
+
 ### 1.11.2
 - replace forEach loop to support IE8 [PR 461](https://github.com/i18next/i18next/pull/461)
 
