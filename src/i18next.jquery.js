@@ -56,7 +56,12 @@ function addJqueryFunct() {
         }
 
         if (!options && o.useDataAttrOptions === true) {
-            options = ele.data("i18n-options");
+            var tmp = ele.attr("data-i18n-options");
+            if(!(tmp === undefined)){
+                options = jQuery.parseJSON(tmp);
+            }else{
+                options = ele.data("i18n-options");
+            }
         }
         options = options || {};
 
