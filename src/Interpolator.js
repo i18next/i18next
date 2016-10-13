@@ -17,7 +17,7 @@ class Interpolator {
 
     const iOpts = options.interpolation;
 
-    this.escapeValue = iOpts.escapeValue;
+    this.escapeValue = iOpts.escapeValue !== undefined ? iOpts.escapeValue : true;
 
     this.prefix = iOpts.prefix ? utils.regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
     this.suffix = iOpts.suffix ? utils.regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
