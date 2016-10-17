@@ -1187,7 +1187,7 @@
 
 	    var iOpts = options.interpolation;
 
-	    this.escapeValue = iOpts.escapeValue;
+	    this.escapeValue = iOpts.escapeValue !== undefined ? iOpts.escapeValue : true;
 
 	    this.prefix = iOpts.prefix ? regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
 	    this.suffix = iOpts.suffix ? regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
