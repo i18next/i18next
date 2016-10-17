@@ -26,6 +26,71 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - options', () => {
+    var tests = [
+      {
+        options: {interpolation: {}},
+        expected: {escapeValue: true, prefix: '{{', suffix: '}}', formatSeparator: ',', unescapePrefix: '-', unescapeSuffix: '', nestingPrefix: '\\$t\\(', nestingSuffix: '\\)' }
+      },
+      {
+        options: {},
+        expected: {escapeValue: true, prefix: '{{', suffix: '}}', formatSeparator: ',', unescapePrefix: '-', unescapeSuffix: '', nestingPrefix: '\\$t\\(', nestingSuffix: '\\)' }
+      },
+      {
+        description: 'uses and regex escapes prefix and suffix',
+        options: {interpolation: {prefix: '(*(', suffix: ')*)', prefixEscaped: '\\(\\^\\(', suffixEscaped: ')\\^\\)'}},
+        expected: {prefix: '\\(\\*\\(', suffix: '\\)\\*\\)'}
+      },
+      {
+        description: 'uses prefixEscaped and suffixEscaped if prefix and suffix not provided',
+        options: {interpolation: {prefixEscaped: '<<', suffixEscaped: '>>'}},
+        expected: {prefix: '<<', suffix: '>>'}
+      },
+      {
+        description: 'uses unescapePrefix if provided',
+        options: {interpolation: {unescapePrefix: '=>'}},
+        expected: {unescapePrefix: '=>', unescapeSuffix: ''}
+      },
+      {
+        description: 'uses unescapeSuffix if provided',
+        options: {interpolation: {unescapeSuffix: '<='}},
+        expected: {unescapePrefix: '', unescapeSuffix: '<='}
+      },
+      {
+        description: 'uses unescapeSuffix if both unescapePrefix and unescapeSuffix are provided',
+        options: {interpolation: {unescapePrefix: '=>', unescapeSuffix: '<='}},
+        expected: {unescapePrefix: '', unescapeSuffix: '<='}
+      },
+      {
+        description: 'uses and regex escapes nestingPrefix and nestingSuffix',
+        options: {interpolation: {nestingPrefix: 'nest(', nestingSuffix: ')nest', nestingPrefixEscaped: 'neste\\(', nestingSuffixEscaped: '\\)neste'}},
+        expected: {nestingPrefix: 'nest\\(', nestingSuffix: '\\)nest'}
+      },
+      {
+        description: 'uses nestingPrefixEscaped and nestingSuffixEscaped if nestingPrefix and nestingSuffix not provided',
+        options: {interpolation: {nestingPrefixEscaped: 'neste\\(', nestingSuffixEscaped: '\\)neste'}},
+        expected: {nestingPrefix: 'neste\\(', nestingSuffix: '\\)neste'}
+      }
+    ];
+
+    tests.forEach((test) => {
+
+      describe(test.description || 'when called with ' + JSON.stringify(test.options), () => {
+        var ip;
+
+        before(() => {
+          ip = new Interpolator(test.options);
+        });
+
+        Object.keys(test.expected).forEach((key) => {
+          it(key + ' is set correctly', () => {
+            expect(ip[key]).to.eql(test.expected[key]);
+          });
+        });
+      });
+    });
+  });
+
   describe('interpolate() - with formatter', () => {
     var ip;
 
