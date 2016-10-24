@@ -56,7 +56,7 @@ module.exports = function(grunt) {
     //   ]
     // },
 
-    stylus: {      
+    stylus: {
       options: {
         'import': ['nib']
       },
@@ -208,7 +208,6 @@ module.exports = function(grunt) {
         tasks: 'default'
       }
     }
-
   });
 
   // The default task will remove all contents inside the dist/ folder, lint
