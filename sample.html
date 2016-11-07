@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script src="./i18next.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/1.0.1/i18nextBrowserLanguageDetector.min.js" ></script>
+  </head>
+
+  <body>
+
+    <div>open console</div>
+
+    <script>
+      // use plugins and options as needed, for options, detail see
+      // http://i18next.com/docs/
+      i18next
+      .use(window.i18nextBrowserLanguageDetector)
+      .init({
+        //lng: 'en', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+        resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
+          en: {
+            translation: {
+              input: {
+                placeholder: "a placeholder"
+              },
+              nav: {
+                home: 'Home',
+                page1: 'Page One',
+                page2: 'Page Two'
+              }
+            }
+          }
+        },
+        debug: true
+      }, function(err, t) {
+        console.warn(i18next.t('input.placeholder'));
+        console.warn(i18next.t('nav.home'));
+        console.warn(i18next);
+      });
+    </script>
+
+  </body>
+
+</html>

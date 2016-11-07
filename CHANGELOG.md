@@ -1,3 +1,6 @@
+### 3.5.1
+- fix build output add a test file to test the generated build
+
 ### 3.5.0
 - Setting options on individual translations override, rather than merge global configs [#832](https://github.com/i18next/i18next/issues/832)
 - Create an new translator when cloning i18next instance [#834](https://github.com/i18next/i18next/pull/834)
