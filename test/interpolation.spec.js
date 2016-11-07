@@ -15,6 +15,7 @@ describe('Interpolator', () => {
       {args: ['test {{test}} a {{bit.more}}', {test: '123', bit: {more: '456'}}], expected: 'test 123 a 456'},
       {args: ['test {{ test }}', {test: '123'}], expected: 'test 123'},
       {args: ['test {{ test }}', {test: null}], expected: 'test '},
+      {args: ['test {{ test }}', {test: undefined}], expected: 'test '},
       {args: ['test {{ test }}', {}], expected: 'test '},
       {args: ['test {{test.deep}}', {test: {deep: '123'}}], expected: 'test 123'}
     ];
