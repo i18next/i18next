@@ -277,9 +277,13 @@ class I18n extends EventEmitter {
 
   cloneInstance(options = {}, callback) {
     let clone = new I18n({...options, ...this.options, ...{isClone: true}}, callback);
-    const membersToCopy = ['store', 'translator', 'services', 'language'];
+    const membersToCopy = ['store', 'services', 'language'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];
+    });
+    clone.translator = new Translator(clone.services, clone.options);
+    clone.translator.on('*', (event, ...args) => {
+      clone.emit(event, ...args);
     });
 
     return clone;
