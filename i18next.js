@@ -7,8 +7,121 @@
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
 	  return typeof obj;
 	} : function (obj) {
-	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 	};
+
+	var asyncGenerator = function () {
+	  function AwaitValue(value) {
+	    this.value = value;
+	  }
+
+	  function AsyncGenerator(gen) {
+	    var front, back;
+
+	    function send(key, arg) {
+	      return new Promise(function (resolve, reject) {
+	        var request = {
+	          key: key,
+	          arg: arg,
+	          resolve: resolve,
+	          reject: reject,
+	          next: null
+	        };
+
+	        if (back) {
+	          back = back.next = request;
+	        } else {
+	          front = back = request;
+	          resume(key, arg);
+	        }
+	      });
+	    }
+
+	    function resume(key, arg) {
+	      try {
+	        var result = gen[key](arg);
+	        var value = result.value;
+
+	        if (value instanceof AwaitValue) {
+	          Promise.resolve(value.value).then(function (arg) {
+	            resume("next", arg);
+	          }, function (arg) {
+	            resume("throw", arg);
+	          });
+	        } else {
+	          settle(result.done ? "return" : "normal", result.value);
+	        }
+	      } catch (err) {
+	        settle("throw", err);
+	      }
+	    }
+
+	    function settle(type, value) {
+	      switch (type) {
+	        case "return":
+	          front.resolve({
+	            value: value,
+	            done: true
+	          });
+	          break;
+
+	        case "throw":
+	          front.reject(value);
+	          break;
+
+	        default:
+	          front.resolve({
+	            value: value,
+	            done: false
+	          });
+	          break;
+	      }
+
+	      front = front.next;
+
+	      if (front) {
+	        resume(front.key, front.arg);
+	      } else {
+	        back = null;
+	      }
+	    }
+
+	    this._invoke = send;
+
+	    if (typeof gen.return !== "function") {
+	      this.return = undefined;
+	    }
+	  }
+
+	  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+	    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+	      return this;
+	    };
+	  }
+
+	  AsyncGenerator.prototype.next = function (arg) {
+	    return this._invoke("next", arg);
+	  };
+
+	  AsyncGenerator.prototype.throw = function (arg) {
+	    return this._invoke("throw", arg);
+	  };
+
+	  AsyncGenerator.prototype.return = function (arg) {
+	    return this._invoke("return", arg);
+	  };
+
+	  return {
+	    wrap: function (fn) {
+	      return function () {
+	        return new AsyncGenerator(fn.apply(this, arguments));
+	      };
+	    },
+	    await: function (value) {
+	      return new AwaitValue(value);
+	    }
+	  };
+	}();
 
 	var classCallCheck = function (instance, Constructor) {
 	  if (!(instance instanceof Constructor)) {
@@ -111,7 +224,7 @@
 
 	var Logger = function () {
 	  function Logger(concreteLogger) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	    classCallCheck(this, Logger);
 
 	    this.subs = [];
@@ -119,7 +232,7 @@
 	  }
 
 	  Logger.prototype.init = function init(concreteLogger) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	    this.prefix = options.prefix || 'i18next:';
 	    this.logger = concreteLogger || consoleLogger;
@@ -265,21 +378,17 @@
 	}
 
 	function setPath(object, path, newValue) {
-	  var _getLastOfPath = getLastOfPath(object, path, Object);
-
-	  var obj = _getLastOfPath.obj;
-	  var k = _getLastOfPath.k;
-
+	  var _getLastOfPath = getLastOfPath(object, path, Object),
+	      obj = _getLastOfPath.obj,
+	      k = _getLastOfPath.k;
 
 	  obj[k] = newValue;
 	}
 
 	function pushPath(object, path, newValue, concat) {
-	  var _getLastOfPath2 = getLastOfPath(object, path, Object);
-
-	  var obj = _getLastOfPath2.obj;
-	  var k = _getLastOfPath2.k;
-
+	  var _getLastOfPath2 = getLastOfPath(object, path, Object),
+	      obj = _getLastOfPath2.obj,
+	      k = _getLastOfPath2.k;
 
 	  obj[k] = obj[k] || [];
 	  if (concat) obj[k] = obj[k].concat(newValue);
@@ -287,11 +396,9 @@
 	}
 
 	function getPath(object, path) {
-	  var _getLastOfPath3 = getLastOfPath(object, path);
-
-	  var obj = _getLastOfPath3.obj;
-	  var k = _getLastOfPath3.k;
-
+	  var _getLastOfPath3 = getLastOfPath(object, path),
+	      obj = _getLastOfPath3.obj,
+	      k = _getLastOfPath3.k;
 
 	  if (!obj) return undefined;
 	  return obj[k];
@@ -341,8 +448,8 @@
 	  inherits(ResourceStore, _EventEmitter);
 
 	  function ResourceStore() {
-	    var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? { ns: ['translation'], defaultNS: 'translation' } : arguments[1];
+	    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { ns: ['translation'], defaultNS: 'translation' };
 	    classCallCheck(this, ResourceStore);
 
 	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
@@ -366,7 +473,7 @@
 	  };
 
 	  ResourceStore.prototype.getResource = function getResource(lng, ns, key) {
-	    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
 	    var keySeparator = options.keySeparator || this.options.keySeparator;
 	    if (keySeparator === undefined) keySeparator = '.';
@@ -383,7 +490,7 @@
 	  };
 
 	  ResourceStore.prototype.addResource = function addResource(lng, ns, key, value) {
-	    var options = arguments.length <= 4 || arguments[4] === undefined ? { silent: false } : arguments[4];
+	    var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : { silent: false };
 
 	    var keySeparator = this.options.keySeparator;
 	    if (keySeparator === undefined) keySeparator = '.';
@@ -625,7 +732,7 @@
 	  inherits(Translator, _EventEmitter);
 
 	  function Translator(services) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	    classCallCheck(this, Translator);
 
 	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
@@ -642,7 +749,7 @@
 	  };
 
 	  Translator.prototype.exists = function exists(key) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? { interpolation: {} } : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { interpolation: {} };
 
 	    if (this.options.compatibilityAPI === 'v1') {
 	      options = convertTOptions(options);
@@ -670,7 +777,7 @@
 	  };
 
 	  Translator.prototype.translate = function translate(keys) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	    if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object') {
 	      options = this.options.overloadTranslationOptionHandler(arguments);
@@ -692,10 +799,9 @@
 
 	    // get namespace(s)
 
-	    var _extractFromKey = this.extractFromKey(keys[keys.length - 1], options);
-
-	    var key = _extractFromKey.key;
-	    var namespaces = _extractFromKey.namespaces;
+	    var _extractFromKey = this.extractFromKey(keys[keys.length - 1], options),
+	        key = _extractFromKey.key,
+	        namespaces = _extractFromKey.namespaces;
 
 	    var namespace = namespaces[namespaces.length - 1];
 
@@ -745,9 +851,10 @@
 	            this.logger.log('missingKey', lng, namespace, key, res);
 
 	            var lngs = [];
-	            if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng && this.options.fallbackLng[0]) {
-	              for (var i = 0; i < this.options.fallbackLng.length; i++) {
-	                lngs.push(this.options.fallbackLng[i]);
+	            var fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
+	            if (this.options.saveMissingTo === 'fallback' && fallbackLngs && fallbackLngs[0]) {
+	              for (var i = 0; i < fallbackLngs.length; i++) {
+	                lngs.push(fallbackLngs[i]);
 	              }
 	            } else if (this.options.saveMissingTo === 'all') {
 	              lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);
@@ -784,7 +891,7 @@
 	  Translator.prototype.extendTranslation = function extendTranslation(res, key, options) {
 	    var _this2 = this;
 
-	    if (options.interpolation) this.interpolator.init(options);
+	    if (options.interpolation) this.interpolator.init(_extends({}, options, { interpolation: _extends({}, this.options.interpolation, options.interpolation) }));
 
 	    // interpolate
 	    var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
@@ -816,7 +923,7 @@
 	  Translator.prototype.resolve = function resolve(keys) {
 	    var _this3 = this;
 
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	    var found = void 0;
 
@@ -826,10 +933,9 @@
 	    keys.forEach(function (k) {
 	      if (_this3.isValidLookup(found)) return;
 
-	      var _extractFromKey2 = _this3.extractFromKey(k, options);
-
-	      var key = _extractFromKey2.key;
-	      var namespaces = _extractFromKey2.namespaces;
+	      var _extractFromKey2 = _this3.extractFromKey(k, options),
+	          key = _extractFromKey2.key,
+	          namespaces = _extractFromKey2.namespaces;
 
 	      if (_this3.options.fallbackNS) namespaces = namespaces.concat(_this3.options.fallbackNS);
 
@@ -877,7 +983,7 @@
 	  };
 
 	  Translator.prototype.getResource = function getResource(code, ns, key) {
-	    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
 	    return this.resourceStore.getResource(code, ns, key, options);
 	  };
@@ -898,6 +1004,23 @@
 	    this.whitelist = this.options.whitelist || false;
 	    this.logger = baseLogger.create('languageUtils');
 	  }
+
+	  LanguageUtil.prototype.getLanguagePartFromCode = function getLanguagePartFromCode(code) {
+	    if (code.indexOf('-') < 0) return code;
+
+	    var specialCases = ['NB-NO', 'NN-NO', 'nb-NO', 'nn-NO', 'nb-no', 'nn-no'];
+	    var p = code.split('-');
+	    return this.formatLanguageCode(specialCases.indexOf(code) > -1 ? p[1].toLowerCase() : p[0]);
+	  };
+
+	  LanguageUtil.prototype.getScriptPartFromCode = function getScriptPartFromCode(code) {
+	    if (code.indexOf('-') < 0) return null;
+
+	    var p = code.split('-');
+	    if (p.length === 2) return null;
+	    p.pop();
+	    return this.formatLanguageCode(p.join('-'));
+	  };
 
 	  LanguageUtil.prototype.getLanguagePartFromCode = function getLanguagePartFromCode(code) {
 	    if (code.indexOf('-') < 0) return code;
@@ -946,16 +1069,30 @@
 	    return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1 ? true : false;
 	  };
 
+	  LanguageUtil.prototype.getFallbackCodes = function getFallbackCodes(fallbacks, code) {
+	    if (!fallbacks) return [];
+	    if (typeof fallbacks === 'string') fallbacks = [fallbacks];
+	    if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
+
+	    // asume we have an object defining fallbacks
+	    var found = fallbacks[code];
+	    if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
+	    if (!found) found = fallbacks[this.formatLanguageCode(code)];
+	    if (!found) found = fallbacks.default;
+
+	    return found || [];
+	  };
+
 	  LanguageUtil.prototype.toResolveHierarchy = function toResolveHierarchy(code, fallbackCode) {
 	    var _this = this;
 
-	    fallbackCode = fallbackCode || this.options.fallbackLng || [];
-	    if (typeof fallbackCode === 'string') fallbackCode = [fallbackCode];
+	    var fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
 
 	    var codes = [];
 	    var addCode = function addCode(code) {
-	      var exactMatch = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	      var exactMatch = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+	      if (!code) return;
 	      if (_this.isWhitelisted(code, exactMatch)) {
 	        codes.push(code);
 	      } else {
@@ -965,12 +1102,13 @@
 
 	    if (typeof code === 'string' && code.indexOf('-') > -1) {
 	      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code), true);
+	      if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code), true);
 	      if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
 	    } else if (typeof code === 'string') {
 	      addCode(this.formatLanguageCode(code));
 	    }
 
-	    fallbackCode.forEach(function (fc) {
+	    fallbackCodes.forEach(function (fc) {
 	      if (codes.indexOf(fc) < 0) addCode(_this.formatLanguageCode(fc));
 	    });
 
@@ -1069,7 +1207,7 @@
 
 	var PluralResolver = function () {
 	  function PluralResolver(languageUtils) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	    classCallCheck(this, PluralResolver);
 
 	    this.languageUtils = languageUtils;
@@ -1165,7 +1303,7 @@
 
 	var Interpolator = function () {
 	  function Interpolator() {
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    classCallCheck(this, Interpolator);
 
 	    this.logger = baseLogger.create('interpolator');
@@ -1174,7 +1312,7 @@
 	  }
 
 	  Interpolator.prototype.init = function init() {
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    var reset = arguments[1];
 
 	    if (reset) {
@@ -1264,7 +1402,7 @@
 	  };
 
 	  Interpolator.prototype.nest = function nest(str, fc) {
-	    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+	    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 	    var match = void 0,
 	        value = void 0;
@@ -1325,7 +1463,7 @@
 	  inherits(Connector, _EventEmitter);
 
 	  function Connector(backend, store, services) {
-	    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 	    classCallCheck(this, Connector);
 
 	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
@@ -1361,18 +1499,18 @@
 	        if (_this2.store.hasResourceBundle(lng, ns)) {
 	          _this2.state[name] = 2; // loaded
 	        } else if (_this2.state[name] < 0) {
-	            // nothing to do for err
-	          } else if (_this2.state[name] === 1) {
-	              if (pending.indexOf(name) < 0) pending.push(name);
-	            } else {
-	              _this2.state[name] = 1; // pending
+	          // nothing to do for err
+	        } else if (_this2.state[name] === 1) {
+	          if (pending.indexOf(name) < 0) pending.push(name);
+	        } else {
+	          _this2.state[name] = 1; // pending
 
-	              hasAllNamespaces = false;
+	          hasAllNamespaces = false;
 
-	              if (pending.indexOf(name) < 0) pending.push(name);
-	              if (toLoad.indexOf(name) < 0) toLoad.push(name);
-	              if (toLoadNamespaces.indexOf(ns) < 0) toLoadNamespaces.push(ns);
-	            }
+	          if (pending.indexOf(name) < 0) pending.push(name);
+	          if (toLoad.indexOf(name) < 0) toLoad.push(name);
+	          if (toLoadNamespaces.indexOf(ns) < 0) toLoadNamespaces.push(ns);
+	        }
 	      });
 
 	      if (!hasAllNamespaces) toLoadLanguages.push(lng);
@@ -1398,13 +1536,10 @@
 	  Connector.prototype.loaded = function loaded(name, err, data) {
 	    var _this3 = this;
 
-	    var _name$split = name.split('|');
-
-	    var _name$split2 = slicedToArray(_name$split, 2);
-
-	    var lng = _name$split2[0];
-	    var ns = _name$split2[1];
-
+	    var _name$split = name.split('|'),
+	        _name$split2 = slicedToArray(_name$split, 2),
+	        lng = _name$split2[0],
+	        ns = _name$split2[1];
 
 	    if (err) this.emit('failedLoading', lng, ns, err);
 
@@ -1478,13 +1613,10 @@
 	        if (!err && data) _this5.logger.log('loaded namespaces ' + toLoad.toLoadNamespaces.join(', ') + ' for languages ' + toLoad.toLoadLanguages.join(', ') + ' via multiloading', data);
 
 	        toLoad.toLoad.forEach(function (name) {
-	          var _name$split3 = name.split('|');
-
-	          var _name$split4 = slicedToArray(_name$split3, 2);
-
-	          var l = _name$split4[0];
-	          var n = _name$split4[1];
-
+	          var _name$split3 = name.split('|'),
+	              _name$split4 = slicedToArray(_name$split3, 2),
+	              l = _name$split4[0],
+	              n = _name$split4[1];
 
 	          var bundle = getPath(data, [l, n]);
 	          if (bundle) {
@@ -1504,13 +1636,10 @@
 	          var readOne = function readOne(name) {
 	            var _this6 = this;
 
-	            var _name$split5 = name.split('|');
-
-	            var _name$split6 = slicedToArray(_name$split5, 2);
-
-	            var lng = _name$split6[0];
-	            var ns = _name$split6[1];
-
+	            var _name$split5 = name.split('|'),
+	                _name$split6 = slicedToArray(_name$split5, 2),
+	                lng = _name$split6[0],
+	                ns = _name$split6[1];
 
 	            this.read(lng, ns, 'read', null, null, function (err, data) {
 	              if (err) _this6.logger.warn('loading namespace ' + ns + ' for language ' + lng + ' failed', err);
@@ -1567,13 +1696,10 @@
 	          var readOne = function readOne(name) {
 	            var _this8 = this;
 
-	            var _name$split7 = name.split('|');
-
-	            var _name$split8 = slicedToArray(_name$split7, 2);
-
-	            var lng = _name$split8[0];
-	            var ns = _name$split8[1];
-
+	            var _name$split7 = name.split('|'),
+	                _name$split8 = slicedToArray(_name$split7, 2),
+	                lng = _name$split8[0],
+	                ns = _name$split8[1];
 
 	            this.read(lng, ns, 'read', null, null, function (err, data) {
 	              if (err) _this8.logger.warn('reloading namespace ' + ns + ' for language ' + lng + ' failed', err);
@@ -1609,7 +1735,7 @@
 	  inherits(Connector, _EventEmitter);
 
 	  function Connector(cache, store, services) {
-	    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 	    classCallCheck(this, Connector);
 
 	    var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
@@ -1733,7 +1859,7 @@
 	  inherits(I18n, _EventEmitter);
 
 	  function I18n() {
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    var callback = arguments[1];
 	    classCallCheck(this, I18n);
 
@@ -2028,7 +2154,7 @@
 	  };
 
 	  I18n.prototype.createInstance = function createInstance() {
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    var callback = arguments[1];
 
 	    return new I18n(options, callback);
@@ -2037,13 +2163,21 @@
 	  I18n.prototype.cloneInstance = function cloneInstance() {
 	    var _this7 = this;
 
-	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	    var callback = arguments[1];
 
 	    var clone = new I18n(_extends({}, options, this.options, { isClone: true }), callback);
-	    var membersToCopy = ['store', 'translator', 'services', 'language'];
+	    var membersToCopy = ['store', 'services', 'language'];
 	    membersToCopy.forEach(function (m) {
 	      clone[m] = _this7[m];
+	    });
+	    clone.translator = new Translator(clone.services, clone.options);
+	    clone.translator.on('*', function (event) {
+	      for (var _len5 = arguments.length, args = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+	        args[_key5 - 1] = arguments[_key5];
+	      }
+
+	      clone.emit.apply(clone, [event].concat(args));
 	    });
 
 	    return clone;
