@@ -113,9 +113,10 @@ class Translator extends EventEmitter {
         this.logger.log('missingKey', lng, namespace, key, res);
 
         var lngs = [];
-        if (this.options.saveMissingTo === 'fallback' && this.options.fallbackLng && this.options.fallbackLng[0]) {
-          for (let i = 0; i < this.options.fallbackLng.length; i++) {
-            lngs.push(this.options.fallbackLng[i]);
+        const fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
+        if (this.options.saveMissingTo === 'fallback' && fallbackLngs && fallbackLngs[0]) {
+          for (let i = 0; i < fallbackLngs.length; i++) {
+            lngs.push(fallbackLngs[i]);
           }
         } else if (this.options.saveMissingTo === 'all') {
           lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);

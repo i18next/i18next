@@ -1,3 +1,14 @@
+### 3.5.0
+- allows fallbackLng to be an string, an array or an object defining fallbacks for lng, lng-region plus default, eg
+
+  fallbackLng: {
+    'de-CH': ['fr', 'it', 'en'],
+    'de': ['fr', 'en'],
+    'zh-Hans': ['zh-Hant', 'en'],
+    'zh-Hant': ['zh-Hans', 'en'],
+    'default': ['en']
+  }
+
 ### 3.4.4
 - Fix Interpolator.escapeValue defaulting to undefined in some cases [#826](https://github.com/i18next/i18next/issues/826)
 

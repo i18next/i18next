@@ -20,6 +20,23 @@ class LanguageUtil {
     return this.formatLanguageCode((specialCases.indexOf(code) > -1) ? p[1].toLowerCase() : p[0]);
   }
 
+  getScriptPartFromCode(code) {
+    if (code.indexOf('-') < 0) return null;
+
+    let p = code.split('-');
+    if (p.length === 2) return null;
+    p.pop();
+    return this.formatLanguageCode(p.join('-'));
+  }
+
+  getLanguagePartFromCode(code) {
+    if (code.indexOf('-') < 0) return code;
+
+    let specialCases = ['NB-NO', 'NN-NO', 'nb-NO', 'nn-NO', 'nb-no', 'nn-no'];
+    let p = code.split('-');
+    return this.formatLanguageCode((specialCases.indexOf(code) > -1) ? p[1].toLowerCase() : p[0]);
+  }
+
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
     if (typeof code === 'string' && code.indexOf('-') > -1) {
@@ -57,12 +74,26 @@ class LanguageUtil {
      return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1 ? true : false;
   }
 
+  getFallbackCodes(fallbacks, code) {
+    if (!fallbacks) return [];
+    if (typeof fallbacks === 'string') fallbacks = [fallbacks];
+    if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
+
+    // asume we have an object defining fallbacks
+    let found = fallbacks[code];
+    if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
+    if (!found) found = fallbacks[this.formatLanguageCode(code)];
+    if (!found) found = fallbacks.default;
+
+    return found || [];
+  }
+
   toResolveHierarchy(code, fallbackCode) {
-    fallbackCode = fallbackCode || this.options.fallbackLng || [];
-    if (typeof fallbackCode === 'string') fallbackCode = [fallbackCode];
+    const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
 
     let codes = [];
     let addCode = (code, exactMatch = false) => {
+      if (!code) return;
       if (this.isWhitelisted(code, exactMatch)) {
         codes.push(code);
       } else {
@@ -72,12 +103,13 @@ class LanguageUtil {
 
     if (typeof code === 'string' && code.indexOf('-') > -1) {
       if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code), true);
+      if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code), true);
       if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
     } else if (typeof code === 'string') {
       addCode(this.formatLanguageCode(code));
     }
 
-    fallbackCode.forEach(fc => {
+    fallbackCodes.forEach(fc => {
       if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
     });
 

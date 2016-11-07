@@ -17,7 +17,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['de-CH'], expected: ['de-CH', 'de', 'en']},
       {args: ['nb-NO'], expected: ['nb-NO', 'no', 'en']},
-      {args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh', 'en']}
+      {args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en']}
     ];
 
     tests.forEach((test) => {
@@ -26,6 +26,37 @@ describe('LanguageUtils', () => {
       });
     });
   });
+
+  describe('toResolveHierarchy() - extended fallback object', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: {
+          'de': ['de-CH', 'en'],
+          'de-CH': ['fr', 'it', 'en'],
+          'zh-Hans': ['zh-Hant', 'zh', 'en'],
+          'zh-Hant': ['zh-Hans', 'zh', 'en'],
+          'default' : ['en']
+        }
+      });
+    });
+
+    var tests = [
+      {args: ['en'], expected: ['en']},
+      {args: ['de'], expected: ['de', 'de-CH', 'en']},
+      {args: ['de-CH'], expected: ['de-CH', 'de', 'fr', 'it', 'en']},
+      {args: ['nb-NO'], expected: ['nb-NO', 'no', 'en']},
+      {args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en']}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
 
   describe('toResolveHierarchy() - cleanCode Option', () => {
     var cu;
@@ -42,7 +73,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['DE-CH'], expected: ['de-CH', 'de', 'en']},
       {args: ['NB-NO'], expected: ['nb-NO', 'no', 'en']},
-      {args: ['ZH-HANT-MO'], expected: ['zh-Hant-MO', 'zh', 'en']}
+      {args: ['ZH-HANT-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en']}
     ];
 
     tests.forEach((test) => {
@@ -67,7 +98,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['DE-CH'], expected: ['de-ch', 'de', 'en']},
       {args: ['nb-NO'], expected: ['nb-no', 'no', 'en']},
-      {args: ['zh-Hant-MO'], expected: ['zh-hant-mo', 'zh', 'en']}
+      {args: ['zh-Hant-MO'], expected: ['zh-hant-mo', 'zh-hant', 'zh', 'en']}
     ];
 
     tests.forEach((test) => {
