@@ -150,7 +150,7 @@ class Translator extends EventEmitter {
   }
 
   extendTranslation(res, key, options) {
-    if (options.interpolation) this.interpolator.init(options);
+    if (options.interpolation) this.interpolator.init({ ...options, ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } } });
 
     // interpolate
     let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;

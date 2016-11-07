@@ -1,4 +1,6 @@
 ### 3.5.0
+- Setting options on individual translations override, rather than merge global configs [#832](https://github.com/i18next/i18next/issues/832)
+- Create an new translator when cloning i18next instance [#834](https://github.com/i18next/i18next/pull/834)
 - allows fallbackLng to be an string, an array or an object defining fallbacks for lng, lng-region plus default, eg
 
   fallbackLng: {
@@ -8,6 +10,7 @@
     'zh-Hant': ['zh-Hans', 'en'],
     'default': ['en']
   }
+
 
 ### 3.4.4
 - Fix Interpolator.escapeValue defaulting to undefined in some cases [#826](https://github.com/i18next/i18next/issues/826)
