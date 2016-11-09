@@ -1,3 +1,6 @@
+### 3.5.2
+- remove the module entry point again will be added in 4.0.0
+
 ### 3.5.1
 - fix build output add a test file to test the generated build
 
