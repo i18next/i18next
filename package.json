@@ -4,6 +4,7 @@
   "description": "i18next internationalization framework",
   "main": "./index.js",
   "jsnext:main": "dist/es/index.js",
+  "module": "dist/es/index.js",
   "keywords": [
     "i18next",
     "internationalization",
