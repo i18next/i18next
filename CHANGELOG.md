@@ -1,3 +1,6 @@
+### 4.0.0
+- [BREAKING; only webpack2-beta users] will add module entry point used by webpack2, this might break your current build with webpack2-beta if configured incorrectly, see: [#836](https://github.com/i18next/i18next/issues/836)
+
 ### 3.5.2
 - remove the module entry point again will be added in 4.0.0
 
