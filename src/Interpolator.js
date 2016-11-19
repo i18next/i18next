@@ -12,6 +12,7 @@ class Interpolator {
     if (reset) {
       this.options = options;
       this.format = (options.interpolation && options.interpolation.format) || function(value) {return value};
+      this.escape = (options.interpolation && options.interpolation.escape) || utils.escape;
     }
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
@@ -83,7 +84,7 @@ class Interpolator {
         this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
         value = '';
       }
-      value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
+      value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
     }
@@ -108,6 +109,7 @@ class Interpolator {
       key = p.shift();
       let optionsString = p.join(',');
       optionsString = this.interpolate(optionsString, clonedOptions);
+      optionsString = optionsString.replace(/'/g, '"');
 
       try {
         clonedOptions = JSON.parse(optionsString);
