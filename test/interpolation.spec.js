@@ -161,7 +161,9 @@ describe('Interpolator', () => {
     });
 
     var tests = [
-      {args: ['test $t(test)', function() { return 'success'; } ], expected: 'test success'}
+      {args: ['test $t(test)', function() { return 'success'; }], expected: 'test success'},
+      {args: ['$t(test, {"key": "success"})', function(key, opts) { return 'test ' + opts.key; }], expected: 'test success'},
+      {args: ['$t(test, {\'key\': \'success\'})', function(key, opts) { return 'test ' + opts.key }], expected: 'test success'}
     ];
 
     tests.forEach((test) => {
