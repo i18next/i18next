@@ -1391,6 +1391,7 @@ var Interpolator = function () {
       this.format = options.interpolation && options.interpolation.format || function (value) {
         return value;
       };
+      this.escape = options.interpolation && options.interpolation.escape || escape;
     }
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
@@ -1465,7 +1466,7 @@ var Interpolator = function () {
         this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
         value = '';
       }
-      value = this.escapeValue ? regexSafe(escape(value)) : regexSafe(value);
+      value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
     }
@@ -1493,6 +1494,7 @@ var Interpolator = function () {
       key = p.shift();
       var optionsString = p.join(',');
       optionsString = this.interpolate(optionsString, clonedOptions);
+      optionsString = optionsString.replace(/'/g, '"');
 
       try {
         clonedOptions = JSON.parse(optionsString);

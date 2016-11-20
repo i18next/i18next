@@ -1,3 +1,6 @@
+### 4.1.0
+- Custom escape function, single-quotes in nested [#843](https://github.com/i18next/i18next/pull/843)
+
 ### 4.0.0
 - [BREAKING; only webpack2-beta users] will add module entry point used by webpack2, this might break your current build with webpack2-beta if configured incorrectly, see: [#836](https://github.com/i18next/i18next/issues/836)
 
