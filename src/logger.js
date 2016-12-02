@@ -21,7 +21,6 @@ const consoleLogger = {
 
 class Logger {
   constructor(concreteLogger, options = {}) {
-    this.subs = [];
     this.init(concreteLogger, options);
   }
 
@@ -34,9 +33,6 @@ class Logger {
 
   setDebug(bool) {
     this.debug = bool;
-    this.subs.forEach(sub => {
-      sub.setDebug(bool);
-    });
   }
 
   log() {
@@ -63,7 +59,6 @@ class Logger {
 
   create(moduleName) {
     let sub = new Logger(this.logger, {...{prefix: this.prefix + ':' + moduleName + ':'}, ...this.options});
-    this.subs.push(sub);
 
     return sub;
   }

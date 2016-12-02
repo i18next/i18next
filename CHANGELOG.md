@@ -1,3 +1,6 @@
+### 4.1.1
+- remove subs array from logger - no longer keep changing debug flag on subs if changing on main
+
 ### 4.1.0
 - Custom escape function, single-quotes in nested [#843](https://github.com/i18next/i18next/pull/843)
 
