@@ -1,3 +1,7 @@
+### 4.1.2
+- fixes same interpolation object with multiple getFixedT() in different locales yields wrong translation [#851](https://github.com/i18next/i18next/issues/851)
+- updated all build deps
+
 ### 4.1.1
 - remove subs array from logger - no longer keep changing debug flag on subs if changing on main
 

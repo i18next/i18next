@@ -209,8 +209,8 @@ class I18n extends EventEmitter {
   }
 
   getFixedT(lng, ns) {
-    let fixedT = (key, options) => {
-      options = options || {};
+    let fixedT = (key, opts = {}) => {
+      const options = { ...opts };
       options.lng = options.lng || fixedT.lng;
       options.ns = options.ns || fixedT.ns;
       return this.t(key, options);
