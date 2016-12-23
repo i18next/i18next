@@ -12,6 +12,8 @@ import postProcessor from './postProcessor';
 
 import * as compat from './compatibility/v1';
 
+const noop = function() {};
+
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
@@ -37,7 +39,7 @@ class I18n extends EventEmitter {
     } else {
       this.options = {...getDefaults(), ...this.options, ...transformOptions(options)};
     }
-    if (!callback) callback = () => {};
+    if (!callback) callback = noop;
 
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return;
@@ -122,7 +124,7 @@ class I18n extends EventEmitter {
   }
 
   loadResources(callback) {
-    if (!callback) callback = () => {};
+    if (!callback) callback = noop;
 
     if (!this.options.resources) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode

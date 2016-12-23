@@ -1,3 +1,6 @@
+### 4.1.3
+- smaller changes suggested to still inofficial support ie8 [#852](https://github.com/i18next/i18next/issues/852)
+
 ### 4.1.2
 - fixes same interpolation object with multiple getFixedT() in different locales yields wrong translation [#851](https://github.com/i18next/i18next/issues/851)
 - updated all build deps

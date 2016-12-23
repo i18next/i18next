@@ -1923,6 +1923,8 @@ function transformOptions(options) {
   return options;
 }
 
+var noop = function noop() {};
+
 var I18n = function (_EventEmitter) {
   inherits(I18n, _EventEmitter);
 
@@ -1958,7 +1960,7 @@ var I18n = function (_EventEmitter) {
     } else {
       this.options = _extends({}, get$1(), this.options, transformOptions(options));
     }
-    if (!callback) callback = function callback() {};
+    if (!callback) callback = noop;
 
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return;
@@ -2059,7 +2061,7 @@ var I18n = function (_EventEmitter) {
   I18n.prototype.loadResources = function loadResources(callback) {
     var _this3 = this;
 
-    if (!callback) callback = function callback() {};
+    if (!callback) callback = noop;
 
     if (!this.options.resources) {
       var _ret = function () {
