@@ -1,4 +1,4 @@
-### 4.1.3
+### 4.1.3 / 4.1.4
 - smaller changes suggested to still inofficial support ie8 [#852](https://github.com/i18next/i18next/issues/852)
 
 ### 4.1.2

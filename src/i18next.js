@@ -12,7 +12,7 @@ import postProcessor from './postProcessor';
 
 import * as compat from './compatibility/v1';
 
-const noop = function() {};
+function noop() {};
 
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {

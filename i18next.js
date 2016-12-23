@@ -1923,7 +1923,7 @@ function transformOptions(options) {
   return options;
 }
 
-var noop = function noop() {};
+function noop() {}
 
 var I18n = function (_EventEmitter) {
   inherits(I18n, _EventEmitter);
