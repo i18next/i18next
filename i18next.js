@@ -1923,6 +1923,8 @@ function transformOptions(options) {
   return options;
 }
 
+function noop() {}
+
 var I18n = function (_EventEmitter) {
   inherits(I18n, _EventEmitter);
 
@@ -1958,7 +1960,7 @@ var I18n = function (_EventEmitter) {
     } else {
       this.options = _extends({}, get$1(), this.options, transformOptions(options));
     }
-    if (!callback) callback = function callback() {};
+    if (!callback) callback = noop;
 
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return;
@@ -2060,7 +2062,7 @@ var I18n = function (_EventEmitter) {
   I18n.prototype.loadResources = function loadResources(callback) {
     var _this3 = this;
 
-    if (!callback) callback = function callback() {};
+    if (!callback) callback = noop;
 
     if (!this.options.resources) {
       var _ret = function () {
@@ -2163,8 +2165,10 @@ var I18n = function (_EventEmitter) {
   I18n.prototype.getFixedT = function getFixedT(lng, ns) {
     var _this5 = this;
 
-    var fixedT = function fixedT(key, options) {
-      options = options || {};
+    var fixedT = function fixedT(key) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var options = _extends({}, opts);
       options.lng = options.lng || fixedT.lng;
       options.ns = options.ns || fixedT.ns;
       return _this5.t(key, options);

@@ -12,6 +12,8 @@ import postProcessor from './postProcessor';
 
 import * as compat from './compatibility/v1';
 
+function noop() {};
+
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
@@ -37,7 +39,7 @@ class I18n extends EventEmitter {
     } else {
       this.options = {...getDefaults(), ...this.options, ...transformOptions(options)};
     }
-    if (!callback) callback = () => {};
+    if (!callback) callback = noop;
 
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return;
@@ -123,7 +125,7 @@ class I18n extends EventEmitter {
   }
 
   loadResources(callback) {
-    if (!callback) callback = () => {};
+    if (!callback) callback = noop;
 
     if (!this.options.resources) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
@@ -210,8 +212,8 @@ class I18n extends EventEmitter {
   }
 
   getFixedT(lng, ns) {
-    let fixedT = (key, options) => {
-      options = options || {};
+    let fixedT = (key, opts = {}) => {
+      const options = { ...opts };
       options.lng = options.lng || fixedT.lng;
       options.ns = options.ns || fixedT.ns;
       return this.t(key, options);
