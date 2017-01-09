@@ -1625,8 +1625,8 @@ var Connector = function (_EventEmitter) {
       if (err) q.errors.push(err);
 
       if (q.pending.length === 0 && !q.done) {
-        q.errors.length ? q.callback(q.errors) : q.callback();
         _this3.emit('loaded', q.loaded);
+        q.errors.length ? q.callback(q.errors) : q.callback();
         q.done = true;
       }
     });
@@ -2040,6 +2040,7 @@ var I18n = function (_EventEmitter) {
 
     var load = function load() {
       _this2.changeLanguage(_this2.options.lng, function (err, t) {
+        _this2.isInitialized = true;
         _this2.emit('initialized', _this2.options);
         _this2.logger.log('initialized', _this2.options);
 

@@ -1,3 +1,7 @@
+### 4.2.0
+- adds i18next.isInitialized when isInitialized
+- triggers backend loaded event before initialized
+
 ### 4.1.1
 - remove subs array from logger - no longer keep changing debug flag on subs if changing on main
 

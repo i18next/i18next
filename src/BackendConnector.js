@@ -92,8 +92,8 @@ class Connector extends EventEmitter {
       if (err) q.errors.push(err);
 
       if (q.pending.length === 0 && !q.done) {
-        q.errors.length ? q.callback(q.errors) : q.callback();
         this.emit('loaded', q.loaded);
+        q.errors.length ? q.callback(q.errors) : q.callback();
         q.done = true;
       }
     });
