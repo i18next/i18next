@@ -40,7 +40,7 @@ Our focus is providing the core to building a booming ecosystem. Independent of 
 
 Having done a big rewrite of i18next in spring we are proud to announce the next big step to get your webproject translated with less effort. We just released [locize](http://locize.com/) a translation management system built around the i18next ecosystem.
 
-![locize](http://i18next.com/img/locize_recap_big_low.gif)
+![locize](http://i18next.com/img/locize_recap_medium_low.gif)
 
 With using [locize](http://locize.com/) you directly support the future of i18next.
 
