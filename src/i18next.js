@@ -124,9 +124,7 @@ class I18n extends EventEmitter {
     return this;
   }
 
-  loadResources(callback) {
-    if (!callback) callback = noop;
-
+  loadResources(callback = noop) {
     if (!this.options.resources) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
 
