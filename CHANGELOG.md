@@ -1,3 +1,7 @@
+### 5.0.0
+- Nested keys should not be escaped by default [#854](https://github.com/i18next/i18next/issues/854)
+- Make sure i18next.init() runs for i18next.cloneInstance() [#860](https://github.com/i18next/i18next/pull/860)
+
 ### 4.2.0
 - adds i18next.isInitialized when isInitialized
 - triggers backend loaded event before initialized

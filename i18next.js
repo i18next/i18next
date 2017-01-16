@@ -1508,7 +1508,8 @@ var Interpolator = function () {
         this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
         value = '';
       }
-      value = this.escapeValue ? regexSafe(escape(value)) : regexSafe(value);
+      // Nested keys should not be escaped by default #854
+      // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
     }
@@ -2059,10 +2060,10 @@ var I18n = function (_EventEmitter) {
     return this;
   };
 
-  I18n.prototype.loadResources = function loadResources(callback) {
+  I18n.prototype.loadResources = function loadResources() {
     var _this3 = this;
 
-    if (!callback) callback = noop;
+    var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : noop;
 
     if (!this.options.resources) {
       var _ret = function () {
@@ -2237,7 +2238,7 @@ var I18n = function (_EventEmitter) {
     var _this7 = this;
 
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var callback = arguments[1];
+    var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
 
     var clone = new I18n(_extends({}, options, this.options, { isClone: true }), callback);
     var membersToCopy = ['store', 'services', 'language'];

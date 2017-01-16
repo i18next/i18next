@@ -128,7 +128,8 @@ class Interpolator {
         this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
         value = '';
       }
-      value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
+      // Nested keys should not be escaped by default #854
+      // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
     }
