@@ -124,9 +124,7 @@ class I18n extends EventEmitter {
     return this;
   }
 
-  loadResources(callback) {
-    if (!callback) callback = noop;
-
+  loadResources(callback = noop) {
     if (!this.options.resources) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
 
@@ -278,7 +276,7 @@ class I18n extends EventEmitter {
     return new I18n(options, callback);
   }
 
-  cloneInstance(options = {}, callback) {
+  cloneInstance(options = {}, callback = noop) {
     let clone = new I18n({...options, ...this.options, ...{isClone: true}}, callback);
     const membersToCopy = ['store', 'services', 'language'];
     membersToCopy.forEach(m => {
