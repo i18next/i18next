@@ -108,8 +108,8 @@ class I18n extends EventEmitter {
     const load = () => {
       this.changeLanguage(this.options.lng, (err, t) => {
         this.isInitialized = true;
-        this.emit('initialized', this.options);
         this.logger.log('initialized', this.options);
+        this.emit('initialized', this.options);
 
         callback(err, t);
       });
