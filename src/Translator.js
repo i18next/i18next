@@ -56,16 +56,24 @@ class Translator extends EventEmitter {
     if (typeof keys === 'number') keys = String(keys);
     if (typeof keys === 'string') keys = [keys];
 
-    // return key on CIMode
-    let lng = options.lng || this.language;
-    if (lng && lng.toLowerCase() === 'cimode') return keys[keys.length - 1];
-
     // separators
     let keySeparator = options.keySeparator || this.options.keySeparator || '.';
 
     // get namespace(s)
     let { key, namespaces } = this.extractFromKey(keys[keys.length - 1], options);
     let namespace = namespaces[namespaces.length - 1];
+
+    // return key on CIMode
+    let lng = options.lng || this.language;
+    let appendNamespaceToCIMode = options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
+    if (lng && lng.toLowerCase() === 'cimode') {
+      if (appendNamespaceToCIMode) {
+        let nsSeparator = options.nsSeparator || this.options.nsSeparator
+        return namespace + nsSeparator + key;
+      }
+
+      return key;
+    }
 
     // resolve from store
     let res = this.resolve(keys, options);
@@ -96,7 +104,7 @@ class Translator extends EventEmitter {
     // string, empty or null
     else {
       let usedDefault = false,
-          usedKey = false;
+        usedKey = false;
 
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
@@ -167,9 +175,9 @@ class Translator extends EventEmitter {
     let postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
     if (res !== undefined &&
-        postProcessorNames &&
-        postProcessorNames.length &&
-        options.applyPostProcessor !== false) {
+      postProcessorNames &&
+      postProcessorNames.length &&
+      options.applyPostProcessor !== false) {
       res = postProcessor.handle(postProcessorNames, res, key, options, this);
     }
 
@@ -229,8 +237,8 @@ class Translator extends EventEmitter {
 
   isValidLookup(res) {
     return res !== undefined &&
-           !(!this.options.returnNull && res === null) &&
-           !(!this.options.returnEmptyString && res === '');
+      !(!this.options.returnNull && res === null) &&
+      !(!this.options.returnEmptyString && res === '');
   }
 
   getResource(code, ns, key, options = {}) {
