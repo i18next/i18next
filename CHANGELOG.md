@@ -1,3 +1,6 @@
+### 6.0.0
+- Return namespace in cimode with appendNamespaceToCIMode option (default now will only return key without namespace - independent of call to t function) [#863](https://github.com/i18next/i18next/issues/863)
+
 ### 5.0.0
 - Nested keys should not be escaped by default [#854](https://github.com/i18next/i18next/issues/854)
 - Make sure i18next.init() runs for i18next.cloneInstance() [#860](https://github.com/i18next/i18next/pull/860)

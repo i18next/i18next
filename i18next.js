@@ -860,10 +860,6 @@ var Translator = function (_EventEmitter) {
     if (typeof keys === 'number') keys = String(keys);
     if (typeof keys === 'string') keys = [keys];
 
-    // return key on CIMode
-    var lng = options.lng || this.language;
-    if (lng && lng.toLowerCase() === 'cimode') return keys[keys.length - 1];
-
     // separators
     var keySeparator = options.keySeparator || this.options.keySeparator || '.';
 
@@ -874,6 +870,18 @@ var Translator = function (_EventEmitter) {
         namespaces = _extractFromKey.namespaces;
 
     var namespace = namespaces[namespaces.length - 1];
+
+    // return key on CIMode
+    var lng = options.lng || this.language;
+    var appendNamespaceToCIMode = options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
+    if (lng && lng.toLowerCase() === 'cimode') {
+      if (appendNamespaceToCIMode) {
+        var nsSeparator = options.nsSeparator || this.options.nsSeparator;
+        return namespace + nsSeparator + key;
+      }
+
+      return key;
+    }
 
     // resolve from store
     var res = this.resolve(keys, options);
@@ -1886,6 +1894,7 @@ function get$1() {
     returnedObjectHandler: function returnedObjectHandler() {}, // function(key, value, options) triggered if key returns object but returnObjects is set to false
     parseMissingKeyHandler: false, // function(key) parsed a key that was not found in t() before returning
     appendNamespaceToMissingKey: false,
+    appendNamespaceToCIMode: false,
     overloadTranslationOptionHandler: function overloadTranslationOptionHandler(args) {
       return { defaultValue: args[1] };
     },
@@ -2044,8 +2053,8 @@ var I18n = function (_EventEmitter) {
     var load = function load() {
       _this2.changeLanguage(_this2.options.lng, function (err, t) {
         _this2.isInitialized = true;
-        _this2.emit('initialized', _this2.options);
         _this2.logger.log('initialized', _this2.options);
+        _this2.emit('initialized', _this2.options);
 
         callback(err, t);
       });
