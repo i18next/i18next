@@ -29,13 +29,15 @@ class EventEmitter{
 
 	emit(event, ...args) {
 		if (this.observers[event]) {
-			this.observers[event].forEach(function(observer) {
+			const cloned = [].concat(this.observers[event]);
+			cloned.forEach(function(observer) {
 				observer(...args);
 			});
 		}
 
 		if (this.observers['*']) {
-			this.observers['*'].forEach(function(observer) {
+			const cloned = [].concat(this.observers['*']);
+			cloned.forEach(function(observer) {
 				observer.apply(observer, [event].concat(...args));
 			});
 		}

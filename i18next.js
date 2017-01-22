@@ -398,13 +398,15 @@ var EventEmitter = function () {
 		}
 
 		if (this.observers[event]) {
-			this.observers[event].forEach(function (observer) {
+			var cloned = [].concat(this.observers[event]);
+			cloned.forEach(function (observer) {
 				observer.apply(undefined, args);
 			});
 		}
 
 		if (this.observers['*']) {
-			this.observers['*'].forEach(function (observer) {
+			var _cloned = [].concat(this.observers['*']);
+			_cloned.forEach(function (observer) {
 				var _ref;
 
 				observer.apply(observer, (_ref = [event]).concat.apply(_ref, args));

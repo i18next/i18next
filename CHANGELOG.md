@@ -1,3 +1,6 @@
+### 6.0.1
+- fixes issue in event emitter, assert all emitters get called even if one called get removed and changes the array index
+
 ### 6.0.0
 - Return namespace in cimode with appendNamespaceToCIMode option (default now will only return key without namespace - independent of call to t function) [#863](https://github.com/i18next/i18next/issues/863)
 
