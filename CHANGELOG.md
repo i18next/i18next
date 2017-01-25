@@ -1,3 +1,6 @@
+### 6.0.2
+- fixes init flow of clone
+
 ### 6.0.1
 - fixes issue in event emitter, assert all emitters get called even if one called get removed and changes the array index
 

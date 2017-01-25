@@ -22,7 +22,7 @@ class I18n extends EventEmitter {
     this.logger = baseLogger;
     this.modules = {};
 
-    if (callback && !this.isInitialized) this.init(options, callback);
+    if (callback && !this.isInitialized && !options.isClone) this.init(options, callback);
   }
 
   init(options, callback) {
@@ -277,7 +277,8 @@ class I18n extends EventEmitter {
   }
 
   cloneInstance(options = {}, callback = noop) {
-    let clone = new I18n({...options, ...this.options, ...{isClone: true}}, callback);
+    const mergedOptions = {...options, ...this.options, ...{isClone: true}};
+    let clone = new I18n(mergedOptions, callback);
     const membersToCopy = ['store', 'services', 'language'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];
@@ -286,6 +287,7 @@ class I18n extends EventEmitter {
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);
     });
+    clone.init(mergedOptions, callback);
 
     return clone;
   }
