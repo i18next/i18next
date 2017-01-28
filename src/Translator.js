@@ -89,12 +89,16 @@ class Translator extends EventEmitter {
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(key, res, options): `key '${key} (${this.language})' returned an object instead of string.`;
       }
 
-      let copy = (resType === '[object Array]') ? [] : {}; // apply child translation on a copy
+      // if we got a separator we loop over children - else we just return object as is
+      // as having it set to false means no hierarchy so no lookup for nested values
+      if (options.keySeparator || this.options.keySeparator) {
+        let copy = (resType === '[object Array]') ? [] : {}; // apply child translation on a copy
 
-      for (let m in res) {
-        copy[m] = this.translate(`${key}${keySeparator}${m}`, {...{joinArrays: false, ns: namespaces}, ...options});
+        for (let m in res) {
+          copy[m] = this.translate(`${key}${keySeparator}${m}`, {...{joinArrays: false, ns: namespaces}, ...options});
+        }
+        res = copy;
       }
-      res = copy;
     }
     // array special treatment
     else if (joinArrays && resType === '[object Array]') {

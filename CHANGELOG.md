@@ -1,3 +1,6 @@
+### 6.0.3
+- do not loop over objectTree if keySeparator is set to false
+
 ### 6.0.2
 - fixes init flow of clone
 
