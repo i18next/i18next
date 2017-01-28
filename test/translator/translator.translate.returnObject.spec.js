@@ -38,6 +38,7 @@ describe('Translator', () => {
         pluralResolver: new PluralResolver(lu, {prepend: '_'}),
         interpolator: new Interpolator()
       }, {
+        keySeparator: '.',
         returnObjects: true,
         ns: ['common', 'special'],
         defaultNS: 'common',

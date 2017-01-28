@@ -39,8 +39,8 @@ export function convertAPIOptions(options) {
   options.parseMissingKeyHandler = options.parseMissingKey;
   options.appendNamespaceToMissingKey = true;
 
-  options.nsSeparator = options.nsseparator;
-  options.keySeparator = options.keyseparator;
+  options.nsSeparator = options.nsseparator || ':';
+  options.keySeparator = options.keyseparator || '.';
 
   if (options.shortcutFunction === 'sprintf') {
     options.overloadTranslationOptionHandler = function(args) {
