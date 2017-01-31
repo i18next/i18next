@@ -15,9 +15,8 @@ class LanguageUtil {
   getLanguagePartFromCode(code) {
     if (code.indexOf('-') < 0) return code;
 
-    let specialCases = ['NB-NO', 'NN-NO', 'nb-NO', 'nn-NO', 'nb-no', 'nn-no'];
     let p = code.split('-');
-    return this.formatLanguageCode((specialCases.indexOf(code) > -1) ? p[1].toLowerCase() : p[0]);
+    return this.formatLanguageCode(p[0]);
   }
 
   getScriptPartFromCode(code) {
@@ -32,9 +31,8 @@ class LanguageUtil {
   getLanguagePartFromCode(code) {
     if (code.indexOf('-') < 0) return code;
 
-    let specialCases = ['NB-NO', 'NN-NO', 'nb-NO', 'nn-NO', 'nb-no', 'nn-no'];
     let p = code.split('-');
-    return this.formatLanguageCode((specialCases.indexOf(code) > -1) ? p[1].toLowerCase() : p[0]);
+    return this.formatLanguageCode(p[0]);
   }
 
   formatLanguageCode(code) {
