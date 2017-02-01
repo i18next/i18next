@@ -1,3 +1,6 @@
+### 6.1.1
+- patching same separators to lookup if the ns exists - else guess the first item is just part of the key and not meant as a namespace
+
 ### 6.1.0
 - you now can use same nsSeparator and keySeparator (eg. use a dot for both)
 

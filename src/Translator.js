@@ -29,12 +29,13 @@ class Translator extends EventEmitter {
   extractFromKey(key, options) {
     let nsSeparator = options.nsSeparator || this.options.nsSeparator
     if (nsSeparator === undefined ) nsSeparator = ':';
+    const keySeparator = options.keySeparator || this.options.keySeparator || '.';
 
     let namespaces = options.ns || this.options.defaultNS;
     if (nsSeparator && key.indexOf(nsSeparator) > -1) {
       const parts = key.split(nsSeparator);
-      namespaces = parts.shift();
-      key = parts.join(options.keySeparator || this.options.keySeparator || '.');
+      if (nsSeparator !== keySeparator || (nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]))) namespaces = parts.shift();
+      key = parts.join(keySeparator);
     }
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
