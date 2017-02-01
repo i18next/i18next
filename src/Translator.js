@@ -33,8 +33,8 @@ class Translator extends EventEmitter {
     let namespaces = options.ns || this.options.defaultNS;
     if (nsSeparator && key.indexOf(nsSeparator) > -1) {
       const parts = key.split(nsSeparator);
-      namespaces = parts[0];
-      key = parts[1];
+      namespaces = parts.shift();
+      key = parts.join(options.keySeparator || this.options.keySeparator || '.');
     }
     if (typeof namespaces === 'string') namespaces = [namespaces];
 

@@ -1,3 +1,6 @@
+### 6.1.0
+- you now can use same nsSeparator and keySeparator (eg. use a dot for both)
+
 ### 6.0.3
 - do not loop over objectTree if keySeparator is set to false
 
