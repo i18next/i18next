@@ -1,3 +1,6 @@
+### 6.1.2
+- fixes fix in 6.1.1
+
 ### 6.1.1
 - patching same separators to lookup if the ns exists - else guess the first item is just part of the key and not meant as a namespace
 
