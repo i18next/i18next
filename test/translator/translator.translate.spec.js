@@ -13,7 +13,10 @@ describe('Translator', () => {
       const rs = new ResourceStore({
         en: {
           translation: {
-            test: 'test_en'
+            test: 'test_en',
+            deep: {
+              test: 'deep_en'
+            }
           }
         },
         de: {
@@ -29,6 +32,8 @@ describe('Translator', () => {
         pluralResolver: new PluralResolver(lu, {prepend: '_'}),
         interpolator: new Interpolator()
       }, {
+        defaultNS: 'translation',
+        ns: 'translation',
         interpolation: {
           interpolateResult: true,
           interpolateDefaultValue: true,
@@ -44,7 +49,10 @@ describe('Translator', () => {
       {args: ['translation:test', { lngs: ['de'] }], expected: 'test_de'},
       {args: ['translation:test', { lng: 'de' }], expected: 'test_de'},
       {args: ['translation:test', { lng: 'fr' }], expected: 'test_en'},
-      {args: ['translation:test', { lng: 'en-US' }], expected: 'test_en'}
+      {args: ['translation:test', { lng: 'en-US' }], expected: 'test_en'},
+      {args: ['translation.test', { lng: 'en-US', nsSeparator: '.' }], expected: 'test_en'},
+      {args: ['translation.deep.test', { lng: 'en-US', nsSeparator: '.' }], expected: 'deep_en'},
+      {args: ['deep.test', { lng: 'en-US', nsSeparator: '.' }], expected: 'deep_en'}
     ];
 
     tests.forEach((test) => {
