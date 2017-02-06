@@ -20,7 +20,7 @@ const dest = {
 }[format];
 
 export default {
-  entry: 'src/index.js',
+  entry: 'src/i18next.js',
   format,
   plugins: [
     babel(babelOptions),

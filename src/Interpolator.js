@@ -94,7 +94,7 @@ class Interpolator {
   nest(str, fc, options = {}) {
     let match, value;
 
-    let clonedOptions = JSON.parse(JSON.stringify(options));
+    let clonedOptions = { ...options };
     clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
 
     function regexSafe(val) {

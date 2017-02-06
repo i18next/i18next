@@ -16,7 +16,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['fr', 'en']], expected: ['de', 'fr', 'en']},
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['de-CH'], expected: ['de-CH', 'de', 'en']},
-      {args: ['nb-NO'], expected: ['nb-NO', 'no', 'en']},
+      {args: ['nb-NO'], expected: ['nb-NO', 'nb', 'en']},
       {args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en']}
     ];
 
@@ -46,7 +46,7 @@ describe('LanguageUtils', () => {
       {args: ['en'], expected: ['en']},
       {args: ['de'], expected: ['de', 'de-CH', 'en']},
       {args: ['de-CH'], expected: ['de-CH', 'de', 'fr', 'it', 'en']},
-      {args: ['nb-NO'], expected: ['nb-NO', 'no', 'en']},
+      {args: ['nb-NO'], expected: ['nb-NO', 'nb', 'en']},
       {args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en']}
     ];
 
@@ -72,7 +72,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['FR', 'en']], expected: ['de', 'fr', 'en']},
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['DE-CH'], expected: ['de-CH', 'de', 'en']},
-      {args: ['NB-NO'], expected: ['nb-NO', 'no', 'en']},
+      {args: ['NB-NO'], expected: ['nb-NO', 'nb', 'en']},
       {args: ['ZH-HANT-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en']}
     ];
 
@@ -97,7 +97,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['FR', 'en']], expected: ['de', 'fr', 'en']},
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['DE-CH'], expected: ['de-ch', 'de', 'en']},
-      {args: ['nb-NO'], expected: ['nb-no', 'no', 'en']},
+      {args: ['nb-NO'], expected: ['nb-no', 'nb', 'en']},
       {args: ['zh-Hant-MO'], expected: ['zh-hant-mo', 'zh-hant', 'zh', 'en']}
     ];
 
@@ -122,7 +122,7 @@ describe('LanguageUtils', () => {
       {args: ['de', ['fr', 'en']], expected: ['de', 'fr', 'en']},
       {args: ['de', ['fr', 'de']], expected: ['de', 'fr']},
       {args: ['de-CH'], expected: ['de', 'en']},
-      {args: ['nb-NO'], expected: ['no', 'en']},
+      {args: ['nb-NO'], expected: ['nb', 'en']},
       {args: ['zh-Hant-MO'], expected: ['zh', 'en']}
     ];
 

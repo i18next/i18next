@@ -1,3 +1,17 @@
+### 7.0.0
+- [BREAKING] Removed special cases for norwegian which resolved nb-NO to nb-NO, no will now resolve to nb-NO, nb [#870](https://github.com/i18next/i18next/issues/870) using norwegian you could migrate to old behaviour like:
+
+    fallbackLng: {
+      'nb': ['no', 'en'],
+      'nn': ['no', 'en'],
+      'default': ['en']
+    }
+
+- adding exports for named import (destruction es6) [#873](https://github.com/i18next/i18next/issues/873)
+- change entry point for umd build to /src/i18next to avoid mixed export
+- replace cloning in interpolation nesting to use object assign instead of json.stringify/parse so circular structures can be used [#875](https://github.com/i18next/i18next/issues/875)
+- update all build dependencies
+
 ### 6.1.2
 - fixes fix in 6.1.1
 
