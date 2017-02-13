@@ -12,13 +12,6 @@ class LanguageUtil {
     this.logger = baseLogger.create('languageUtils');
   }
 
-  getLanguagePartFromCode(code) {
-    if (code.indexOf('-') < 0) return code;
-
-    let p = code.split('-');
-    return this.formatLanguageCode(p[0]);
-  }
-
   getScriptPartFromCode(code) {
     if (code.indexOf('-') < 0) return null;
 
