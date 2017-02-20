@@ -1,3 +1,6 @@
+### upcoming
+- check for having a lng in append when searching locals to load on loadResources - avoid error on express middleware
+
 ### 7.0.0
 - [BREAKING] Removed special cases for norwegian which resolved nb-NO to nb-NO, no will now resolve to nb-NO, nb [#870](https://github.com/i18next/i18next/issues/870) using norwegian you could migrate to old behaviour like:
 
