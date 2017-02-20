@@ -169,7 +169,7 @@ class I18n extends EventEmitter {
       this.modules.cache = module;
     }
 
-    if (module.type === 'logger' || (module.log && module.warn && module.warn)) {
+    if (module.type === 'logger' || (module.log && module.warn && module.error)) {
       this.modules.logger = module;
     }
 
