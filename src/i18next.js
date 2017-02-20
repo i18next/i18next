@@ -131,6 +131,7 @@ class I18n extends EventEmitter {
       let toLoad = [];
 
       let append = lng => {
+        if (!lng) return;
         let lngs = this.services.languageUtils.toResolveHierarchy(lng);
         lngs.forEach(l => {
           if (toLoad.indexOf(l) < 0) toLoad.push(l);
