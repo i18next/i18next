@@ -13,7 +13,7 @@ class LanguageUtil {
   }
 
   getScriptPartFromCode(code) {
-    if (code.indexOf('-') < 0) return null;
+    if (!code || code.indexOf('-') < 0) return null;
 
     let p = code.split('-');
     if (p.length === 2) return null;
@@ -22,7 +22,7 @@ class LanguageUtil {
   }
 
   getLanguagePartFromCode(code) {
-    if (code.indexOf('-') < 0) return code;
+    if (!code || code.indexOf('-') < 0) return code;
 
     let p = code.split('-');
     return this.formatLanguageCode(p[0]);
@@ -69,6 +69,8 @@ class LanguageUtil {
     if (!fallbacks) return [];
     if (typeof fallbacks === 'string') fallbacks = [fallbacks];
     if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
+
+    if (!code) return fallbacks.default || [];
 
     // asume we have an object defining fallbacks
     let found = fallbacks[code];

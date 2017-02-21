@@ -1,4 +1,5 @@
-### upcoming
+### 7.0.1
+- fix issue in fallback lng detection if no code was detected
 - check for having a lng in append when searching locals to load on loadResources - avoid error on express middleware
 
 ### 7.0.0
