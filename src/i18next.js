@@ -20,7 +20,7 @@ class I18n extends EventEmitter {
     this.options = transformOptions(options);
     this.services = {};
     this.logger = baseLogger;
-    this.modules = {};
+    this.modules = { external: [] };
 
     if (callback && !this.isInitialized && !options.isClone) this.init(options, callback);
   }
@@ -88,6 +88,10 @@ class I18n extends EventEmitter {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
         s.languageDetector.init(s, this.options.detection, this.options);
       }
+
+      this.modules.external.forEach((m) => {
+        if (m.init) m.init(this);
+      });
 
       this.translator = new Translator(this.services, this.options);
       // pipe events from translator
@@ -179,6 +183,10 @@ class I18n extends EventEmitter {
 
     if (module.type === 'postProcessor') {
       postProcessor.addPostProcessor(module);
+    }
+
+    if (!module.type) {
+      this.modules.external.push(module);
     }
 
     return this;
