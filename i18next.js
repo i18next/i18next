@@ -1981,7 +1981,7 @@ var I18n = function (_EventEmitter) {
       postProcessor.addPostProcessor(module);
     }
 
-    if (module.type === '3rdPary') {
+    if (module.type === '3rdParty') {
       this.modules.external.push(module);
     }
 
