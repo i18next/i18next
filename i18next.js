@@ -1869,10 +1869,6 @@ var I18n = function (_EventEmitter) {
         s.languageDetector.init(s, this.options.detection, this.options);
       }
 
-      this.modules.external.forEach(function (m) {
-        if (m.init) m.init(_this2);
-      });
-
       this.translator = new Translator(this.services, this.options);
       // pipe events from translator
       this.translator.on('*', function (event) {
@@ -1881,6 +1877,10 @@ var I18n = function (_EventEmitter) {
         }
 
         _this2.emit.apply(_this2, [event].concat(args));
+      });
+
+      this.modules.external.forEach(function (m) {
+        if (m.init) m.init(_this2);
       });
     }
 
@@ -1981,7 +1981,7 @@ var I18n = function (_EventEmitter) {
       postProcessor.addPostProcessor(module);
     }
 
-    if (!module.type) {
+    if (module.type === '3rdPary') {
       this.modules.external.push(module);
     }
 

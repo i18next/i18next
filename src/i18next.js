@@ -89,14 +89,14 @@ class I18n extends EventEmitter {
         s.languageDetector.init(s, this.options.detection, this.options);
       }
 
-      this.modules.external.forEach((m) => {
-        if (m.init) m.init(this);
-      });
-
       this.translator = new Translator(this.services, this.options);
       // pipe events from translator
       this.translator.on('*', (event, ...args) => {
         this.emit(event, ...args);
+      });
+
+      this.modules.external.forEach((m) => {
+        if (m.init) m.init(this);
       });
     }
 
@@ -185,7 +185,7 @@ class I18n extends EventEmitter {
       postProcessor.addPostProcessor(module);
     }
 
-    if (!module.type) {
+    if (module.type === '3rdPary') {
       this.modules.external.push(module);
     }
 
