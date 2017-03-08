@@ -131,6 +131,31 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - with formatter using a special formatSeparator', () => {
+    let ip;
+
+    before(() => {
+      ip = new Interpolator({
+        interpolation: {
+          formatSeparator: '|',
+          format: function(value, format, lng) {
+            if (format === 'uppercase') return value.toUpperCase();
+            return value;
+          }
+        }
+      });
+    });
+
+    var tests = [
+      {args: ['test {{test | uppercase}}', {test: 'up'}], expected: 'test UP'}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 
   describe('interpolate() - unescape', () => {
     var ip;
