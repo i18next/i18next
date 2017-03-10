@@ -1,3 +1,6 @@
+### 7.1.2
+- remove regex escape from format separators [#896](https://github.com/i18next/i18next/pull/896)
+
 ### 7.1.1
 - change to named plugins for 3rd party - just calling init
 
