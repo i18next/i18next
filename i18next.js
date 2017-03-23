@@ -752,7 +752,7 @@ var Translator = function (_EventEmitter) {
         var copy$$1 = resType === '[object Array]' ? [] : {}; // apply child translation on a copy
 
         for (var m in res) {
-          copy$$1[m] = this.translate('' + key + keySeparator + m, _extends({ joinArrays: false, ns: namespaces }, options));
+          copy$$1[m] = this.translate('' + key + keySeparator + m, _extends({}, options, { joinArrays: false, ns: namespaces }));
         }
         res = copy$$1;
       }
