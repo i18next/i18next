@@ -96,7 +96,9 @@ class Translator extends EventEmitter {
         let copy = (resType === '[object Array]') ? [] : {}; // apply child translation on a copy
 
         for (let m in res) {
-          copy[m] = this.translate(`${key}${keySeparator}${m}`, {...options, ...{joinArrays: false, ns: namespaces}});
+          if(res.hasOwnProperty(m)) {
+            copy[m] = this.translate(`${key}${keySeparator}${m}`, {...options, ...{joinArrays: false, ns: namespaces}});
+          }
         }
         res = copy;
       }
