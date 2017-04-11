@@ -13,6 +13,7 @@ export function get() {
     load: 'all', // | currentOnly | languageOnly
     preload: false, // array with preload languages
 
+    simplifyPluralSuffix: true,
     keySeparator: '.',
     nsSeparator: ':',
     pluralSeparator: '_',

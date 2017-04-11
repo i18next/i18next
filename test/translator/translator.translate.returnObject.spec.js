@@ -35,7 +35,7 @@ describe('Translator', () => {
       t = new Translator({
         resourceStore: rs,
         languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_'}),
+        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
         interpolator: new Interpolator()
       }, {
         keySeparator: '.',

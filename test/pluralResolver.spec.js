@@ -8,7 +8,7 @@ describe('PluralResolver', () => {
 
     before(() => {
       let lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu);
+      pr = new PluralResolver(lu, { simplifyPluralSuffix: true });
     });
 
     var tests = [
@@ -33,7 +33,7 @@ describe('PluralResolver', () => {
 
     before(() => {
       cu = new LanguageUtils({ fallbackCode: 'en' });
-      pr = new PluralResolver(cu);
+      pr = new PluralResolver(cu, { simplifyPluralSuffix: true });
     });
 
     var tests = [

@@ -1166,7 +1166,7 @@ var PluralResolver = function () {
       var suffix = rule.numbers[idx];
 
       // special treatment for lngs only having singular and plural
-      if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
         if (suffix === 2) {
           suffix = 'plural';
         } else if (suffix === 1) {
@@ -1697,6 +1697,7 @@ function get$1() {
     load: 'all', // | currentOnly | languageOnly
     preload: false, // array with preload languages
 
+    simplifyPluralSuffix: true,
     keySeparator: '.',
     nsSeparator: ':',
     pluralSeparator: '_',
@@ -1770,7 +1771,15 @@ var I18n = function (_EventEmitter) {
     _this.logger = baseLogger;
     _this.modules = { external: [] };
 
-    if (callback && !_this.isInitialized && !options.isClone) _this.init(options, callback);
+    if (callback && !_this.isInitialized && !options.isClone) {
+      var _ret;
+
+      // https://github.com/i18next/i18next/issues/879
+      if (!_this.options.initImmediate) return _ret = _this.init(options, callback), possibleConstructorReturn(_this, _ret);
+      setTimeout(function () {
+        _this.init(options, callback);
+      }, 0);
+    }
     return _this;
   }
 
@@ -1816,7 +1825,7 @@ var I18n = function (_EventEmitter) {
         s.cacheConnector.save();
       });
       s.languageUtils = lu;
-      s.pluralResolver = new PluralResolver(lu, { prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON });
+      s.pluralResolver = new PluralResolver(lu, { prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix });
       s.interpolator = new Interpolator(this.options);
 
       s.backendConnector = new Connector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
@@ -1911,11 +1920,19 @@ var I18n = function (_EventEmitter) {
         });
       };
 
-      append(this.language);
+      if (!this.language) {
+        // at least load fallbacks in this case
+        var fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+        fallbacks.forEach(function (l) {
+          return append(l);
+        });
+      } else {
+        append(this.language);
+      }
 
       if (this.options.preload) {
         this.options.preload.forEach(function (l) {
-          append(l);
+          return append(l);
         });
       }
 

@@ -22,7 +22,13 @@ class I18n extends EventEmitter {
     this.logger = baseLogger;
     this.modules = { external: [] };
 
-    if (callback && !this.isInitialized && !options.isClone) this.init(options, callback);
+    if (callback && !this.isInitialized && !options.isClone) {
+      // https://github.com/i18next/i18next/issues/879
+      if (!this.options.initImmediate) return this.init(options, callback);
+      setTimeout(() => {
+        this.init(options, callback);
+      }, 0);
+    }
   }
 
   init(options, callback) {
@@ -65,7 +71,7 @@ class I18n extends EventEmitter {
         s.cacheConnector.save();
       });
       s.languageUtils = lu;
-      s.pluralResolver = new PluralResolver(lu, {prepend: this.options.pluralSeparator, compatibilityJSON:  this.options.compatibilityJSON});
+      s.pluralResolver = new PluralResolver(lu, {prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix});
       s.interpolator = new Interpolator(this.options);
 
       s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
@@ -142,12 +148,16 @@ class I18n extends EventEmitter {
         });
       };
 
-      append(this.language);
+      if (!this.language) {
+        // at least load fallbacks in this case
+        const fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+        fallbacks.forEach(l => append(l));
+      } else {
+        append(this.language);
+      }
 
       if (this.options.preload) {
-        this.options.preload.forEach(l => {
-          append(l);
-        });
+        this.options.preload.forEach(l => append(l));
       }
 
       this.services.cacheConnector.load(toLoad, this.options.ns, () => {

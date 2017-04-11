@@ -1,3 +1,8 @@
+### 7.2.0
+- new init option simplifyPluralSuffix - setting it to false will treat all plurals using suffix numbers even for locals only having singular and plural
+- even if no lng set or detected at least load the fallback languages
+- delay init call on createInstance if not set initImmediate to false [#879](https://github.com/i18next/i18next/issues/879)
+
 ### 7.1.3
 - fixes issue in returnObject tree called with options including ns: [react-i18next #240](https://github.com/i18next/react-i18next/issues/240)
 

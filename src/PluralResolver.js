@@ -108,7 +108,7 @@ class PluralResolver {
       let suffix = rule.numbers[idx];
 
       // special treatment for lngs only having singular and plural
-      if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
         if (suffix === 2) {
           suffix = 'plural';
         } else if (suffix === 1) {
