@@ -1,3 +1,6 @@
+### 7.2.1
+- fixes iterating over object's own properties [#904](https://github.com/i18next/i18next/pull/904)
+
 ### 7.2.0
 - new init option simplifyPluralSuffix - setting it to false will treat all plurals using suffix numbers even for locals only having singular and plural
 - even if no lng set or detected at least load the fallback languages
