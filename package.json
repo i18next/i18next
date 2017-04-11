@@ -1,6 +1,6 @@
 {
   "name": "i18next",
-  "version": "7.1.3",
+  "version": "7.2.0",
   "description": "i18next internationalization framework",
   "main": "./index.js",
   "jsnext:main": "dist/es/index.js",
