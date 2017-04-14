@@ -1,3 +1,6 @@
+### 7.2.3
+- rebuild seems we had a mistake in pushing latest build
+
 ### 7.2.2
 - fixes issue in accepting string as a result of "nested" lookup [PR909](https://github.com/i18next/i18next/pull/909)
 
