@@ -1,3 +1,6 @@
+### 7.2.2
+- fixes issue in accepting string as a result of "nested" lookup [PR909](https://github.com/i18next/i18next/pull/909)
+
 ### 7.2.1
 - fixes iterating over object's own properties [#904](https://github.com/i18next/i18next/pull/904)
 
