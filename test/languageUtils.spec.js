@@ -187,15 +187,15 @@ describe('LanguageUtils', () => {
     var cu;
 
     before(() => {
-      cu = new LanguageUtils({ fallbackLng: ['en'], whitelist: ['de', 'en', 'zh', 'zh-HK'] , nonExplicitWhitelist: true});
+      cu = new LanguageUtils({ fallbackLng: ['en'], whitelist: ['de', 'en', 'zh'] , nonExplicitWhitelist: true});
     });
 
     var tests = [
       {args: ['en'], expected: ['en']},
       {args: ['de'], expected: ['de', 'en']},
-      {args: ['de-AT'], expected: ['de', 'en']},
+      {args: ['de-AT'], expected: ['de-AT', 'de', 'en']},
       {args: ['zh-HK'], expected: ['zh-HK', 'zh', 'en']},
-      {args: ['zh-CN'], expected: ['zh', 'en']}
+      {args: ['zh-CN'], expected: ['zh-CN', 'zh', 'en']}
     ];
 
     tests.forEach((test) => {

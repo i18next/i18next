@@ -1,3 +1,6 @@
+### 8.0.0
+- nonExplicitWhitelist flag now not only gets considered on a fallback lng but also on user language. Eg. userlng 'de-AT' and whitelist ['de'] will now let de-AT pass as whitelisted if nonExplicitWhitelist is set true.
+
 ### 7.2.3
 - rebuild seems we had a mistake in pushing latest build
 

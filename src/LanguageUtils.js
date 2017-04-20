@@ -58,11 +58,11 @@ class LanguageUtil {
     }
   }
 
-  isWhitelisted(code, exactMatch) {
-     if (this.options.load === 'languageOnly' || (this.options.nonExplicitWhitelist && !exactMatch)) {
-            code = this.getLanguagePartFromCode(code);
-         }
-     return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1 ? true : false;
+  isWhitelisted(code) {
+    if (this.options.load === 'languageOnly' || this.options.nonExplicitWhitelist) {
+      code = this.getLanguagePartFromCode(code);
+    }
+    return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1;
   }
 
   getFallbackCodes(fallbacks, code) {
@@ -85,9 +85,9 @@ class LanguageUtil {
     const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
 
     let codes = [];
-    let addCode = (code, exactMatch = false) => {
+    let addCode = (code) => {
       if (!code) return;
-      if (this.isWhitelisted(code, exactMatch)) {
+      if (this.isWhitelisted(code)) {
         codes.push(code);
       } else {
         this.logger.warn('rejecting non-whitelisted language code: ' + code);
@@ -95,8 +95,8 @@ class LanguageUtil {
     };
 
     if (typeof code === 'string' && code.indexOf('-') > -1) {
-      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code), true);
-      if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code), true);
+      if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
+      if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code));
       if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
     } else if (typeof code === 'string') {
       addCode(this.formatLanguageCode(code));
