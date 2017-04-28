@@ -45,6 +45,9 @@ describe('Translator', () => {
       { args: ['key2'], expected: 'It is: hello world' },
       { args: ['key3', { val: '$t(key1)' }], expected: 'It is: hello world' },
 
+      // disable nesting while interpolation
+      { args: ['key3', { val: '$t(key1)', nest: false }], expected: 'It is: $t(key1)' },
+
       // context with pluralization
       {args: ['test', { context: 'unknown', count: 1 }], expected: 'test_en'},
       {args: ['test', { context: 'unknown', count: 2 }], expected: 'tests_en'},
