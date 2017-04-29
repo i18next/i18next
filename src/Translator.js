@@ -173,7 +173,9 @@ class Translator extends EventEmitter {
     res = this.interpolator.interpolate(res, data, this.language);
 
     // nesting
-    res = this.interpolator.nest(res, (...args) => { return this.translate.apply(this, args); }, options);
+    if (options.nest !== false) {
+      res = this.interpolator.nest(res, (...args) => { return this.translate.apply(this, args); }, options);
+    }
 
     if (options.interpolation) this.interpolator.reset();
 
