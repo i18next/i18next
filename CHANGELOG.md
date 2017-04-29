@@ -1,3 +1,7 @@
+### 8.1.0
+- option to disable nesting by calling `i18next.t('key', { nest: false })` [PR920](https://github.com/i18next/i18next/pull/920)
+- fixes passing lng from options to formatter function if available
+
 ### 8.0.0
 - nonExplicitWhitelist flag now not only gets considered on a fallback lng but also on user language. Eg. userlng 'de-AT' and whitelist ['de'] will now let de-AT pass as whitelisted if nonExplicitWhitelist is set true.
 
