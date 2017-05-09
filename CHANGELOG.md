@@ -1,3 +1,6 @@
+### 8.2.0
+- supports now async language detection - when language detector has member async = true
+
 ### 8.1.0
 - option to disable nesting by calling `i18next.t('key', { nest: false })` [PR920](https://github.com/i18next/i18next/pull/920)
 - fixes passing lng from options to formatter function if available

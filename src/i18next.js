@@ -212,20 +212,28 @@ class I18n extends EventEmitter {
       if (callback) callback(err, (...args) => { return this.t.apply(this, args); });
     };
 
-    if (!lng && this.services.languageDetector) lng = this.services.languageDetector.detect();
+    const setLng = (l) => {
+      if (l) {
+        this.language = l;
+        this.languages = this.services.languageUtils.toResolveHierarchy(l);
 
-    if (lng) {
-      this.language = lng;
-      this.languages = this.services.languageUtils.toResolveHierarchy(lng);
+        this.translator.changeLanguage(l);
 
-      this.translator.changeLanguage(lng);
+        if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(l);
+      }
 
-      if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(lng);
+      this.loadResources((err) => {
+        done(err);
+      });
+    };
+
+    if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
+      setLng(this.services.languageDetector.detect());
+    } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
+      this.services.languageDetector.detect(l => setLng);
+    } else {
+      setLng(lng);
     }
-
-    this.loadResources((err) => {
-      done(err);
-    });
   }
 
   getFixedT(lng, ns) {
