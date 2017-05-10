@@ -1,3 +1,6 @@
+### 8.2.1
+- fixes issue in async lng detection
+
 ### 8.2.0
 - supports now async language detection - when language detector has member async = true
 

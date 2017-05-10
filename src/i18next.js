@@ -230,7 +230,7 @@ class I18n extends EventEmitter {
     if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
       setLng(this.services.languageDetector.detect());
     } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
-      this.services.languageDetector.detect(l => setLng);
+      this.services.languageDetector.detect(setLng);
     } else {
       setLng(lng);
     }
