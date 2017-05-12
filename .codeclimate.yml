@@ -18,3 +18,8 @@ exclude_paths:
 - test/
 - coverage/
 - dist/
+- "i18next.js"
+- "i18next.min.js"
+- "rollup.config.js"
+- "karma.conf.js"
+- "karma.backward.conf.js"
