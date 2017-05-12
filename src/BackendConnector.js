@@ -163,20 +163,8 @@ class Connector extends EventEmitter {
         });
       });
     } else {
-      // load one by one
-      const loadOne = (name) => {
-        const [lng, ns] = name.split('|');
-
-        this.read(lng, ns, 'read', null, null, (err, data) => {
-          if (err) this.logger.warn(`loading namespace ${ns} for language ${lng} failed`, err);
-          if (!err && data) this.logger.log(`successfully loaded namespace ${ns} for language ${lng}`, data);
-
-          this.loaded(name, err, data);
-        });
-      };
-
       toLoad.toLoad.forEach((name) => {
-        loadOne.call(this, name);
+        this.loadOne(name);
       });
     }
   }
@@ -210,26 +198,24 @@ class Connector extends EventEmitter {
         });
       });
     } else {
-      // load one by one
-      const reloadOne = (name) => {
-        const [lng, ns] = name.split('|');
-
-        this.read(lng, ns, 'read', null, null, (err, data) => {
-          if (err) this.logger.warn(`reloading namespace ${ns} for language ${lng} failed`, err);
-          if (!err && data) this.logger.log(`successfully reloaded namespace ${ns} for language ${lng}`, data);
-
-          this.loaded(name, err, data);
-        });
-      };
-
       languages.forEach((l) => {
         namespaces.forEach((n) => {
-          reloadOne.call(this, `${l}|${n}`);
+          this.loadOne(`${l}|${n}`, 're');
         });
       });
     }
   }
 
+  loadOne(name, prefix = '') {
+    const [lng, ns] = name.split('|');
+
+    this.read(lng, ns, 'read', null, null, (err, data) => {
+      if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);
+      if (!err && data) this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`, data);
+
+      this.loaded(name, err, data);
+    });
+  }
 
   saveMissing(languages, namespace, key, fallbackValue) {
     if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
