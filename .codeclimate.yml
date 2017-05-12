@@ -14,10 +14,7 @@ engines:
       - javascript
 ratings:
   paths:
-  - app/**
-  - lib/**
-  - "**.rb"
-  - "**.go"
+  - src/**
 exclude_paths:
 - spec/**/*
 - "**/vendor/**/*"
