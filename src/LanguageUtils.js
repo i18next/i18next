@@ -15,7 +15,7 @@ class LanguageUtil {
   getScriptPartFromCode(code) {
     if (!code || code.indexOf('-') < 0) return null;
 
-    let p = code.split('-');
+    const p = code.split('-');
     if (p.length === 2) return null;
     p.pop();
     return this.formatLanguageCode(p.join('-'));
@@ -24,14 +24,14 @@ class LanguageUtil {
   getLanguagePartFromCode(code) {
     if (!code || code.indexOf('-') < 0) return code;
 
-    let p = code.split('-');
+    const p = code.split('-');
     return this.formatLanguageCode(p[0]);
   }
 
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
     if (typeof code === 'string' && code.indexOf('-') > -1) {
-      let specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
+      const specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
       let p = code.split('-');
 
       if (this.options.lowerCaseLng) {
@@ -53,9 +53,9 @@ class LanguageUtil {
       }
 
       return p.join('-');
-    } else {
-      return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
     }
+
+    return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
   }
 
   isWhitelisted(code) {
@@ -84,13 +84,13 @@ class LanguageUtil {
   toResolveHierarchy(code, fallbackCode) {
     const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
 
-    let codes = [];
-    let addCode = (code) => {
-      if (!code) return;
-      if (this.isWhitelisted(code)) {
-        codes.push(code);
+    const codes = [];
+    const addCode = (c) => {
+      if (!c) return;
+      if (this.isWhitelisted(c)) {
+        codes.push(c);
       } else {
-        this.logger.warn('rejecting non-whitelisted language code: ' + code);
+        this.logger.warn(`rejecting non-whitelisted language code: ${c}`);
       }
     };
 
@@ -102,12 +102,12 @@ class LanguageUtil {
       addCode(this.formatLanguageCode(code));
     }
 
-    fallbackCodes.forEach(fc => {
+    fallbackCodes.forEach((fc) => {
       if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
     });
 
     return codes;
   }
-};
+}
 
 export default LanguageUtil;

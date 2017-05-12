@@ -12,7 +12,7 @@ import postProcessor from './postProcessor';
 
 import * as compat from './compatibility/v1';
 
-function noop() {};
+function noop() {}
 
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
@@ -39,16 +39,16 @@ class I18n extends EventEmitter {
     if (!options) options = {};
 
     if (options.compatibilityAPI === 'v1') {
-      this.options = {...getDefaults(), ...transformOptions(compat.convertAPIOptions(options)), ...{}};
+      this.options = { ...getDefaults(), ...transformOptions(compat.convertAPIOptions(options)), ...{} };
     } else if (options.compatibilityJSON === 'v1') {
-      this.options = {...getDefaults(), ...transformOptions(compat.convertJSONOptions(options)), ...{}};
+      this.options = { ...getDefaults(), ...transformOptions(compat.convertJSONOptions(options)), ...{} };
     } else {
-      this.options = {...getDefaults(), ...this.options, ...transformOptions(options)};
+      this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
     }
     if (!callback) callback = noop;
 
     function createClassOnDemand(ClassOrObject) {
-      if (!ClassOrObject) return;
+      if (!ClassOrObject) return null;
       if (typeof ClassOrObject === 'function') return new ClassOrObject();
       return ClassOrObject;
     }
@@ -64,14 +64,14 @@ class I18n extends EventEmitter {
       const lu = new LanguageUtils(this.options);
       this.store = new ResourceStore(this.options.resources, this.options);
 
-      var s = this.services;
+      const s = this.services;
       s.logger = baseLogger;
       s.resourceStore = this.store;
       s.resourceStore.on('added removed', (lng, ns) => {
         s.cacheConnector.save();
       });
       s.languageUtils = lu;
-      s.pluralResolver = new PluralResolver(lu, {prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix});
+      s.pluralResolver = new PluralResolver(lu, { prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix });
       s.interpolator = new Interpolator(this.options);
 
       s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
@@ -108,8 +108,8 @@ class I18n extends EventEmitter {
 
     // append api
     const storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle'];
-    storeApi.forEach(fcName => {
-      this[fcName] = function() { return this.store[fcName].apply(this.store, arguments); };
+    storeApi.forEach((fcName) => {
+      this[fcName] = (...args) => this.store[fcName](...args);
     });
 
     // TODO: COMPATIBILITY remove this
@@ -123,7 +123,7 @@ class I18n extends EventEmitter {
 
         callback(err, t);
       });
-    }
+    };
 
     if (this.options.resources || !this.options.initImmediate) {
       load();
@@ -134,16 +134,17 @@ class I18n extends EventEmitter {
     return this;
   }
 
+  /* eslint consistent-return: 0 */
   loadResources(callback = noop) {
     if (!this.options.resources) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
 
-      let toLoad = [];
+      const toLoad = [];
 
-      let append = lng => {
+      const append = (lng) => {
         if (!lng) return;
-        let lngs = this.services.languageUtils.toResolveHierarchy(lng);
-        lngs.forEach(l => {
+        const lngs = this.services.languageUtils.toResolveHierarchy(lng);
+        lngs.forEach((l) => {
           if (toLoad.indexOf(l) < 0) toLoad.push(l);
         });
       };
@@ -203,13 +204,13 @@ class I18n extends EventEmitter {
   }
 
   changeLanguage(lng, callback) {
-    let done = (err) => {
+    const done = (err) => {
       if (lng) {
         this.emit('languageChanged', lng);
         this.logger.log('languageChanged', lng);
       }
 
-      if (callback) callback(err, (...args) => { return this.t.apply(this, args); });
+      if (callback) callback(err, (...args) => this.t(...args));
     };
 
     const setLng = (l) => {
@@ -237,7 +238,7 @@ class I18n extends EventEmitter {
   }
 
   getFixedT(lng, ns) {
-    let fixedT = (key, opts = {}) => {
+    const fixedT = (key, opts = {}) => {
       const options = { ...opts };
       options.lng = options.lng || fixedT.lng;
       options.ns = options.ns || fixedT.ns;
@@ -248,12 +249,12 @@ class I18n extends EventEmitter {
     return fixedT;
   }
 
-  t() {
-    return this.translator && this.translator.translate.apply(this.translator, arguments);
+  t(...args) {
+    return this.translator && this.translator.translate(...args);
   }
 
-  exists() {
-    return this.translator && this.translator.exists.apply(this.translator, arguments);
+  exists(...args) {
+    return this.translator && this.translator.exists(...args);
   }
 
   setDefaultNamespace(ns) {
@@ -264,7 +265,7 @@ class I18n extends EventEmitter {
     if (!this.options.ns) return callback && callback();
     if (typeof ns === 'string') ns = [ns];
 
-    ns.forEach(n => {
+    ns.forEach((n) => {
       if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
     });
 
@@ -275,9 +276,7 @@ class I18n extends EventEmitter {
     if (typeof lngs === 'string') lngs = [lngs];
     const preloaded = this.options.preload || [];
 
-    const newLngs = lngs.filter(lng => {
-      return preloaded.indexOf(lng) < 0;
-    });
+    const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0);
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) return callback();
 
@@ -299,15 +298,16 @@ class I18n extends EventEmitter {
     return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0 ? 'rtl' : 'ltr';
   }
 
+  /* eslint class-methods-use-this: 0 */
   createInstance(options = {}, callback) {
     return new I18n(options, callback);
   }
 
   cloneInstance(options = {}, callback = noop) {
-    const mergedOptions = {...options, ...this.options, ...{isClone: true}};
-    let clone = new I18n(mergedOptions, callback);
+    const mergedOptions = { ...options, ...this.options, ...{ isClone: true } };
+    const clone = new I18n(mergedOptions, callback);
     const membersToCopy = ['store', 'services', 'language'];
-    membersToCopy.forEach(m => {
+    membersToCopy.forEach((m) => {
       clone[m] = this[m];
     });
     clone.translator = new Translator(clone.services, clone.options);

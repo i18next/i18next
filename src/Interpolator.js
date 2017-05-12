@@ -8,10 +8,11 @@ class Interpolator {
     this.init(options, true);
   }
 
+  /* eslint no-param-reassign: 0 */
   init(options = {}, reset) {
     if (reset) {
       this.options = options;
-      this.format = (options.interpolation && options.interpolation.format) || function(value) {return value};
+      this.format = (options.interpolation && options.interpolation.format) || (value => value);
       this.escape = (options.interpolation && options.interpolation.escape) || utils.escape;
     }
     if (!options.interpolation) options.interpolation = { escapeValue: true };
@@ -41,18 +42,19 @@ class Interpolator {
 
   resetRegExp() {
     // the regexp
-    const regexpStr = this.prefix + '(.+?)' + this.suffix;
+    const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = this.prefix + this.unescapePrefix + '(.+?)' + this.unescapeSuffix + this.suffix;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
-    const nestingRegexpStr = this.nestingPrefix + '(.+?)' + this.nestingSuffix;
+    const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
   }
 
   interpolate(str, data, lng) {
-    let match, value;
+    let match;
+    let value;
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -66,19 +68,20 @@ class Interpolator {
       const f = p.join(this.formatSeparator).trim();
 
       return this.format(utils.getPath(data, k), f, lng);
-    }
+    };
 
     this.resetRegExp();
 
     // unescape if has unescapePrefix/Suffix
-    while(match = this.regexpUnescape.exec(str)) {
-      let value = handleFormat(match[1].trim());
+    /* eslint no-cond-assign: 0 */
+    while (match = this.regexpUnescape.exec(str)) {
+      value = handleFormat(match[1].trim());
       str = str.replace(match[0], value);
       this.regexpUnescape.lastIndex = 0;
     }
 
     // regular escape on demand
-    while(match = this.regexp.exec(str)) {
+    while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
@@ -92,21 +95,18 @@ class Interpolator {
     return str;
   }
 
-  nest(str, fc, options = {}) {
-    let match, value;
+  nest(str, fc, options = {}) {
+    let match;
+    let value;
 
     let clonedOptions = { ...options };
     clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
-
-    function regexSafe(val) {
-      return val.replace(/\$/g, '$$$$');
-    }
 
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
     function handleHasOptions(key) {
       if (key.indexOf(',') < 0) return key;
 
-      let p = key.split(',');
+      const p = key.split(',');
       key = p.shift();
       let optionsString = p.join(',');
       optionsString = this.interpolate(optionsString, clonedOptions);
@@ -122,7 +122,7 @@ class Interpolator {
     }
 
     // regular escape on demand
-    while(match = this.nestingRegexp.exec(str)) {
+    while (match = this.nestingRegexp.exec(str)) {
       value = fc(handleHasOptions.call(this, match[1].trim()), clonedOptions);
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {

@@ -6,7 +6,7 @@ export function get() {
     ns: ['translation'],
     defaultNS: ['translation'],
     fallbackLng: ['dev'],
-    fallbackNS : false, // string or array of namespaces
+    fallbackNS: false, // string or array of namespaces
 
     whitelist: false, // array with whitelisted languages
     nonExplicitWhitelist: false,
@@ -28,17 +28,17 @@ export function get() {
     returnEmptyString: true, // allows empty string value as valid translation
     returnObjects: false,
     joinArrays: false, // or string to join array
-    returnedObjectHandler: function() {}, // function(key, value, options) triggered if key returns object but returnObjects is set to false
+    returnedObjectHandler: () => {}, // function(key, value, options) triggered if key returns object but returnObjects is set to false
     parseMissingKeyHandler: false, // function(key) parsed a key that was not found in t() before returning
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
-    overloadTranslationOptionHandler: function(args) {
+    overloadTranslationOptionHandler: function handle(args) {
       return { defaultValue: args[1] };
     },
 
     interpolation: {
       escapeValue: true,
-      format: function(value, format, lng) { return value },
+      format: (value, format, lng) => value,
       prefix: '{{',
       suffix: '}}',
       formatSeparator: ',',
@@ -56,6 +56,7 @@ export function get() {
   };
 }
 
+/* eslint no-param-reassign: 0 */
 export function transformOptions(options) {
   // create namespace object if namespace is passed in as string
   if (typeof options.ns === 'string') options.ns = [options.ns];

@@ -1,10 +1,11 @@
 export function makeString(object) {
   if (object == null) return '';
+  /* eslint prefer-template: 0 */
   return '' + object;
 }
 
 export function copy(a, s, t) {
-  a.forEach(m => {
+  a.forEach((m) => {
     if (s[m]) t[m] = s[m];
   });
 }
@@ -18,11 +19,11 @@ function getLastOfPath(object, path, Empty) {
     return !object || typeof object === 'string';
   }
 
-  let stack = (typeof path !== 'string') ? [].concat(path) : path.split('.');
-  while(stack.length > 1) {
+  const stack = (typeof path !== 'string') ? [].concat(path) : path.split('.');
+  while (stack.length > 1) {
     if (canNotTraverseDeeper()) return {};
 
-    let key = cleanKey(stack.shift());
+    const key = cleanKey(stack.shift());
     if (!object[key] && Empty) object[key] = new Empty();
     object = object[key];
   }
@@ -35,13 +36,13 @@ function getLastOfPath(object, path, Empty) {
 }
 
 export function setPath(object, path, newValue) {
-  let { obj, k } = getLastOfPath(object, path, Object);
+  const { obj, k } = getLastOfPath(object, path, Object);
 
   obj[k] = newValue;
 }
 
 export function pushPath(object, path, newValue, concat) {
-  let { obj, k } = getLastOfPath(object, path, Object);
+  const { obj, k } = getLastOfPath(object, path, Object);
 
   obj[k] = obj[k] || [];
   if (concat) obj[k] = obj[k].concat(newValue);
@@ -49,14 +50,15 @@ export function pushPath(object, path, newValue, concat) {
 }
 
 export function getPath(object, path) {
-  let { obj, k } = getLastOfPath(object, path);
+  const { obj, k } = getLastOfPath(object, path);
 
   if (!obj) return undefined;
   return obj[k];
 }
 
 export function deepExtend(target, source, overwrite) {
-  for (let prop in source)
+  /* eslint no-restricted-syntax: 0 */
+  for (let prop in source) {
     if (prop in target) {
       // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
       if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
@@ -67,10 +69,12 @@ export function deepExtend(target, source, overwrite) {
     } else {
       target[prop] = source[prop];
     }
+  }
   return target;
 }
 
 export function regexEscape(str) {
+  /* eslint no-useless-escape: 0 */
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 }
 
@@ -87,10 +91,8 @@ var _entityMap = {
 
 export function escape(data) {
   if (typeof data === 'string') {
-    return data.replace(/[&<>"'\/]/g, function (s) {
-      return _entityMap[s];
-    });
-  } else {
-    return data;
+    return data.replace(/[&<>"'\/]/g, s => _entityMap[s]);
   }
+
+  return data;
 }

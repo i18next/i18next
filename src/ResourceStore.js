@@ -2,7 +2,7 @@ import EventEmitter from './EventEmitter';
 import * as utils from './utils';
 
 class ResourceStore extends EventEmitter {
-  constructor(data = {}, options = {ns: ['translation'], defaultNS: 'translation'}) {
+  constructor(data = {}, options = { ns: ['translation'], defaultNS: 'translation' }) {
     super();
     this.data = data;
     this.options = options;
@@ -15,7 +15,7 @@ class ResourceStore extends EventEmitter {
   }
 
   removeNamespaces(ns) {
-    var index = this.options.ns.indexOf(ns);
+    const index = this.options.ns.indexOf(ns);
     if (index > -1) {
       this.options.ns.splice(index, 1);
     }
@@ -57,7 +57,8 @@ class ResourceStore extends EventEmitter {
   }
 
   addResources(lng, ns, resources) {
-    for (var m in resources) {
+    /* eslint no-restricted-syntax: 0 */
+    for (const m in resources) {
       if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m], { silent: true });
     }
     this.emit('added', lng, ns, resources);
@@ -74,12 +75,12 @@ class ResourceStore extends EventEmitter {
 
     this.addNamespaces(ns);
 
-    let pack = utils.getPath(this.data, path) || {};
+    let pack = utils.getPath(this.data, path) || {};
 
     if (deep) {
       utils.deepExtend(pack, resources, overwrite);
     } else {
-      pack = {...pack, ...resources};
+      pack = { ...pack, ...resources };
     }
 
     utils.setPath(this.data, path, pack);
@@ -104,7 +105,7 @@ class ResourceStore extends EventEmitter {
     if (!ns) ns = this.options.defaultNS;
 
     // TODO: COMPATIBILITY remove extend in v2.1.0
-    if (this.options.compatibilityAPI === 'v1') return {...{}, ...this.getResource(lng, ns)};
+    if (this.options.compatibilityAPI === 'v1') return { ...{}, ...this.getResource(lng, ns) };
 
     return this.getResource(lng, ns);
   }

@@ -63,19 +63,20 @@ let _rulesPluralsTypes = {
 /* eslint-enable */
 
 function createRules() {
-  var l, rules = {};
+  const rules = {};
   sets.forEach((set) => {
-    set.lngs.forEach((l) =>
+    set.lngs.forEach((l) => {
       rules[l] = {
         numbers: set.nr,
         plurals: _rulesPluralsTypes[set.fc]
+      };
     });
   });
   return rules;
 }
 
 class PluralResolver {
-  constructor(languageUtils, options = {}) {
+  constructor(languageUtils, options = {}) {
     this.languageUtils = languageUtils;
     this.options = options;
 
@@ -93,18 +94,18 @@ class PluralResolver {
   }
 
   needsPlural(code) {
-    let rule = this.getRule(code);
+    const rule = this.getRule(code);
 
-    return (rule && rule.numbers.length <= 1) ? false : true;
+    return rule && rule.numbers.length > 1;
   }
 
   getSuffix(code, count) {
-    let rule = this.getRule(code);
+    const rule = this.getRule(code);
 
     if (rule) {
       if (rule.numbers.length === 1) return ''; // only singular
 
-      let idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
+      const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
       let suffix = rule.numbers[idx];
 
       // special treatment for lngs only having singular and plural
@@ -124,24 +125,19 @@ class PluralResolver {
       // v1
       if (this.options.compatibilityJSON === 'v1') {
         if (suffix === 1) return '';
-        if (typeof suffix === 'number') return '_plural_' + suffix.toString();
+        if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
         return returnSuffix();
-      }
-      // v2
-      else if (this.options.compatibilityJSON === 'v2' || (rule.numbers.length === 2 && rule.numbers[0] === 1)) {
+      } else if (/* v2 */ this.options.compatibilityJSON === 'v2' || (rule.numbers.length === 2 && rule.numbers[0] === 1)) {
         return returnSuffix();
-      }
-      // v3 - gettext index
-      else if (rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      } else if (/* v3 - gettext index */ rule.numbers.length === 2 && rule.numbers[0] === 1) {
         return returnSuffix();
       }
       return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
-    } else {
-      this.logger.warn('no plural rule found for: ' + code);
-      return '';
     }
-  }
 
-};
+    this.logger.warn(`no plural rule found for: ${code}`);
+    return '';
+  }
+}
 
 export default PluralResolver;
