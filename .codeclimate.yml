@@ -13,12 +13,8 @@ engines:
     enabled: true
 ratings:
   paths:
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
+  - /src
 exclude_paths:
 - test/
+- coverage/
+- dist/
