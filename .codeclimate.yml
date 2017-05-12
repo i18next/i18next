@@ -1,3 +1,10 @@
 ratings:
    paths:
    - "src/**/*"
+
+exclude_paths:
+- "i18next.js"
+- "i18next.min.js"
+- "karma.backward.conf.js"
+- "karma.conf.js"
+- "rollup.config.js"
