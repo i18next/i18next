@@ -112,7 +112,7 @@ class I18n extends EventEmitter {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
 
-    // TODO: COMPATIBILITY remove this
+    // COMPATIBILITY: remove this
     if (this.options.compatibilityAPI === 'v1') compat.appendBackwardsAPI(this);
 
     const load = () => {

@@ -58,7 +58,7 @@ export function getPath(object, path) {
 
 export function deepExtend(target, source, overwrite) {
   /* eslint no-restricted-syntax: 0 */
-  for (let prop in source) {
+  for (const prop in source) {
     if (prop in target) {
       // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
       if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {

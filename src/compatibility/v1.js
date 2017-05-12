@@ -78,7 +78,7 @@ export function convertAPIOptions(options) {
   options = convertInterpolation(options);
   if (options.defaultVariables) options.interpolation.defaultVariables = options.defaultVariables;
 
-  // TODO: deprecation
+  // COMPATIBILITY: deprecation
   // if (options.getAsync === false) throw deprecation error
 
   return options;

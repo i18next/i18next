@@ -200,7 +200,9 @@ class Translator extends EventEmitter {
     keys.forEach((k) => {
       if (this.isValidLookup(found)) return;
 
-      let { key, namespaces } = this.extractFromKey(k, options);
+      const extracted = this.extractFromKey(k, options);
+      const key = extracted.key;
+      let namespaces = extracted.namespaces;
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';

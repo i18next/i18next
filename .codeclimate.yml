@@ -5,7 +5,7 @@ engines:
       languages:
       - ruby
       - javascript:
-          mass_threshold: 54
+          mass_threshold: 58
       - python
       - php
   eslint:
