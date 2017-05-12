@@ -147,7 +147,7 @@ class Connector extends EventEmitter {
     if (options.allowMultiLoading && this.backend.readMulti) {
       this.read(toLoad.toLoadLanguages, toLoad.toLoadNamespaces, 'readMulti', null, null, (err, data) => {
         if (err) this.logger.warn(`loading namespaces ${toLoad.toLoadNamespaces.join(', ')} for languages ${toLoad.toLoadLanguages.join(', ')} via multiloading failed`, err);
-        if (!err && data) this.logger.log(`loaded namespaces ${toLoad.toLoadNamespaces.join(', ')} for languages ${toLoad.toLoadLanguages.join(', ')} via multiloading`, data);
+        if (!err && data) this.logger.log(`successfully loaded namespaces ${toLoad.toLoadNamespaces.join(', ')} for languages ${toLoad.toLoadLanguages.join(', ')} via multiloading`, data);
 
         toLoad.toLoad.forEach((name) => {
           const [l, n] = name.split('|');
@@ -164,19 +164,19 @@ class Connector extends EventEmitter {
       });
     } else {
       // load one by one
-      const readOne = (name) => {
+      const loadOne = (name) => {
         const [lng, ns] = name.split('|');
 
         this.read(lng, ns, 'read', null, null, (err, data) => {
           if (err) this.logger.warn(`loading namespace ${ns} for language ${lng} failed`, err);
-          if (!err && data) this.logger.log(`loaded namespace ${ns} for language ${lng}`, data);
+          if (!err && data) this.logger.log(`successfully loaded namespace ${ns} for language ${lng}`, data);
 
           this.loaded(name, err, data);
         });
       };
 
       toLoad.toLoad.forEach((name) => {
-        readOne.call(this, name);
+        loadOne.call(this, name);
       });
     }
   }
@@ -194,7 +194,7 @@ class Connector extends EventEmitter {
     if (options.allowMultiLoading && this.backend.readMulti) {
       this.read(languages, namespaces, 'readMulti', null, null, (err, data) => {
         if (err) this.logger.warn(`reloading namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading failed`, err);
-        if (!err && data) this.logger.log(`reloaded namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading`, data);
+        if (!err && data) this.logger.log(`successfully reloaded namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading`, data);
 
         languages.forEach((l) => {
           namespaces.forEach((n) => {
@@ -211,12 +211,12 @@ class Connector extends EventEmitter {
       });
     } else {
       // load one by one
-      const readOne = (name) => {
+      const reloadOne = (name) => {
         const [lng, ns] = name.split('|');
 
         this.read(lng, ns, 'read', null, null, (err, data) => {
           if (err) this.logger.warn(`reloading namespace ${ns} for language ${lng} failed`, err);
-          if (!err && data) this.logger.log(`reloaded namespace ${ns} for language ${lng}`, data);
+          if (!err && data) this.logger.log(`successfully reloaded namespace ${ns} for language ${lng}`, data);
 
           this.loaded(name, err, data);
         });
@@ -224,7 +224,7 @@ class Connector extends EventEmitter {
 
       languages.forEach((l) => {
         namespaces.forEach((n) => {
-          readOne.call(this, `${l}|${n}`);
+          reloadOne.call(this, `${l}|${n}`);
         });
       });
     }
