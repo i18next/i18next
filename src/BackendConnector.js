@@ -127,6 +127,7 @@ class Connector extends EventEmitter {
     });
   }
 
+  /* eslint consistent-return: 0 */
   load(languages, namespaces, callback) {
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
