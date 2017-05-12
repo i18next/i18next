@@ -1,3 +1,4 @@
+/* eslint no-param-reassign: 0 */
 import logger from '../logger';
 
 function convertInterpolation(options) {
@@ -11,7 +12,7 @@ function convertInterpolation(options) {
   options.interpolation.escapeValue = options.escapeInterpolation || false;
 
   options.interpolation.nestingPrefix = options.reusePrefix || '$t(';
-  options.interpolation.nestingSuffix = options.reuseSuffix || ')';
+  options.interpolation.nestingSuffix = options.reuseSuffix || ')';
 
   return options;
 }
@@ -30,8 +31,8 @@ export function convertAPIOptions(options) {
 
   options.saveMissing = options.sendMissing;
   options.saveMissingTo = options.sendMissingTo || 'current';
-  options.returnNull = options.fallbackOnNull ? false : true;
-  options.returnEmptyString = options.fallbackOnEmpty ? false : true;
+  options.returnNull = !options.fallbackOnNull;
+  options.returnEmptyString = !options.fallbackOnEmpty;
   options.returnObjects = options.returnObjectTrees;
   options.joinArrays = '\n';
 
@@ -43,10 +44,10 @@ export function convertAPIOptions(options) {
   options.keySeparator = options.keyseparator || '.';
 
   if (options.shortcutFunction === 'sprintf') {
-    options.overloadTranslationOptionHandler = function(args) {
-      let values = [];
+    options.overloadTranslationOptionHandler = function handle(args) {
+      const values = [];
 
-      for (var i = 1; i < args.length; i++) {
+      for (let i = 1; i < args.length; i++) {
         values.push(args[i]);
       }
 
@@ -71,8 +72,8 @@ export function convertAPIOptions(options) {
   // cache
   options.cache = options.cache || {};
   options.cache.prefix = 'res_';
-  options.cache.expirationTime = 7*24*60*60*1000;
-  options.cache.enabled = options.useLocalStorage ? true : false;
+  options.cache.expirationTime = 7 * 24 * 60 * 60 * 1000;
+  options.cache.enabled = options.useLocalStorage;
 
   options = convertInterpolation(options);
   if (options.defaultVariables) options.interpolation.defaultVariables = options.defaultVariables;
@@ -104,17 +105,17 @@ export function convertTOptions(options) {
 }
 
 export function appendBackwardsAPI(i18n) {
-  i18n.lng = function() {
+  i18n.lng = () => {
     logger.deprecate('i18next.lng() can be replaced by i18next.language for detected language or i18next.languages for languages ordered by translation lookup.');
     return i18n.services.languageUtils.toResolveHierarchy(i18n.language)[0];
   };
 
-  i18n.preload = function(lngs, cb) {
+  i18n.preload = (lngs, cb) => {
     logger.deprecate('i18next.preload() can be replaced with i18next.loadLanguages()');
     i18n.loadLanguages(lngs, cb);
-  }
+  };
 
-  i18n.setLng = function(lng, options, callback) {
+  i18n.setLng = (lng, options, callback) => {
     logger.deprecate('i18next.setLng() can be replaced with i18next.changeLanguage() or i18next.getFixedT() to get a translation function with fixed language or namespace.');
     if (typeof options === 'function') {
       callback = options;
@@ -126,15 +127,15 @@ export function appendBackwardsAPI(i18n) {
       if (callback) return callback(null, i18n.getFixedT(lng));
     }
 
-    i18n.changeLanguage(lng, callback);
+    return i18n.changeLanguage(lng, callback);
   };
 
-  i18n.addPostProcessor = function(name, fc) {
-    logger.deprecate('i18next.addPostProcessor() can be replaced by i18next.use({ type: \'postProcessor\', name: \'name\', process: fc })')
+  i18n.addPostProcessor = (name, fc) => {
+    logger.deprecate('i18next.addPostProcessor() can be replaced by i18next.use({ type: \'postProcessor\', name: \'name\', process: fc })');
     i18n.use({
       type: 'postProcessor',
-      name: name,
+      name,
       process: fc
     });
-  }
+  };
 }

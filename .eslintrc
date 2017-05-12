@@ -9,6 +9,7 @@ rules:
   padded-blocks: [0, "never"]
   no-unused-vars: [2, {vars: all, args: none}]
   prefer-arrow-callback: 1
+  no-plusplus: 0
   react/prop-types:
     - 0
     - ignore: #coming from hoc
