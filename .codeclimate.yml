@@ -1,7 +1,25 @@
+engines:
+  rubocop:
+    enabled: true
+    #checks:
+    #	Rubocop/Metrics/ClassLength:
+    #  	enabled: false
+  brakeman:
+   	enabled: true
+    #exclude_fingerprints:
+    #- 08c185b3f764f262539a1f76997d3a89
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+  duplication:
+  	enabled: true
+    config:
+    	languages:
+      - javascript
 ratings:
    paths:
    - "src/**/*"
-
 exclude_paths:
 - "i18next.js"
 - "i18next.min.js"
