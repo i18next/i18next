@@ -19,8 +19,21 @@ describe('i18next', () => {
       expect(i18next.options.cache.enabled).to.be.true;
     });
 
-    it('it should append old api', () => {
-      expect(i18next.preload).to.be.ok;
+    it('it should append old api', (done) => {
+      i18next.addPostProcessor('dummy', () => {});
+      i18next.preload(['de'], () => {
+        expect(i18next.preload).to.be.ok;
+        done();
+      });
+    });
+
+    it('it should append old api for lng mutation', (done) => {
+      i18next.setLng('de');
+      expect(i18next.lng()).to.be.equal('de');
+      i18next.setLng('de', { fixLng: true }, (err, t) => {
+        expect(typeof t).to.be.equal('function');
+        done();
+      });
     });
   });
 
