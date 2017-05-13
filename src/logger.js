@@ -37,25 +37,25 @@ class Logger {
   }
 
   log(...args) {
-    this.forward(args, 'log', '', true);
+    return this.forward(args, 'log', '', true);
   }
 
   warn(...args) {
-    this.forward(args, 'warn', '', true);
+    return this.forward(args, 'warn', '', true);
   }
 
   error(...args) {
-    this.forward(args, 'error', '');
+    return this.forward(args, 'error', '');
   }
 
   deprecate(...args) {
-    this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
+    return this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
   }
 
   forward(args, lvl, prefix, debugOnly) {
-    if (debugOnly && !this.debug) return;
+    if (debugOnly && !this.debug) return null;
     if (typeof args[0] === 'string') args[0] = `${prefix}${this.prefix} ${args[0]}`;
-    this.logger[lvl](args);
+    return this.logger[lvl](args);
   }
 
   create(moduleName) {
