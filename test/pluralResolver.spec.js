@@ -18,7 +18,27 @@ describe('PluralResolver', () => {
       {args: ['ru'], expected: true},
       {args: ['ms'], expected: false},
       {args: ['lo'], expected: false},
-      {args: ['su'], expected: false}
+      {args: ['su'], expected: false},
+      {args: ['ach'], expected: true},
+      {args: ['af'], expected: true},
+      {args: ['ay'], expected: false},
+      {args: ['be'], expected: true},
+      {args: ['cs'], expected: true},
+      {args: ['csb'], expected: true},
+      {args: ['cy'], expected: true},
+      {args: ['ga'], expected: true},
+      {args: ['gd'], expected: true},
+      {args: ['is'], expected: true},
+      {args: ['jv'], expected: true},
+      {args: ['kw'], expected: true},
+      {args: ['lt'], expected: true},
+      {args: ['lv'], expected: true},
+      {args: ['mk'], expected: true},
+      {args: ['mnk'], expected: true},
+      {args: ['mt'], expected: true},
+      {args: ['or'], expected: true},
+      {args: ['ro'], expected: true},
+      {args: ['sl'], expected: true}
     ];
 
     tests.forEach((test) => {
