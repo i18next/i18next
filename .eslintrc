@@ -11,6 +11,7 @@ rules:
   prefer-arrow-callback: 1
   no-plusplus: 0
   no-param-reassign: 0
+  no-unused-expressions: 1
   react/prop-types:
     - 0
     - ignore: #coming from hoc
@@ -19,4 +20,8 @@ rules:
       - handleSubmit
 
 globals:
-  expect: false
+  expect: true
+  describe: true
+  it: true
+  before: true
+  after: true
