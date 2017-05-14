@@ -92,7 +92,7 @@ export function convertJSONOptions(options) {
 }
 
 export function convertTOptions(options) {
-  if (options.interpolationPrefix || options.interpolationSuffix || options.escapeInterpolation) {
+  if (options.interpolationPrefix || options.interpolationSuffix || options.escapeInterpolation !== undefined) {
     options = convertInterpolation(options);
   }
 

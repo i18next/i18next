@@ -1,4 +1,5 @@
 import i18next from '../src/i18next';
+import * as convert from '../src/compatibility/v1';
 
 describe('i18next', () => {
 
@@ -8,13 +9,20 @@ describe('i18next', () => {
       compatibilityJSON: 'v1',
       sendMissing: true,
       useLocalStorage: true,
-      debug: false
+      debug: false,
+      ns: {
+        defaultNs: 'defaultNamespace',
+        namespaces: ['defaultNamespace', 'otherNamespace']
+      },
+      shortcutFunction: 'sprintf'
     });
     i18next.changeLanguage('en');
   });
 
   describe('converting', () => {
     it('it should convert options', () => {
+      expect(i18next.options.defaultNS).to.equal('defaultNamespace');
+      expect(i18next.options.ns).to.eql(['defaultNamespace', 'otherNamespace']);
       expect(i18next.options.saveMissing).to.be.true;
       expect(i18next.options.cache.enabled).to.be.true;
     });
@@ -34,6 +42,21 @@ describe('i18next', () => {
         expect(typeof t).to.be.equal('function');
         done();
       });
+    });
+
+    it('it should convert t options', () => {
+      const options = { keyseparator: '$', nsseparator: '!', escapeInterpolation: false }
+      convert.convertTOptions(options);
+      expect(options.nsSeparator).to.equal('!');
+      expect(options.keySeparator).to.equal('$');
+      expect(options.interpolation.escapeValue).to.equal(false);
+    });
+
+    it('it should convert json options', () => {
+      const options = { escapeInterpolation: false }
+      convert.convertJSONOptions(options);
+      expect(options.interpolation.escapeValue).to.equal(false);
+      expect(options.joinArrays).to.equal('\n');
     });
   });
 
