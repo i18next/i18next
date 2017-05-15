@@ -3,7 +3,7 @@
 [![Travis](https://img.shields.io/travis/i18next/i18next/master.svg?style=flat-square)](https://travis-ci.org/i18next/i18next)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/i18next/i18next)
 [![Coveralls](https://img.shields.io/coveralls/i18next/i18next/master.svg?style=flat-square)](https://coveralls.io/github/i18next/i18next)
-[![Package Quality](http://npm.packagequality.com/badge/i18next.png)](http://packagequality.com/#?package=i18next)
+[![Package Quality](http://npm.packagequality.com/shield/i18next.svg)](http://packagequality.com/#?package=i18next)
 [![cdnjs version](https://img.shields.io/cdnjs/v/i18next.svg?style=flat-square)](https://cdnjs.com/libraries/i18next)
 [![npm version](https://img.shields.io/npm/v/i18next.svg?style=flat-square)](https://www.npmjs.com/package/i18next)
 [![Bower](https://img.shields.io/bower/v/i18next.svg?style=flat-square)]()
