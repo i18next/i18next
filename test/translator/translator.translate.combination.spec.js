@@ -22,6 +22,15 @@ describe('Translator', () => {
             test_plural: 'tests_en',
             test_male: 'test_male_en',
             test_male_plural: 'tests_male_en',
+
+            nest: {
+              foo: 'bar',
+              nest: '$t(nestedArray)'
+            },
+            nestedArray: [
+              { a: 'b', c: 'd' },
+              { a: 'b', c: 'd' }
+            ]
           }
         }
       });
@@ -33,9 +42,11 @@ describe('Translator', () => {
         interpolator: new Interpolator()
       }, {
         contextSeparator: '_',
+        keySeparator: '.',
         ns: 'translation',
         defaultNS: 'translation',
-        interpolation: {}
+        interpolation: {},
+        returnObjects: true
       });
       t.changeLanguage('en');
     });
@@ -53,6 +64,7 @@ describe('Translator', () => {
       {args: ['test', { context: 'unknown', count: 2 }], expected: 'tests_en'},
       {args: ['test', { context: 'male', count: 1 }], expected: 'test_male_en'},
       {args: ['test', { context: 'male', count: 2 }], expected: 'tests_male_en'},
+      {args: ['nest'], expected: { foo: 'bar', nest: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' } ]}}
     ];
 
     tests.forEach((test) => {

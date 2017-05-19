@@ -1,3 +1,6 @@
+### 8.3.0
+- allows nesting objects/arrays into objects [#925](https://github.com/i18next/i18next/issues/925)
+
 ### 8.2.1
 - fixes issue in async lng detection
 

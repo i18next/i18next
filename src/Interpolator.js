@@ -124,9 +124,14 @@ class Interpolator {
     // regular escape on demand
     while (match = this.nestingRegexp.exec(str)) {
       value = fc(handleHasOptions.call(this, match[1].trim()), clonedOptions);
+
+      // is only the nesting key (key1 = '$(key2)') return the value without stringify
+      if (value && match[0] === str && typeof value !== 'string') return value;
+
+      // no string to include or empty
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
-        this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
+        this.logger.warn(`missed to resolve ${match[1]} for nesting ${str}`);
         value = '';
       }
       // Nested keys should not be escaped by default #854
