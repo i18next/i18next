@@ -1,3 +1,6 @@
+### 8.4.1
+- emits correct lng to changeLanguage event (fixes async detection behaviour) [PR933](https://github.com/i18next/i18next/pull/933)
+
 ### 8.4.0
 - expose i18next.options.interpolation.format on i18next.format
 - i18next.dir if not passing lng use first of i18next.languages before using i18next.language
