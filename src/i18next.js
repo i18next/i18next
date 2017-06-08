@@ -205,10 +205,10 @@ class I18n extends EventEmitter {
   }
 
   changeLanguage(lng, callback) {
-    const done = (err) => {
-      if (lng) {
-        this.emit('languageChanged', lng);
-        this.logger.log('languageChanged', lng);
+    const done = (err, l) => {
+      if (l) {
+        this.emit('languageChanged', l);
+        this.logger.log('languageChanged', l);
       }
 
       if (callback) callback(err, (...args) => this.t(...args));
@@ -225,7 +225,7 @@ class I18n extends EventEmitter {
       }
 
       this.loadResources((err) => {
-        done(err);
+        done(err, l);
       });
     };
 
