@@ -52,8 +52,21 @@ describe('i18next', () => {
         expect(i18next.language).to.equal('en');
       });
     });
+
+    describe('create/cloneInstance()', () => {
+      let instance1;
+      let instance2;
+      before((done) => {
+        instance1 = i18next.createInstance({ lng: 'en' }, () => {
+          instance2 = instance1.cloneInstance({ lng: 'de' }, () => done());
+        });
+      });
+
+      it('it should have correct lngs', () => {
+        expect(instance1.language).to.equal('en');
+        expect(instance2.language).to.equal('de');
+      });
+    });
   });
-
-
 
 });

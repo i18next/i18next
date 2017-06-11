@@ -1,3 +1,6 @@
+### 8.4.2
+- fixes merging options in clone instance...do not override passed values by values on main instance
+
 ### 8.4.1
 - emits correct lng to changeLanguage event (fixes async detection behaviour) [PR933](https://github.com/i18next/i18next/pull/933)
 
