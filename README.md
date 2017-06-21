@@ -28,7 +28,7 @@ i18next provides:
 
 For more information visit the website:
 
-- [Getting started](https://www.i18next.com/)
+- [Getting started](https://www.i18next.com/getting-started.html)
 - [Translation Functionality](https://www.i18next.com/essentials.html)
 - [API](https://www.i18next.com/api.html)
 
