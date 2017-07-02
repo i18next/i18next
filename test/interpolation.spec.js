@@ -246,7 +246,7 @@ describe('Interpolator', () => {
       {args: ['__username__ is __how__', { username: 'luke__sky__walker', how: 'great'}], expected: 'luke__sky__walker is great'},
       {args: ['__username__ logged in', { username: 'luke__sky__walker'}], expected: 'luke__sky__walker logged in'},
       {args: ['__username__ logged in', { username: 'luke__skywalker', how: 'great'}], expected: 'luke__skywalker logged in'},
-      {args: ['__:username__ is __how__', { username: 'luke__skywalker', how: 'great'}], expected: 'luke__skywalker logged in'}
+      // {args: ['__:username__ is __how__', { username: 'luke__skywalker', how: 'great'}], expected: 'luke__skywalker logged in'}
     ];
 
     tests.forEach((test) => {
