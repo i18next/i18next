@@ -1,3 +1,6 @@
+### 8.4.3
+- getFixedT lng parameter of array type -> pass as lngs to t function [PR949](https://github.com/i18next/i18next/pull/949)
+
 ### 8.4.2
 - fixes merging options in clone instance...do not override passed values by values on main instance
 
