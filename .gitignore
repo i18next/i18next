@@ -17,3 +17,6 @@ node_modules
 node_modules/**/*
 coverage/**/*
 dist/**/*
+
+# Ignore IntelliJ based IDEs project files
+.idea
