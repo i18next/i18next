@@ -1,5 +1,5 @@
 /* eslint no-param-reassign: 0 */
-import logger from '../logger';
+//import logger from '../logger';
 
 function convertInterpolation(options) {
 
@@ -58,6 +58,12 @@ export function convertAPIOptions(options) {
     };
   }
 
+  if (options.shortcutFunction === 'defaultValue') {
+    options.overloadTranslationOptionHandler = function handle(args) {
+      return { defaultValue: args[1] };
+    };
+  }
+
   options.whitelist = options.lngWhitelist;
   options.preload = options.preload;
   if (options.load === 'current') options.load = 'currentOnly';
@@ -106,17 +112,17 @@ export function convertTOptions(options) {
 
 export function appendBackwardsAPI(i18n) {
   i18n.lng = () => {
-    logger.deprecate('i18next.lng() can be replaced by i18next.language for detected language or i18next.languages for languages ordered by translation lookup.');
+    //logger.deprecate('i18next.lng() can be replaced by i18next.language for detected language or i18next.languages for languages ordered by translation lookup.');
     return i18n.services.languageUtils.toResolveHierarchy(i18n.language)[0];
   };
 
   i18n.preload = (lngs, cb) => {
-    logger.deprecate('i18next.preload() can be replaced with i18next.loadLanguages()');
+    //logger.deprecate('i18next.preload() can be replaced with i18next.loadLanguages()');
     i18n.loadLanguages(lngs, cb);
   };
 
   i18n.setLng = (lng, options, callback) => {
-    logger.deprecate('i18next.setLng() can be replaced with i18next.changeLanguage() or i18next.getFixedT() to get a translation function with fixed language or namespace.');
+    //logger.deprecate('i18next.setLng() can be replaced with i18next.changeLanguage() or i18next.getFixedT() to get a translation function with fixed language or namespace.');
     if (typeof options === 'function') {
       callback = options;
       options = {};
@@ -131,7 +137,7 @@ export function appendBackwardsAPI(i18n) {
   };
 
   i18n.addPostProcessor = (name, fc) => {
-    logger.deprecate('i18next.addPostProcessor() can be replaced by i18next.use({ type: \'postProcessor\', name: \'name\', process: fc })');
+    //logger.deprecate('i18next.addPostProcessor() can be replaced by i18next.use({ type: \'postProcessor\', name: \'name\', process: fc })');
     i18n.use({
       type: 'postProcessor',
       name,

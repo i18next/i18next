@@ -16,7 +16,7 @@ class Connector extends EventEmitter {
     super();
     this.backend = backend;
     this.store = store;
-    this.services = services;
+    this.languageUtils = services.languageUtils;
     this.options = options;
     this.logger = baseLogger.create('backendConnector');
 
@@ -135,7 +135,7 @@ class Connector extends EventEmitter {
     }
     const options = { ...this.backend.options, ...this.options.backend };
 
-    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
+    if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
     const toLoad = this.queueLoad(languages, namespaces, callback);
@@ -176,7 +176,7 @@ class Connector extends EventEmitter {
     }
     const options = { ...this.backend.options, ...this.options.backend };
 
-    if (typeof languages === 'string') languages = this.services.languageUtils.toResolveHierarchy(languages);
+    if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
     // load with multi-load

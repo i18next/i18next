@@ -7,9 +7,9 @@ let sets = [
     'tg','ti','tr','uz','wa'], nr: [1,2], fc: 1 },
 
   { lngs: ['af','an','ast','az','bg','bn','ca','da','de','dev','el','en',
-    'eo','es','es_ar','et','eu','fi','fo','fur','fy','gl','gu','ha','he','hi',
+    'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','he','hi',
     'hu','hy','ia','it','kn','ku','lb','mai','ml','mn','mr','nah','nap','nb',
-    'ne','nl','nn','no','nso','pa','pap','pms','ps','pt','pt_br','rm','sco',
+    'ne','nl','nn','no','nso','pa','pap','pms','ps','pt','rm','sco',
     'se','si','so','son','sq','sv','sw','ta','te','tk','ur','yo'], nr: [1,2], fc: 2 },
 
   { lngs: ['ay','bo','cgg','fa','id','ja','jbo','ka','kk','km','ko','ky','lo',

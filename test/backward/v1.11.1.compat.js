@@ -9,6 +9,7 @@ import Cache from 'i18next-localstorage-cache';
 import sprintf from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import * as utils from '../../src/utils';
+import * as compat from './compatibility/v1';
 
 let arr = [];
 let each = arr.forEach;
@@ -21,7 +22,8 @@ export function extend(obj) {
       }
     }
   });
-  return obj;
+  return compat.convertAPIOptions(obj);
+  //return obj;
 }
 
 i18n.functions = {
@@ -40,12 +42,21 @@ i18n
   .use(new LanguageDetector())
   .use(sprintf);
 
+compat.appendBackwardsAPI(i18n);
+
+var originalT = i18n.t;
+i18n.t = function(key, opts) {
+  if (arguments.length > 2) return originalT.apply(i18n, arguments);
+  if (typeof opts === 'object') opts = compat.convertTOptions(opts);
+  return originalT.call(i18n, key, opts);
+}
+
 describe('i18next', function() {
 
   var opts;
 
   beforeEach(function() {
-    opts = {
+    opts = compat.convertAPIOptions({
       compatibilityAPI: 'v1',
       compatibilityJSON: 'v1',
       lng: 'en-US',
@@ -74,8 +85,9 @@ describe('i18next', function() {
       defaultVariables: false,
       shortcutFunction: 'sprintf',
       objectTreeKeyHandler: null,
-      lngWhitelist: null
-    };
+      lngWhitelist: null,
+      resources: null
+    });
   });
 
 
@@ -1437,7 +1449,7 @@ describe('i18next', function() {
         describe('and function parseMissingKey set', function() {
           beforeEach(function(done) {
             i18n.init(i18n.functions.extend(opts, {
-              parseMissingKey: function(key) {console.log(key)
+              parseMissingKey: function(key) {
                 var ret = key;
 
                 if (ret.indexOf(':')) {

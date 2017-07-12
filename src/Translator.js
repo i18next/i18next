@@ -1,7 +1,6 @@
 import baseLogger from './logger';
 import EventEmitter from './EventEmitter';
 import postProcessor from './postProcessor';
-import * as compat from './compatibility/v1';
 import * as utils from './utils';
 
 class Translator extends EventEmitter {
@@ -19,10 +18,6 @@ class Translator extends EventEmitter {
   }
 
   exists(key, options = { interpolation: {} }) {
-    if (this.options.compatibilityAPI === 'v1') {
-      options = compat.convertTOptions(options);
-    }
-
     return this.resolve(key, options) !== undefined;
   }
 
@@ -49,8 +44,6 @@ class Translator extends EventEmitter {
     if (typeof options !== 'object') {
       /* eslint prefer-rest-params: 0 */
       options = this.options.overloadTranslationOptionHandler(arguments);
-    } else if (this.options.compatibilityAPI === 'v1') {
-      options = compat.convertTOptions(options);
     }
 
     // non valid keys handling

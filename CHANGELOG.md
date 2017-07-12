@@ -1,3 +1,6 @@
+### upcoming 9.0.0
+- removes the compatibility options to i18next v1
+
 ### 8.4.3
 - getFixedT lng parameter of array type -> pass as lngs to t function [PR949](https://github.com/i18next/i18next/pull/949)
 

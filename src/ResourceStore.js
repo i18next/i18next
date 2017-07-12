@@ -2,9 +2,9 @@ import EventEmitter from './EventEmitter';
 import * as utils from './utils';
 
 class ResourceStore extends EventEmitter {
-  constructor(data = {}, options = { ns: ['translation'], defaultNS: 'translation' }) {
+  constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
     super();
-    this.data = data;
+    this.data = data || {};
     this.options = options;
   }
 

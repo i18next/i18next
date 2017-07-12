@@ -16,7 +16,8 @@ module.exports = function(karma) {
     reporters: [ 'spec' ],
 
     preprocessors: {
-      'test/backward/**/*.compat.js': [ 'browserify' ]
+      'test/backward/**/*.compat.js': [ 'browserify' ],
+      'test/backward/compatibility/**/*.js': [ 'browserify' ]
     },
 
     browsers: [ 'PhantomJS' ],

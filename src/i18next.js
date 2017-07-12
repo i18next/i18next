@@ -10,8 +10,6 @@ import CacheConnector from './CacheConnector';
 import { get as getDefaults, transformOptions } from './defaults';
 import postProcessor from './postProcessor';
 
-import * as compat from './compatibility/v1';
-
 function noop() {}
 
 class I18n extends EventEmitter {
@@ -31,20 +29,13 @@ class I18n extends EventEmitter {
     }
   }
 
-  init(options, callback) {
+  init(options = {}, callback) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
-    if (!options) options = {};
+    this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
 
-    if (options.compatibilityAPI === 'v1') {
-      this.options = { ...getDefaults(), ...transformOptions(compat.convertAPIOptions(options)), ...{} };
-    } else if (options.compatibilityJSON === 'v1') {
-      this.options = { ...getDefaults(), ...transformOptions(compat.convertJSONOptions(options)), ...{} };
-    } else {
-      this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
-    }
     this.format = this.options.interpolation.format;
     if (!callback) callback = noop;
 
@@ -112,9 +103,6 @@ class I18n extends EventEmitter {
     storeApi.forEach((fcName) => {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
-
-    // COMPATIBILITY: remove this
-    if (this.options.compatibilityAPI === 'v1') compat.appendBackwardsAPI(this);
 
     const load = () => {
       this.changeLanguage(this.options.lng, (err, t) => {
