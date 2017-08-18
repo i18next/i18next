@@ -55,6 +55,8 @@ class Interpolator {
   interpolate(str, data, lng) {
     let match;
     let value;
+    let pattern;
+    let patternIndex;
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -76,8 +78,11 @@ class Interpolator {
     /* eslint no-cond-assign: 0 */
     while (match = this.regexpUnescape.exec(str)) {
       value = handleFormat(match[1].trim());
-      str = str.replace(match[0], value);
-      this.regexpUnescape.lastIndex = 0;
+      pattern = match[0];
+      patternIndex = str.indexOf(pattern);
+      str = str.replace(pattern, value);
+      // progress matching just past the replacement
+      this.regexpUnescape.lastIndex = patternIndex + value.length;
     }
 
     // regular escape on demand
@@ -89,8 +94,11 @@ class Interpolator {
         value = '';
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
-      str = str.replace(match[0], value);
-      this.regexp.lastIndex = 0;
+      pattern = match[0];
+      patternIndex = str.indexOf(pattern);
+      str = str.replace(pattern, value);
+      // progress matching just past the replacement
+      this.regexp.lastIndex = patternIndex + value.length;
     }
     return str;
   }

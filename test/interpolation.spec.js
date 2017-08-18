@@ -227,5 +227,33 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - interpolation of values containing prefix and suffix', () => {
+    var ip;
 
+    before(() => {
+      ip = new Interpolator({
+        interpolation: {
+          prefix: '__',
+          suffix: '__',
+          unescapePrefix: ':'
+        }
+      });
+    });
+
+    var tests = [
+      {args: ['__username__ is __how__', { username: 'luke__skywalker', how: 'great'}], expected: 'luke__skywalker is great'},
+      {args: ['__how__ is __username__', { username: 'luke__skywalker', how: 'great'}], expected: 'great is luke__skywalker'},
+      {args: ['__username__ is __how__', { username: 'luke__sky__walker', how: 'great'}], expected: 'luke__sky__walker is great'},
+      {args: ['__username__ logged in', { username: 'luke__sky__walker'}], expected: 'luke__sky__walker logged in'},
+      {args: ['__username__ logged in', { username: 'luke__skywalker', how: 'great'}], expected: 'luke__skywalker logged in'},
+      // {args: ['__:username__ is __how__', { username: 'luke__skywalker', how: 'great'}], expected: 'luke__skywalker logged in'}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+
+  });
 });
