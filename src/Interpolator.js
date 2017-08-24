@@ -32,8 +32,7 @@ class Interpolator {
     this.nestingPrefix = iOpts.nestingPrefix ? utils.regexEscape(iOpts.nestingPrefix) : iOpts.nestingPrefixEscaped || utils.regexEscape('$t(');
     this.nestingSuffix = iOpts.nestingSuffix ? utils.regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
 
-    this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
-    
+    this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;    
     // the regexp
     this.resetRegExp();
   }
@@ -83,7 +82,7 @@ class Interpolator {
       str = str.replace(match[0], value);
       this.regexpUnescape.lastIndex = 0;
       replaces++;
-      if(replaces >= this.maxReplaces) {
+      if (replaces >= this.maxReplaces) {
         break;
       }
     }
@@ -101,7 +100,7 @@ class Interpolator {
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
       replaces++;
-      if(replaces >= this.maxReplaces) {
+      if (replaces >= this.maxReplaces) {
         break;
       }
     }
