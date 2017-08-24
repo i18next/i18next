@@ -48,10 +48,11 @@ export function get() {
       unescapePrefix: '-',
 
       nestingPrefix: '$t(',
-      nestingSuffix: ')'
+      nestingSuffix: ')',
       // nestingPrefixEscaped: '$t(',
       // nestingSuffixEscaped: ')',
       // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
+      maxReplaces: 1000 // max replaces to prevent endless loop
     }
   };
 }
