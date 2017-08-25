@@ -1131,6 +1131,8 @@ var Interpolator = function () {
     this.nestingPrefix = iOpts.nestingPrefix ? regexEscape(iOpts.nestingPrefix) : iOpts.nestingPrefixEscaped || regexEscape('$t(');
     this.nestingSuffix = iOpts.nestingSuffix ? regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || regexEscape(')');
 
+    this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
+
     // the regexp
     this.resetRegExp();
   };
@@ -1156,6 +1158,7 @@ var Interpolator = function () {
 
     var match = void 0;
     var value = void 0;
+    var replaces = void 0;
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -1173,14 +1176,20 @@ var Interpolator = function () {
 
     this.resetRegExp();
 
+    replaces = 0;
     // unescape if has unescapePrefix/Suffix
     /* eslint no-cond-assign: 0 */
     while (match = this.regexpUnescape.exec(str)) {
       value = handleFormat(match[1].trim());
       str = str.replace(match[0], value);
       this.regexpUnescape.lastIndex = 0;
+      replaces++;
+      if (replaces >= this.maxReplaces) {
+        break;
+      }
     }
 
+    replaces = 0;
     // regular escape on demand
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
@@ -1192,6 +1201,10 @@ var Interpolator = function () {
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
+      replaces++;
+      if (replaces >= this.maxReplaces) {
+        break;
+      }
     }
     return str;
   };
@@ -1628,10 +1641,11 @@ function get$1() {
       unescapePrefix: '-',
 
       nestingPrefix: '$t(',
-      nestingSuffix: ')'
+      nestingSuffix: ')',
       // nestingPrefixEscaped: '$t(',
       // nestingSuffixEscaped: ')',
       // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
+      maxReplaces: 1000 // max replaces to prevent endless loop
     }
   };
 }
@@ -1916,7 +1930,7 @@ var I18n = function (_EventEmitter) {
     var fixedT = function fixedT(key) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-      var options = _extends({}, opts);
+      var options = typeof opts === 'string' ? { defaultValue: opts } : _extends({}, opts);
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;
