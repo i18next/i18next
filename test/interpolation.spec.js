@@ -71,6 +71,11 @@ describe('Interpolator', () => {
         description: 'uses nestingPrefixEscaped and nestingSuffixEscaped if nestingPrefix and nestingSuffix not provided',
         options: {interpolation: {nestingPrefixEscaped: 'neste\\(', nestingSuffixEscaped: '\\)neste'}},
         expected: {nestingPrefix: 'neste\\(', nestingSuffix: '\\)neste'}
+      },
+      {
+        description: 'uses maxReplaces if provided',
+        options: { interpolation: { maxReplaces: 100}},
+        expected: { maxReplaces: 100}
       }
     ];
 
@@ -227,5 +232,23 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - max replaced to prevent endless loop', () => {
+    var ip;
 
+    before(() => {
+      ip = new Interpolator({interpolation: {
+        maxReplaces: 10
+      }});
+    });
+
+    var tests = [
+      { args: ['test {{test}}', { test: 'tested {{test}}' }], expected: 'test tested tested tested tested tested tested tested tested tested tested {{test}}' }
+    ];
+
+    tests.forEach((test) => {
+      it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 });

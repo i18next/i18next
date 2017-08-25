@@ -32,6 +32,8 @@ class Interpolator {
     this.nestingPrefix = iOpts.nestingPrefix ? utils.regexEscape(iOpts.nestingPrefix) : iOpts.nestingPrefixEscaped || utils.regexEscape('$t(');
     this.nestingSuffix = iOpts.nestingSuffix ? utils.regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
 
+    this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
+
     // the regexp
     this.resetRegExp();
   }
@@ -55,6 +57,7 @@ class Interpolator {
   interpolate(str, data, lng) {
     let match;
     let value;
+    let replaces;
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -72,14 +75,20 @@ class Interpolator {
 
     this.resetRegExp();
 
+    replaces = 0;
     // unescape if has unescapePrefix/Suffix
     /* eslint no-cond-assign: 0 */
     while (match = this.regexpUnescape.exec(str)) {
       value = handleFormat(match[1].trim());
       str = str.replace(match[0], value);
       this.regexpUnescape.lastIndex = 0;
+      replaces++;
+      if (replaces >= this.maxReplaces) {
+        break;
+      }
     }
 
+    replaces = 0;
     // regular escape on demand
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
@@ -91,6 +100,10 @@ class Interpolator {
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
       this.regexp.lastIndex = 0;
+      replaces++;
+      if (replaces >= this.maxReplaces) {
+        break;
+      }
     }
     return str;
   }
