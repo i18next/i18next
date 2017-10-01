@@ -194,6 +194,8 @@ class I18n extends EventEmitter {
 
   changeLanguage(lng, callback) {
     const done = (err, l) => {
+      this.translator.changeLanguage(l);
+
       if (l) {
         this.emit('languageChanged', l);
         this.logger.log('languageChanged', l);
@@ -206,8 +208,6 @@ class I18n extends EventEmitter {
       if (l) {
         this.language = l;
         this.languages = this.services.languageUtils.toResolveHierarchy(l);
-
-        this.translator.changeLanguage(l);
 
         if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(l);
       }
