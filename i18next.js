@@ -1890,6 +1890,8 @@ var I18n = function (_EventEmitter) {
     var _this4 = this;
 
     var done = function done(err, l) {
+      _this4.translator.changeLanguage(l);
+
       if (l) {
         _this4.emit('languageChanged', l);
         _this4.logger.log('languageChanged', l);
@@ -1904,8 +1906,6 @@ var I18n = function (_EventEmitter) {
       if (l) {
         _this4.language = l;
         _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
-
-        _this4.translator.changeLanguage(l);
 
         if (_this4.services.languageDetector) _this4.services.languageDetector.cacheUserLanguage(l);
       }
