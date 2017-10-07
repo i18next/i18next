@@ -1,10 +1,14 @@
+### 9.1.0
+- support for using suffix `_0` on languages only having "singular" form enables easier convert in tool chains
+
 ### 9.0.1
 - propagate changeLanguage to translator after loadResources
 
 ### 9.0.0
--- **[BREAKING]** removes the compatibility options to i18next v1 you can add that back like we do in our backward compatibility tests:  [https://github.com/i18next/i18next/blob/master/test/backward/v1.11.1.compat.js#L45-L52](https://github.com/i18next/i18next/blob/master/test/backward/v1.11.1.compat.js#L45-L52)		 +- removes the compatibility options to i18next v1
- -- allows passing in second param as string on getFixedT returned t function so we could use that as defaultValue		
- -- add setting maxReplaces in interpolation options to prevent endless loop in interpolation
+- **[BREAKING]** removes the compatibility options to i18next v1 you can add that back like we do in our backward compatibility tests:  [https://github.com/i18next/i18next/blob/master/test/backward/v1.11.1.compat.js#L45-L52](https://github.com/i18next/i18next/blob/master/test/backward/v1.11.1.compat.js#L45-L52)		 
+- removes the compatibility options to i18next v1
+ - allows passing in second param as string on getFixedT returned t function so we could use that as defaultValue		
+ - add setting maxReplaces in interpolation options to prevent endless loop in interpolation
 
 ### 8.4.3
 - getFixedT lng parameter of array type -> pass as lngs to t function [PR949](https://github.com/i18next/i18next/pull/949)

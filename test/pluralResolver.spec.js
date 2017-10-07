@@ -73,9 +73,9 @@ describe('PluralResolver', () => {
       {args: ['ach', 10.5], expected: 'plural'},
 
       // only singular
-      {args: ['su', 0], expected: ''},
-      {args: ['su', 1], expected: ''},
-      {args: ['su', 10], expected: ''},
+      {args: ['su', 0], expected: '0'},
+      {args: ['su', 1], expected: '0'},
+      {args: ['su', 10], expected: '0'},
 
       // ar
       {args: ['ar', 0], expected: '0'},

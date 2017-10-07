@@ -1051,7 +1051,7 @@ var PluralResolver = function () {
     var rule = this.getRule(code);
 
     if (rule) {
-      if (rule.numbers.length === 1) return ''; // only singular
+      if (rule.numbers.length === 1) return '0'; // only singular support the _0
 
       var idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
       var suffix = rule.numbers[idx];
