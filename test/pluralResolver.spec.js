@@ -67,6 +67,21 @@ describe('PluralResolver', () => {
       {args: ['fr', 10], expected: 'plural'},
       {args: ['fr', 10.5], expected: 'plural'},
 
+      {args: ['pt', 0], expected: ''},
+      {args: ['pt', 1], expected: ''},
+      {args: ['pt', 10], expected: 'plural'},
+      {args: ['pt', 10.5], expected: 'plural'},
+
+      {args: ['pt-PT', 0], expected: 'plural'},
+      {args: ['pt-PT', 1], expected: ''},
+      {args: ['pt-PT', 10], expected: 'plural'},
+      {args: ['pt-PT', 10.5], expected: 'plural'},
+
+      {args: ['pt-BR', 0], expected: ''},
+      {args: ['pt-BR', 1], expected: ''},
+      {args: ['pt-BR', 10], expected: 'plural'},
+      {args: ['pt-BR', 10.5], expected: 'plural'},
+
       {args: ['ach', 0], expected: ''},
       {args: ['ach', 1], expected: ''},
       {args: ['ach', 10], expected: 'plural'},

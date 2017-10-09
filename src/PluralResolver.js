@@ -3,13 +3,13 @@ import baseLogger from './logger';
 // definition http://translate.sourceforge.net/wiki/l10n/pluralforms
 /* eslint-disable */
 let sets = [
-  { lngs: ['ach','ak','am','arn','br','fil','gun','ln','mfe','mg','mi','oc',
+  { lngs: ['ach','ak','am','arn','br','fil','gun','ln','mfe','mg','mi','oc', 'pt', 'pt-BR',
     'tg','ti','tr','uz','wa'], nr: [1,2], fc: 1 },
 
   { lngs: ['af','an','ast','az','bg','bn','ca','da','de','dev','el','en',
     'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','he','hi',
     'hu','hy','ia','it','kn','ku','lb','mai','ml','mn','mr','nah','nap','nb',
-    'ne','nl','nn','no','nso','pa','pap','pms','ps','pt','rm','sco',
+    'ne','nl','nn','no','nso','pa','pap','pms','ps','pt-PT','rm','sco',
     'se','si','so','son','sq','sv','sw','ta','te','tk','ur','yo'], nr: [1,2], fc: 2 },
 
   { lngs: ['ay','bo','cgg','fa','id','ja','jbo','ka','kk','km','ko','ky','lo',
@@ -90,7 +90,7 @@ class PluralResolver {
   }
 
   getRule(code) {
-    return this.rules[this.languageUtils.getLanguagePartFromCode(code)];
+    return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
   }
 
   needsPlural(code) {
