@@ -22,6 +22,12 @@ describe('Translator', () => {
             test: 'test_de',
             test_plural: 'tests_de'
           }
+        },
+        ja: {
+          translation: {
+            test: 'test_ja',
+            test_0: 'tests_ja'
+          }
         }
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
@@ -52,7 +58,10 @@ describe('Translator', () => {
       {args: ['translation:test', { count: 1, lng: 'fr' }], expected: 'test_en'},
       {args: ['translation:test', { count: 2, lng: 'fr' }], expected: 'tests_en'},
       {args: ['translation:test', { count: 1, lng: 'en-US' }], expected: 'test_en'},
-      {args: ['translation:test', { count: 2, lng: 'en-US' }], expected: 'tests_en'}
+      {args: ['translation:test', { count: 2, lng: 'en-US' }], expected: 'tests_en'},
+      {args: ['translation:test', { count: 1, lng: 'ja' }], expected: 'tests_ja'},
+      {args: ['translation:test', { count: 2, lng: 'ja' }], expected: 'tests_ja'},
+      {args: ['translation:test', { count: 10, lng: 'ja' }], expected: 'tests_ja'}
     ];
 
     tests.forEach((test) => {

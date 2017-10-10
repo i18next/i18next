@@ -1,3 +1,6 @@
+### 10.0.1
+- fixes support for using suffix `_0` on languages only having "singular" form
+
 ### 10.0.0
 - **[BREAKING]** brings pt, pt-PT, pt-BR plurals in line with, new pt reflects pt-BR and pt-PT gets a special case for plural handling http://www.unicode.org/cldr/charts/26/supplemental/language_plural_rules.html
 
