@@ -18,7 +18,8 @@ class Translator extends EventEmitter {
   }
 
   exists(key, options = { interpolation: {} }) {
-    return this.resolve(key, options) !== undefined;
+    const resolved = this.resolve(key, options);
+    return  resolved && resolved.res !== undefined;
   }
 
   extractFromKey(key, options) {
@@ -71,7 +72,9 @@ class Translator extends EventEmitter {
     }
 
     // resolve from store
-    let res = this.resolve(keys, options);
+    const resolved = this.resolve(keys, options);
+    let res = resolved && resolved.res;
+    const usedKey = (resolved && resolved.usedKey) || key;
 
     const resType = Object.prototype.toString.apply(res);
     const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -81,7 +84,7 @@ class Translator extends EventEmitter {
     if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
-        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(key, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
+        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
       }
 
       // if we got a separator we loop over children - else we just return object as is
@@ -92,7 +95,7 @@ class Translator extends EventEmitter {
         /* eslint no-restricted-syntax: 0 */
         for (const m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            copy[m] = this.translate(`${key}${keySeparator}${m}`, { ...options, ...{ joinArrays: false, ns: namespaces } });
+            copy[m] = this.translate(`${usedKey}${keySeparator}${m}`, { ...options, ...{ joinArrays: false, ns: namespaces } });
           }
         }
         res = copy;
@@ -186,15 +189,16 @@ class Translator extends EventEmitter {
 
   resolve(keys, options = {}) {
     let found;
+    let usedKey;
 
     if (typeof keys === 'string') keys = [keys];
 
     // forEach possible key
     keys.forEach((k) => {
       if (this.isValidLookup(found)) return;
-
       const extracted = this.extractFromKey(k, options);
       const key = extracted.key;
+      usedKey = key;
       let namespaces = extracted.namespaces;
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
@@ -236,7 +240,7 @@ class Translator extends EventEmitter {
       });
     });
 
-    return found;
+    return { res: found, usedKey };
   }
 
   isValidLookup(res) {

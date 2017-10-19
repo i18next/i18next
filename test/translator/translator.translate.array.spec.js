@@ -13,7 +13,17 @@ describe('Translator', () => {
       const rs = new ResourceStore({
         en: {
           translation: {
-            test: ['test_en_1', 'test_en_2', '{{myVar}}']
+            test: ['test_en_1', 'test_en_2', '{{myVar}}'],
+            flagList: [
+              ['basic1', 'Basic1'],
+              ['simple1', 'Simple1']
+            ],
+            search: {
+              flagList: [
+                ['basic', 'Basic'],
+                ['simple', 'Simple']
+              ]
+            }
           }
         }
       });
@@ -24,13 +34,14 @@ describe('Translator', () => {
         pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
         interpolator: new Interpolator()
       }, {
-        joinArrays: '+',
+        returnObjects: true,
         ns: 'translation',
         defaultNS: 'translation',
+        keySeparator: '.',
         interpolation: {
-          interpolateResult: true,
-          interpolateDefaultValue: true,
-          interpolateKey: true
+          // interpolateResult: true,
+          // interpolateDefaultValue: true,
+          // interpolateKey: true
         }
       });
       t.changeLanguage('en');
@@ -39,11 +50,13 @@ describe('Translator', () => {
     var tests = [
       { args: ['translation:test.0'], expected: 'test_en_1' },
       { args: ['translation:test.2', {myVar: 'test'}], expected: 'test' },
-      { args: ['translation:test', {myVar: 'test'}], expected: 'test_en_1+test_en_2+test' }
+      { args: ['translation:test', {myVar: 'test', joinArrays: '+'}], expected: 'test_en_1+test_en_2+test' },
+      { args: [['search.flagList', 'flagList'], {}], expected: [['basic', 'Basic'], ['simple', 'Simple']] }
     ];
 
     tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+        console.warn(t.translate.apply(t, test.args))
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
