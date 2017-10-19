@@ -571,7 +571,8 @@ var Translator = function (_EventEmitter) {
   Translator.prototype.exists = function exists(key) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { interpolation: {} };
 
-    return this.resolve(key, options) !== undefined;
+    var resolved = this.resolve(key, options);
+    return resolved && resolved.res !== undefined;
   };
 
   Translator.prototype.extractFromKey = function extractFromKey(key, options) {
@@ -630,7 +631,9 @@ var Translator = function (_EventEmitter) {
     }
 
     // resolve from store
-    var res = this.resolve(keys, options);
+    var resolved = this.resolve(keys, options);
+    var res = resolved && resolved.res;
+    var usedKey = resolved && resolved.usedKey || key;
 
     var resType = Object.prototype.toString.apply(res);
     var noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -640,7 +643,7 @@ var Translator = function (_EventEmitter) {
     if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
-        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(key, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
+        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
       }
 
       // if we got a separator we loop over children - else we just return object as is
@@ -651,7 +654,7 @@ var Translator = function (_EventEmitter) {
         /* eslint no-restricted-syntax: 0 */
         for (var m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            copy$$1[m] = this.translate('' + key + keySeparator + m, _extends({}, options, { joinArrays: false, ns: namespaces }));
+            copy$$1[m] = this.translate('' + usedKey + keySeparator + m, _extends({}, options, { joinArrays: false, ns: namespaces }));
           }
         }
         res = copy$$1;
@@ -663,7 +666,7 @@ var Translator = function (_EventEmitter) {
     } else {
       // string, empty or null
       var usedDefault = false;
-      var usedKey = false;
+      var _usedKey = false;
 
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
@@ -671,12 +674,12 @@ var Translator = function (_EventEmitter) {
         res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
-        usedKey = true;
+        _usedKey = true;
         res = key;
       }
 
       // save missing
-      if (usedKey || usedDefault) {
+      if (_usedKey || usedDefault) {
         this.logger.log('missingKey', lng, namespace, key, res);
 
         var lngs = [];
@@ -706,10 +709,10 @@ var Translator = function (_EventEmitter) {
       res = this.extendTranslation(res, key, options);
 
       // append namespace if still key
-      if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = namespace + ':' + key;
+      if (_usedKey && res === key && this.options.appendNamespaceToMissingKey) res = namespace + ':' + key;
 
       // parseMissingKeyHandler
-      if (usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
+      if (_usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
     }
 
     // return
@@ -750,15 +753,16 @@ var Translator = function (_EventEmitter) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     var found = void 0;
+    var usedKey = void 0;
 
     if (typeof keys === 'string') keys = [keys];
 
     // forEach possible key
     keys.forEach(function (k) {
       if (_this3.isValidLookup(found)) return;
-
       var extracted = _this3.extractFromKey(k, options);
       var key = extracted.key;
+      usedKey = key;
       var namespaces = extracted.namespaces;
       if (_this3.options.fallbackNS) namespaces = namespaces.concat(_this3.options.fallbackNS);
 
@@ -800,7 +804,7 @@ var Translator = function (_EventEmitter) {
       });
     });
 
-    return found;
+    return { res: found, usedKey: usedKey };
   };
 
   Translator.prototype.isValidLookup = function isValidLookup(res) {
