@@ -1,4 +1,4 @@
-### 10.0.2
+### 10.0.3
 - pass all keys to postProcessor instead of just last, reduced to not include namepace -> allows intervalPostProcessor to work correctly in detecting plural fallbacks
 
 ### 10.0.1
