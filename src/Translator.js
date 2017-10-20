@@ -103,7 +103,7 @@ class Translator extends EventEmitter {
     } else if (joinArrays && resType === '[object Array]') {
       // array special treatment
       res = res.join(joinArrays);
-      if (res) res = this.extendTranslation(res, key, options);
+      if (res) res = this.extendTranslation(res, keys, options);
     } else {
       // string, empty or null
       let usedDefault = false;
@@ -147,7 +147,7 @@ class Translator extends EventEmitter {
       }
 
       // extend
-      res = this.extendTranslation(res, key, options);
+      res = this.extendTranslation(res, keys, options);
 
       // append namespace if still key
       if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;

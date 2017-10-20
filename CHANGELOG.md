@@ -1,3 +1,6 @@
+### 10.0.2
+- pass all keys to postProcessor instead of just last, reduced to not include namepace -> allows intervalPostProcessor to work correctly in detecting plural fallbacks
+
 ### 10.0.1
 - fixes support for using suffix `_0` on languages only having "singular" form
 
