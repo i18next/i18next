@@ -1,5 +1,5 @@
-import EventEmitter from './EventEmitter';
-import * as utils from './utils';
+import EventEmitter from './EventEmitter.js';
+import * as utils from './utils.js';
 
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {

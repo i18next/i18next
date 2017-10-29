@@ -1,4 +1,4 @@
-import baseLogger from './logger';
+import baseLogger from './logger.js';
 
 // definition http://translate.sourceforge.net/wiki/l10n/pluralforms
 /* eslint-disable */

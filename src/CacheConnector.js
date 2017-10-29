@@ -1,5 +1,5 @@
-import baseLogger from './logger';
-import EventEmitter from './EventEmitter';
+import baseLogger from './logger.js';
+import EventEmitter from './EventEmitter.js';
 
 class Connector extends EventEmitter {
   constructor(cache, store, services, options = {}) {

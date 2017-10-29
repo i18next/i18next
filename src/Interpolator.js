@@ -1,5 +1,5 @@
-import * as utils from './utils';
-import baseLogger from './logger';
+import * as utils from './utils.js';
+import baseLogger from './logger.js';
 
 class Interpolator {
   constructor(options = {}) {
