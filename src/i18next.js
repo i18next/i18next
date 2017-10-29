@@ -304,12 +304,12 @@ class I18n extends EventEmitter {
     membersToCopy.forEach((m) => {
       clone[m] = this[m];
     });
-
-    clone.init(mergedOptions, callback);
     clone.translator = new Translator(clone.services, clone.options);
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);
     });
+    clone.init(mergedOptions, callback);
+    clone.translator.options = clone.options; // sync options
 
     return clone;
   }

@@ -1,4 +1,4 @@
-### 10.0.4
+### 10.0.5
 - should fix sync of options in clone and its translator
 
 ### 10.0.2
