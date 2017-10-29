@@ -2023,6 +2023,8 @@ var I18n = function (_EventEmitter) {
     membersToCopy.forEach(function (m) {
       clone[m] = _this7[m];
     });
+
+    clone.init(mergedOptions, callback);
     clone.translator = new Translator(clone.services, clone.options);
     clone.translator.on('*', function (event) {
       for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
@@ -2031,7 +2033,6 @@ var I18n = function (_EventEmitter) {
 
       clone.emit.apply(clone, [event].concat(args));
     });
-    clone.init(mergedOptions, callback);
 
     return clone;
   };
