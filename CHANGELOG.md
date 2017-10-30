@@ -1,3 +1,6 @@
+### 10.0.6
+- native browser es modules via adding .js where needed [PR980](https://github.com/i18next/i18next/pull/980)
+
 ### 10.0.5
 - should fix sync of options in clone and its translator
 

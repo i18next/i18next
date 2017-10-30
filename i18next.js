@@ -2018,7 +2018,7 @@ var I18n = function (_EventEmitter) {
     var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
 
     var mergedOptions = _extends({}, this.options, options, { isClone: true });
-    var clone = new I18n(mergedOptions, callback);
+    var clone = new I18n(mergedOptions);
     var membersToCopy = ['store', 'services', 'language'];
     membersToCopy.forEach(function (m) {
       clone[m] = _this7[m];
