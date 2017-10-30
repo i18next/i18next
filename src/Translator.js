@@ -1,7 +1,7 @@
-import baseLogger from './logger';
-import EventEmitter from './EventEmitter';
-import postProcessor from './postProcessor';
-import * as utils from './utils';
+import baseLogger from './logger.js';
+import EventEmitter from './EventEmitter.js';
+import postProcessor from './postProcessor.js';
+import * as utils from './utils.js';
 
 class Translator extends EventEmitter {
   constructor(services, options = {}) {

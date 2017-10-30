@@ -1,6 +1,6 @@
-import * as utils from './utils';
-import baseLogger from './logger';
-import EventEmitter from './EventEmitter';
+import * as utils from './utils.js';
+import baseLogger from './logger.js';
+import EventEmitter from './EventEmitter.js';
 
 function remove(arr, what) {
   let found = arr.indexOf(what);

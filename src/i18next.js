@@ -1,14 +1,14 @@
-import baseLogger from './logger';
-import EventEmitter from './EventEmitter';
-import ResourceStore from './ResourceStore';
-import Translator from './Translator';
-import LanguageUtils from './LanguageUtils';
-import PluralResolver from './PluralResolver';
-import Interpolator from './Interpolator';
-import BackendConnector from './BackendConnector';
-import CacheConnector from './CacheConnector';
-import { get as getDefaults, transformOptions } from './defaults';
-import postProcessor from './postProcessor';
+import baseLogger from './logger.js';
+import EventEmitter from './EventEmitter.js';
+import ResourceStore from './ResourceStore.js';
+import Translator from './Translator.js';
+import LanguageUtils from './LanguageUtils.js';
+import PluralResolver from './PluralResolver.js';
+import Interpolator from './Interpolator.js';
+import BackendConnector from './BackendConnector.js';
+import CacheConnector from './CacheConnector.js';
+import { get as getDefaults, transformOptions } from './defaults.js';
+import postProcessor from './postProcessor.js';
 
 function noop() {}
 
