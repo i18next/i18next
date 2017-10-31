@@ -31,8 +31,10 @@
         },
         debug: true
       }, function(err, t) {
-        console.warn(i18next.t('input.placeholder'));
-        console.warn(i18next.t('nav.home'));
+        var fixedT = i18next.getFixedT(null, null);
+        console.warn(fixedT('nav.page3', 'support'), fixedT('nav.page3', 'support') === 'support');
+        console.warn(i18next.t('input.placeholder'), i18next.t('input.placeholder') === 'a placeholder');
+        console.warn(i18next.t('nav.home'), i18next.t('nav.home') === 'Home');
         console.warn(i18next);
       });
     </script>

@@ -227,8 +227,12 @@ class I18n extends EventEmitter {
   }
 
   getFixedT(lng, ns) {
-    const fixedT = (key, opts = {}) => {
-      const options = (typeof opts === 'string') ? { defaultValue: opts } : { ...opts };
+    const fixedT = (key, opts, ...rest) => {
+      let options = { ...opts };
+      if (typeof opts !== 'object') {
+        options = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+      }
+
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;

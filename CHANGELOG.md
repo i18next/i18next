@@ -1,3 +1,6 @@
+### 10.0.7
+- support all overloadTranslationOptionHandler in getFixedT [react-i18next/issues/332](https://github.com/i18next/react-i18next/issues/332)
+
 ### 10.0.6
 - native browser es modules via adding .js where needed [PR980](https://github.com/i18next/i18next/pull/980)
 
