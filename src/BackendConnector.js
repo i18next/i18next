@@ -111,6 +111,9 @@ class Connector extends EventEmitter {
 
     // remove done load requests
     this.queue = this.queue.filter(q => !q.done);
+    if (this.queue.length === 0) {
+      this.emit('fullQueueLoaded');
+    }
   }
 
   read(lng, ns, fcName, tried = 0, wait = 250, callback) {
