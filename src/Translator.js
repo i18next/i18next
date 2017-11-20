@@ -81,7 +81,7 @@ class Translator extends EventEmitter {
     const joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
-    if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    if (res && (typeof res !== 'string' && typeof res !== 'boolean') && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
