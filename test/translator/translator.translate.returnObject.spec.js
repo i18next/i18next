@@ -15,8 +15,9 @@ describe('Translator', () => {
           common: {
             test: ['common_test_en_1', 'common_test_en_2'],
             something: {
-              range: '[{{min}}..{{max}}]'
-            }
+              range: '[{{min}}..{{max}}]',
+            },
+            boolean: { value: true }
           },
           special: {
             test: ['special_test_en_1', 'special_test_en_2']
@@ -58,6 +59,7 @@ describe('Translator', () => {
       // should not overwrite store value
       {args: ['common:something'], expected: { range: '[..]' }},
       {args: ['common:something.range', { min: '1', max: '1000' }], expected: '[1..1000]'},
+      {args: ['common:boolean'], expected: { value: true }},
     ];
 
     tests.forEach((test) => {
