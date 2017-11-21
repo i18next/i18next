@@ -208,6 +208,7 @@ class I18n extends EventEmitter {
       if (l) {
         this.language = l;
         this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        if (!this.translator.language) this.translator.changeLanguage(l);
 
         if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(l);
       }

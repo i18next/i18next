@@ -17,7 +17,8 @@ describe('Translator', () => {
             something: {
               range: '[{{min}}..{{max}}]',
             },
-            boolean: { value: true }
+            boolean: { value: true },
+            number: { value: 42 }
           },
           special: {
             test: ['special_test_en_1', 'special_test_en_2']
@@ -60,6 +61,7 @@ describe('Translator', () => {
       {args: ['common:something'], expected: { range: '[..]' }},
       {args: ['common:something.range', { min: '1', max: '1000' }], expected: '[1..1000]'},
       {args: ['common:boolean'], expected: { value: true }},
+      {args: ['common:number'], expected: { value: 42 }},
     ];
 
     tests.forEach((test) => {

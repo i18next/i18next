@@ -1,3 +1,8 @@
+### 10.1.0
+- return boolean, number from translator
+- initial set language on translator if non set yet (after that only if loaded) [#998](https://github.com/i18next/i18next/issues/998)
+
+
 ### 10.0.7
 - support all overloadTranslationOptionHandler in getFixedT [react-i18next/issues/332](https://github.com/i18next/react-i18next/issues/332)
 
