@@ -20,6 +20,7 @@ export function get() {
     contextSeparator: '_',
 
     saveMissing: false, // enable to send missing values
+    updateMissing: false, // enable to update default values if different from translated value (only useful on initial development, or when keeping code as source of truth)
     saveMissingTo: 'fallback', // 'current' || 'all'
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
 

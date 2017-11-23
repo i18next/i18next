@@ -1,3 +1,6 @@
+### 10.2.0 (upcoming)
+- init option updateMissing: enable to update default values if different from translated value (only useful on initial development or when keeping code as source of truth not changing values outside of code)
+
 ### 10.1.0
 - return boolean, number from translator
 - initial set language on translator if non set yet (after that only if loaded) [#998](https://github.com/i18next/i18next/issues/998)
