@@ -121,7 +121,8 @@ class Translator extends EventEmitter {
       }
 
       // save missing
-      if (usedKey || usedDefault) {
+      const updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
+      if (usedKey || usedDefault || updateMissing) {
         this.logger.log('missingKey', lng, namespace, key, res);
 
         let lngs = [];
@@ -138,9 +139,9 @@ class Translator extends EventEmitter {
 
         if (this.options.saveMissing) {
           if (this.options.missingKeyHandler) {
-            this.options.missingKeyHandler(lngs, namespace, key, res);
+            this.options.missingKeyHandler(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
-            this.backendConnector.saveMissing(lngs, namespace, key, res);
+            this.backendConnector.saveMissing(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
           }
         }
 
