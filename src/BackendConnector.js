@@ -218,8 +218,8 @@ class Connector extends EventEmitter {
     });
   }
 
-  saveMissing(languages, namespace, key, fallbackValue) {
-    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
+  saveMissing(languages, namespace, key, fallbackValue, isUpdateMissing) {
+    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue, isUpdateMissing);
 
     // write to store to avoid resending
     if (!languages || !languages[0]) return;
