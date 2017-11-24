@@ -1,3 +1,6 @@
+### 10.2.1
+- optimize update output in log
+
 ### 10.2.0
 - *[EXPERIMENTAL]* init option updateMissing: enable to update default values if different from translated value (only useful on initial development or when keeping code as source of truth not changing values outside of code)
 

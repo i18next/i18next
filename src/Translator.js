@@ -123,7 +123,7 @@ class Translator extends EventEmitter {
       // save missing
       const updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
       if (usedKey || usedDefault || updateMissing) {
-        this.logger.log('missingKey', lng, namespace, key, res);
+        this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
 
         let lngs = [];
         const fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);

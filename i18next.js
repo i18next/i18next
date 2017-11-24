@@ -682,7 +682,7 @@ var Translator = function (_EventEmitter) {
       // save missing
       var updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
       if (_usedKey || usedDefault || updateMissing) {
-        this.logger.log('missingKey', lng, namespace, key, res);
+        this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
 
         var lngs = [];
         var fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
