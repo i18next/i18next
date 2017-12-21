@@ -11,7 +11,7 @@
 
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
 
-![ecosystem](https://www.i18next.com/assets/img/i18next-frameworks.png)
+![ecosystem](https://www.i18next.com/assets/img/i18next-ecosystem.jpg)
 
 
 i18next provides:
