@@ -128,8 +128,7 @@ class Interpolator {
       try {
         clonedOptions = JSON.parse(optionsString);
 
-        if(inheritedOptions)
-            clonedOptions = { ...inheritedOptions, ...clonedOptions};
+        if (inheritedOptions) clonedOptions = { ...inheritedOptions, ...clonedOptions };
       } catch (e) {
         this.logger.error(`failed parsing options string in nesting for key ${key}`, e);
       }
