@@ -1,3 +1,6 @@
+### 10.2.2
+- fixes Context and nested lost initial options [109](https://github.com/i18next/i18next/issues/1009)
+
 ### 10.2.1
 - optimize update output in log
 
