@@ -202,5 +202,23 @@ describe('PluralResolver', () => {
     });
   });
 
+  describe('getPluralFormsOfKey()', () => {
+    let pr;
 
+    before(() => {
+      let lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, { simplifyPluralSuffix: true, prepend: '_' });
+    });
+
+    var tests = [
+      {args: ['en', 'key'], expected: ['key', 'key_plural']},
+      {args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5']}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 });

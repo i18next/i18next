@@ -62,4 +62,61 @@ describe('Translator', () => {
     });
   });
 
+
+  describe('translate() using missing with saveMissingPlurals options', () => {
+    var t;
+
+    before(() => {
+      const rs = new ResourceStore({
+        en: {
+          translation: {
+            test: 'test_en',
+            deep: {
+              test: 'deep_en'
+            }
+          }
+        },
+        de: {
+          translation: {
+            test: 'test_de'
+          }
+        }
+      });
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
+      t = new Translator({
+        resourceStore: rs,
+        languageUtils: lu,
+        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
+        interpolator: new Interpolator()
+      }, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        saveMissingPlurals: true,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true
+        }
+      });
+      t.changeLanguage('ar');
+    });
+
+    var tests = [
+      {args: ['translation:test.missing', { count: 10 }], expected: 6}
+    ];
+
+    tests.forEach((test) => {
+      it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
+        let todo = test.expected;
+        t.options.missingKeyHandler = (lngs, namespace, key, res) => {
+          // console.warn(lngs, namespace, key, res);
+          todo--;
+        };
+
+        t.translate.apply(t, test.args);
+        expect(todo).to.eql(0)
+      });
+    });
+  });
 });

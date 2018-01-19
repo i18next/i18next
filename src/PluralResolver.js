@@ -99,11 +99,24 @@ class PluralResolver {
     return rule && rule.numbers.length > 1;
   }
 
+  getPluralFormsOfKey(code, key) {
+    const ret = [];
+
+    const rule = this.getRule(code);
+
+    rule.numbers.forEach((n) => {
+      const suffix = this.getSuffix(code, n);
+      ret.push(`${key}${suffix}`);
+    });
+
+    return ret;
+  }
+
   getSuffix(code, count) {
     const rule = this.getRule(code);
 
     if (rule) {
-      //if (rule.numbers.length === 1) return ''; // only singular
+      // if (rule.numbers.length === 1) return ''; // only singular
 
       const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
       let suffix = rule.numbers[idx];

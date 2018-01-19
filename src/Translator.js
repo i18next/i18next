@@ -137,15 +137,26 @@ class Translator extends EventEmitter {
           lngs.push(options.lng || this.language);
         }
 
-        if (this.options.saveMissing) {
+        const send = (l, k) => {
           if (this.options.missingKeyHandler) {
-            this.options.missingKeyHandler(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
+            this.options.missingKeyHandler(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing);
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
-            this.backendConnector.saveMissing(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
+            this.backendConnector.saveMissing(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing);
+          }
+          this.emit('missingKey', l, namespace, k, res);
+        };
+
+        if (this.options.saveMissing) {
+          if (this.options.saveMissingPlurals && options.count) {
+            lngs.forEach((l) => {
+              const plurals = this.pluralResolver.getPluralFormsOfKey(l, key);
+
+              plurals.forEach(p => send([l], p));
+            });
+          } else {
+            send(lngs, key);
           }
         }
-
-        this.emit('missingKey', lngs, namespace, key, res);
       }
 
       // extend
