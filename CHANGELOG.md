@@ -1,8 +1,11 @@
+### 10.4.0
+- fixes combination of returnObject and context by returning original value for deep translation when lookup for inner returns a key (failed to translate proper) [1014](https://github.com/i18next/i18next/issues/1014)
+
 ### 10.3.0
-- new option saveMissingPlurals (default true) will enable submitting plural forms on saveMissing if t call is for plural (count passed in options). 
+- new option saveMissingPlurals (default true) will enable submitting plural forms on saveMissing if t call is for plural (count passed in options).
 
 ### 10.2.2
-- fixes Context and nested lost initial options [109](https://github.com/i18next/i18next/issues/1009)
+- fixes Context and nested lost initial options [1009](https://github.com/i18next/i18next/issues/1009)
 
 ### 10.2.1
 - optimize update output in log

@@ -96,7 +96,9 @@ class Translator extends EventEmitter {
         /* eslint no-restricted-syntax: 0 */
         for (const m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            copy[m] = this.translate(`${usedKey}${keySeparator}${m}`, { ...options, ...{ joinArrays: false, ns: namespaces } });
+            const deepKey = `${usedKey}${keySeparator}${m}`;
+            copy[m] = this.translate(deepKey, { ...options, ...{ joinArrays: false, ns: namespaces } });
+            if (copy[m] === deepKey) copy[m] = res[m]; // if nothing found use orginal value as fallback
           }
         }
         res = copy;
