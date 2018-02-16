@@ -41,11 +41,12 @@ class Translator extends EventEmitter {
     };
   }
 
-  translate(keys, options = {}) {
-    if (typeof options !== 'object') {
+  translate(keys, options) {
+    if (typeof options !== 'object' && this.options.overloadTranslationOptionHandler) {
       /* eslint prefer-rest-params: 0 */
       options = this.options.overloadTranslationOptionHandler(arguments);
     }
+    if (!options) options = {};
 
     // non valid keys handling
     if (keys === undefined || keys === null || keys === '') return '';
@@ -74,7 +75,7 @@ class Translator extends EventEmitter {
     // resolve from store
     const resolved = this.resolve(keys, options);
     let res = resolved && resolved.res;
-    const usedKey = (resolved && resolved.usedKey) || key;
+    const resUsedKey = (resolved && resolved.usedKey) || key;
 
     const resType = Object.prototype.toString.apply(res);
     const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -85,7 +86,7 @@ class Translator extends EventEmitter {
     if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
-        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
+        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
       }
 
       // if we got a separator we loop over children - else we just return object as is
@@ -96,7 +97,7 @@ class Translator extends EventEmitter {
         /* eslint no-restricted-syntax: 0 */
         for (const m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            const deepKey = `${usedKey}${keySeparator}${m}`;
+            const deepKey = `${resUsedKey}${keySeparator}${m}`;
             copy[m] = this.translate(deepKey, { ...options, ...{ joinArrays: false, ns: namespaces } });
             if (copy[m] === deepKey) copy[m] = res[m]; // if nothing found use orginal value as fallback
           }
@@ -141,9 +142,9 @@ class Translator extends EventEmitter {
 
         const send = (l, k) => {
           if (this.options.missingKeyHandler) {
-            this.options.missingKeyHandler(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing);
+            this.options.missingKeyHandler(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing, options);
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
-            this.backendConnector.saveMissing(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing);
+            this.backendConnector.saveMissing(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing, options);
           }
           this.emit('missingKey', l, namespace, k, res);
         };
@@ -193,6 +194,7 @@ class Translator extends EventEmitter {
     const postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
     if (res !== undefined &&
+      res !== null &&
       postProcessorNames &&
       postProcessorNames.length &&
       options.applyPostProcessor !== false) {

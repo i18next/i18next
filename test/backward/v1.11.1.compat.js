@@ -1160,7 +1160,8 @@ describe('i18next', function() {
                 'en-US': { translation: { 'simpleTest': 'ok_from_en-US' } },
                 'de-DE': { translation: { 'simpleTest': 'ok_from_de-DE' } }
               },
-              postProcess: 'myProcessor'
+              postProcess: 'myProcessor',
+              shortcutFunction: 'defaultValue',
             }), function(t) { done(); } );
           });
 

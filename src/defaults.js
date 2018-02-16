@@ -35,7 +35,10 @@ export function get() {
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
     overloadTranslationOptionHandler: function handle(args) {
-      return { defaultValue: args[1] };
+      const ret = {};
+      if (args[1]) ret.defaultValue = args[1];
+      if (args[2]) ret.tDescription = args[2];
+      return ret;
     },
 
     interpolation: {

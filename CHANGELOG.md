@@ -1,5 +1,6 @@
 ### 10.4.0
 - fixes combination of returnObject and context by returning original value for deep translation when lookup for inner returns a key (failed to translate proper) [1014](https://github.com/i18next/i18next/issues/1014)
+- *[EXPERIMENTAL]* additional you can pass `tDescription` to the `t` options or as a third param to calling `t` -> `t(key, defaultValue, tDescription);`. Those will get forwarded to the backend and can be submitted on saveMissing to provide contextual information for translators.
 
 ### 10.3.0
 - new option saveMissingPlurals (default true) will enable submitting plural forms on saveMissing if t call is for plural (count passed in options).
