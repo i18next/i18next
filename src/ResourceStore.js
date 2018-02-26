@@ -56,15 +56,15 @@ class ResourceStore extends EventEmitter {
     if (!options.silent) this.emit('added', lng, ns, key, value);
   }
 
-  addResources(lng, ns, resources) {
+  addResources(lng, ns, resources, options = { silent: false }) {
     /* eslint no-restricted-syntax: 0 */
     for (const m in resources) {
       if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m], { silent: true });
     }
-    this.emit('added', lng, ns, resources);
+    if (!options.silent) this.emit('added', lng, ns, resources);
   }
 
-  addResourceBundle(lng, ns, resources, deep, overwrite) {
+  addResourceBundle(lng, ns, resources, deep, overwrite, options = { silent: false }) {
     let path = [lng, ns];
     if (lng.indexOf('.') > -1) {
       path = lng.split('.');
@@ -85,7 +85,7 @@ class ResourceStore extends EventEmitter {
 
     utils.setPath(this.data, path, pack);
 
-    this.emit('added', lng, ns, resources);
+    if (!options.silent) this.emit('added', lng, ns, resources);
   }
 
   removeResourceBundle(lng, ns) {

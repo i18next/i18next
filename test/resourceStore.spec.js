@@ -50,6 +50,60 @@ describe('ResourceStore', () => {
         // getting object
         expect(rs.getResource('de.translation.nest.object')).to.eql({ something: 'deeper' });
       });
+
+      it('it should emit \'added\' event on addResource call', () => {
+        const spy = sinon.spy();
+        rs.on('added', spy);
+        rs.addResource('fr', 'translation', 'hi', 'salut');
+        expect(spy.calledWithExactly('fr', 'translation', 'hi', 'salut')).to.be.true;
+      });
+
+      it('it should not emit \'added\' event on addResource call with silent option', () => {
+        const spy = sinon.spy();
+        rs.on('added', spy);
+        rs.addResource('fr', 'translation', 'hi', 'salut', { silent: true });
+        expect(spy.notCalled).to.be.true;
+      });
+
+      it('it should emit \'added\' event on addResources call', () => {
+        const spy = sinon.spy();
+        rs.on('added', spy);
+        rs.addResources('fr', 'translation', {
+          'hi': 'salut',
+          'hello': 'bonjour',
+        });
+        expect(spy.calledOnce).to.be.true;
+      });
+
+      it('it should not emit \'added\' event on addResources call with silent option', () => {
+        const spy = sinon.spy();
+        rs.on('added', spy);
+        rs.addResources('fr', 'translation', {
+          'hi': 'salut',
+          'hello': 'bonjour',
+        }, { silent: true });
+        expect(spy.notCalled).to.be.true;
+      });
+
+      it('it should emit \'added\' event on addResourceBundle call', () => {
+        const spy = sinon.spy();
+        rs.on('added', spy);
+        rs.addResourceBundle('fr', 'translation', {
+          'hi': 'salut',
+          'hello': 'bonjour',
+        }, true, true);
+        expect(spy.calledOnce).to.be.true;
+      });
+
+      it('it should not emit \'added\' event on addResourceBundle call with silent option', () => {
+        const spy = sinon.spy();
+        rs.on('added', spy);
+        rs.addResourceBundle('fr', 'translation', {
+          'hi': 'salut',
+          'hello': 'bonjour',
+        }, true, true, { silent: true });
+        expect(spy.notCalled).to.be.true;
+      });
     });
 
     describe('can extend resources bundle', () => {
