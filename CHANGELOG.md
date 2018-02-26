@@ -1,3 +1,6 @@
+### 10.5.0
+- Adds options.silent to addResources and addResourceBundle [1024](https://github.com/i18next/i18next/pull/1024)
+
 ### 10.4.1
 - forward options in backend.create saveMissing
 
