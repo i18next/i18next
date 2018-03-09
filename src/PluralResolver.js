@@ -104,6 +104,8 @@ class PluralResolver {
 
     const rule = this.getRule(code);
 
+    if (!rule) return ret;
+
     rule.numbers.forEach((n) => {
       const suffix = this.getSuffix(code, n);
       ret.push(`${key}${suffix}`);
