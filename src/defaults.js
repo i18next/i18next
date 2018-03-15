@@ -71,7 +71,7 @@ export function transformOptions(options) {
 
   // extend whitelist with cimode
   if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-    options.whitelist = options.whitelist.concat(['cimode'])
+    options.whitelist = options.whitelist.concat(['cimode']);
   }
 
   return options;
