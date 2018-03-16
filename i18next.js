@@ -1078,6 +1078,8 @@ var PluralResolver = function () {
 
     var rule = this.getRule(code);
 
+    if (!rule) return ret;
+
     rule.numbers.forEach(function (n) {
       var suffix = _this.getSuffix(code, n);
       ret.push('' + key + suffix);
@@ -1710,7 +1712,9 @@ function transformOptions(options) {
   if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
 
   // extend whitelist with cimode
-  if (options.whitelist && options.whitelist.indexOf('cimode') < 0) options.whitelist.push('cimode');
+  if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
+    options.whitelist = options.whitelist.concat(['cimode']);
+  }
 
   return options;
 }
