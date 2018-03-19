@@ -1238,8 +1238,12 @@ var Interpolator = function () {
       value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = makeString(value);
       if (!value) {
-        this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
-        value = '';
+        if (typeof this.options.missingInterpolationHandler === 'function') {
+          value = typeof this.options.missingInterpolationHandler(str, match) === 'string' ? this.options.missingInterpolationHandler(str, match) : '';
+        } else {
+          this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
+          value = '';
+        }
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
@@ -1664,6 +1668,7 @@ function get$1() {
     saveMissingTo: 'fallback', // 'current' || 'all'
     saveMissingPlurals: true, // will save all forms not only singular key
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
+    missingInterpolationHandler: false, // function(str, match)
 
     postProcess: false, // string or array of postProcessor names
     returnNull: true, // allows null value as valid translation
