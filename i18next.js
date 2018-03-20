@@ -1239,7 +1239,8 @@ var Interpolator = function () {
       if (typeof value !== 'string') value = makeString(value);
       if (!value) {
         if (typeof this.options.missingInterpolationHandler === 'function') {
-          value = typeof this.options.missingInterpolationHandler(str, match) === 'string' ? this.options.missingInterpolationHandler(str, match) : '';
+          var temp = this.options.missingInterpolationHandler(str, match);
+          value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
           value = '';
