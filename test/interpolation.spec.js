@@ -251,4 +251,51 @@ describe('Interpolator', () => {
       });
     });
   });
+
+  describe("interpolate() - with missing interpolation value", () => {
+    var ip;
+    var tests = [
+      {args: ['{{test}}'], expected: ''},
+    ];
+
+    before(() => {
+      ip = new Interpolator({
+        missingInterpolationHandler: (str, match) => {
+          expect(str).to.eql('{{test}}');
+          expect(match[0]).to.eql('{{test}}');
+          expect(match[1]).to.eql('test');
+        }
+      });
+    });
+
+    tests.forEach((test) => {
+      it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {        
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
+  describe("interpolate() - with missing interpolation value - filled by missingInterpolationHandler", () => {
+    var ip;
+    var tests = [
+      {args: ['{{test}}'], expected: 'test'},
+    ];
+
+    before(() => {
+      ip = new Interpolator({
+        missingInterpolationHandler: (str, match) => {
+          expect(str).to.eql('{{test}}');
+          expect(match[0]).to.eql('{{test}}');
+          expect(match[1]).to.eql('test');
+          return 'test';
+        }
+      });
+    });
+
+    tests.forEach((test) => {
+      it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {        
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 });
