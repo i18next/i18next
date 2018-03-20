@@ -94,7 +94,7 @@ class Interpolator {
       value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
-        if(typeof this.options.missingInterpolationHandler === 'function') {
+        if (typeof this.options.missingInterpolationHandler === 'function') {
           value = typeof this.options.missingInterpolationHandler(str, match) === 'string' ? this.options.missingInterpolationHandler(str, match) : '';
         } else {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
