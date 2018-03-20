@@ -94,8 +94,13 @@ class Interpolator {
       value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
-        this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
-        value = '';
+        if (typeof this.options.missingInterpolationHandler === 'function') {
+          const temp = this.options.missingInterpolationHandler(str, match);
+          value = typeof temp === 'string' ? temp : '';
+        } else {
+          this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
+          value = '';
+        }
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);

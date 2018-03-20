@@ -24,6 +24,7 @@ export function get() {
     saveMissingTo: 'fallback', // 'current' || 'all'
     saveMissingPlurals: true, // will save all forms not only singular key
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
+    missingInterpolationHandler: false, // function(str, match)
 
     postProcess: false, // string or array of postProcessor names
     returnNull: true, // allows null value as valid translation
