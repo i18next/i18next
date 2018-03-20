@@ -1,3 +1,6 @@
+### 10.6.0
+- adds missingInterpolationHandler [1039](https://github.com/i18next/i18next/pull/1039)
+
 ### 10.5.1
 - fixes call to getPluralFormsOfKey if called with unsupported language [1032](https://github.com/i18next/i18next/issues/1032)
 - Avoid mutating whitelist array. [1037](https://github.com/i18next/i18next/pull/1037)
