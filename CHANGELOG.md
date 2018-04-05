@@ -1,3 +1,7 @@
+### [BREAKING] 11.0.0
+- removes plugin of type cache. Can be replace by [i18next-chained-backend](https://github.com/i18next/i18next-chained-backend) example cache for localStorage [i18next-localstorage-backend](https://github.com/i18next/i18next-localstorage-backend#getting-started)
+- removes the support for multiload (multiRead) in backends - will just use read per language-namespace. You can enable multiRead support in backends again by using [i18next-multiload-backend-adapter](https://github.com/i18next/i18next-multiload-backend-adapter)
+
 ### 10.6.0
 - adds missingInterpolationHandler [1039](https://github.com/i18next/i18next/pull/1039)
 

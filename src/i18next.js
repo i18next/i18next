@@ -6,7 +6,6 @@ import LanguageUtils from './LanguageUtils.js';
 import PluralResolver from './PluralResolver.js';
 import Interpolator from './Interpolator.js';
 import BackendConnector from './BackendConnector.js';
-import CacheConnector from './CacheConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
 
@@ -59,9 +58,6 @@ class I18n extends EventEmitter {
       const s = this.services;
       s.logger = baseLogger;
       s.resourceStore = this.store;
-      s.resourceStore.on('added removed', (lng, ns) => {
-        s.cacheConnector.save();
-      });
       s.languageUtils = lu;
       s.pluralResolver = new PluralResolver(lu, { prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix });
       s.interpolator = new Interpolator(this.options);
@@ -69,16 +65,6 @@ class I18n extends EventEmitter {
       s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
       // pipe events from backendConnector
       s.backendConnector.on('*', (event, ...args) => {
-        this.emit(event, ...args);
-      });
-
-      s.backendConnector.on('loaded', (loaded) => {
-        s.cacheConnector.save();
-      });
-
-      s.cacheConnector = new CacheConnector(createClassOnDemand(this.modules.cache), s.resourceStore, s, this.options);
-      // pipe events from backendConnector
-      s.cacheConnector.on('*', (event, ...args) => {
         this.emit(event, ...args);
       });
 
@@ -150,9 +136,7 @@ class I18n extends EventEmitter {
         this.options.preload.forEach(l => append(l));
       }
 
-      this.services.cacheConnector.load(toLoad, this.options.ns, () => {
-        this.services.backendConnector.load(toLoad, this.options.ns, callback);
-      });
+      this.services.backendConnector.load(toLoad, this.options.ns, callback);
     } else {
       callback(null);
     }
@@ -167,10 +151,6 @@ class I18n extends EventEmitter {
   use(module) {
     if (module.type === 'backend') {
       this.modules.backend = module;
-    }
-
-    if (module.type === 'cache') {
-      this.modules.cache = module;
     }
 
     if (module.type === 'logger' || (module.log && module.warn && module.error)) {

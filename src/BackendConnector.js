@@ -133,7 +133,6 @@ class Connector extends EventEmitter {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
       return callback && callback();
     }
-    const options = { ...this.backend.options, ...this.options.backend };
 
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
@@ -144,67 +143,24 @@ class Connector extends EventEmitter {
       return null; // pendings will trigger callback
     }
 
-    // load with multi-load
-    if (options.allowMultiLoading && this.backend.readMulti) {
-      this.read(toLoad.toLoadLanguages, toLoad.toLoadNamespaces, 'readMulti', null, null, (err, data) => {
-        if (err) this.logger.warn(`loading namespaces ${toLoad.toLoadNamespaces.join(', ')} for languages ${toLoad.toLoadLanguages.join(', ')} via multiloading failed`, err);
-        if (!err && data) this.logger.log(`successfully loaded namespaces ${toLoad.toLoadNamespaces.join(', ')} for languages ${toLoad.toLoadLanguages.join(', ')} via multiloading`, data);
-
-        toLoad.toLoad.forEach((name) => {
-          const [l, n] = name.split('|');
-
-          const bundle = utils.getPath(data, [l, n]);
-          if (bundle) {
-            this.loaded(name, err, bundle);
-          } else {
-            const error = `loading namespace ${n} for language ${l} via multiloading failed`;
-            this.loaded(name, error);
-            this.logger.error(error);
-          }
-        });
-      });
-    } else {
-      toLoad.toLoad.forEach((name) => {
-        this.loadOne(name);
-      });
-    }
+    toLoad.toLoad.forEach((name) => {
+      this.loadOne(name);
+    });
   }
 
   reload(languages, namespaces) {
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
     }
-    const options = { ...this.backend.options, ...this.options.backend };
 
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    // load with multi-load
-    if (options.allowMultiLoading && this.backend.readMulti) {
-      this.read(languages, namespaces, 'readMulti', null, null, (err, data) => {
-        if (err) this.logger.warn(`reloading namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading failed`, err);
-        if (!err && data) this.logger.log(`successfully reloaded namespaces ${namespaces.join(', ')} for languages ${languages.join(', ')} via multiloading`, data);
-
-        languages.forEach((l) => {
-          namespaces.forEach((n) => {
-            const bundle = utils.getPath(data, [l, n]);
-            if (bundle) {
-              this.loaded(`${l}|${n}`, err, bundle);
-            } else {
-              const error = `reloading namespace ${n} for language ${l} via multiloading failed`;
-              this.loaded(`${l}|${n}`, error);
-              this.logger.error(error);
-            }
-          });
-        });
+    languages.forEach((l) => {
+      namespaces.forEach((n) => {
+        this.loadOne(`${l}|${n}`, 're');
       });
-    } else {
-      languages.forEach((l) => {
-        namespaces.forEach((n) => {
-          this.loadOne(`${l}|${n}`, 're');
-        });
-      });
-    }
+    });
   }
 
   loadOne(name, prefix = '') {

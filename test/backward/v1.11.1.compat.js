@@ -159,34 +159,6 @@ describe('i18next', function() {
 
       });
 
-      describe('with dynamic route', function() {
-        beforeEach(function(done) {
-
-          var res = {
-            dev: { translation: { 'simple_dev': 'ok_from_dev' } },
-            en: { translation: { 'simple_en': 'ok_from_en' } },
-            'en-US': { translation: { 'simple_en-US': 'ok_from_en-US' } }
-          };
-
-          var server = sinon.fakeServer.create();
-          server.autoRespond = true;
-
-          server.respondWith([200, { "Content-Type": "application/json" }, JSON.stringify(res)]);
-
-          i18n.init(i18n.functions.extend(opts, {
-              resGetPath: 'locales/resources.json?lng=__lng__&ns=__ns__',
-              dynamicLoad: true }),
-            function(t) { server.restore(); done(); });
-        });
-
-        it('it should provide loaded resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
-          expect(i18n.t('simple_dev')).to.be('ok_from_dev');
-        });
-
-      });
-
     });
 
     describe('advanced initialisation options', function() {
@@ -807,120 +779,122 @@ describe('i18next', function() {
 
           });
 
-          describe('with using localStorage', function() {
+        // cache was removed
 
-            var spy;
-
-            before(function() {
-              if (typeof window !== 'undefined') { // safe use on server
-                window.localStorage.removeItem('res_en-US');
-                window.localStorage.removeItem('res_en');
-                window.localStorage.removeItem('res_dev');
-              }
-            });
-
-            beforeEach(function(done) {
-              spy = sinon.spy(xhr, 'read');
-              i18n.init(i18n.functions.extend(opts, {
-                useLocalStorage: true
-              }), function(t) {
-                i18n.setDefaultNamespace('ns.special');
-                i18n.loadNamespaces(['ns.common', 'ns.special'], done);
-              });
-            });
-
-            afterEach(function() {
-              spy.restore();
-            });
-
-            it('it should load language', function() {
-              expect(spy.callCount).to.be(9); // en-US, en, de-DE, de, fr, dev * 3 namespaces (translate, common, special)
-            });
-
-            describe('on later reload of namespaces', function() {
-
-              beforeEach(function(done) {
-                spy.reset();
-                i18n.init(i18n.functions.extend(opts, {
-                  useLocalStorage: true,
-                  ns: 'translation'
-                }), function(t) {
-                  i18n.setDefaultNamespace('ns.special');
-                  i18n.loadNamespaces(['ns.common', 'ns.special'], done);
-                });
-              });
-
-              it('it should not reload language', function() {
-                expect(spy.callCount).to.be(0);
-              });
-
-            });
-
-          });
-
+        //   describe('with using localStorage', function() {
+        //
+        //     var spy;
+        //
+        //     before(function() {
+        //       if (typeof window !== 'undefined') { // safe use on server
+        //         window.localStorage.removeItem('res_en-US');
+        //         window.localStorage.removeItem('res_en');
+        //         window.localStorage.removeItem('res_dev');
+        //       }
+        //     });
+        //
+        //     beforeEach(function(done) {
+        //       spy = sinon.spy(xhr, 'read');
+        //       i18n.init(i18n.functions.extend(opts, {
+        //         useLocalStorage: true
+        //       }), function(t) {
+        //         i18n.setDefaultNamespace('ns.special');
+        //         i18n.loadNamespaces(['ns.common', 'ns.special'], done);
+        //       });
+        //     });
+        //
+        //     afterEach(function() {
+        //       spy.restore();
+        //     });
+        //
+        //     it('it should load language', function() {
+        //       expect(spy.callCount).to.be(9); // en-US, en, de-DE, de, fr, dev * 3 namespaces (translate, common, special)
+        //     });
+        //
+        //     describe('on later reload of namespaces', function() {
+        //
+        //       beforeEach(function(done) {
+        //         spy.reset();
+        //         i18n.init(i18n.functions.extend(opts, {
+        //           useLocalStorage: true,
+        //           ns: 'translation'
+        //         }), function(t) {
+        //           i18n.setDefaultNamespace('ns.special');
+        //           i18n.loadNamespaces(['ns.common', 'ns.special'], done);
+        //         });
+        //       });
+        //
+        //       it('it should not reload language', function() {
+        //         expect(spy.callCount).to.be(0);
+        //       });
+        //
+        //     });
+        //
+        //   });
+        //
         });
 
       });
 
-      describe('using localStorage', function() {
-
-        var spy;
-
-        before(function() {
-          window.localStorage.removeItem('res_en-US');
-          window.localStorage.removeItem('res_en');
-          window.localStorage.removeItem('res_dev');
-        });
-
-        beforeEach(function(done) {
-          spy = sinon.spy(xhr, 'read');
-          i18n.init(i18n.functions.extend(opts, {
-            useLocalStorage: true
-          }), function(t) { done(); });
-        });
-
-        afterEach(function() {
-          spy.restore();
-        });
-
-        it('it should load language', function() {
-          expect(spy.callCount).to.be(3); // en-US, en, de-DE, de, fr, dev
-        });
-
-        describe('on later init', function() {
-
-          beforeEach(function(done) {
-            spy.reset();
-            i18n.init(function(t) { done(); });
-          });
-
-          it('it should not reload language', function() {
-            expect(spy.callCount).to.be(0); // de-DE, de, fr, dev
-          });
-
-          describe('on later init - after caching duration', function() {
-
-            beforeEach(function(done) {
-              spy.reset();
-
-              // exipred
-              var local = window.localStorage.getItem('res_en-US');
-              local = JSON.parse(local);
-              local.i18nStamp = 0;
-              window.localStorage.setItem('res_en-US', JSON.stringify(local));
-
-              i18n.init(function(t) { done(); });
-            });
-
-            it('it should reload language', function() {
-              expect(spy.callCount).to.be(1); // de-DE, de, fr, dev
-            });
-
-          });
-
-        });
-
-      });
+      // describe('using localStorage', function() {
+      //
+      //   var spy;
+      //
+      //   before(function() {
+      //     window.localStorage.removeItem('res_en-US');
+      //     window.localStorage.removeItem('res_en');
+      //     window.localStorage.removeItem('res_dev');
+      //   });
+      //
+      //   beforeEach(function(done) {
+      //     spy = sinon.spy(xhr, 'read');
+      //     i18n.init(i18n.functions.extend(opts, {
+      //       useLocalStorage: true
+      //     }), function(t) { done(); });
+      //   });
+      //
+      //   afterEach(function() {
+      //     spy.restore();
+      //   });
+      //
+      //   it('it should load language', function() {
+      //     expect(spy.callCount).to.be(3); // en-US, en, de-DE, de, fr, dev
+      //   });
+      //
+      //   describe('on later init', function() {
+      //
+      //     beforeEach(function(done) {
+      //       spy.reset();
+      //       i18n.init(function(t) { done(); });
+      //     });
+      //
+      //     it('it should not reload language', function() {
+      //       expect(spy.callCount).to.be(0); // de-DE, de, fr, dev
+      //     });
+      //
+      //     describe('on later init - after caching duration', function() {
+      //
+      //       beforeEach(function(done) {
+      //         spy.reset();
+      //
+      //         // exipred
+      //         var local = window.localStorage.getItem('res_en-US');
+      //         local = JSON.parse(local);
+      //         local.i18nStamp = 0;
+      //         window.localStorage.setItem('res_en-US', JSON.stringify(local));
+      //
+      //         i18n.init(function(t) { done(); });
+      //       });
+      //
+      //       it('it should reload language', function() {
+      //         expect(spy.callCount).to.be(1); // de-DE, de, fr, dev
+      //       });
+      //
+      //     });
+      //
+      //   });
+      //
+      // });
 
       describe('using function provided in callback\'s argument', function() {
 
