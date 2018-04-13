@@ -1,3 +1,6 @@
+### 11.2.2
+- adds used key to call parse of i18nFormat
+
 ### 11.2.1
 - fixes for i18nFormat plugin
 
