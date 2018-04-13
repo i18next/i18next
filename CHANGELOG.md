@@ -1,3 +1,6 @@
+### 11.2.1
+- fixes for i18nFormat plugin
+
 ### 11.2.0
 - allows new plugin of type 'i18nFormat' to override i18next format with eg. ICU format
 

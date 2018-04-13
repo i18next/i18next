@@ -73,16 +73,16 @@ class I18n extends EventEmitter {
         s.languageDetector.init(s, this.options.detection, this.options);
       }
 
+      if (this.modules.i18nFormat) {
+        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+        if (s.i18nFormat.init) s.i18nFormat.init(this);
+      }
+
       this.translator = new Translator(this.services, this.options);
       // pipe events from translator
       this.translator.on('*', (event, ...args) => {
         this.emit(event, ...args);
       });
-
-      if (this.modules.i18nFormat) {
-        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
-        if (s.i18nFormat.init) s.i18nFormat.init(this);
-      }
 
       this.modules.external.forEach((m) => {
         if (m.init) m.init(this);

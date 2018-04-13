@@ -744,7 +744,7 @@ var Translator = function (_EventEmitter) {
   Translator.prototype.extendTranslation = function extendTranslation(res, key, options, resolved) {
     var _this3 = this;
 
-    if (this.i18nFormat && this.i18nFormat) {
+    if (this.i18nFormat && this.i18nFormat.parse) {
       res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS);
     } else {
       // i18next.parsing
@@ -1712,6 +1712,11 @@ var I18n = function (_EventEmitter) {
         s.languageDetector.init(s, this.options.detection, this.options);
       }
 
+      if (this.modules.i18nFormat) {
+        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+        if (s.i18nFormat.init) s.i18nFormat.init(this);
+      }
+
       this.translator = new Translator(this.services, this.options);
       // pipe events from translator
       this.translator.on('*', function (event) {
@@ -1721,11 +1726,6 @@ var I18n = function (_EventEmitter) {
 
         _this2.emit.apply(_this2, [event].concat(args));
       });
-
-      if (this.modules.i18nFormat) {
-        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
-        if (s.i18nFormat.init) s.i18nFormat.init(this);
-      }
 
       this.modules.external.forEach(function (m) {
         if (m.init) m.init(_this2);

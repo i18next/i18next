@@ -177,7 +177,7 @@ class Translator extends EventEmitter {
   }
 
   extendTranslation(res, key, options, resolved) {
-    if (this.i18nFormat && this.i18nFormat) {
+    if (this.i18nFormat && this.i18nFormat.parse) {
       res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS);
     } else { // i18next.parsing
       if (options.interpolation) this.interpolator.init({ ...options, ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } } });
