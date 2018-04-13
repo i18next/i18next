@@ -7,7 +7,7 @@ class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
 
-    utils.copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector'], services, this);
+    utils.copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, this);
 
     this.options = options;
     this.logger = baseLogger.create('translator');
@@ -163,7 +163,7 @@ class Translator extends EventEmitter {
       }
 
       // extend
-      res = this.extendTranslation(res, keys, options);
+      res = this.extendTranslation(res, keys, options, resolved);
 
       // append namespace if still key
       if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;
@@ -176,18 +176,22 @@ class Translator extends EventEmitter {
     return res;
   }
 
-  extendTranslation(res, key, options) {
-    if (options.interpolation) this.interpolator.init({ ...options, ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } } });
+  extendTranslation(res, key, options, resolved) {
+    if (this.i18nFormat && this.i18nFormat) {
+      res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS);
+    } else { // i18next.parsing
+      if (options.interpolation) this.interpolator.init({ ...options, ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } } });
 
-    // interpolate
-    let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-    if (this.options.interpolation.defaultVariables) data = { ...this.options.interpolation.defaultVariables, ...data };
-    res = this.interpolator.interpolate(res, data, options.lng || this.language);
+      // interpolate
+      let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
+      if (this.options.interpolation.defaultVariables) data = { ...this.options.interpolation.defaultVariables, ...data };
+      res = this.interpolator.interpolate(res, data, options.lng || this.language);
 
-    // nesting
-    if (options.nest !== false) res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
+      // nesting
+      if (options.nest !== false) res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
 
-    if (options.interpolation) this.interpolator.reset();
+      if (options.interpolation) this.interpolator.reset();
+    }
 
     // post process
     const postProcess = options.postProcess || this.options.postProcess;
@@ -207,6 +211,8 @@ class Translator extends EventEmitter {
   resolve(keys, options = {}) {
     let found;
     let usedKey;
+    let usedLng;
+    let usedNS;
 
     if (typeof keys === 'string') keys = [keys];
 
@@ -226,24 +232,30 @@ class Translator extends EventEmitter {
 
       namespaces.forEach((ns) => {
         if (this.isValidLookup(found)) return;
+        usedNS = ns;
 
         codes.forEach((code) => {
           if (this.isValidLookup(found)) return;
+          usedLng = code;
 
           let finalKey = key;
           const finalKeys = [finalKey];
 
-          let pluralSuffix;
-          if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, options.count);
+          if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
+            this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
+          } else {
+            let pluralSuffix;
+            if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, options.count);
 
-          // fallback for plural if context not found
-          if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
+            // fallback for plural if context not found
+            if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
 
-          // get key for context if needed
-          if (needsContextHandling) finalKeys.push(finalKey += `${this.options.contextSeparator}${options.context}`);
+            // get key for context if needed
+            if (needsContextHandling) finalKeys.push(finalKey += `${this.options.contextSeparator}${options.context}`);
 
-          // get key for plural if needed
-          if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+            // get key for plural if needed
+            if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+          }
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
           let possibleKey;
@@ -257,7 +269,7 @@ class Translator extends EventEmitter {
       });
     });
 
-    return { res: found, usedKey };
+    return { res: found, usedKey, usedLng, usedNS };
   }
 
   isValidLookup(res) {

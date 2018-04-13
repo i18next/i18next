@@ -561,7 +561,7 @@ var Translator = function (_EventEmitter) {
 
     var _this = possibleConstructorReturn(this, _EventEmitter.call(this));
 
-    copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector'], services, _this);
+    copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, _this);
 
     _this.options = options;
     _this.logger = baseLogger.create('translator');
@@ -728,7 +728,7 @@ var Translator = function (_EventEmitter) {
       }
 
       // extend
-      res = this.extendTranslation(res, keys, options);
+      res = this.extendTranslation(res, keys, options, resolved);
 
       // append namespace if still key
       if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = namespace + ':' + key;
@@ -741,22 +741,27 @@ var Translator = function (_EventEmitter) {
     return res;
   };
 
-  Translator.prototype.extendTranslation = function extendTranslation(res, key, options) {
+  Translator.prototype.extendTranslation = function extendTranslation(res, key, options, resolved) {
     var _this3 = this;
 
-    if (options.interpolation) this.interpolator.init(_extends({}, options, { interpolation: _extends({}, this.options.interpolation, options.interpolation) }));
+    if (this.i18nFormat && this.i18nFormat) {
+      res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS);
+    } else {
+      // i18next.parsing
+      if (options.interpolation) this.interpolator.init(_extends({}, options, { interpolation: _extends({}, this.options.interpolation, options.interpolation) }));
 
-    // interpolate
-    var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-    if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
-    res = this.interpolator.interpolate(res, data, options.lng || this.language);
+      // interpolate
+      var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
+      if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
+      res = this.interpolator.interpolate(res, data, options.lng || this.language);
 
-    // nesting
-    if (options.nest !== false) res = this.interpolator.nest(res, function () {
-      return _this3.translate.apply(_this3, arguments);
-    }, options);
+      // nesting
+      if (options.nest !== false) res = this.interpolator.nest(res, function () {
+        return _this3.translate.apply(_this3, arguments);
+      }, options);
 
-    if (options.interpolation) this.interpolator.reset();
+      if (options.interpolation) this.interpolator.reset();
+    }
 
     // post process
     var postProcess = options.postProcess || this.options.postProcess;
@@ -776,6 +781,8 @@ var Translator = function (_EventEmitter) {
 
     var found = void 0;
     var usedKey = void 0;
+    var usedLng = void 0;
+    var usedNS = void 0;
 
     if (typeof keys === 'string') keys = [keys];
 
@@ -795,24 +802,30 @@ var Translator = function (_EventEmitter) {
 
       namespaces.forEach(function (ns) {
         if (_this4.isValidLookup(found)) return;
+        usedNS = ns;
 
         codes.forEach(function (code) {
           if (_this4.isValidLookup(found)) return;
+          usedLng = code;
 
           var finalKey = key;
           var finalKeys = [finalKey];
 
-          var pluralSuffix = void 0;
-          if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count);
+          if (_this4.i18nFormat && _this4.i18nFormat.addLookupKeys) {
+            _this4.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
+          } else {
+            var pluralSuffix = void 0;
+            if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count);
 
-          // fallback for plural if context not found
-          if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
+            // fallback for plural if context not found
+            if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
 
-          // get key for context if needed
-          if (needsContextHandling) finalKeys.push(finalKey += '' + _this4.options.contextSeparator + options.context);
+            // get key for context if needed
+            if (needsContextHandling) finalKeys.push(finalKey += '' + _this4.options.contextSeparator + options.context);
 
-          // get key for plural if needed
-          if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+            // get key for plural if needed
+            if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+          }
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
           var possibleKey = void 0;
@@ -826,7 +839,7 @@ var Translator = function (_EventEmitter) {
       });
     });
 
-    return { res: found, usedKey: usedKey };
+    return { res: found, usedKey: usedKey, usedLng: usedLng, usedNS: usedNS };
   };
 
   Translator.prototype.isValidLookup = function isValidLookup(res) {
@@ -1709,6 +1722,11 @@ var I18n = function (_EventEmitter) {
         _this2.emit.apply(_this2, [event].concat(args));
       });
 
+      if (this.modules.i18nFormat) {
+        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+        if (s.i18nFormat.init) s.i18nFormat.init(this);
+      }
+
       this.modules.external.forEach(function (m) {
         if (m.init) m.init(_this2);
       });
@@ -1803,6 +1821,10 @@ var I18n = function (_EventEmitter) {
 
     if (module.type === 'languageDetector') {
       this.modules.languageDetector = module;
+    }
+
+    if (module.type === 'i18nFormat') {
+      this.modules.i18nFormat = module;
     }
 
     if (module.type === 'postProcessor') {

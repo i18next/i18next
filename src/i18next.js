@@ -79,6 +79,11 @@ class I18n extends EventEmitter {
         this.emit(event, ...args);
       });
 
+      if (this.modules.i18nFormat) {
+        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+        if (s.i18nFormat.init) s.i18nFormat.init(this);
+      }
+
       this.modules.external.forEach((m) => {
         if (m.init) m.init(this);
       });
@@ -159,6 +164,10 @@ class I18n extends EventEmitter {
 
     if (module.type === 'languageDetector') {
       this.modules.languageDetector = module;
+    }
+
+    if (module.type === 'i18nFormat') {
+      this.modules.i18nFormat = module;
     }
 
     if (module.type === 'postProcessor') {
