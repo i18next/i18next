@@ -93,7 +93,7 @@ class Interpolator {
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
-      if (!value) {
+      if (value === undefined) {
         if (typeof this.options.missingInterpolationHandler === 'function') {
           const temp = this.options.missingInterpolationHandler(str, match);
           value = typeof temp === 'string' ? temp : '';
