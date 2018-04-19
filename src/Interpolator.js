@@ -92,7 +92,6 @@ class Interpolator {
     // regular escape on demand
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
-      if (typeof value !== 'string') value = utils.makeString(value);
       if (value === undefined) {
         if (typeof this.options.missingInterpolationHandler === 'function') {
           const temp = this.options.missingInterpolationHandler(str, match);
@@ -101,6 +100,8 @@ class Interpolator {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
           value = '';
         }
+      } else if (typeof value !== 'string') {
+        value = utils.makeString(value);
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
