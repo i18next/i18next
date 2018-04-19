@@ -252,7 +252,7 @@ describe('Interpolator', () => {
     });
   });
 
-  describe("interpolate() - with missing interpolation value", () => {
+  describe("interpolate() - with undefined interpolation value", () => {
     var ip;
     var tests = [
       {args: ['{{test}}'], expected: ''},
@@ -275,7 +275,7 @@ describe('Interpolator', () => {
     });
   });
 
-  describe("interpolate() - with missing interpolation value - filled by missingInterpolationHandler", () => {
+  describe("interpolate() - with undefined interpolation value - filled by missingInterpolationHandler", () => {
     var ip;
     var tests = [
       {args: ['{{test}}'], expected: 'test'},
@@ -294,6 +294,27 @@ describe('Interpolator', () => {
 
     tests.forEach((test) => {
       it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {        
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
+  describe("interpolate() - with null interpolation value - not filled by missingInterpolationHandler", () => {
+    var ip;
+    var tests = [
+      {args: ['{{test}}', {test: null}], expected: ''},
+    ];
+
+    before(() => {
+      ip = new Interpolator({
+        missingInterpolationHandler: (str, match) => {
+          return 'test'
+        }
+      });
+    });
+
+    tests.forEach((test) => {
+      it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
     });
