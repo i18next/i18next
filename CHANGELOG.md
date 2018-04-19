@@ -1,3 +1,6 @@
+### 11.2.3
+- Remove unnecessary warning when value is empty string [1046](https://github.com/i18next/i18next/pull/1046)
+
 ### 11.2.2
 - adds used key to call parse of i18nFormat
 
