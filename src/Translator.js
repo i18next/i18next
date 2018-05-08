@@ -177,20 +177,22 @@ class Translator extends EventEmitter {
   }
 
   extendTranslation(res, key, options, resolved) {
-    if (this.i18nFormat && this.i18nFormat.parse) {
-      res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS, resolved.usedKey);
-    } else { // i18next.parsing
-      if (options.interpolation) this.interpolator.init({ ...options, ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } } });
+    if (!options.skipInterpolation) {
+      if (this.i18nFormat && this.i18nFormat.parse) {
+        res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS, resolved.usedKey);
+      } else { // i18next.parsing
+        if (options.interpolation) this.interpolator.init({ ...options, ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } } });
 
-      // interpolate
-      let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-      if (this.options.interpolation.defaultVariables) data = { ...this.options.interpolation.defaultVariables, ...data };
-      res = this.interpolator.interpolate(res, data, options.lng || this.language);
+        // interpolate
+        let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
+        if (this.options.interpolation.defaultVariables) data = { ...this.options.interpolation.defaultVariables, ...data };
+        res = this.interpolator.interpolate(res, data, options.lng || this.language);
 
-      // nesting
-      if (options.nest !== false) res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
+        // nesting
+        if (options.nest !== false) res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
 
-      if (options.interpolation) this.interpolator.reset();
+        if (options.interpolation) this.interpolator.reset();
+      }
     }
 
     // post process
