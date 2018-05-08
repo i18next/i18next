@@ -6,6 +6,9 @@ class ResourceStore extends EventEmitter {
     super();
     this.data = data || {};
     this.options = options;
+    if (this.options.keySeparator === undefined) {
+      this.options.keySeparator = '.';
+    }
   }
 
   addNamespaces(ns) {
@@ -22,8 +25,7 @@ class ResourceStore extends EventEmitter {
   }
 
   getResource(lng, ns, key, options = {}) {
-    let keySeparator = options.keySeparator || this.options.keySeparator;
-    if (keySeparator === undefined) keySeparator = '.';
+    const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     let path = [lng, ns];
     if (key && typeof key !== 'string') path = path.concat(key);
