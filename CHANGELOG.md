@@ -1,3 +1,6 @@
+### 11.3.1
+- Fixes allowing setting keySeparator to false in calling t function [1051](https://github.com/i18next/i18next/pull/1051)
+
 ### 11.3.0
 - Option to skip interpolation when calling t. [1050](https://github.com/i18next/i18next/pull/1050)
 
