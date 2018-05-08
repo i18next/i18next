@@ -1,3 +1,6 @@
+### 11.3.0
+- Option to skip interpolation when calling t. [1050](https://github.com/i18next/i18next/pull/1050)
+
 ### 11.2.3
 - Remove unnecessary warning when value is empty string [1046](https://github.com/i18next/i18next/pull/1046)
 

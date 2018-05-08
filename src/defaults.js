@@ -41,8 +41,6 @@ export function get() {
       if (args[2]) ret.tDescription = args[2];
       return ret;
     },
-    skipInterpolation: false, // skips interpolation of values if set to true
-
     interpolation: {
       escapeValue: true,
       format: (value, format, lng) => value,
