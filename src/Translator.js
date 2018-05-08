@@ -10,6 +10,10 @@ class Translator extends EventEmitter {
     utils.copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, this);
 
     this.options = options;
+    if (this.options.keySeparator === undefined) {
+      this.options.keySeparator = '.';
+    }
+
     this.logger = baseLogger.create('translator');
   }
 
@@ -25,7 +29,8 @@ class Translator extends EventEmitter {
   extractFromKey(key, options) {
     let nsSeparator = options.nsSeparator || this.options.nsSeparator;
     if (nsSeparator === undefined) nsSeparator = ':';
-    const keySeparator = options.keySeparator || this.options.keySeparator || '.';
+
+    const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     let namespaces = options.ns || this.options.defaultNS;
     if (nsSeparator && key.indexOf(nsSeparator) > -1) {
@@ -54,7 +59,7 @@ class Translator extends EventEmitter {
     if (typeof keys === 'string') keys = [keys];
 
     // separators
-    const keySeparator = options.keySeparator || this.options.keySeparator || '.';
+    const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     // get namespace(s)
     const { key, namespaces } = this.extractFromKey(keys[keys.length - 1], options);
@@ -91,7 +96,7 @@ class Translator extends EventEmitter {
 
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
-      if (options.keySeparator || this.options.keySeparator) {
+      if (keySeparator) {
         const copy = (resType === '[object Array]') ? [] : {}; // apply child translation on a copy
 
         /* eslint no-restricted-syntax: 0 */
