@@ -52,8 +52,8 @@ describe('i18next', () => {
 
     it('it should emit wildcard with array params', (done) => {
       // test on
-      emitter.on('*', (event, array, data) => {
-        expect(event).to.equal('array-event');
+      emitter.on('*', (ev, array, data) => {
+        expect(ev).to.equal('array-event');
         expect(array).to.eql(['array ok 1', 'array ok 2']);
         expect(data).to.equal('data ok');
         done();
