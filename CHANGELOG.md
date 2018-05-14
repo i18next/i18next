@@ -1,3 +1,6 @@
+### 11.3.2
+- Properly handle arguments containing arrays while listening to a wildcard event [1052](https://github.com/i18next/i18next/pull/1052)
+
 ### 11.3.1
 - Fixes allowing setting keySeparator to false in calling t function [1051](https://github.com/i18next/i18next/pull/1051)
 
