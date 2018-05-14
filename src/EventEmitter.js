@@ -38,7 +38,7 @@ class EventEmitter {
     if (this.observers['*']) {
       const cloned = [].concat(this.observers['*']);
       cloned.forEach((observer) => {
-        observer.apply(observer, [event].concat(...args));
+        observer.apply(observer, [event, ...args]);
       });
     }
   }

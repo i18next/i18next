@@ -1,13 +1,14 @@
 import EventEmitter from '../src/EventEmitter';
 
 describe('i18next', () => {
-  let emitter;
-
-  before(() => {
-    emitter = new EventEmitter();
-  });
 
   describe('published', () => {
+    
+    let emitter;
+    beforeEach(() => {
+      emitter = new EventEmitter();
+    });
+
     it('it should emit', (done) => {
       // test on
       emitter.on('ok', (payload) => {
@@ -36,6 +37,29 @@ describe('i18next', () => {
       });
 
       emitter.emit('ok', 'data ok');
+    });
+
+    it('it should emit with array params', (done) => {
+      // test on
+      emitter.on('array-event', (array, data) => {
+        expect(array).to.eql(['array ok 1', 'array ok 2']);
+        expect(data).to.equal('data ok');
+        done();
+      });
+
+      emitter.emit('array-event', ['array ok 1', 'array ok 2'], 'data ok');
+    });
+
+    it('it should emit wildcard with array params', (done) => {
+      // test on
+      emitter.on('*', (ev, array, data) => {
+        expect(ev).to.equal('array-event');
+        expect(array).to.eql(['array ok 1', 'array ok 2']);
+        expect(data).to.equal('data ok');
+        done();
+      });
+
+      emitter.emit('array-event', ['array ok 1', 'array ok 2'], 'data ok');
     });
   });
 
