@@ -1,3 +1,6 @@
+### 11.3.3
+- pass down resolved to i18nFormat.parse as last argument
+
 ### 11.3.2
 - Properly handle arguments containing arrays while listening to a wildcard event [1052](https://github.com/i18next/i18next/pull/1052)
 
