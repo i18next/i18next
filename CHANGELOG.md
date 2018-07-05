@@ -1,3 +1,6 @@
+### 11.3.4
+- fixes simplifyPluralSuffix: false cases for languages having only singular, plural [1069](https://github.com/i18next/i18next/issues/1069)
+
 ### 11.3.3
 - pass down resolved to i18nFormat.parse as last argument
 
