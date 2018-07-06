@@ -90,6 +90,9 @@ class Connector extends EventEmitter {
     // set loaded
     this.state[name] = err ? -1 : 2;
 
+    // consolidated loading done in this run - only emit once for a loaded namespace
+    const loaded = {};
+
     // callback if ready
     this.queue.forEach((q) => {
       utils.pushPath(q.loaded, [lng], ns);
@@ -98,7 +101,16 @@ class Connector extends EventEmitter {
       if (err) q.errors.push(err);
 
       if (q.pending.length === 0 && !q.done) {
-        this.emit('loaded', q.loaded);
+        // only do once per loaded -> this.emit('loaded', q.loaded);
+        Object.keys(q.loaded).forEach(l => {
+          if (!loaded[l]) loaded[l] = [];
+          if (q.loaded[l].length) {
+            q.loaded[l].forEach(ns => {
+              if (loaded[l].indexOf(ns) < 0) loaded[l].push(ns);
+            });
+          }
+        });
+
         /* eslint no-param-reassign: 0 */
         q.done = true;
         if (q.errors.length) {
@@ -108,6 +120,9 @@ class Connector extends EventEmitter {
         }
       }
     });
+
+    // emit consolidated loaded event
+    this.emit('loaded', loaded);
 
     // remove done load requests
     this.queue = this.queue.filter(q => !q.done);

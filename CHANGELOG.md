@@ -1,3 +1,6 @@
+### 11.3.5
+- trigger loaded event only once per loaded namespace - consolidate all the loaded and done queued load calls [react-i18next 456 ](https://github.com/i18next/react-i18next/issues/456)
+
 ### 11.3.4
 - fixes simplifyPluralSuffix: false cases for languages having only singular, plural [1069](https://github.com/i18next/i18next/issues/1069)
 
