@@ -718,7 +718,8 @@ var Translator = function (_EventEmitter) {
         };
 
         if (this.options.saveMissing) {
-          if (this.options.saveMissingPlurals && options.count) {
+          var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+          if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach(function (l) {
               var plurals = _this2.pluralResolver.getPluralFormsOfKey(l, key);
 

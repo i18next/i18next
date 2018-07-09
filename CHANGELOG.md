@@ -1,3 +1,6 @@
+### 11.3.6
+- fix support zero for saveMissing plurals [1072](https://github.com/i18next/i18next/pull/1072)
+
 ### 11.3.5
 - trigger loaded event only once per loaded namespace - consolidate all the loaded and done queued load calls [react-i18next 456 ](https://github.com/i18next/react-i18next/issues/456)
 
