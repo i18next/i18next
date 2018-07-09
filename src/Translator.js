@@ -155,7 +155,8 @@ class Translator extends EventEmitter {
         };
 
         if (this.options.saveMissing) {
-          if (this.options.saveMissingPlurals && options.count) {
+          const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+          if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach((l) => {
               const plurals = this.pluralResolver.getPluralFormsOfKey(l, key);
 
