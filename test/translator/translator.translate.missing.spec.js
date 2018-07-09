@@ -64,6 +64,7 @@ describe('Translator', () => {
 
 
   describe('translate() using missing with saveMissingPlurals options', () => {
+    const NB_PLURALS_ARABIC = 6;
     var t;
 
     before(() => {
@@ -103,7 +104,8 @@ describe('Translator', () => {
     });
 
     var tests = [
-      {args: ['translation:test.missing', { count: 10 }], expected: 6}
+      {args: ['translation:test.missing', { count: 10 }], expected: NB_PLURALS_ARABIC},
+      {args: ['translation:test.missing', { count: 0 }], expected: NB_PLURALS_ARABIC}
     ];
 
     tests.forEach((test) => {
