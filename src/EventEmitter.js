@@ -8,6 +8,7 @@ class EventEmitter {
       this.observers[event] = this.observers[event] || [];
       this.observers[event].push(listener);
     });
+    return this;
   }
 
   off(event, listener) {
