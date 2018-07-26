@@ -250,6 +250,7 @@ var EventEmitter = function () {
       _this.observers[event] = _this.observers[event] || [];
       _this.observers[event].push(listener);
     });
+    return this;
   };
 
   EventEmitter.prototype.off = function off(event, listener) {

@@ -1,3 +1,7 @@
+### 11.5.0
+
+- EventEmitter.prototype.on returns this for chaining calls [1079](https://github.com/i18next/i18next/pull/1079)
+
 ### 11.4.0
 
 - Allow to pass raw value to the custom interpolation escape function [1076](https://github.com/i18next/i18next/pull/1076)
