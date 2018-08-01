@@ -36,6 +36,16 @@ For more information visit the website:
 Our focus is providing the core to building a booming ecosystem. Independent of the building blocks you choose, be it react, angular or even good old jquery proper translation capabilities are just [one step away](https://www.i18next.com/supported-frameworks.html).
 
 --------------
+
+<h3 align="center">Gold Sponsors</h3>
+
+<p align="center">
+  <a href="https://locize.com/" target="_blank">
+    <img src="https://raw.githubusercontent.com/i18next/i18next/assets/locize_sponsor_240.gif" width="240px">
+  </a>
+</p>
+
+--------------
 **NEWS: localization as a service - locize.com**
 
 Having done a big rewrite of i18next in spring we are proud to announce the next big step to get your webproject translated with less effort. We just released [locize](http://locize.com/?utm_source=i18next_readme&utm_medium=github) a translation management system built around the i18next ecosystem.
