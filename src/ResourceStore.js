@@ -112,6 +112,10 @@ class ResourceStore extends EventEmitter {
     return this.getResource(lng, ns);
   }
 
+  getDataByLanguage(lng) {
+    return this.data[lng]
+  }
+
   toJSON() {
     return this.data;
   }
