@@ -1,3 +1,7 @@
+### 11.6.0
+
+- expose new store function getDataByLanguage [1087](https://github.com/i18next/i18next/pull/1087)
+
 ### 11.5.0
 
 - EventEmitter.prototype.on returns this for chaining calls [1079](https://github.com/i18next/i18next/pull/1079)
