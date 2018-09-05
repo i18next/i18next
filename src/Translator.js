@@ -119,9 +119,14 @@ class Translator extends EventEmitter {
       let usedKey = false;
 
       // fallback value
-      if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
-        usedDefault = true;
-        res = options.defaultValue;
+      if (!this.isValidLookup(res)) {
+        if ((options.count === undefined || options.count === 1) && options.defaultValue !== undefined) {
+          usedDefault = true;
+          res = options.defaultValue;
+        } else if ((options.count === 0 || options.count > 1) && options.defaultValue_plural !== undefined) {
+          usedDefault = true;
+          res = options.defaultValue_plural;
+        }
       }
       if (!this.isValidLookup(res)) {
         usedKey = true;
