@@ -689,7 +689,12 @@ var Translator = function (_EventEmitter) {
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
         usedDefault = true;
-        res = options.defaultValue;
+
+        if (options.count !== undefined) {
+          var suffix = this.pluralResolver.getSuffix(lng, options.count);
+          res = options['defaultValue' + suffix];
+        }
+        if (!res) res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
         usedKey = true;
