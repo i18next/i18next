@@ -1,3 +1,7 @@
+### 11.8.0
+
+- deeper support for i18nFormats - add getResource function from format
+
 ### 11.7.0
 
 - allows defining defaultValues for plurals -> same logic as using pluralsuffixes in translation files [details](https://www.i18next.com/translation-function/plurals#how-to-find-the-correct-plural-suffix) using eg. defaultValue_plural / defaultValue_2 based on request [1096](https://github.com/i18next/i18next/issues/1096)

@@ -87,8 +87,9 @@ class Translator extends EventEmitter {
     const joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
+    const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
     const handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
-    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
@@ -109,7 +110,7 @@ class Translator extends EventEmitter {
         }
         res = copy;
       }
-    } else if (joinArrays && resType === '[object Array]') {
+    } else if (handleAsObjectInI18nFormat && joinArrays && resType === '[object Array]') {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options);
@@ -290,6 +291,7 @@ class Translator extends EventEmitter {
   }
 
   getResource(code, ns, key, options = {}) {
+    if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
   }
 }
