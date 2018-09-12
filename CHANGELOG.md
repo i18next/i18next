@@ -1,3 +1,7 @@
+### 11.9.0
+
+- merge load and reloadResources functionality to allow an optional callback in reloadResources
+
 ### 11.8.0
 
 - deeper support for i18nFormats - add getResource function from format

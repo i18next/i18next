@@ -1377,7 +1377,7 @@ var Connector = function (_EventEmitter) {
     return _this;
   }
 
-  Connector.prototype.queueLoad = function queueLoad(languages, namespaces, callback) {
+  Connector.prototype.queueLoad = function queueLoad(languages, namespaces, options, callback) {
     var _this2 = this;
 
     // find what needs to be loaded
@@ -1392,7 +1392,7 @@ var Connector = function (_EventEmitter) {
       namespaces.forEach(function (ns) {
         var name = lng + '|' + ns;
 
-        if (_this2.store.hasResourceBundle(lng, ns)) {
+        if (!options.reload && _this2.store.hasResourceBundle(lng, ns)) {
           _this2.state[name] = 2; // loaded
         } else if (_this2.state[name] < 0) {
           // nothing to do for err
@@ -1508,8 +1508,11 @@ var Connector = function (_EventEmitter) {
   /* eslint consistent-return: 0 */
 
 
-  Connector.prototype.load = function load(languages, namespaces, callback) {
+  Connector.prototype.prepareLoading = function prepareLoading(languages, namespaces) {
     var _this4 = this;
+
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var callback = arguments[3];
 
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
@@ -1519,7 +1522,7 @@ var Connector = function (_EventEmitter) {
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    var toLoad = this.queueLoad(languages, namespaces, callback);
+    var toLoad = this.queueLoad(languages, namespaces, options, callback);
     if (!toLoad.toLoad.length) {
       if (!toLoad.pending.length) callback(); // nothing to load and no pendings...callback now
       return null; // pendings will trigger callback
@@ -1530,25 +1533,16 @@ var Connector = function (_EventEmitter) {
     });
   };
 
-  Connector.prototype.reload = function reload(languages, namespaces) {
-    var _this5 = this;
+  Connector.prototype.load = function load(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, {}, callback);
+  };
 
-    if (!this.backend) {
-      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
-    }
-
-    if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
-    if (typeof namespaces === 'string') namespaces = [namespaces];
-
-    languages.forEach(function (l) {
-      namespaces.forEach(function (n) {
-        _this5.loadOne(l + '|' + n, 're');
-      });
-    });
+  Connector.prototype.reload = function reload(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, { reload: true }, callback);
   };
 
   Connector.prototype.loadOne = function loadOne(name) {
-    var _this6 = this;
+    var _this5 = this;
 
     var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
@@ -1558,10 +1552,10 @@ var Connector = function (_EventEmitter) {
         ns = _name$split4[1];
 
     this.read(lng, ns, 'read', null, null, function (err, data) {
-      if (err) _this6.logger.warn(prefix + 'loading namespace ' + ns + ' for language ' + lng + ' failed', err);
-      if (!err && data) _this6.logger.log(prefix + 'loaded namespace ' + ns + ' for language ' + lng, data);
+      if (err) _this5.logger.warn(prefix + 'loading namespace ' + ns + ' for language ' + lng + ' failed', err);
+      if (!err && data) _this5.logger.log(prefix + 'loaded namespace ' + ns + ' for language ' + lng, data);
 
-      _this6.loaded(name, err, data);
+      _this5.loaded(name, err, data);
     });
   };
 
@@ -1836,10 +1830,11 @@ var I18n = function (_EventEmitter) {
     }
   };
 
-  I18n.prototype.reloadResources = function reloadResources(lngs, ns) {
+  I18n.prototype.reloadResources = function reloadResources(lngs, ns, callback) {
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
-    this.services.backendConnector.reload(lngs, ns);
+    if (!callback) callback = function callback() {};
+    this.services.backendConnector.reload(lngs, ns, callback);
   };
 
   I18n.prototype.use = function use(module) {
