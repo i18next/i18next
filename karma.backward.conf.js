@@ -20,7 +20,13 @@ module.exports = function(karma) {
       'test/backward/compatibility/**/*.js': [ 'browserify' ]
     },
 
-    browsers: [ 'PhantomJS' ],
+    browsers: [ 'HeadlessChrome' ],
+      customLaunchers: {
+        HeadlessChrome: {
+          base: 'ChromeHeadless',
+          flags: [ '—no-sandbox', ],
+         },
+      },
 
     port: 9877,
 
