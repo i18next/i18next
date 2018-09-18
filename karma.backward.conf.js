@@ -20,11 +20,11 @@ module.exports = function(karma) {
       'test/backward/compatibility/**/*.js': [ 'browserify' ]
     },
 
-    browsers: [‘HeadlessChrome’],
+    browsers: [ 'HeadlessChrome' ],
       customLaunchers: {
         HeadlessChrome: {
-          base: ‘ChromeHeadless’,
-          flags: [ ‘—no-sandbox’,],
+          base: 'ChromeHeadless',
+          flags: [ '—no-sandbox’, ],
          },
       },
 
