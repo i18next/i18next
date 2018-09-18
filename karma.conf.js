@@ -22,11 +22,11 @@ module.exports = function(karma) {
       'src/**/*.js': [ 'browserify', 'coverage' ]
     },
 
-    browsers: [‘HeadlessChrome’],
+    browsers: [ 'HeadlessChrome' ],
       customLaunchers: {
         HeadlessChrome: {
-          base: ‘ChromeHeadless’,
-          flags: [ ‘—no-sandbox’,],
+          base: 'ChromeHeadless',
+          flags: [ '—no-sandbox', ],
          },
       },
 
