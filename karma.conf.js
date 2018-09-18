@@ -22,7 +22,13 @@ module.exports = function(karma) {
       'src/**/*.js': [ 'browserify', 'coverage' ]
     },
 
-    browsers: [ 'PhantomJS' ],
+    browsers: [‘HeadlessChrome’],
+      customLaunchers: {
+        HeadlessChrome: {
+          base: ‘ChromeHeadless’,
+          flags: [ ‘—no-sandbox’,],
+         },
+      },
 
     port: 9876,
 
