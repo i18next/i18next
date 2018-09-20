@@ -50,7 +50,7 @@ Our focus is providing the core to building a booming ecosystem. Independent of 
 
 Having done a big rewrite of i18next in spring we are proud to announce the next big step to get your webproject translated with less effort. We just released [locize](http://locize.com/?utm_source=i18next_readme&utm_medium=github) a translation management system built around the i18next ecosystem.
 
-![locize](https://www.i18next.com/assets/img/locize_recap_big_low.gif)
+![locize](https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-L9iS6Wm2hynS5H9Gj7j%2F-L9iS7LlT2W7wFtJH-2n%2F-L9iS9ueC7bW-EHR-Rev%2Flocize_recap_big_low.gif?generation=1523345308538611&alt=media)
 
 With using [locize](http://locize.com/?utm_source=i18next_readme&utm_medium=github) you directly support the future of i18next.
 
