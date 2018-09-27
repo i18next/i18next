@@ -116,7 +116,8 @@ class I18n extends EventEmitter {
 
   /* eslint consistent-return: 0 */
   loadResources(callback = noop) {
-    if (!this.options.resources) {
+    // Try to load from the backend if either no resource were provided, or if the current language resource was not
+    if (!this.options.resources || !this.options.resources[this.language]) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
 
       const toLoad = [];
