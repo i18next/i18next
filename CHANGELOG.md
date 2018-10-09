@@ -1,3 +1,7 @@
+### 11.9.1
+
+- fixes allow overriding of fallbackLng when in options passed to t functions call
+
 ### 11.9.0
 
 - merge load and reloadResources functionality to allow an optional callback in reloadResources

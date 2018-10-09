@@ -23,7 +23,7 @@ class Translator extends EventEmitter {
 
   exists(key, options = { interpolation: {} }) {
     const resolved = this.resolve(key, options);
-    return  resolved && resolved.res !== undefined;
+    return resolved && resolved.res !== undefined;
   }
 
   extractFromKey(key, options) {
@@ -240,7 +240,7 @@ class Translator extends EventEmitter {
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const needsContextHandling = options.context !== undefined && typeof options.context === 'string' && options.context !== '';
 
-      const codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language);
+      const codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
 
       namespaces.forEach((ns) => {
         if (this.isValidLookup(found)) return;

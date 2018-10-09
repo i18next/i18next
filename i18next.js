@@ -815,7 +815,7 @@ var Translator = function (_EventEmitter) {
       var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       var needsContextHandling = options.context !== undefined && typeof options.context === 'string' && options.context !== '';
 
-      var codes = options.lngs ? options.lngs : _this4.languageUtils.toResolveHierarchy(options.lng || _this4.language);
+      var codes = options.lngs ? options.lngs : _this4.languageUtils.toResolveHierarchy(options.lng || _this4.language, options.fallbackLng);
 
       namespaces.forEach(function (ns) {
         if (_this4.isValidLookup(found)) return;
