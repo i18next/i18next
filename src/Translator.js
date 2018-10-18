@@ -197,7 +197,7 @@ class Translator extends EventEmitter {
       // interpolate
       let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
       if (this.options.interpolation.defaultVariables) data = { ...this.options.interpolation.defaultVariables, ...data };
-      res = this.interpolator.interpolate(res, data, options.lng || this.language);
+      res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
 
       // nesting
       if (options.nest !== false) res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
