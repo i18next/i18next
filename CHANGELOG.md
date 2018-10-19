@@ -1,3 +1,7 @@
+### 11.10.0
+
+- Allow missingInterpolationHandler to be provided as t() option [1118](https://github.com/i18next/i18next/pull/1118)
+
 ### 11.9.1
 
 - fixes allow overriding of fallbackLng when in options passed to t functions call
