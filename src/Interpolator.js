@@ -55,7 +55,7 @@ class Interpolator {
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
   }
 
-  interpolate(str, data, lng) {
+  interpolate(str, data, lng, options) {
     let match;
     let value;
     let replaces;
@@ -76,6 +76,9 @@ class Interpolator {
 
     this.resetRegExp();
 
+    const missingInterpolationHandler = (options && options.missingInterpolationHandler) ||
+      this.options.missingInterpolationHandler;
+
     replaces = 0;
     // unescape if has unescapePrefix/Suffix
     /* eslint no-cond-assign: 0 */
@@ -94,8 +97,8 @@ class Interpolator {
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
       if (value === undefined) {
-        if (typeof this.options.missingInterpolationHandler === 'function') {
-          const temp = this.options.missingInterpolationHandler(str, match);
+        if (typeof missingInterpolationHandler === 'function') {
+          const temp = missingInterpolationHandler(str, match);
           value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);

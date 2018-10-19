@@ -269,7 +269,7 @@ describe('Interpolator', () => {
     });
 
     tests.forEach((test) => {
-      it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {        
+      it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
     });
@@ -293,9 +293,15 @@ describe('Interpolator', () => {
     });
 
     tests.forEach((test) => {
-      it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {        
+      it('correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
+    });
+
+    it('correctly calls handler provided via options', () => {
+      expect(ip.interpolate('{{custom}}', {}, null, {
+        missingInterpolationHandler: (str, match) => 'overridden',
+      })).to.eql('overridden');
     });
   });
 
