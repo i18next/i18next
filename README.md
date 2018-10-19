@@ -6,7 +6,6 @@
 [![Package Quality](http://npm.packagequality.com/shield/i18next.svg)](http://packagequality.com/#?package=i18next)
 [![cdnjs version](https://img.shields.io/cdnjs/v/i18next.svg?style=flat-square)](https://cdnjs.com/libraries/i18next)
 [![npm version](https://img.shields.io/npm/v/i18next.svg?style=flat-square)](https://www.npmjs.com/package/i18next)
-[![Bower](https://img.shields.io/bower/v/i18next.svg?style=flat-square)]()
 [![David](https://img.shields.io/david/i18next/i18next.svg?style=flat-square)](https://david-dm.org/i18next/i18next)
 
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
