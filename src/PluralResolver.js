@@ -60,7 +60,7 @@ let _rulesPluralsTypes = {
   19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
   20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
   21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); },
-  22: function(n) {return Number(n===1 ? 0 : n===2 ? 1 : (n<0 || n>10) && n%10==0 ? 3 : 4); }
+  22: function(n) {return Number(n===1 ? 0 : n===2 ? 1 : (n<0 || n>10) && n%10==0 ? 2 : 3); }
 };
 /* eslint-enable */
 
