@@ -34,7 +34,8 @@ let sets = [
   { lngs: ['mt'], nr: [1,2,11,20], fc: 19 },
   { lngs: ['or'], nr: [2,1], fc: 2 },
   { lngs: ['ro'], nr: [1,2,20], fc: 20 },
-  { lngs: ['sl'], nr: [5,1,2,3], fc: 21 }
+  { lngs: ['sl'], nr: [5,1,2,3], fc: 21 },
+  { lngs: ['he'], nr: [1,2,20,21], fc: 22 }
 ]
 
 let _rulesPluralsTypes = {
@@ -58,7 +59,8 @@ let _rulesPluralsTypes = {
   18: function(n) {return Number(n==0 ? 0 : n==1 ? 1 : 2);},
   19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
   20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
-  21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
+  21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); },
+  22: function(n) {return Number(n===1 ? 0 : n===2 ? 1 : (n<0 || n>10) && n%10==0 ? 3 : 4); }
 };
 /* eslint-enable */
 
