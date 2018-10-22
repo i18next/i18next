@@ -38,7 +38,8 @@ describe('PluralResolver', () => {
       {args: ['mt'], expected: true},
       {args: ['or'], expected: true},
       {args: ['ro'], expected: true},
-      {args: ['sl'], expected: true}
+      {args: ['sl'], expected: true},
+      {args: ['he'], expected: true}
     ];
 
     tests.forEach((test) => {
@@ -193,6 +194,17 @@ describe('PluralResolver', () => {
       {args: ['sl', 2], expected: '2'},
       {args: ['sl', 3], expected: '3'},
 
+      // he
+      {args: ['he', 0], expected: '3'},
+      {args: ['he', 0.5], expected: '3'},
+      {args: ['he', 1], expected: '0'},
+      {args: ['he', 2], expected: '1'},
+      {args: ['he', 3], expected: '3'},
+      {args: ['he', 20], expected: '2'},
+      {args: ['he', 21], expected: '3'},
+      {args: ['he', 30], expected: '2'},
+      {args: ['he', 100], expected: '2'},
+      {args: ['he', 101], expected: '3'},
     ];
 
     tests.forEach((test) => {
