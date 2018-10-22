@@ -1,3 +1,7 @@
+### 11.10.1
+
+- Adds Hebrew plural support [1121](https://github.com/i18next/i18next/pull/1121)
+
 ### 11.10.0
 
 - Allow missingInterpolationHandler to be provided as t() option [1118](https://github.com/i18next/i18next/pull/1118)
