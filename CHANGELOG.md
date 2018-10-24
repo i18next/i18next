@@ -1,3 +1,7 @@
+### 11.10.2
+
+- revert hebrew
+
 ### 11.10.1
 
 - Adds Hebrew plural support [1121](https://github.com/i18next/i18next/pull/1121)
