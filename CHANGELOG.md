@@ -1,3 +1,7 @@
+### 12.0.0
+
+- add hebrew update [1121](https://github.com/i18next/i18next/pull/1121)
+
 ### 11.10.2
 
 - revert hebrew

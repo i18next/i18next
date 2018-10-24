@@ -7,7 +7,7 @@ let sets = [
     'tg','ti','tr','uz','wa'], nr: [1,2], fc: 1 },
 
   { lngs: ['af','an','ast','az','bg','bn','ca','da','de','dev','el','en',
-    'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','he','hi',
+    'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','hi',
     'hu','hy','ia','it','kn','ku','lb','mai','ml','mn','mr','nah','nap','nb',
     'ne','nl','nn','no','nso','pa','pap','pms','ps','pt-PT','rm','sco',
     'se','si','so','son','sq','sv','sw','ta','te','tk','ur','yo'], nr: [1,2], fc: 2 },
@@ -35,7 +35,7 @@ let sets = [
   { lngs: ['or'], nr: [2,1], fc: 2 },
   { lngs: ['ro'], nr: [1,2,20], fc: 20 },
   { lngs: ['sl'], nr: [5,1,2,3], fc: 21 },
-  //{ lngs: ['he'], nr: [1,2,20,21], fc: 22 }
+  { lngs: ['he'], nr: [1,2,20,21], fc: 22 }
 ]
 
 let _rulesPluralsTypes = {
