@@ -8,6 +8,7 @@ import Interpolator from './Interpolator.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
+import { defer } from './utils';
 
 function noop() {}
 
@@ -21,7 +22,10 @@ class I18n extends EventEmitter {
 
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
-      if (!this.options.initImmediate) return this.init(options, callback);
+      if (!this.options.initImmediate) {
+        this.init(options, callback);
+        return this;
+      }
       setTimeout(() => {
         this.init(options, callback);
       }, 0);
@@ -95,12 +99,15 @@ class I18n extends EventEmitter {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
 
+    const deferred = defer();
+
     const load = () => {
       this.changeLanguage(this.options.lng, (err, t) => {
         this.isInitialized = true;
         this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
 
+        deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
         callback(err, t);
       });
     };
@@ -111,7 +118,7 @@ class I18n extends EventEmitter {
       setTimeout(load, 0);
     }
 
-    return this;
+    return deferred;
   }
 
   /* eslint consistent-return: 0 */
@@ -148,10 +155,15 @@ class I18n extends EventEmitter {
   }
 
   reloadResources(lngs, ns, callback) {
+    const deferred = defer();
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
-    if (!callback) callback = () => {};
-    this.services.backendConnector.reload(lngs, ns, callback);
+    if (!callback) callback = noop;
+    this.services.backendConnector.reload(lngs, ns, () => {
+      deferred.resolve();
+      callback(null);
+    });
+    return deferred;
   }
 
   use(module) {
@@ -183,6 +195,8 @@ class I18n extends EventEmitter {
   }
 
   changeLanguage(lng, callback) {
+    const deferred = defer();
+
     const done = (err, l) => {
       this.translator.changeLanguage(l);
 
@@ -191,6 +205,7 @@ class I18n extends EventEmitter {
         this.logger.log('languageChanged', l);
       }
 
+      deferred.resolve((...args) => this.t(...args));
       if (callback) callback(err, (...args) => this.t(...args));
     };
 
@@ -215,6 +230,8 @@ class I18n extends EventEmitter {
     } else {
       setLng(lng);
     }
+
+    return deferred;
   }
 
   getFixedT(lng, ns) {
@@ -251,26 +268,46 @@ class I18n extends EventEmitter {
   }
 
   loadNamespaces(ns, callback) {
-    if (!this.options.ns) return callback && callback();
+    const deferred = defer();
+
+    if (!this.options.ns) {
+      callback && callback();
+      return Promise.resolve();
+    }
     if (typeof ns === 'string') ns = [ns];
 
     ns.forEach((n) => {
       if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
     });
 
-    this.loadResources(callback);
+    this.loadResources((err) => {
+      deferred.resolve();
+      if (callback) callback(err);
+    });
+
+    return deferred;
   }
 
   loadLanguages(lngs, callback) {
+    const deferred = defer();
+
     if (typeof lngs === 'string') lngs = [lngs];
     const preloaded = this.options.preload || [];
 
     const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0);
     // Exit early if all given languages are already preloaded
-    if (!newLngs.length) return callback();
+    if (!newLngs.length) {
+      callback();
+      return Promise.resolve();
+    }
 
     this.options.preload = preloaded.concat(newLngs);
-    this.loadResources(callback);
+    this.loadResources((err) => {
+      deferred.resolve();
+      if (callback) callback(err);
+    });
+
+    return deferred;
   }
 
   dir(lng) {
