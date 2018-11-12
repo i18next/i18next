@@ -1,3 +1,4 @@
+// http://lea.verou.me/2016/12/resolve-promises-externally-with-this-one-weird-trick/
 export function defer() {
   let res;
   let rej;
