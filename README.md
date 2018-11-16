@@ -20,7 +20,7 @@ i18next provides:
 - Proper [pluralizations](https://www.i18next.com/plurals.html)
 - Translation [context](https://www.i18next.com/context.html)
 - [Nesting](https://www.i18next.com/nesting.html), [Variable replacement](https://www.i18next.com/interpolation.html)
-- Flexibility: [Use it anywhere](https://www.i18next.com/supported-frameworks.html)
+- Flexibility: [Use it everywhere](https://www.i18next.com/supported-frameworks.html)
 - Extensibility: eg. [sprintf](https://www.i18next.com/plugins-and-utils.html#post-processors)
 - ...
 
