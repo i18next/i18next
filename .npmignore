@@ -1,6 +1,7 @@
 src/
 test/
 coverage/
+assets/
 .babelrc
 .editorconfig
 .eslintignore
@@ -10,3 +11,6 @@ bower.json
 gulpfile.js
 karma.conf.js
 sample.html
+.codeclimate.yml
+.coveralls.yml
+.travis.yml

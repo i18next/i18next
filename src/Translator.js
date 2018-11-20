@@ -23,7 +23,7 @@ class Translator extends EventEmitter {
 
   exists(key, options = { interpolation: {} }) {
     const resolved = this.resolve(key, options);
-    return  resolved && resolved.res !== undefined;
+    return resolved && resolved.res !== undefined;
   }
 
   extractFromKey(key, options) {
@@ -87,8 +87,9 @@ class Translator extends EventEmitter {
     const joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
+    const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
     const handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
-    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : `key '${key} (${this.language})' returned an object instead of string.`;
@@ -109,7 +110,7 @@ class Translator extends EventEmitter {
         }
         res = copy;
       }
-    } else if (joinArrays && resType === '[object Array]') {
+    } else if (handleAsObjectInI18nFormat && joinArrays && resType === '[object Array]') {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options);
@@ -121,7 +122,12 @@ class Translator extends EventEmitter {
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
         usedDefault = true;
-        res = options.defaultValue;
+
+        if (options.count !== undefined) {
+          const suffix = this.pluralResolver.getSuffix(lng, options.count);
+          res = options[`defaultValue${suffix}`];
+        }
+        if (!res) res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
         usedKey = true;
@@ -155,7 +161,8 @@ class Translator extends EventEmitter {
         };
 
         if (this.options.saveMissing) {
-          if (this.options.saveMissingPlurals && options.count) {
+          const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+          if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach((l) => {
               const plurals = this.pluralResolver.getPluralFormsOfKey(l, key);
 
@@ -190,7 +197,7 @@ class Translator extends EventEmitter {
       // interpolate
       let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
       if (this.options.interpolation.defaultVariables) data = { ...this.options.interpolation.defaultVariables, ...data };
-      res = this.interpolator.interpolate(res, data, options.lng || this.language);
+      res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
 
       // nesting
       if (options.nest !== false) res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
@@ -233,7 +240,7 @@ class Translator extends EventEmitter {
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const needsContextHandling = options.context !== undefined && typeof options.context === 'string' && options.context !== '';
 
-      const codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language);
+      const codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
 
       namespaces.forEach((ns) => {
         if (this.isValidLookup(found)) return;
@@ -284,6 +291,7 @@ class Translator extends EventEmitter {
   }
 
   getResource(code, ns, key, options = {}) {
+    if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
   }
 }

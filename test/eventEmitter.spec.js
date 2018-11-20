@@ -3,7 +3,7 @@ import EventEmitter from '../src/EventEmitter';
 describe('i18next', () => {
 
   describe('published', () => {
-    
+
     let emitter;
     beforeEach(() => {
       emitter = new EventEmitter();
@@ -60,6 +60,13 @@ describe('i18next', () => {
       });
 
       emitter.emit('array-event', ['array ok 1', 'array ok 2'], 'data ok');
+    });
+
+    it('it should return itself', () => {
+      // test on
+      const returned = emitter.on('*');
+
+      expect(returned).to.equal(emitter);
     });
   });
 

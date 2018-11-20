@@ -6,25 +6,13 @@ import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
 
-  describe('translate() with arrays', () => {
+  describe('translate() defaultValue', () => {
     var t;
 
     before(() => {
       const rs = new ResourceStore({
         en: {
-          translation: {
-            test: ['test_en_1', 'test_en_2', '{{myVar}}'],
-            flagList: [
-              ['basic1', 'Basic1'],
-              ['simple1', 'Simple1']
-            ],
-            search: {
-              flagList: [
-                ['basic', 'Basic'],
-                ['simple', 'Simple']
-              ]
-            }
-          }
+          translation: {}
         }
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
@@ -34,24 +22,21 @@ describe('Translator', () => {
         pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
         interpolator: new Interpolator()
       }, {
-        returnObjects: true,
-        ns: 'translation',
         defaultNS: 'translation',
-        keySeparator: '.',
+        ns: 'translation',
         interpolation: {
-          // interpolateResult: true,
-          // interpolateDefaultValue: true,
-          // interpolateKey: true
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true
         }
       });
       t.changeLanguage('en');
     });
 
     var tests = [
-      { args: ['translation:test.0'], expected: 'test_en_1' },
-      { args: ['translation:test.2', {myVar: 'test'}], expected: 'test' },
-      { args: ['translation:test', {myVar: 'test', joinArrays: '+'}], expected: 'test_en_1+test_en_2+test' },
-      { args: [['search.flagList', 'flagList'], {}], expected: [['basic', 'Basic'], ['simple', 'Simple']] }
+      {args: ['translation:test', { defaultValue: 'test_en' }], expected: 'test_en'},
+      {args: ['translation:test', { defaultValue: 'test_en', count: 1 }], expected: 'test_en'},
+      {args: ['translation:test', { defaultValue_plural: 'test_en_plural', defaultValue: 'test_en', count: 10 }], expected: 'test_en_plural'},
     ];
 
     tests.forEach((test) => {

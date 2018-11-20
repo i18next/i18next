@@ -38,7 +38,7 @@ describe('BackendConnector reload retry', () => {
 
   describe('#reload', () => {
     it('should reload data', () => {
-      connector.reload(['es'], ['noretry']);
+      connector.reload(['es'], ['noretry'], () => {});
       expect(connector.store.getResourceBundle('es', 'noretry')).to.eql({status: 'nok', retries: 0});
     });
   });

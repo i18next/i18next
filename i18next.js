@@ -250,6 +250,7 @@ var EventEmitter = function () {
       _this.observers[event] = _this.observers[event] || [];
       _this.observers[event].push(listener);
     });
+    return this;
   };
 
   EventEmitter.prototype.off = function off(event, listener) {
@@ -527,6 +528,10 @@ var ResourceStore = function (_EventEmitter) {
     return this.getResource(lng, ns);
   };
 
+  ResourceStore.prototype.getDataByLanguage = function getDataByLanguage(lng) {
+    return this.data[lng];
+  };
+
   ResourceStore.prototype.toJSON = function toJSON() {
     return this.data;
   };
@@ -650,8 +655,9 @@ var Translator = function (_EventEmitter) {
     var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
+    var handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
     var handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
-    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
@@ -672,7 +678,7 @@ var Translator = function (_EventEmitter) {
         }
         res = copy$$1;
       }
-    } else if (joinArrays && resType === '[object Array]') {
+    } else if (handleAsObjectInI18nFormat && joinArrays && resType === '[object Array]') {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options);
@@ -684,7 +690,12 @@ var Translator = function (_EventEmitter) {
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
         usedDefault = true;
-        res = options.defaultValue;
+
+        if (options.count !== undefined) {
+          var suffix = this.pluralResolver.getSuffix(lng, options.count);
+          res = options['defaultValue' + suffix];
+        }
+        if (!res) res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
         usedKey = true;
@@ -718,7 +729,8 @@ var Translator = function (_EventEmitter) {
         };
 
         if (this.options.saveMissing) {
-          if (this.options.saveMissingPlurals && options.count) {
+          var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+          if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach(function (l) {
               var plurals = _this2.pluralResolver.getPluralFormsOfKey(l, key);
 
@@ -758,7 +770,7 @@ var Translator = function (_EventEmitter) {
       // interpolate
       var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
       if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
-      res = this.interpolator.interpolate(res, data, options.lng || this.language);
+      res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
 
       // nesting
       if (options.nest !== false) res = this.interpolator.nest(res, function () {
@@ -803,7 +815,7 @@ var Translator = function (_EventEmitter) {
       var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       var needsContextHandling = options.context !== undefined && typeof options.context === 'string' && options.context !== '';
 
-      var codes = options.lngs ? options.lngs : _this4.languageUtils.toResolveHierarchy(options.lng || _this4.language);
+      var codes = options.lngs ? options.lngs : _this4.languageUtils.toResolveHierarchy(options.lng || _this4.language, options.fallbackLng);
 
       namespaces.forEach(function (ns) {
         if (_this4.isValidLookup(found)) return;
@@ -854,6 +866,7 @@ var Translator = function (_EventEmitter) {
   Translator.prototype.getResource = function getResource(code, ns, key) {
     var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
+    if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
   };
 
@@ -980,7 +993,7 @@ var LanguageUtil = function () {
 
 // definition http://translate.sourceforge.net/wiki/l10n/pluralforms
 /* eslint-disable */
-var sets = [{ lngs: ['ach', 'ak', 'am', 'arn', 'br', 'fil', 'gun', 'ln', 'mfe', 'mg', 'mi', 'oc', 'pt', 'pt-BR', 'tg', 'ti', 'tr', 'uz', 'wa'], nr: [1, 2], fc: 1 }, { lngs: ['af', 'an', 'ast', 'az', 'bg', 'bn', 'ca', 'da', 'de', 'dev', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fi', 'fo', 'fur', 'fy', 'gl', 'gu', 'ha', 'he', 'hi', 'hu', 'hy', 'ia', 'it', 'kn', 'ku', 'lb', 'mai', 'ml', 'mn', 'mr', 'nah', 'nap', 'nb', 'ne', 'nl', 'nn', 'no', 'nso', 'pa', 'pap', 'pms', 'ps', 'pt-PT', 'rm', 'sco', 'se', 'si', 'so', 'son', 'sq', 'sv', 'sw', 'ta', 'te', 'tk', 'ur', 'yo'], nr: [1, 2], fc: 2 }, { lngs: ['ay', 'bo', 'cgg', 'fa', 'id', 'ja', 'jbo', 'ka', 'kk', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'], nr: [1], fc: 3 }, { lngs: ['be', 'bs', 'dz', 'hr', 'ru', 'sr', 'uk'], nr: [1, 2, 5], fc: 4 }, { lngs: ['ar'], nr: [0, 1, 2, 3, 11, 100], fc: 5 }, { lngs: ['cs', 'sk'], nr: [1, 2, 5], fc: 6 }, { lngs: ['csb', 'pl'], nr: [1, 2, 5], fc: 7 }, { lngs: ['cy'], nr: [1, 2, 3, 8], fc: 8 }, { lngs: ['fr'], nr: [1, 2], fc: 9 }, { lngs: ['ga'], nr: [1, 2, 3, 7, 11], fc: 10 }, { lngs: ['gd'], nr: [1, 2, 3, 20], fc: 11 }, { lngs: ['is'], nr: [1, 2], fc: 12 }, { lngs: ['jv'], nr: [0, 1], fc: 13 }, { lngs: ['kw'], nr: [1, 2, 3, 4], fc: 14 }, { lngs: ['lt'], nr: [1, 2, 10], fc: 15 }, { lngs: ['lv'], nr: [1, 2, 0], fc: 16 }, { lngs: ['mk'], nr: [1, 2], fc: 17 }, { lngs: ['mnk'], nr: [0, 1, 2], fc: 18 }, { lngs: ['mt'], nr: [1, 2, 11, 20], fc: 19 }, { lngs: ['or'], nr: [2, 1], fc: 2 }, { lngs: ['ro'], nr: [1, 2, 20], fc: 20 }, { lngs: ['sl'], nr: [5, 1, 2, 3], fc: 21 }];
+var sets = [{ lngs: ['ach', 'ak', 'am', 'arn', 'br', 'fil', 'gun', 'ln', 'mfe', 'mg', 'mi', 'oc', 'pt', 'pt-BR', 'tg', 'ti', 'tr', 'uz', 'wa'], nr: [1, 2], fc: 1 }, { lngs: ['af', 'an', 'ast', 'az', 'bg', 'bn', 'ca', 'da', 'de', 'dev', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fi', 'fo', 'fur', 'fy', 'gl', 'gu', 'ha', 'hi', 'hu', 'hy', 'ia', 'it', 'kn', 'ku', 'lb', 'mai', 'ml', 'mn', 'mr', 'nah', 'nap', 'nb', 'ne', 'nl', 'nn', 'no', 'nso', 'pa', 'pap', 'pms', 'ps', 'pt-PT', 'rm', 'sco', 'se', 'si', 'so', 'son', 'sq', 'sv', 'sw', 'ta', 'te', 'tk', 'ur', 'yo'], nr: [1, 2], fc: 2 }, { lngs: ['ay', 'bo', 'cgg', 'fa', 'id', 'ja', 'jbo', 'ka', 'kk', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'], nr: [1], fc: 3 }, { lngs: ['be', 'bs', 'dz', 'hr', 'ru', 'sr', 'uk'], nr: [1, 2, 5], fc: 4 }, { lngs: ['ar'], nr: [0, 1, 2, 3, 11, 100], fc: 5 }, { lngs: ['cs', 'sk'], nr: [1, 2, 5], fc: 6 }, { lngs: ['csb', 'pl'], nr: [1, 2, 5], fc: 7 }, { lngs: ['cy'], nr: [1, 2, 3, 8], fc: 8 }, { lngs: ['fr'], nr: [1, 2], fc: 9 }, { lngs: ['ga'], nr: [1, 2, 3, 7, 11], fc: 10 }, { lngs: ['gd'], nr: [1, 2, 3, 20], fc: 11 }, { lngs: ['is'], nr: [1, 2], fc: 12 }, { lngs: ['jv'], nr: [0, 1], fc: 13 }, { lngs: ['kw'], nr: [1, 2, 3, 4], fc: 14 }, { lngs: ['lt'], nr: [1, 2, 10], fc: 15 }, { lngs: ['lv'], nr: [1, 2, 0], fc: 16 }, { lngs: ['mk'], nr: [1, 2], fc: 17 }, { lngs: ['mnk'], nr: [0, 1, 2], fc: 18 }, { lngs: ['mt'], nr: [1, 2, 11, 20], fc: 19 }, { lngs: ['or'], nr: [2, 1], fc: 2 }, { lngs: ['ro'], nr: [1, 2, 20], fc: 20 }, { lngs: ['sl'], nr: [5, 1, 2, 3], fc: 21 }, { lngs: ['he'], nr: [1, 2, 20, 21], fc: 22 }];
 
 var _rulesPluralsTypes = {
   1: function _(n) {
@@ -1045,6 +1058,9 @@ var _rulesPluralsTypes = {
   },
   21: function _(n) {
     return Number(n % 100 == 1 ? 1 : n % 100 == 2 ? 2 : n % 100 == 3 || n % 100 == 4 ? 3 : 0);
+  },
+  22: function _(n) {
+    return Number(n === 1 ? 0 : n === 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3);
   }
 };
 /* eslint-enable */
@@ -1136,9 +1152,9 @@ var PluralResolver = function () {
         if (suffix === 1) return '';
         if (typeof suffix === 'number') return '_plural_' + suffix.toString();
         return returnSuffix();
-      } else if ( /* v2 */this.options.compatibilityJSON === 'v2' || rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      } else if ( /* v2 */this.options.compatibilityJSON === 'v2' && rule.numbers.length === 2 && rule.numbers[0] === 1) {
         return returnSuffix();
-      } else if ( /* v3 - gettext index */rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      } else if ( /* v3 - gettext index */this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
         return returnSuffix();
       }
       return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
@@ -1173,13 +1189,14 @@ var Interpolator = function () {
       this.format = options.interpolation && options.interpolation.format || function (value) {
         return value;
       };
-      this.escape = options.interpolation && options.interpolation.escape || escape;
     }
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
     var iOpts = options.interpolation;
 
+    this.escape = iOpts.escape !== undefined ? iOpts.escape : escape;
     this.escapeValue = iOpts.escapeValue !== undefined ? iOpts.escapeValue : true;
+    this.useRawValueToEscape = iOpts.useRawValueToEscape !== undefined ? iOpts.useRawValueToEscape : false;
 
     this.prefix = iOpts.prefix ? regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
     this.suffix = iOpts.suffix ? regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
@@ -1214,7 +1231,7 @@ var Interpolator = function () {
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
   };
 
-  Interpolator.prototype.interpolate = function interpolate(str, data, lng) {
+  Interpolator.prototype.interpolate = function interpolate(str, data, lng, options) {
     var _this = this;
 
     var match = void 0;
@@ -1237,6 +1254,8 @@ var Interpolator = function () {
 
     this.resetRegExp();
 
+    var missingInterpolationHandler = options && options.missingInterpolationHandler || this.options.missingInterpolationHandler;
+
     replaces = 0;
     // unescape if has unescapePrefix/Suffix
     /* eslint no-cond-assign: 0 */
@@ -1255,14 +1274,14 @@ var Interpolator = function () {
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
       if (value === undefined) {
-        if (typeof this.options.missingInterpolationHandler === 'function') {
-          var temp = this.options.missingInterpolationHandler(str, match);
+        if (typeof missingInterpolationHandler === 'function') {
+          var temp = missingInterpolationHandler(str, match);
           value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
           value = '';
         }
-      } else if (typeof value !== 'string') {
+      } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
         value = makeString(value);
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
@@ -1363,7 +1382,7 @@ var Connector = function (_EventEmitter) {
     return _this;
   }
 
-  Connector.prototype.queueLoad = function queueLoad(languages, namespaces, callback) {
+  Connector.prototype.queueLoad = function queueLoad(languages, namespaces, options, callback) {
     var _this2 = this;
 
     // find what needs to be loaded
@@ -1378,7 +1397,7 @@ var Connector = function (_EventEmitter) {
       namespaces.forEach(function (ns) {
         var name = lng + '|' + ns;
 
-        if (_this2.store.hasResourceBundle(lng, ns)) {
+        if (!options.reload && _this2.store.hasResourceBundle(lng, ns)) {
           _this2.state[name] = 2; // loaded
         } else if (_this2.state[name] < 0) {
           // nothing to do for err
@@ -1416,8 +1435,6 @@ var Connector = function (_EventEmitter) {
   };
 
   Connector.prototype.loaded = function loaded(name, err, data) {
-    var _this3 = this;
-
     var _name$split = name.split('|'),
         _name$split2 = slicedToArray(_name$split, 2),
         lng = _name$split2[0],
@@ -1432,6 +1449,9 @@ var Connector = function (_EventEmitter) {
     // set loaded
     this.state[name] = err ? -1 : 2;
 
+    // consolidated loading done in this run - only emit once for a loaded namespace
+    var loaded = {};
+
     // callback if ready
     this.queue.forEach(function (q) {
       pushPath(q.loaded, [lng], ns);
@@ -1440,7 +1460,16 @@ var Connector = function (_EventEmitter) {
       if (err) q.errors.push(err);
 
       if (q.pending.length === 0 && !q.done) {
-        _this3.emit('loaded', q.loaded);
+        // only do once per loaded -> this.emit('loaded', q.loaded);
+        Object.keys(q.loaded).forEach(function (l) {
+          if (!loaded[l]) loaded[l] = [];
+          if (q.loaded[l].length) {
+            q.loaded[l].forEach(function (ns) {
+              if (loaded[l].indexOf(ns) < 0) loaded[l].push(ns);
+            });
+          }
+        });
+
         /* eslint no-param-reassign: 0 */
         q.done = true;
         if (q.errors.length) {
@@ -1451,6 +1480,9 @@ var Connector = function (_EventEmitter) {
       }
     });
 
+    // emit consolidated loaded event
+    this.emit('loaded', loaded);
+
     // remove done load requests
     this.queue = this.queue.filter(function (q) {
       return !q.done;
@@ -1460,7 +1492,7 @@ var Connector = function (_EventEmitter) {
   Connector.prototype.read = function read(lng, ns, fcName) {
     var tried = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 
-    var _this4 = this;
+    var _this3 = this;
 
     var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 250;
     var callback = arguments[5];
@@ -1470,7 +1502,7 @@ var Connector = function (_EventEmitter) {
     return this.backend[fcName](lng, ns, function (err, data) {
       if (err && data /* = retryFlag */ && tried < 5) {
         setTimeout(function () {
-          _this4.read.call(_this4, lng, ns, fcName, tried + 1, wait * 2, callback);
+          _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
         }, wait);
         return;
       }
@@ -1481,8 +1513,11 @@ var Connector = function (_EventEmitter) {
   /* eslint consistent-return: 0 */
 
 
-  Connector.prototype.load = function load(languages, namespaces, callback) {
-    var _this5 = this;
+  Connector.prototype.prepareLoading = function prepareLoading(languages, namespaces) {
+    var _this4 = this;
+
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var callback = arguments[3];
 
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
@@ -1492,36 +1527,27 @@ var Connector = function (_EventEmitter) {
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    var toLoad = this.queueLoad(languages, namespaces, callback);
+    var toLoad = this.queueLoad(languages, namespaces, options, callback);
     if (!toLoad.toLoad.length) {
       if (!toLoad.pending.length) callback(); // nothing to load and no pendings...callback now
       return null; // pendings will trigger callback
     }
 
     toLoad.toLoad.forEach(function (name) {
-      _this5.loadOne(name);
+      _this4.loadOne(name);
     });
   };
 
-  Connector.prototype.reload = function reload(languages, namespaces) {
-    var _this6 = this;
+  Connector.prototype.load = function load(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, {}, callback);
+  };
 
-    if (!this.backend) {
-      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
-    }
-
-    if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
-    if (typeof namespaces === 'string') namespaces = [namespaces];
-
-    languages.forEach(function (l) {
-      namespaces.forEach(function (n) {
-        _this6.loadOne(l + '|' + n, 're');
-      });
-    });
+  Connector.prototype.reload = function reload(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, { reload: true }, callback);
   };
 
   Connector.prototype.loadOne = function loadOne(name) {
-    var _this7 = this;
+    var _this5 = this;
 
     var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
@@ -1531,10 +1557,10 @@ var Connector = function (_EventEmitter) {
         ns = _name$split4[1];
 
     this.read(lng, ns, 'read', null, null, function (err, data) {
-      if (err) _this7.logger.warn(prefix + 'loading namespace ' + ns + ' for language ' + lng + ' failed', err);
-      if (!err && data) _this7.logger.log(prefix + 'loaded namespace ' + ns + ' for language ' + lng, data);
+      if (err) _this5.logger.warn(prefix + 'loading namespace ' + ns + ' for language ' + lng + ' failed', err);
+      if (!err && data) _this5.logger.log(prefix + 'loaded namespace ' + ns + ' for language ' + lng, data);
 
-      _this7.loaded(name, err, data);
+      _this5.loaded(name, err, data);
     });
   };
 
@@ -1738,7 +1764,7 @@ var I18n = function (_EventEmitter) {
     }
 
     // append api
-    var storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle'];
+    var storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle', 'getDataByLanguage'];
     storeApi.forEach(function (fcName) {
       _this2[fcName] = function () {
         var _store;
@@ -1809,10 +1835,11 @@ var I18n = function (_EventEmitter) {
     }
   };
 
-  I18n.prototype.reloadResources = function reloadResources(lngs, ns) {
+  I18n.prototype.reloadResources = function reloadResources(lngs, ns, callback) {
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
-    this.services.backendConnector.reload(lngs, ns);
+    if (!callback) callback = function callback() {};
+    this.services.backendConnector.reload(lngs, ns, callback);
   };
 
   I18n.prototype.use = function use(module) {

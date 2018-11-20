@@ -13,13 +13,14 @@ class Interpolator {
     if (reset) {
       this.options = options;
       this.format = (options.interpolation && options.interpolation.format) || (value => value);
-      this.escape = (options.interpolation && options.interpolation.escape) || utils.escape;
     }
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
     const iOpts = options.interpolation;
 
+    this.escape = iOpts.escape !== undefined ? iOpts.escape : utils.escape;
     this.escapeValue = iOpts.escapeValue !== undefined ? iOpts.escapeValue : true;
+    this.useRawValueToEscape = iOpts.useRawValueToEscape !== undefined ? iOpts.useRawValueToEscape : false;
 
     this.prefix = iOpts.prefix ? utils.regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
     this.suffix = iOpts.suffix ? utils.regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
@@ -54,7 +55,7 @@ class Interpolator {
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
   }
 
-  interpolate(str, data, lng) {
+  interpolate(str, data, lng, options) {
     let match;
     let value;
     let replaces;
@@ -75,6 +76,9 @@ class Interpolator {
 
     this.resetRegExp();
 
+    const missingInterpolationHandler = (options && options.missingInterpolationHandler) ||
+      this.options.missingInterpolationHandler;
+
     replaces = 0;
     // unescape if has unescapePrefix/Suffix
     /* eslint no-cond-assign: 0 */
@@ -93,14 +97,14 @@ class Interpolator {
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
       if (value === undefined) {
-        if (typeof this.options.missingInterpolationHandler === 'function') {
-          const temp = this.options.missingInterpolationHandler(str, match);
+        if (typeof missingInterpolationHandler === 'function') {
+          const temp = missingInterpolationHandler(str, match);
           value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
           value = '';
         }
-      } else if (typeof value !== 'string') {
+      } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
         value = utils.makeString(value);
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);

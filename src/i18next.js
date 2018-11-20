@@ -90,7 +90,7 @@ class I18n extends EventEmitter {
     }
 
     // append api
-    const storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle'];
+    const storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle', 'getDataByLanguage'];
     storeApi.forEach((fcName) => {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
@@ -147,10 +147,11 @@ class I18n extends EventEmitter {
     }
   }
 
-  reloadResources(lngs, ns) {
+  reloadResources(lngs, ns, callback) {
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
-    this.services.backendConnector.reload(lngs, ns);
+    if (!callback) callback = () => {};
+    this.services.backendConnector.reload(lngs, ns, callback);
   }
 
   use(module) {

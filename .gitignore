@@ -20,3 +20,4 @@ dist/**/*
 
 # Ignore IntelliJ based IDEs project files
 .idea
+package-lock.json

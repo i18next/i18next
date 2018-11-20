@@ -28,7 +28,7 @@ class Connector extends EventEmitter {
     }
   }
 
-  queueLoad(languages, namespaces, callback) {
+  queueLoad(languages, namespaces, options, callback) {
     // find what needs to be loaded
     const toLoad = [];
     const pending = [];
@@ -41,7 +41,7 @@ class Connector extends EventEmitter {
       namespaces.forEach((ns) => {
         const name = `${lng}|${ns}`;
 
-        if (this.store.hasResourceBundle(lng, ns)) {
+        if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
           this.state[name] = 2; // loaded
         } else if (this.state[name] < 0) {
           // nothing to do for err
@@ -90,6 +90,9 @@ class Connector extends EventEmitter {
     // set loaded
     this.state[name] = err ? -1 : 2;
 
+    // consolidated loading done in this run - only emit once for a loaded namespace
+    const loaded = {};
+
     // callback if ready
     this.queue.forEach((q) => {
       utils.pushPath(q.loaded, [lng], ns);
@@ -98,7 +101,16 @@ class Connector extends EventEmitter {
       if (err) q.errors.push(err);
 
       if (q.pending.length === 0 && !q.done) {
-        this.emit('loaded', q.loaded);
+        // only do once per loaded -> this.emit('loaded', q.loaded);
+        Object.keys(q.loaded).forEach(l => {
+          if (!loaded[l]) loaded[l] = [];
+          if (q.loaded[l].length) {
+            q.loaded[l].forEach(ns => {
+              if (loaded[l].indexOf(ns) < 0) loaded[l].push(ns);
+            });
+          }
+        });
+
         /* eslint no-param-reassign: 0 */
         q.done = true;
         if (q.errors.length) {
@@ -108,6 +120,9 @@ class Connector extends EventEmitter {
         }
       }
     });
+
+    // emit consolidated loaded event
+    this.emit('loaded', loaded);
 
     // remove done load requests
     this.queue = this.queue.filter(q => !q.done);
@@ -128,7 +143,7 @@ class Connector extends EventEmitter {
   }
 
   /* eslint consistent-return: 0 */
-  load(languages, namespaces, callback) {
+  prepareLoading(languages, namespaces, options = {}, callback) {
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
       return callback && callback();
@@ -137,7 +152,7 @@ class Connector extends EventEmitter {
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    const toLoad = this.queueLoad(languages, namespaces, callback);
+    const toLoad = this.queueLoad(languages, namespaces, options, callback);
     if (!toLoad.toLoad.length) {
       if (!toLoad.pending.length) callback(); // nothing to load and no pendings...callback now
       return null; // pendings will trigger callback
@@ -148,19 +163,12 @@ class Connector extends EventEmitter {
     });
   }
 
-  reload(languages, namespaces) {
-    if (!this.backend) {
-      this.logger.warn('No backend was added via i18next.use. Will not load resources.');
-    }
+  load(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, {}, callback)
+  }
 
-    if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
-    if (typeof namespaces === 'string') namespaces = [namespaces];
-
-    languages.forEach((l) => {
-      namespaces.forEach((n) => {
-        this.loadOne(`${l}|${n}`, 're');
-      });
-    });
+  reload(languages, namespaces, callback) {
+    this.prepareLoading(languages, namespaces, { reload: true }, callback)
   }
 
   loadOne(name, prefix = '') {

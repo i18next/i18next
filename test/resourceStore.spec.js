@@ -156,6 +156,17 @@ describe('ResourceStore', () => {
         expect(rs.getResourceBundle('en', 'translation')).to.be.not.ok;
       });
     });
+
+    describe('can get data by language', () => {
+      beforeEach(() => {
+        const data = { en: { translation: { test: 'test' } } };
+        rs = new ResourceStore(data);
+      });
+
+      it('it gets data by getDataByLanguage', () => {
+        expect(rs.getDataByLanguage('en')).to.be.eql({ translation: { test: 'test' } });
+      });
+    });
   });
 
 });

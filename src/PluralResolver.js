@@ -7,7 +7,7 @@ let sets = [
     'tg','ti','tr','uz','wa'], nr: [1,2], fc: 1 },
 
   { lngs: ['af','an','ast','az','bg','bn','ca','da','de','dev','el','en',
-    'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','he','hi',
+    'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','hi',
     'hu','hy','ia','it','kn','ku','lb','mai','ml','mn','mr','nah','nap','nb',
     'ne','nl','nn','no','nso','pa','pap','pms','ps','pt-PT','rm','sco',
     'se','si','so','son','sq','sv','sw','ta','te','tk','ur','yo'], nr: [1,2], fc: 2 },
@@ -34,7 +34,8 @@ let sets = [
   { lngs: ['mt'], nr: [1,2,11,20], fc: 19 },
   { lngs: ['or'], nr: [2,1], fc: 2 },
   { lngs: ['ro'], nr: [1,2,20], fc: 20 },
-  { lngs: ['sl'], nr: [5,1,2,3], fc: 21 }
+  { lngs: ['sl'], nr: [5,1,2,3], fc: 21 },
+  { lngs: ['he'], nr: [1,2,20,21], fc: 22 }
 ]
 
 let _rulesPluralsTypes = {
@@ -58,7 +59,8 @@ let _rulesPluralsTypes = {
   18: function(n) {return Number(n==0 ? 0 : n==1 ? 1 : 2);},
   19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
   20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
-  21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
+  21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); },
+  22: function(n) {return Number(n===1 ? 0 : n===2 ? 1 : (n<0 || n>10) && n%10==0 ? 2 : 3); }
 };
 /* eslint-enable */
 
@@ -142,9 +144,9 @@ class PluralResolver {
         if (suffix === 1) return '';
         if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
         return returnSuffix();
-      } else if (/* v2 */ this.options.compatibilityJSON === 'v2' || (rule.numbers.length === 2 && rule.numbers[0] === 1)) {
+      } else if (/* v2 */ this.options.compatibilityJSON === 'v2' && (rule.numbers.length === 2 && rule.numbers[0] === 1)) {
         return returnSuffix();
-      } else if (/* v3 - gettext index */ rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      } else if (/* v3 - gettext index */ this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
         return returnSuffix();
       }
       return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
