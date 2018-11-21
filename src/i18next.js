@@ -116,8 +116,7 @@ class I18n extends EventEmitter {
 
   /* eslint consistent-return: 0 */
   loadResources(callback = noop) {
-    if (!this.options.resources || (this.options.partialBundledLanguages &&
-      (!this.options.resources[this.languages[0]] || !this.options.resources[this.languages[0]][this.options.ns]))) {
+    if (!this.options.resources || this.options.partialBundledLanguages) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
 
       const toLoad = [];
