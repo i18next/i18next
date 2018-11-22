@@ -1600,6 +1600,7 @@ function get$1() {
     pluralSeparator: '_',
     contextSeparator: '_',
 
+    partialBundledLanguages: false, // allow bundling certain languages that are not remotely fetched
     saveMissing: false, // enable to send missing values
     updateMissing: false, // enable to update default values if different from translated value (only useful on initial development, or when keeping code as source of truth)
     saveMissingTo: 'fallback', // 'current' || 'all'
@@ -1800,7 +1801,7 @@ var I18n = function (_EventEmitter) {
 
     var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : noop;
 
-    if (!this.options.resources) {
+    if (!this.options.resources || this.options.partialBundledLanguages) {
       if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
 
       var toLoad = [];

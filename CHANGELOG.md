@@ -1,3 +1,7 @@
+### 12.1.0
+
+- adds partialBundledLanguages flag in init options [1136](https://github.com/i18next/i18next/pull/1136)
+
 ### 12.0.0
 
 - add hebrew update [1121](https://github.com/i18next/i18next/pull/1121)
@@ -619,7 +623,7 @@
 ### 1.7.3
 
 - solves issue with ie8 not providing .trim function on string -> added to shim
-- set data using $(selector).i18n() on data-i18n='[data-someDataAttr]key'
+- set data using \$(selector).i18n() on data-i18n='[data-someDataAttr]key'
 - more bullet proof state handling on failed file load
 - corrected latvian plurals based on [issue 231](https://github.com/jamuhl/i18next/issues/231)
 - allow array of fallback languages
@@ -682,7 +686,7 @@
 - fixed issue #80 empty string lookup ends in fallback instead of returning result in language
 - fixed issue with null value in resources not returning expected value
 - optimized tests to use on server (nodejs) too
-- allow zepto as drop in replacement for $
+- allow zepto as drop in replacement for \$
 - using testacular as runner
 - upgraded to grunt 0.4.0
 - fixed optional interpolation prefix/suffix not used in plural translation cases
