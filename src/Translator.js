@@ -55,7 +55,7 @@ class Translator extends EventEmitter {
 
     // non valid keys handling
     if (keys === undefined || keys === null) return '';
-    if(!Array.isArray(keys)) keys = [String(keys)];
+    if (!Array.isArray(keys)) keys = [String(keys)];
 
     // separators
     const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
