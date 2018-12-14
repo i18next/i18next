@@ -98,7 +98,7 @@ class Interpolator {
       value = handleFormat(match[1].trim());
       if (value === undefined) {
         if (typeof missingInterpolationHandler === 'function') {
-          const temp = missingInterpolationHandler(str, match);
+          const temp = missingInterpolationHandler(str, match, options);
           value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
