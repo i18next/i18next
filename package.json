@@ -1,8 +1,9 @@
 {
   "name": "i18next",
-  "version": "12.1.0",
+  "version": "13.0.0",
   "description": "i18next internationalization framework",
   "main": "./index.js",
+  "types": "index.d.ts",
   "jsnext:main": "dist/es/index.js",
   "module": "dist/es/index.js",
   "keywords": [
