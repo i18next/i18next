@@ -1,3 +1,19 @@
+// http://lea.verou.me/2016/12/resolve-promises-externally-with-this-one-weird-trick/
+export function defer() {
+  let res;
+  let rej;
+
+  const promise = new Promise((resolve, reject) => {
+    res = resolve;
+    rej = reject;
+  });
+
+  promise.resolve = res;
+  promise.reject = rej;
+
+  return promise;
+}
+
 export function makeString(object) {
   if (object == null) return '';
   /* eslint prefer-template: 0 */
