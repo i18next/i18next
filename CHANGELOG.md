@@ -6,7 +6,7 @@
 BREAKING:
 
 - adds typescript definitions directly into this repo - no longer need to grab them from definitlytyped [1142](https://github.com/i18next/i18next/pull/1142)
-- promise API added for all functions providing a callback [https://github.com/i18next/i18next/pull/1130](1130) -> means those will now return a Promise and not this -> so you can't chain eg. i18next.init().on() anylonger as init returns a Promise
+- promise API added for all functions providing a callback [1130](https://github.com/i18next/i18next/pull/1130) -> means those will now return a Promise and not this -> so you can't chain eg. i18next.init().on() anylonger as init returns a Promise
 
 ### 12.1.0
 
