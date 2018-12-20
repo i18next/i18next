@@ -14,110 +14,120 @@ declare namespace i18next {
 
     type FallbackLng = string | string[] | FallbackLngObjList;
 
-    type FormatFunction = (value: string, format?: string, lng?: string) => string;
+    type FormatFunction = (value: any, format?: string, lng?: string) => string;
 
     interface InterpolationOptions {
         /**
-         *  format function see formatting for details
+         * Format function see formatting for details
          * @default noop
          */
         format?: FormatFunction;
         /**
-         * 	used to separate format from interpolation value
+         * Used to separate format from interpolation value
          * @default ','
          */
         formatSeparator?: string;
         /**
-         * 	escape function
+         * Escape function
          * @default str => str
          */
         escape?(str: string): string;
 
         /**
-         * 	escape passed in values to avoid xss injection
+         * Escape passed in values to avoid xss injection
          * @default true
          */
         escapeValue?: boolean;
         /**
-         * 	prefix for interpolation
+         * If true, then value passed into escape function is not casted to string, use with custom escape function that does its own type check
+         * @default false
+         */
+        useRawValueToEscape?: boolean;
+        /**
+         * Prefix for interpolation
          * @default '{{'
          */
         prefix?: string;
         /**
-         * 	suffix for interpolation
+         * Suffix for interpolation
          * @default '}}'
          */
         suffix?: string;
         /**
-         * 	escaped prefix for interpolation (regexSafe)
+         * Escaped prefix for interpolation (regexSafe)
          * @default undefined
          */
         prefixEscaped?: string;
         /**
-         * 	escaped suffix for interpolation (regexSafe)
+         * Escaped suffix for interpolation (regexSafe)
          * @default undefined
          */
         suffixEscaped?: string;
         /**
-         * 	suffix to unescaped mode
+         * Suffix to unescaped mode
          * @default undefined
          */
         unescapeSuffix?: string;
         /**
-         * 	prefix to unescaped mode
+         * Prefix to unescaped mode
          * @default '-'
          */
         unescapePrefix?: string;
         /**
-         * prefix for nesting
+         * Prefix for nesting
          * @default '$t('
          */
         nestingPrefix?: string;
         /**
-         * 	suffix for nesting
+         * Suffix for nesting
          * @default ')'
          */
         nestingSuffix?: string;
         /**
-         * 	escaped prefix for nesting (regexSafe)
+         * Escaped prefix for nesting (regexSafe)
          * @default undefined
          */
         nestingPrefixEscaped?: string;
         /**
-         * 	escaped suffix for nesting (regexSafe)
+         * Escaped suffix for nesting (regexSafe)
          * @default undefined
          */
         nestingSuffixEscaped?: string;
         /**
-         * 	global variables to use in interpolation replacements
+         * Global variables to use in interpolation replacements
          * @default undefined
          */
-        defaultVariables?: any;
+        defaultVariables?: { [index: string]: any };
+        /**
+         * After how many interpolation runs to break out before throwing a stack overflow
+         * @default 1000
+         */
+        maxReplaces?: number;
     }
 
     interface ReactOptions {
         /**
-         * set to true if you like to wait for loaded in every translated hoc
+         * Set to true if you like to wait for loaded in every translated hoc
          * @default false
          */
         wait?: boolean;
         /**
-         * set it to fallback to let passed namespaces to translated hoc act as fallbacks
+         * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
          * @default 'default'
          */
         nsMode?: 'default' | 'fallback';
         /**
-         * set it to the default parent element created by the Trans component.
+         * Set it to the default parent element created by the Trans component.
          * @default 'div'
          */
         defaultTransParent?: string;
         /**
-         * set which events trigger a rerender, can be set to false or string of events
+         * Set which events trigger a re-render, can be set to false or string of events
          * @default 'languageChanged loaded'
          */
         bindI18n?: string | false;
         /**
-         * set which events on store trigger a rerender, can be set to false or string of events
+         * Set which events on store trigger a re-render, can be set to false or string of events
          * @default 'added removed'
          */
         bindStore?: string | false;
@@ -125,43 +135,49 @@ declare namespace i18next {
 
     interface InitOptions {
         /**
-         * logs info level to console output. Helps finding issues with loading not working.
+         * Logs info level to console output. Helps finding issues with loading not working.
          * @default false
          */
         debug?: boolean;
 
         /**
-         * resources to initialize with (if not using loading or not appending using addResourceBundle)
+         * Resources to initialize with (if not using loading or not appending using addResourceBundle)
          * @default undefined
          */
         resources?: Resource;
 
         /**
-         * language to use (overrides language detection)
+         * Allow initializing with bundled resources while using a backend to load non bundled ones.
+         * @default false
+         */
+        partialBundledLanguages?: boolean;
+
+        /**
+         * Language to use (overrides language detection)
          * @default undefined
          */
         lng?: string;
 
         /**
-         * language to use if translations in user language are not available.
+         * Language to use if translations in user language are not available.
          * @default 'dev'
          */
         fallbackLng?: false | FallbackLng;
 
         /**
-         * 	array of allowed languages
+         * Array of allowed languages
          * @default false
          */
         whitelist?: false | string[];
 
         /**
-         * if true will pass eg. en-US if finding en in whitelist
+         * If true will pass eg. en-US if finding en in whitelist
          * @default false
          */
         nonExplicitWhitelist?: boolean;
 
         /**
-         * language codes to lookup, given set language is
+         * Language codes to lookup, given set language is
          * 'en-US': 'all' --> ['en-US', 'en', 'dev'],
          * 'currentOnly' --> 'en-US',
          * 'languageOnly' --> 'en'
@@ -170,40 +186,49 @@ declare namespace i18next {
         load?: "all" | "currentOnly" | "languageOnly";
 
         /**
-         * array of languages to preload. Important on serverside to assert translations are loaded before rendering views.
+         * Array of languages to preload. Important on server-side to assert translations are loaded before rendering views.
          * @default false
          */
         preload?: false | string[];
 
         /**
-         * language will be lowercased eg. en-US --> en-us
+         * Language will be lowercased eg. en-US --> en-us
          * @default false
          */
         lowerCaseLng?: boolean;
 
         /**
-         * string or array of namespaces to load
+         * String or array of namespaces to load
          * @default 'translation'
          */
         ns?: string | string[];
 
         /**
-         * default namespace used if not passed to translation function
+         * Default namespace used if not passed to translation function
          * @default 'translation'
          */
         defaultNS?: string;
 
         /**
-         * string or array of namespaces to lookup key if not found in given namespace.
+         * String or array of namespaces to lookup key if not found in given namespace.
          * @default false
          */
         fallbackNS?: false | string | string[];
 
         /**
-         * calls save missing key function on backend if key not found
+         * Calls save missing key function on backend if key not found
          * @default false
          */
         saveMissing?: boolean;
+
+        /**
+         * Experimental: enable to update default values using the saveMissing
+         * (Works only if defaultValue different from translated value.
+         * Only useful on initial development or when keeping code as source of truth not changing values outside of code.
+         * Only supported if backend supports it already)
+         * @default false
+         */
+        updateMissing?: boolean;
 
         /**
          * @default 'fallback'
@@ -214,46 +239,52 @@ declare namespace i18next {
          * Used for custom missing key handling (needs saveMissing set to true!)
          * @default false
          */
-        missingKeyHandler?: false | ((lng: string, ns: string, key: string, fallbackValue: string) => void);
+        missingKeyHandler?: false | ((lngs: string[], ns: string, key: string, fallbackValue: string) => void);
 
         /**
-         * receives a key that was not found in `t()` and returns a value, that will be returned by `t()`
+         * Receives a key that was not found in `t()` and returns a value, that will be returned by `t()`
          * @default noop
          */
         parseMissingKeyHandler?(key: string): any;
 
         /**
-         * appends namespace to missing key
+         * Appends namespace to missing key
          * @default false
          */
         appendNamespaceToMissingKey?: boolean;
 
         /**
-         * will use 'plural' as suffix for languages only having 1 plural form, setting it to false will suffix all with numbers
+         * Gets called in case a interpolation value is undefined. This method will not be called if the value is empty string or null
+         * @default noop
+         */
+        missingInterpolationHandler?: (text: string, value: any, options: InitOptions) => any;
+
+        /**
+         * Will use 'plural' as suffix for languages only having 1 plural form, setting it to false will suffix all with numbers
          * @default true
          */
         simplifyPluralSuffix?: boolean;
 
         /**
-         * string or array of postProcessors to apply per default
+         * String or array of postProcessors to apply per default
          * @default false
          */
         postProcess?: false | string | string[];
 
         /**
-         * allows null values as valid translation
+         * Allows null values as valid translation
          * @default true
          */
         returnNull?: boolean;
 
         /**
-         * allows empty string as valid translation
+         * Allows empty string as valid translation
          * @default true
          */
         returnEmptyString?: boolean;
 
         /**
-         * allows objects as valid translation result
+         * Allows objects as valid translation result
          * @default false
          */
         returnObjects?: boolean;
@@ -265,13 +296,13 @@ declare namespace i18next {
         returnedObjectHandler?(key: string, value: string, options: any): void;
 
         /**
-         * char, eg. '\n' that arrays will be joined by
+         * Char, eg. '\n' that arrays will be joined by
          * @default false
          */
         joinArrays?: false | string;
 
         /**
-         * default: sets defaultValue
+         * Sets defaultValue
          * @default args => ({ defaultValue: args[1] })
          */
         overloadTranslationOptionHandler?(args: string[]): TranslationOptions;
@@ -282,31 +313,37 @@ declare namespace i18next {
         interpolation?: InterpolationOptions;
 
         /**
-         * options for language detection - check documentation of plugin
+         * Options for language detection - check documentation of plugin
          * @default undefined
          */
         detection?: object;
 
         /**
-         * options for backend - check documentation of plugin
+         * Options for backend - check documentation of plugin
          * @default undefined
          */
         backend?: object;
 
         /**
-         * options for cache layer - check documentation of plugin
+         * Options for cache layer - check documentation of plugin
          * @default undefined
          */
         cache?: object;
 
         /**
-         * options for react - check documentation of plugin
+         * Options for i18n message format - check documentation of plugin
+         * @default undefined
+         */
+        i18nFormat?: object;
+
+        /**
+         * Options for react - check documentation of plugin
          * @default undefined
          */
         react?: ReactOptions;
 
         /**
-         * triggers resource loading in init function inside a setTimeout (default async behaviour).
+         * Triggers resource loading in init function inside a setTimeout (default async behaviour).
          * Set it to false if your backend loads resources sync - that way calling i18next.t after
          * init is possible without relaying on the init callback.
          * @default true
@@ -314,39 +351,40 @@ declare namespace i18next {
         initImmediate?: boolean;
 
         /**
-         * char to separate keys
+         * Char to separate keys
          * @default '.'
          */
         keySeparator?: false | string;
 
         /**
-         * char to split namespace from key
+         * Char to split namespace from key
          * @default ':'
          */
         nsSeparator?: false | string;
 
         /**
-         * char to split plural from key
+         * Char to split plural from key
          * @default '_'
          */
         pluralSeparator?: string;
 
         /**
-         * char to split context from key
+         * Char to split context from key
          * @default '_'
          */
         contextSeparator?: string;
 
         /**
-         * prefixes the namespace to the returned key when using cimode
+         * Prefixes the namespace to the returned key when using `cimode`
          * @default false
          */
         appendNamespaceToCIMode?: boolean;
 
         /**
          * Compatibility JSON version
+         * @default 'v3'
          */
-        compatibilityJSON?: string;
+        compatibilityJSON?: 'v1' | 'v2' | 'v3';
     }
 
     // Add an indexer to assure that interpolation arguments can be passed
@@ -354,59 +392,59 @@ declare namespace i18next {
 
     interface TranslationOptionsBase {
         /**
-         * defaultValue to return if a translation was not found
+         * Default value to return if a translation was not found
          */
         defaultValue?: any;
         /**
-         * count value used for plurals
+         * Count value used for plurals
          */
         count?: number;
         /**
-         * used for contexts (eg. male\female)
+         * Used for contexts (eg. male\female)
          */
         context?: any;
         /**
-         * object with vars for interpolation - or put them directly in options
+         * Object with vars for interpolation - or put them directly in options
          */
         replace?: any;
         /**
-         * override language to use
+         * Override language to use
          */
         lng?: string;
         /**
-         * override languages to use
+         * Override languages to use
          */
         lngs?: string[];
         /**
-         * override language to lookup key if not found see fallbacks for details
+         * Override language to lookup key if not found see fallbacks for details
          */
         fallbackLng?: FallbackLng;
         /**
-         * override namespaces (string or array)
+         * Override namespaces (string or array)
          */
         ns?: string | string[];
         /**
-         * override char to separate keys
+         * Override char to separate keys
          */
         keySeparator?: string;
         /**
-         * override char to split namespace from key
+         * Override char to split namespace from key
          */
         nsSeparator?: string;
         /**
-         * accessing an object not a translation string (can be set globally too)
+         * Accessing an object not a translation string (can be set globally too)
          */
         returnObjects?: boolean;
         /**
-         * char, eg. '\n' that arrays will be joined by (can be set globally too)
+         * Char, eg. '\n' that arrays will be joined by (can be set globally too)
          */
         joinArrays?: string;
         /**
-         * string or array of postProcessors to apply see interval plurals as a sample
+         * String or array of postProcessors to apply see interval plurals as a sample
          */
         postProcess?: string | string[];
         /**
-         * override interpolation options
+         * Override interpolation options
          */
         interpolation?: InterpolationOptions;
     }
@@ -428,6 +466,84 @@ declare namespace i18next {
         [key: string]: any;
     }
 
+    interface Services {
+        backendConnector: any;
+        i18nFormat: any;
+        interpolator: any;
+        languageDetector: any;
+        languageUtils: any;
+        logger: any;
+        pluralResolver: any;
+        resourceStore: Resource;
+    }
+
+    /**
+     * Used to load data for i18next.
+     * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
+     * For singleton set property `type` to `'backend'` For a prototype constructor set static property. 
+     */
+    interface BackendModule {
+        type?: 'backend';
+        init(services: Services, backendOptions: object, i18nextOptions: InitOptions): void;
+        read(language: string, namespace: string, callback: (err: Error, data: ResourceLanguage) => void): void;
+        /** Save the missing translation */
+        create(languages: string[], namespace: string, key: string, fallbackValue: string): void;
+        /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
+        readMulti?(languages: string[], namespaces: string[], callback: (err: Error, data: Resource) => void): void;
+        /** Store the translation. For backends acting as cache layer */
+        save?(language: string, namespace: string, data: ResourceLanguage): void;
+    }
+
+    /**
+     * Used to detect language in user land.
+     * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
+     * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property. 
+     */
+    interface LanguageDetectorModule {
+        type?: 'languageDetector'
+        init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+        /** Must return detected language */
+        detect(): string;
+        cacheUserLanguage(lng: string): void
+    }
+
+    /**
+     * Used to detect language in user land.
+     * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
+     * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property. 
+     */
+    interface LanguageDetectorAsyncModule {
+        type?: 'languageDetector';
+        /** Set to true to enable async detection */
+        async: true;
+        init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+        /** Must call callback passing detected language */
+        detect(callback: (lng: string) => void): void;
+        cacheUserLanguage(lng: string): void
+    }
+
+    /**
+     * Used to extend or manipulate the translated values before returning them in `t` function.
+     * Need to be a singleton object.
+     */
+    interface PostProcessorModule {
+        /** Unique name */
+        name: string;
+        type: 'postProcessor',
+        process(value: string, key: string, options: TranslationOptions, translator: any): string;
+    }
+
+    /**
+     * Override the built-in console logger.
+     * Do not need to be a prototype function.
+     */
+    interface LoggerModule {
+        type?: 'logger',
+        log(...args: any[]): void;
+        warn(...args: any[]): void;
+        error(...args: any[]): void;
+    }
+
     interface i18n {
         /**
          * The default export of the i18next module is an i18next instance ready to be initialized by calling init.
@@ -436,8 +552,8 @@ declare namespace i18next {
          * @param options - Initial options.
          * @param callback - will be called after all translations were loaded or with an error when failed (in case of using a backend).
          */
-        init(options: InitOptions, callback?: Callback): i18n;
-        init(callback?: Callback): i18n;
+        init(options: InitOptions, callback?: Callback): Promise<TranslationFunction>;
+        init(callback?: Callback): Promise<TranslationFunction>;
 
         loadResources(callback?: (err: any) => void): void;
 
@@ -446,6 +562,11 @@ declare namespace i18next {
          * For available module see the plugins page and don't forget to read the documentation of the plugin.
          */
         use(module: any): i18n;
+
+        /**
+         * Internal container for all used plugins and implementation details like languageUtils, pluralResolvers, etc.
+         */
+        services: Services;
 
         /**
          * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
@@ -469,7 +590,7 @@ declare namespace i18next {
          * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
          * HINT: For easy testing - setting lng to 'cimode' will set t function to always return the key.
          */
-        changeLanguage(lng: string, callback?: Callback): void;
+        changeLanguage(lng: string, callback?: Callback): Promise<TranslationFunction>;
 
         /**
          * Is set to the current detected or set language.
@@ -485,18 +606,18 @@ declare namespace i18next {
         /**
          * Loads additional namespaces not defined in init options.
          */
-        loadNamespaces(ns: string | string[], callback: Callback): void;
+        loadNamespaces(ns: string | string[], callback?: Callback): Promise<void>;
 
         /**
          * Loads additional languages not defined in init options (preload).
          */
-        loadLanguages(lngs: string | string[], callback: Callback): void;
+        loadLanguages(lngs: string | string[], callback?: Callback): Promise<void>;
 
         /**
          * Reloads resources on given state. Optionally you can pass an array of languages and namespaces as params if you don't want to reload all.
          */
-        reloadResources(lngs?: string[], ns?: string[]): void;
-        reloadResources(lngs: null, ns: string[]): void;
+        reloadResources(lngs?: string | string[], ns?: string | string[], callback?: () => void): Promise<void>;
+        reloadResources(lngs: null, ns: string | string[], callback?: () => void): Promise<void>;
 
         /**
          * Changes the default namespace.
