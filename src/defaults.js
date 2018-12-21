@@ -38,7 +38,8 @@ export function get() {
     appendNamespaceToCIMode: false,
     overloadTranslationOptionHandler: function handle(args) {
       var ret = {};
-      if (args[1]) ret.defaultValue = args[1];
+      if (typeof args[1] === 'object') ret = args[1];
+      if (typeof args[1] === 'string') ret.defaultValue = args[1];
       if (typeof args[2] === 'string') ret.tDescription = args[2];
       if (typeof args[2] === 'object' || typeof args[3] === 'object') {
         var options = args[3] || args[2];
