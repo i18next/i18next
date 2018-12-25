@@ -1,3 +1,7 @@
+### 13.0.1
+
+- update typedefinitions [1152](https://github.com/i18next/i18next/pull/1152)
+
 ### 13.0.0
 
 - pass options to missingInterpolationHandler [1146](https://github.com/i18next/i18next/pull/1146)

@@ -2020,7 +2020,7 @@ var I18n = function (_EventEmitter) {
     });
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
-      callback();
+      if (callback) callback();
       return Promise.resolve();
     }
 

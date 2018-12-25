@@ -297,7 +297,7 @@ class I18n extends EventEmitter {
     const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0);
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
-      callback();
+      if (callback) callback();
       return Promise.resolve();
     }
 
