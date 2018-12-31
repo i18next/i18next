@@ -1,3 +1,7 @@
+### 13.1.0
+
+- Support interpolation for defaultValue as parameter [1151](https://github.com/i18next/i18next/pull/1151)
+
 ### 13.0.1
 
 - update typedefinitions [1152](https://github.com/i18next/i18next/pull/1152)
