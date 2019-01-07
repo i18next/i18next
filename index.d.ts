@@ -552,8 +552,8 @@ declare namespace i18next {
          * @param options - Initial options.
          * @param callback - will be called after all translations were loaded or with an error when failed (in case of using a backend).
          */
-        init(options: InitOptions, callback?: Callback): Promise<TranslationFunction>;
         init(callback?: Callback): Promise<TranslationFunction>;
+        init(options: InitOptions, callback?: Callback): Promise<TranslationFunction>;
 
         loadResources(callback?: (err: any) => void): void;
 
