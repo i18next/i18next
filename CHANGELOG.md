@@ -1,3 +1,7 @@
+### 13.1.1
+
+- fix init() attributes typings [1158](https://github.com/i18next/i18next/pull/1158)
+
 ### 13.1.0
 
 - Support interpolation for defaultValue as parameter [1151](https://github.com/i18next/i18next/pull/1151)
