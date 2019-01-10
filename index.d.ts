@@ -455,9 +455,12 @@ declare namespace i18next {
     interface TranslationFunction<TResult = any, TValues extends object = object, TKeys extends string = string> {
         (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
     }
-
+    /**
+     * WARNING: Order with generic type parametes are defferent from TranslationFunction for usability
+     * see: https://github.com/i18next/react-i18next/issues/662
+    */
     interface WithT{
-        t<TResult = any, TValues extends object = object, TKeys extends string = string> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
+        t<TKeys extends string = string, TValues extends object = object, TResult = any> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
     }
 
     interface Resource {
