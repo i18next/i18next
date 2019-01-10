@@ -455,11 +455,15 @@ declare namespace i18next {
     interface TranslationFunction<TResult = any, TValues extends object = object, TKeys extends string = string> {
         (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
     }
+
     /**
      * WARNING: Order with generic type parametes are defferent from TranslationFunction for usability
      * see: https://github.com/i18next/react-i18next/issues/662
     */
     interface WithT{
+        /**
+         * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
+         */
         t<TKeys extends string = string, TValues extends object = object, TResult = any> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
     }
 
@@ -576,11 +580,6 @@ declare namespace i18next {
          * Internal container for all used plugins and implementation details like languageUtils, pluralResolvers, etc.
          */
         services: Services;
-
-        /**
-         * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
-         */
-        t: TranslationFunction;
 
         /**
          * Uses the same resolve functionality as the t function and returns true if a key exists.
