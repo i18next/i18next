@@ -456,6 +456,10 @@ declare namespace i18next {
         (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
     }
 
+    interface WithT{
+        t<TResult = any, TValues extends object = object, TKeys extends string = string> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
+    }
+
     interface Resource {
         [language: string]: ResourceLanguage;
     }
@@ -546,7 +550,7 @@ declare namespace i18next {
         error(...args: any[]): void;
     }
 
-    interface i18n {
+    interface i18n extends WithT {
         /**
          * The default export of the i18next module is an i18next instance ready to be initialized by calling init.
          * You can create additional instances using the createInstance function.
