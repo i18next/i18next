@@ -451,8 +451,9 @@ declare namespace i18next {
 
     type Callback = (error: any, t: TranslationFunction) => void;
 
-    type TranslationFunction<TResult = any, TValues extends object = object, TKeys extends string = string> =
-        (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) => TResult;
+    interface TranslationFunction<TResult = any, TValues extends object = object, TKeys extends string = string> {
+        (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
+    }
 
     interface Resource {
         [language: string]: ResourceLanguage;
@@ -480,7 +481,7 @@ declare namespace i18next {
     /**
      * Used to load data for i18next.
      * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
-     * For singleton set property `type` to `'backend'` For a prototype constructor set static property. 
+     * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
      */
     interface BackendModule {
         type?: 'backend';
@@ -497,7 +498,7 @@ declare namespace i18next {
     /**
      * Used to detect language in user land.
      * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
-     * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property. 
+     * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
      */
     interface LanguageDetectorModule {
         type?: 'languageDetector'
@@ -510,7 +511,7 @@ declare namespace i18next {
     /**
      * Used to detect language in user land.
      * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
-     * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property. 
+     * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
      */
     interface LanguageDetectorAsyncModule {
         type?: 'languageDetector';
