@@ -510,20 +510,6 @@ i18next.t(['friend', 'tree'], { myVar: 'someValue' })
 i18next.t('friend', { myVar: 'someValue' })
 i18next.t(['friend', 'tree'], { myVar: 'someValue' })
 
-const t1: i18next.TranslationFunction = (key: string, options: i18next.TranslationOptions) => ''
-const t2: i18next.TranslationFunction<{ value: string }> = (
-  key: string,
-  options: i18next.TranslationOptions,
-) => ({ value: 'asd' })
-const t3: i18next.TranslationFunction<string, CustomOptions> = (
-  key: string | string[],
-  options: i18next.TranslationOptions<CustomOptions>,
-) => ''
-const t4: i18next.TranslationFunction<string, object, KeyList> = (
-  key: KeyList | KeyList[],
-  options: i18next.TranslationOptions,
-) => ''
-
 i18next.exists('friend')
 i18next.exists(['friend', 'tree'])
 i18next.exists('friend', { myVar: 'someValue' })
