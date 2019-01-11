@@ -131,6 +131,11 @@ declare namespace i18next {
          * @default 'added removed'
          */
         bindStore?: string | false;
+        /**
+         * Set fallback value for Trans components without children
+         * @default undefined
+         */
+        transEmptyNodeValue?: string;
     }
 
     interface InitOptions {
