@@ -62,6 +62,7 @@
     "karma-spec-reporter": "0.0.26",
     "mkdirp": "0.5.1",
     "mocha": "3.2.0",
+    "prettier": "^1.15.3",
     "rimraf": "2.5.4",
     "rollup": "0.41.4",
     "rollup-plugin-babel": "2.7.1",
@@ -90,7 +91,8 @@
     "build:iife": "rollup -c rollup.config.js --format iife && rollup -c rollup.config.js --format iife --uglify",
     "build": "npm run clean && npm run build:cjs && npm run build:es && npm run build:umd && npm run copy",
     "preversion": "npm run test && npm run build && git push",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prettier:typescript": "prettier --write \"{,**/}*.{ts,tsx}\""
   },
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT"
