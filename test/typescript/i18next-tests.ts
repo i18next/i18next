@@ -1,4 +1,4 @@
-import i18next from '../../';
+import i18next, from '../../';
 // i18next.js exporte default as esm module because build apart from commonjs.
 i18next.init({
     lng: "en",
@@ -440,8 +440,6 @@ i18next.t("friend");
 i18next.t(["friend", "tree"]);
 i18next.t("friend", { myVar: "someValue" });
 i18next.t(["friend", "tree"], { myVar: "someValue" });
-i18next.t("friend", { myVar: "someValue" });
-i18next.t(["friend", "tree"], { myVar: "someValue" });
 
 const t1: i18next.TranslationFunction = (key: string, options: i18next.TranslationOptions) => "";
 const t2: i18next.TranslationFunction<{ value: string }> = (key: string, options: i18next.TranslationOptions) => ({ value: "asd" });
@@ -452,5 +450,24 @@ i18next.exists("friend");
 i18next.exists(["friend", "tree"]);
 i18next.exists("friend", { myVar: "someValue" });
 i18next.exists(["friend", "tree"], { myVar: "someValue" });
-i18next.exists("friend", { myVar: "someValue" });
-i18next.exists(["friend", "tree"], { myVar: "someValue" });
+
+type ExampleUnion = "friend" | "tree"
+
+i18next.t<ExampleUnion>("friend", { myVar: "someValue" });
+i18next.t<ExampleUnion>(["friend", "tree"], { myVar: "someValue" });
+i18next.t<ExampleUnion,{myVar:"someValue"}>("friend", { myVar: "someValue" });
+i18next.t<ExampleUnion,{myVar:"someValue"}>(["friend", "tree"], { myVar: "someValue" });
+
+interface IWithT extends i18next.WithT {
+    t<Keys extends ExampleUnion=ExampleUnion,Val extends object=object,R=string>( keys:Keys|Keys[], options?:i18next.TranslationOptions<Val>): R;
+    t<Keys extends OtherUnion=OtherUnion,Val extends object=object,R=string>( keys:Keys|Keys[], options?:i18next.TranslationOptions<Val>): R;
+    t<Keys extends string=ExampleUnion,R=string>( keys:Keys|Keys[]): R;
+}
+
+type OtherUnion = "private" | "public";
+
+(i18next as IWithT).t("friend");
+(i18next as IWithT).t<OtherUnion>("private");
+(i18next as IWithT).t("friend",{});
+(i18next as IWithT).t<OtherUnion>("private",{});
+(i18next as IWithT).t<ExampleUnion,{myVar:"someValue"}>("friend",{myVar:"someValue"});
