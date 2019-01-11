@@ -1,5 +1,5 @@
 import i18next from '../../';
-// i18next.js exporte default as esm module because build apart from commonjs.
+// i18next.js export default as esm module because the build is apart from commonjs.
 i18next.init({
     lng: "en",
     debug: true,
