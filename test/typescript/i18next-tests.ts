@@ -1,4 +1,5 @@
-import i18next from '../../'
+import i18next from 'i18next'
+
 // i18next.js export default as esm module because the build is apart from commonjs.
 i18next.init(
   {
@@ -446,8 +447,12 @@ i18next.init({
     escapeValue: false, // not needed for react!!
     formatSeparator: ',',
     format: (value, format, lng) => {
-      if (format === 'uppercase') return value.toUpperCase()
-      if (value instanceof Date) return value.toLocaleString()
+      if (format === 'uppercase') {
+        return value.toUpperCase()
+      }
+      if (value instanceof Date) {
+        return value.toLocaleString()
+      }
       return value
     },
   },

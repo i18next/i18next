@@ -62,19 +62,24 @@
     "karma-spec-reporter": "0.0.26",
     "mkdirp": "0.5.1",
     "mocha": "3.2.0",
+    "prettier": "^1.15.3",
     "rimraf": "2.5.4",
     "rollup": "0.41.4",
     "rollup-plugin-babel": "2.7.1",
     "rollup-plugin-node-resolve": "2.0.0",
     "rollup-plugin-uglify": "1.0.1",
     "sinon": "1.17.7",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.2",
     "watchify": "3.9.0",
     "yargs": "6.6.0"
   },
   "scripts": {
+    "pretest": "npm run test:typescript",
     "test": "npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",
     "test:compat": "karma start karma.backward.conf.js --singleRun",
+    "test:typescript": "tslint --project tsconfig.json",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
     "clean": "rimraf dist && mkdirp dist",
@@ -86,7 +91,8 @@
     "build:iife": "rollup -c rollup.config.js --format iife && rollup -c rollup.config.js --format iife --uglify",
     "build": "npm run clean && npm run build:cjs && npm run build:es && npm run build:umd && npm run copy",
     "preversion": "npm run test && npm run build && git push",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prettier:typescript": "prettier --write \"{,**/}*.{ts,tsx}\""
   },
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT"
