@@ -477,8 +477,6 @@ i18next.t('key2_interval', { postProcess: 'interval', count: 1 }) // -> "one ite
 i18next.t('key2_interval', { postProcess: 'interval', count: 4 }) // -> "a few items"
 i18next.t('key2_interval', { postProcess: 'interval', count: 100 }) // -> "100 items"
 i18next.t('friend', { context: 'male', count: 1 }) // -> "A boyfriend"
-i18next.t('friend', { context: 'male', count: 1 }) // -> "A boyfriend"
-i18next.t('friend', { context: 'female', count: 100 }) // -> "100 girlfriends"
 i18next.t('friend', { context: 'female', count: 100 }) // -> "100 girlfriends"
 i18next.t('tree', { returnObjects: true, something: 'gold' })
 // -> { res: 'added gold' }
@@ -507,8 +505,6 @@ i18next.t('friend')
 i18next.t(['friend', 'tree'])
 i18next.t('friend', { myVar: 'someValue' })
 i18next.t(['friend', 'tree'], { myVar: 'someValue' })
-i18next.t('friend', { myVar: 'someValue' })
-i18next.t(['friend', 'tree'], { myVar: 'someValue' })
 
 const t1: i18next.TranslationFunction = (key: string|string[], options?: i18next.TranslationOptions) => ''
 const t2: i18next.TranslationFunction<{ value: string }> = (
@@ -526,7 +522,5 @@ const t4: i18next.TranslationFunction<string, object, KeyList> = (
 
 i18next.exists('friend')
 i18next.exists(['friend', 'tree'])
-i18next.exists('friend', { myVar: 'someValue' })
-i18next.exists(['friend', 'tree'], { myVar: 'someValue' })
 i18next.exists('friend', { myVar: 'someValue' })
 i18next.exists(['friend', 'tree'], { myVar: 'someValue' })
