@@ -1,3 +1,9 @@
+### 13.1.2
+
+- Add typescript testing [1165](https://github.com/i18next/i18next/pull/1165)
+- Add `transEmptyNodeValue` to `ReactOptions` [1166](https://github.com/i18next/i18next/pull/1166)
+- Run prettier on typescript files for easier diffing in PRs [1167](https://github.com/i18next/i18next/pull/1167)
+
 ### 13.1.1
 
 - fix init() attributes typings [1158](https://github.com/i18next/i18next/pull/1158)
