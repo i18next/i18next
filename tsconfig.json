@@ -11,5 +11,5 @@
     "baseUrl": ".",
     "paths": { "i18next": ["./index.d.ts"] }
   },
-  "include": ["./indext.d.ts", "./test/**/*.ts*"]
+  "include": ["./index.d.ts", "./test/**/*.ts*"]
 }

@@ -14,3 +14,4 @@ sample.html
 .codeclimate.yml
 .coveralls.yml
 .travis.yml
+tsconfig.json
