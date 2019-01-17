@@ -1,3 +1,7 @@
+### 13.1.3
+
+- TypeScript: Pull up WithT interface allowing for overrides [1172](https://github.com/i18next/i18next/pull/1172)
+
 ### 13.1.2
 
 - Add typescript testing [1165](https://github.com/i18next/i18next/pull/1165)
