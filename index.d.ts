@@ -476,7 +476,7 @@ declare namespace i18next {
     /**
      * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
      */
-    t<TKeys extends string = string, TValues extends object = object, TResult = string extends string> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>): TResult;
+    t<TKeys extends string = string, TValues extends object = object, TResult extends string | object | Array<string | object> = string | object | Array<string | object>> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>): TResult;
   }
 
   interface Resource {
