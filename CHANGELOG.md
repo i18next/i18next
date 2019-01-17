@@ -1,3 +1,7 @@
+### 13.1.4
+
+- fixes plural rule for JSON compatibility v2 introduced in 11.3.3 https://github.com/i18next/i18next/commit/d4d329fd7042f932eedf8bba1d92234707efd04c#diff-e171f9b8b4e0f5df027bd8bd7b962f1bR1140 [1174](https://github.com/i18next/i18next/issues/1174)
+
 ### 13.1.3
 
 - TypeScript: Pull up WithT interface allowing for overrides [1172](https://github.com/i18next/i18next/pull/1172)
