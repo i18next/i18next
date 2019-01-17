@@ -469,14 +469,14 @@ declare namespace i18next {
   }
 
   /**
-     * WARNING: Order with generic type parametes are defferent from TranslationFunction for usability
+     * WARNING: Order with generic type parameters are different from TranslationFunction for usability
      * see: https://github.com/i18next/react-i18next/issues/662
    */
-  interface WithT{
+  interface WithT {
     /**
      * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
      */
-    t<TKeys extends string = string, TValues extends object = object, TResult = any> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>) : TResult;
+    t<TKeys extends string = string, TValues extends object = object, TResult = string extends string> (key: TKeys | TKeys[], options?: TranslationOptions<TValues>): TResult;
   }
 
   interface Resource {
