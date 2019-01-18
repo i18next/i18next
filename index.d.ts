@@ -579,14 +579,18 @@ declare namespace i18next {
 
   interface I18nFormatModule {
     type?: 'i18nFormat'
-  }  
+  }
+
+  interface ThirdPartyModule {
+    type?: '3rdParty'
+  }
 
   interface Modules {
     backend?: BackendModule
     logger?: LoggerModule
     languageDetector?: LanguageDetectorAsyncModule
     i18nFormat?: I18nFormatModule
-    external: any[]
+    external: ThirdPartyModule[]
   }
 
   interface i18n extends WithT {
