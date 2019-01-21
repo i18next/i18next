@@ -577,6 +577,22 @@ declare namespace i18next {
     error(...args: any[]): void
   }
 
+  interface I18nFormatModule {
+    type?: 'i18nFormat'
+  }
+
+  interface ThirdPartyModule {
+    type?: '3rdParty'
+  }
+
+  interface Modules {
+    backend?: BackendModule
+    logger?: LoggerModule
+    languageDetector?: LanguageDetectorModule | LanguageDetectorAsyncModule
+    i18nFormat?: I18nFormatModule
+    external: ThirdPartyModule[]
+  }
+
   interface i18n extends WithT {
     /**
      * The default export of the i18next module is an i18next instance ready to be initialized by calling init.
@@ -595,6 +611,11 @@ declare namespace i18next {
      * For available module see the plugins page and don't forget to read the documentation of the plugin.
      */
     use(module: any): i18n
+
+    /**
+     * List of modules used
+     */
+    modules: Modules
 
     /**
      * Internal container for all used plugins and implementation details like languageUtils, pluralResolvers, etc.
