@@ -588,7 +588,7 @@ declare namespace i18next {
   interface Modules {
     backend?: BackendModule
     logger?: LoggerModule
-    languageDetector?: LanguageDetectorAsyncModule
+    languageDetector?: LanguageDetectorModule | LanguageDetectorAsyncModule
     i18nFormat?: I18nFormatModule
     external: ThirdPartyModule[]
   }
