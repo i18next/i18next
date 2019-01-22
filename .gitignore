@@ -6,6 +6,7 @@
 npm-debug.log
 npm-debug.log.*
 *.dat
+.vscode
 
 # Ignore various temporary files
 *~
