@@ -8,7 +8,7 @@ import Interpolator from './Interpolator.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
-import { defer } from './utils';
+import { defer } from './utils.js';
 
 function noop() {}
 
