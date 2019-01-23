@@ -4,14 +4,6 @@ import i18next from 'i18next';
  * Use of the exported TFunction in external utility methods such as
  *  NamespaceConsumer children t
  */
-function resolveText(t: i18next.TFunction, keyOrText?: string): undefined | string {
-  if (keyOrText && keyOrText.startsWith(':')) {
-    return t<string>(keyOrText.substring(1, keyOrText.length));
-  } else {
-    return keyOrText;
-  }
-}
-
 function childrenNamespacesConsumer(t: i18next.TFunction, i18n: i18next.i18n) {
   // sanity first - tests from i18next t.test
   const is: string = i18n.t('friend'); // same as <string>
@@ -24,4 +16,21 @@ function childrenNamespacesConsumer(t: i18next.TFunction, i18n: i18next.i18n) {
   const o: object = t<object>('friend');
   const sa: string[] = t<string[]>('friend');
   const oa: object[] = t<object[]>('friend');
+}
+
+function resolveText(t: i18next.TFunction, keyOrText?: string): undefined | string {
+  if (keyOrText && keyOrText.startsWith(':')) {
+    return t(keyOrText.substring(1, keyOrText.length));
+  } else {
+    return keyOrText;
+  }
+}
+
+function callsAnotherWithoutTyping(t: i18next.TFunction, i18n: i18next.i18n) {
+  function displayHint(hint?: string) {
+    return String(hint);
+  }
+
+  displayHint(i18n.t('friend'));
+  displayHint(t('friend'));
 }
