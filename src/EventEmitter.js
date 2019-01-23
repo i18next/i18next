@@ -4,7 +4,7 @@ class EventEmitter {
   }
 
   on(events, listener) {
-    events.split(' ').forEach((event) => {
+    events.split(' ').forEach(event => {
       this.observers[event] = this.observers[event] || [];
       this.observers[event].push(listener);
     });
@@ -31,14 +31,14 @@ class EventEmitter {
   emit(event, ...args) {
     if (this.observers[event]) {
       const cloned = [].concat(this.observers[event]);
-      cloned.forEach((observer) => {
+      cloned.forEach(observer => {
         observer(...args);
       });
     }
 
     if (this.observers['*']) {
       const cloned = [].concat(this.observers['*']);
-      cloned.forEach((observer) => {
+      cloned.forEach(observer => {
         observer.apply(observer, [event, ...args]);
       });
     }

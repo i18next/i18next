@@ -16,7 +16,7 @@ class Backend {
       this.retries[language]++;
       return callback('failed loading', true);
     } else {
-      callback(null, {status: 'nok', retries: this.retries[language]});
+      callback(null, { status: 'nok', retries: this.retries[language] });
       delete this.retries[language];
       return;
     }
@@ -32,12 +32,13 @@ class Backend {
       this.retries[language]++;
       return callback('failed loading', true);
     } else {
-      callback(null, {[language]: { [namespace]: {status: 'nok', retries: this.retries[language]}}});
+      callback(null, {
+        [language]: { [namespace]: { status: 'nok', retries: this.retries[language] } },
+      });
       delete this.retries[language];
       return;
     }
   }
 }
-
 
 export default Backend;

@@ -2,33 +2,32 @@
 
 module.exports = function(karma) {
   karma.set({
-
-    frameworks: [ 'mocha', 'chai', 'sinon', 'browserify' ],
+    frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
 
     files: [
       //'vendor/external.js',
       'test/**/*.spec.js',
-      { pattern: 'test/locales/**/*.json', watched: true, included: false, served: true},
+      { pattern: 'test/locales/**/*.json', watched: true, included: false, served: true },
     ],
 
     proxies: {
-      '/locales': 'http://localhost:9876/base/test/locales'
+      '/locales': 'http://localhost:9876/base/test/locales',
     },
 
-    reporters: [ 'coverage', 'coveralls', 'spec' ],
+    reporters: ['coverage', 'coveralls', 'spec'],
 
     preprocessors: {
-      'test/**/*.spec.js': [ 'browserify' ],
-      'src/**/*.js': [ 'browserify', 'coverage' ]
+      'test/**/*.spec.js': ['browserify'],
+      'src/**/*.js': ['browserify', 'coverage'],
     },
 
-    browsers: [ 'HeadlessChrome' ],
-      customLaunchers: {
-        HeadlessChrome: {
-          base: 'ChromeHeadless',
-          flags: [ '—no-sandbox', ],
-         },
+    browsers: ['HeadlessChrome'],
+    customLaunchers: {
+      HeadlessChrome: {
+        base: 'ChromeHeadless',
+        flags: ['—no-sandbox'],
       },
+    },
 
     port: 9876,
 
@@ -47,14 +46,12 @@ module.exports = function(karma) {
     // browserify configuration
     browserify: {
       debug: true,
-      transform: [
-        'babelify', /*'brfs',*/ 'browserify-istanbul'
-      ]
+      transform: ['babelify', /*'brfs',*/ 'browserify-istanbul'],
     },
 
     coverageReporter: {
-      type : 'lcov', //'html', // disabled - erroring now, https://github.com/karma-runner/karma-coverage/issues/157
-      dir : 'coverage/'
-    }
+      type: 'lcov', //'html', // disabled - erroring now, https://github.com/karma-runner/karma-coverage/issues/157
+      dir: 'coverage/',
+    },
   });
 };

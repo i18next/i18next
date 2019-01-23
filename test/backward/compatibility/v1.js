@@ -2,9 +2,8 @@
 //import logger from '../logger';
 
 function convertInterpolation(options) {
-
   options.interpolation = {
-    unescapeSuffix: 'HTML'
+    unescapeSuffix: 'HTML',
   };
 
   options.interpolation.prefix = options.interpolationPrefix || '__';
@@ -53,7 +52,7 @@ export function convertAPIOptions(options) {
 
       return {
         postProcess: 'sprintf',
-        sprintf: values
+        sprintf: values,
       };
     };
   }
@@ -98,7 +97,11 @@ export function convertJSONOptions(options) {
 }
 
 export function convertTOptions(options) {
-  if (options.interpolationPrefix || options.interpolationSuffix || options.escapeInterpolation !== undefined) {
+  if (
+    options.interpolationPrefix ||
+    options.interpolationSuffix ||
+    options.escapeInterpolation !== undefined
+  ) {
     options = convertInterpolation(options);
   }
 
@@ -141,7 +144,7 @@ export function appendBackwardsAPI(i18n) {
     i18n.use({
       type: 'postProcessor',
       name,
-      process: fc
+      process: fc,
     });
   };
 }

@@ -5,7 +5,6 @@ import PluralResolver from '../../src/PluralResolver';
 import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
-
   describe('translate() with combined functionality', () => {
     var t;
 
@@ -13,9 +12,9 @@ describe('Translator', () => {
       const rs = new ResourceStore({
         en: {
           translation: {
-            'key1': 'hello world',
-            'key2': 'It is: $t(key1)',
-            'key3': 'It is: {{val}}',
+            key1: 'hello world',
+            key2: 'It is: $t(key1)',
+            key3: 'It is: {{val}}',
 
             // context with pluralization
             test: 'test_en',
@@ -25,29 +24,29 @@ describe('Translator', () => {
 
             nest: {
               foo: 'bar',
-              nest: '$t(nestedArray)'
+              nest: '$t(nestedArray)',
             },
-            nestedArray: [
-              { a: 'b', c: 'd' },
-              { a: 'b', c: 'd' }
-            ]
-          }
-        }
+            nestedArray: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' }],
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
-        interpolator: new Interpolator()
-      }, {
-        contextSeparator: '_',
-        keySeparator: '.',
-        ns: 'translation',
-        defaultNS: 'translation',
-        interpolation: {},
-        returnObjects: true
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          contextSeparator: '_',
+          keySeparator: '.',
+          ns: 'translation',
+          defaultNS: 'translation',
+          interpolation: {},
+          returnObjects: true,
+        },
+      );
       t.changeLanguage('en');
     });
 
@@ -60,18 +59,17 @@ describe('Translator', () => {
       { args: ['key3', { val: '$t(key1)', nest: false }], expected: 'It is: $t(key1)' },
 
       // context with pluralization
-      {args: ['test', { context: 'unknown', count: 1 }], expected: 'test_en'},
-      {args: ['test', { context: 'unknown', count: 2 }], expected: 'tests_en'},
-      {args: ['test', { context: 'male', count: 1 }], expected: 'test_male_en'},
-      {args: ['test', { context: 'male', count: 2 }], expected: 'tests_male_en'},
-      {args: ['nest'], expected: { foo: 'bar', nest: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' } ]}}
+      { args: ['test', { context: 'unknown', count: 1 }], expected: 'test_en' },
+      { args: ['test', { context: 'unknown', count: 2 }], expected: 'tests_en' },
+      { args: ['test', { context: 'male', count: 1 }], expected: 'test_male_en' },
+      { args: ['test', { context: 'male', count: 2 }], expected: 'tests_male_en' },
+      { args: ['nest'], expected: { foo: 'bar', nest: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' }] } },
     ];
 
-    tests.forEach((test) => {
+    tests.forEach(test => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
   });
-
 });

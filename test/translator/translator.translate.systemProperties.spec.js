@@ -14,7 +14,6 @@ import Interpolator from '../../src/Interpolator';
 // when a fallback is needed to find the actual definition of that property
 
 describe('Translator', () => {
-
   describe('translate()', () => {
     var t;
 
@@ -24,45 +23,47 @@ describe('Translator', () => {
           translation: {
             test: {
               length: 'test_length',
-              search: 'test_search'
-            }
-          }
+              search: 'test_search',
+            },
+          },
         },
         de: {
           translation: {
-            test: 'test_de'
-          }
-        }
+            test: 'test_de',
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
-        interpolator: new Interpolator()
-      }, {
-        defaultNS: 'translation',
-        ns: 'translation',
-        interpolation: {
-          interpolateResult: true,
-          interpolateDefaultValue: true,
-          interpolateKey: true
-        }
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          defaultNS: 'translation',
+          ns: 'translation',
+          interpolation: {
+            interpolateResult: true,
+            interpolateDefaultValue: true,
+            interpolateKey: true,
+          },
+        },
+      );
       t.changeLanguage('de');
     });
 
     var tests = [
-      {args: ['test', { lng: 'de', nsSeparator: '.' }], expected: 'test_de'},
-      {args: ['test.length', { lng: 'de', nsSeparator: '.' }], expected: 'test_length'},
-      {args: ['test.search', { lng: 'de', nsSeparator: '.' }], expected: 'test_search'}
+      { args: ['test', { lng: 'de', nsSeparator: '.' }], expected: 'test_de' },
+      { args: ['test.length', { lng: 'de', nsSeparator: '.' }], expected: 'test_length' },
+      { args: ['test.search', { lng: 'de', nsSeparator: '.' }], expected: 'test_search' },
     ];
 
-    tests.forEach((test) => {
+    tests.forEach(test => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
   });
-
 });

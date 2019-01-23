@@ -35,10 +35,10 @@ class Connector extends EventEmitter {
     const toLoadLanguages = [];
     const toLoadNamespaces = [];
 
-    languages.forEach((lng) => {
+    languages.forEach(lng => {
       let hasAllNamespaces = true;
 
-      namespaces.forEach((ns) => {
+      namespaces.forEach(ns => {
         const name = `${lng}|${ns}`;
 
         if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
@@ -66,7 +66,7 @@ class Connector extends EventEmitter {
         pending,
         loaded: {},
         errors: [],
-        callback
+        callback,
       });
     }
 
@@ -74,7 +74,7 @@ class Connector extends EventEmitter {
       toLoad,
       pending,
       toLoadLanguages,
-      toLoadNamespaces
+      toLoadNamespaces,
     };
   }
 
@@ -94,7 +94,7 @@ class Connector extends EventEmitter {
     const loaded = {};
 
     // callback if ready
-    this.queue.forEach((q) => {
+    this.queue.forEach(q => {
       utils.pushPath(q.loaded, [lng], ns);
       remove(q.pending, name);
 
@@ -158,17 +158,17 @@ class Connector extends EventEmitter {
       return null; // pendings will trigger callback
     }
 
-    toLoad.toLoad.forEach((name) => {
+    toLoad.toLoad.forEach(name => {
       this.loadOne(name);
     });
   }
 
   load(languages, namespaces, callback) {
-    this.prepareLoading(languages, namespaces, {}, callback)
+    this.prepareLoading(languages, namespaces, {}, callback);
   }
 
   reload(languages, namespaces, callback) {
-    this.prepareLoading(languages, namespaces, { reload: true }, callback)
+    this.prepareLoading(languages, namespaces, { reload: true }, callback);
   }
 
   loadOne(name, prefix = '') {
@@ -176,7 +176,8 @@ class Connector extends EventEmitter {
 
     this.read(lng, ns, 'read', null, null, (err, data) => {
       if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);
-      if (!err && data) this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`, data);
+      if (!err && data)
+        this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`, data);
 
       this.loaded(name, err, data);
     });
@@ -184,7 +185,10 @@ class Connector extends EventEmitter {
 
   saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}) {
     if (this.backend && this.backend.create) {
-      this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, { ...options, isUpdate });
+      this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, {
+        ...options,
+        isUpdate,
+      });
     }
 
     // write to store to avoid resending

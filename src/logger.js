@@ -16,9 +16,8 @@ const consoleLogger = {
   output(type, args) {
     /* eslint no-console: 0 */
     if (console && console[type]) console[type](...args);
-  }
+  },
 };
-
 
 class Logger {
   constructor(concreteLogger, options = {}) {
@@ -59,7 +58,10 @@ class Logger {
   }
 
   create(moduleName) {
-    return new Logger(this.logger, { ...{ prefix: `${this.prefix}:${moduleName}:` }, ...this.options });
+    return new Logger(this.logger, {
+      ...{ prefix: `${this.prefix}:${moduleName}:` },
+      ...this.options,
+    });
   }
 }
 

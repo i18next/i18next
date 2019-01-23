@@ -82,10 +82,13 @@ class LanguageUtil {
   }
 
   toResolveHierarchy(code, fallbackCode) {
-    const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
+    const fallbackCodes = this.getFallbackCodes(
+      fallbackCode || this.options.fallbackLng || [],
+      code,
+    );
 
     const codes = [];
-    const addCode = (c) => {
+    const addCode = c => {
       if (!c) return;
       if (this.isWhitelisted(c)) {
         codes.push(c);
@@ -96,13 +99,14 @@ class LanguageUtil {
 
     if (typeof code === 'string' && code.indexOf('-') > -1) {
       if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
-      if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code));
+      if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly')
+        addCode(this.getScriptPartFromCode(code));
       if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
     } else if (typeof code === 'string') {
       addCode(this.formatLanguageCode(code));
     }
 
-    fallbackCodes.forEach((fc) => {
+    fallbackCodes.forEach(fc => {
       if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
     });
 

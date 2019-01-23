@@ -1,5 +1,7 @@
 parser: babel-eslint
-extends: airbnb
+extends: 
+  - airbnb
+  - prettier
 
 rules:
   max-len: [0, 100]
