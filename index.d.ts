@@ -480,14 +480,15 @@ declare namespace i18next {
     ): TResult;
   }
 
-  // NOTE: duplicate of WithT.t - not sure why I can't find a workable reuse pattern
-  interface TFunction<
+  // NOTE: somewhat duplicate of WithT.t but cannot use interface - not sure why I can't find a workable reuse pattern
+  type TFunction = <
     TResult extends string | object | Array<string | object> = string,
     TKeys extends string = string,
     TValues extends object = object
-  > {
-    (key: TKeys | TKeys[], options?: TOptions<TValues>): TResult;
-  }
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TValues>,
+  ) => TResult;
 
   interface Resource {
     [language: string]: ResourceLanguage;

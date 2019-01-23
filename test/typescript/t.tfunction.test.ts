@@ -6,7 +6,7 @@ import i18next from 'i18next';
  */
 function resolveText(t: i18next.TFunction, keyOrText?: string): undefined | string {
   if (keyOrText && keyOrText.startsWith(':')) {
-    return t(keyOrText.substring(1, keyOrText.length));
+    return t<string>(keyOrText.substring(1, keyOrText.length));
   } else {
     return keyOrText;
   }
