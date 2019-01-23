@@ -18,19 +18,18 @@ function childrenNamespacesConsumer(t: i18next.TFunction, i18n: i18next.i18n) {
   const oa: object[] = t<object[]>('friend');
 }
 
-function resolveText(t: i18next.TFunction, keyOrText?: string): undefined | string {
-  if (keyOrText && keyOrText.startsWith(':')) {
-    return t(keyOrText.substring(1, keyOrText.length));
-  } else {
-    return keyOrText;
-  }
-}
-
-function callsAnotherWithoutTyping(t: i18next.TFunction, i18n: i18next.i18n) {
+function callsMethodWithOptionalArg(t: i18next.TFunction, i18n: i18next.i18n) {
   function displayHint(hint?: string) {
     return String(hint);
   }
+  displayHint(i18n.t('friend'));
+  displayHint(t('friend'));
+}
 
+function callsMethodWithRequiredArg(t: i18next.TFunction, i18n: i18next.i18n) {
+  function displayHint(hint: string) {
+    return String(hint);
+  }
   displayHint(i18n.t('friend'));
   displayHint(t('friend'));
 }

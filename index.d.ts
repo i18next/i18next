@@ -471,7 +471,7 @@ declare namespace i18next {
     // Expose parameterized t in the i18next interface hierarchy
     // NOTE: duplicate of TFunction - not sure why I can't find a workable reuse pattern
     t<
-      TResult extends string | object | Array<string | object> = string,
+      TResult extends string | object | Array<string | object> | undefined = string,
       TKeys extends string = string,
       TValues extends object = object
     >(
@@ -482,7 +482,7 @@ declare namespace i18next {
 
   // NOTE: somewhat duplicate of WithT.t but cannot use interface - not sure why I can't find a workable reuse pattern
   type TFunction = <
-    TResult extends string | object | Array<string | object> = string,
+    TResult extends string | object | Array<string | object> | undefined = string,
     TKeys extends string = string,
     TValues extends object = object
   >(
