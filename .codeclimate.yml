@@ -3,24 +3,25 @@ engines:
     enabled: true
     config:
       languages:
-      - ruby
-      - javascript:
-          mass_threshold: 58
-      - python
-      - php
+        - ruby
+        - javascript:
+            mass_threshold: 58
+        - python
+        - php
   eslint:
     enabled: true
   fixme:
     enabled: true
 ratings:
   paths:
-  - "src/**/*"
+    - 'src/**/*'
 exclude_paths:
-- test/
-- coverage/
-- dist/
-- "i18next.js"
-- "i18next.min.js"
-- "rollup.config.js"
-- "karma.conf.js"
-- "karma.backward.conf.js"
+  - test/
+  - coverage/
+  - dist/
+  - 'i18next.js'
+  - 'i18next.min.js'
+  - 'index.d.ts'
+  - 'rollup.config.js'
+  - 'karma.conf.js'
+  - 'karma.backward.conf.js'
