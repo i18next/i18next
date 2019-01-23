@@ -467,10 +467,6 @@ declare namespace i18next {
     (key: TKeys | TKeys[], options?: TOptions<TValues>): boolean;
   }
 
-  /**
-   * WARNING: Order with generic type parameters are different from TFunction for usability
-   * see: https://github.com/i18next/react-i18next/issues/662
-   */
   interface WithT {
     // Expose parameterized t in the i18next interface hierarchy
     t<
