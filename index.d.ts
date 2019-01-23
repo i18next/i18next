@@ -313,7 +313,7 @@ declare namespace i18next {
      * Sets defaultValue
      * @default args => ({ defaultValue: args[1] })
      */
-    overloadTranslationOptionHandler?(args: string[]): TranslationOptions;
+    overloadTranslationOptionHandler?(args: string[]): TOptions;
 
     /**
      * @see https://www.i18next.com/interpolation.html
@@ -396,10 +396,10 @@ declare namespace i18next {
   }
 
   // Add an indexer to assure that interpolation arguments can be passed
-  type TranslationOptions<TCustomOptions extends object = object> = TranslationOptionsBase &
+  type TOptions<TCustomOptions extends object = object> = TOptionsBase &
     TCustomOptions & { [key: string]: any };
 
-  interface TranslationOptionsBase {
+  interface TOptionsBase {
     /**
      * Default value to return if a translation was not found
      */
@@ -458,36 +458,28 @@ declare namespace i18next {
     interpolation?: InterpolationOptions;
   }
 
-  type Callback = (error: any, t: TranslationFunction) => void;
-
-  interface TranslationFunction<
-    TResult = any,
-    TValues extends object = object,
-    TKeys extends string = string
-  > {
-    (key: TKeys | TKeys[], options?: TranslationOptions<TValues>): TResult;
-  }
+  type Callback = (error: any, t: TFunction) => void;
 
   /**
-   * WARNING: Order with generic type parameters are different from TranslationFunction for usability
-   * see: https://github.com/i18next/react-i18next/issues/662
+   * Uses similar args as the t function and returns true if a key exists.
    */
+  interface ExistsFunction<TKeys extends string = string, TValues extends object = object> {
+    (key: TKeys | TKeys[], options?: TOptions<TValues>): boolean;
+  }
+
   interface WithT {
-    /**
-     * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
-     */
+    // Expose parameterized t in the i18next interface hierarchy
     t<
+      TResult extends string | object | Array<string | object> = string,
       TKeys extends string = string,
-      TValues extends object = object,
-      TResult extends string | object | Array<string | object> =
-        | string
-        | object
-        | Array<string | object>
+      TValues extends object = object
     >(
       key: TKeys | TKeys[],
-      options?: TranslationOptions<TValues>,
+      options?: TOptions<TValues>,
     ): TResult;
   }
+
+  type TFunction = WithT['t'];
 
   interface Resource {
     [language: string]: ResourceLanguage;
@@ -573,7 +565,7 @@ declare namespace i18next {
     /** Unique name */
     name: string;
     type: 'postProcessor';
-    process(value: string, key: string, options: TranslationOptions, translator: any): string;
+    process(value: string, key: string, options: TOptions, translator: any): string;
   }
 
   /**
@@ -611,8 +603,8 @@ declare namespace i18next {
      * @param options - Initial options.
      * @param callback - will be called after all translations were loaded or with an error when failed (in case of using a backend).
      */
-    init(callback?: Callback): Promise<TranslationFunction>;
-    init(options: InitOptions, callback?: Callback): Promise<TranslationFunction>;
+    init(callback?: Callback): Promise<TFunction>;
+    init(options: InitOptions, callback?: Callback): Promise<TFunction>;
 
     loadResources(callback?: (err: any) => void): void;
 
@@ -633,23 +625,23 @@ declare namespace i18next {
     services: Services;
 
     /**
-     * Uses the same resolve functionality as the t function and returns true if a key exists.
+     * Uses similar args as the t function and returns true if a key exists.
      */
-    exists: TranslationFunction<boolean>;
+    exists: ExistsFunction;
 
     /**
      * Returns a t function that defaults to given language or namespace.
      * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
      * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
      */
-    getFixedT(lng: string | string[], ns?: string | string[]): TranslationFunction;
-    getFixedT(lng: null, ns: string | string[]): TranslationFunction;
+    getFixedT(lng: string | string[], ns?: string | string[]): TFunction;
+    getFixedT(lng: null, ns: string | string[]): TFunction;
 
     /**
      * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
      * HINT: For easy testing - setting lng to 'cimode' will set t function to always return the key.
      */
-    changeLanguage(lng: string, callback?: Callback): Promise<TranslationFunction>;
+    changeLanguage(lng: string, callback?: Callback): Promise<TFunction>;
 
     /**
      * Is set to the current detected or set language.

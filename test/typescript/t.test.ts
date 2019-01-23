@@ -76,3 +76,9 @@ i18next.t('friend');
 i18next.t(['friend', 'tree']);
 i18next.t('friend', { myVar: 'someValue' });
 i18next.t(['friend', 'tree'], { myVar: 'someValue' });
+
+// various returns <string> is the default
+const s: string = i18next.t('friend'); // same as <string>
+const o: object = i18next.t<object>('friend');
+const sa: string[] = i18next.t<string[]>('friend');
+const oa: object[] = i18next.t<object[]>('friend');

@@ -13,9 +13,9 @@ i18next.init(
       },
     },
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     // initialized and ready to go!
-    const value: string = i18next.t('key');
+    const value: string = t('key');
   },
 );
 
@@ -38,7 +38,8 @@ i18next.init(
       },
     },
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  // not necessary but check a non-inferred arg for paranoia's sake
+  (err, t: i18next.TFunction) => {
     // init set content
     updateContent();
   },
@@ -49,13 +50,13 @@ i18next.init(
     ns: ['common', 'moduleA', 'moduleB'],
     defaultNS: 'moduleA',
   },
-  (err: any, t: i18next.TranslationFunction) => {
-    i18next.t('myKey'); // key in moduleA namespace (defined default)
-    i18next.t('common:myKey'); // key in common namespace
+  (err, t) => {
+    t('myKey'); // key in moduleA namespace (defined default)
+    t('common:myKey'); // key in common namespace
   },
 );
 
-i18next.loadNamespaces('anotherNamespace', (err: any, t: i18next.TranslationFunction) => {
+i18next.loadNamespaces('anotherNamespace', (err, t) => {
   /* ... */
 });
 
@@ -154,7 +155,7 @@ i18next.init(
       crossDomain: true,
     },
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     // init set content
     updateContent2();
   },
@@ -179,7 +180,7 @@ i18next.init(
     defaultNS: 'file1',
     debug: true,
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     if (err) {
       console.log('something went wrong loading', err);
       return;
@@ -189,7 +190,7 @@ i18next.init(
 );
 
 // with only callback
-i18next.init((err: any, t: i18next.TranslationFunction) => {
+i18next.init((err, t) => {
   if (err) {
     console.log('something went wrong loading', err);
     return;
@@ -198,7 +199,6 @@ i18next.init((err: any, t: i18next.TranslationFunction) => {
 });
 
 const v: string = i18next.t('my.key');
-const a: boolean = i18next.exists('my.key');
 
 // fix language to german
 const de = i18next.getFixedT('de');
@@ -208,7 +208,7 @@ const z: string = de('myKey');
 const anotherNamespace = i18next.getFixedT(null, 'anotherNamespace');
 const x: string = anotherNamespace('anotherNamespaceKey'); // no need to prefix ns i18n.t('anotherNamespace:anotherNamespaceKey');
 
-i18next.changeLanguage('en', (err: any, t: i18next.TranslationFunction) => {
+i18next.changeLanguage('en', (err, t) => {
   if (err) {
     console.log('something went wrong loading', err);
     return;
@@ -216,20 +216,17 @@ i18next.changeLanguage('en', (err: any, t: i18next.TranslationFunction) => {
   t('key'); // -> same as i18next.t
 });
 
-i18next.loadNamespaces('myNamespace', (err: any, t: i18next.TranslationFunction) => {
+i18next.loadNamespaces('myNamespace', (err, t) => {
   /* resources have been loaded */
 });
-i18next.loadNamespaces(
-  ['myNamespace1', 'myNamespace2'],
-  (err: any, t: i18next.TranslationFunction) => {
-    /* resources have been loaded */
-  },
-);
+i18next.loadNamespaces(['myNamespace1', 'myNamespace2'], (err, t) => {
+  /* resources have been loaded */
+});
 
-i18next.loadLanguages('de', (err: any, t: i18next.TranslationFunction) => {
+i18next.loadLanguages('de', (err, t) => {
   /* resources have been loaded */
 });
-i18next.loadLanguages(['de', 'fr'], (err: any, t: i18next.TranslationFunction) => {
+i18next.loadLanguages(['de', 'fr'], (err, t) => {
   /* resources have been loaded */
 });
 
@@ -259,7 +256,7 @@ const newInstance = i18next.createInstance(
     defaultNS: 'file1',
     debug: true,
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     if (err) {
       console.log('something went wrong loading', err);
       return;
@@ -276,7 +273,7 @@ newInstance.init(
     defaultNS: 'file1',
     debug: true,
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     if (err) {
       console.log('something went wrong loading', err);
       return;
@@ -292,7 +289,7 @@ const newInstance2 = i18next.cloneInstance(
     defaultNS: 'file1',
     debug: true,
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     if (err) {
       console.log('something went wrong loading', err);
       return;
@@ -310,7 +307,7 @@ newInstance.init(
     defaultNS: 'file1',
     debug: true,
   },
-  (err: any, t: i18next.TranslationFunction) => {
+  (err, t) => {
     if (err) {
       console.log('something went wrong loading', err);
       return;
@@ -422,8 +419,3 @@ i18next.init({
     },
   },
 });
-
-i18next.exists('friend');
-i18next.exists(['friend', 'tree']);
-i18next.exists('friend', { myVar: 'someValue' });
-i18next.exists(['friend', 'tree'], { myVar: 'someValue' });
