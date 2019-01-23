@@ -469,6 +469,7 @@ declare namespace i18next {
 
   interface WithT {
     // Expose parameterized t in the i18next interface hierarchy
+    // NOTE: duplicate of TFunction - not sure why I can't find a workable reuse pattern
     t<
       TResult extends string | object | Array<string | object> = string,
       TKeys extends string = string,
@@ -479,7 +480,14 @@ declare namespace i18next {
     ): TResult;
   }
 
-  type TFunction = WithT['t'];
+  // NOTE: duplicate of WithT.t - not sure why I can't find a workable reuse pattern
+  interface TFunction<
+    TResult extends string | object | Array<string | object> = string,
+    TKeys extends string = string,
+    TValues extends object = object
+  > {
+    (key: TKeys | TKeys[], options?: TOptions<TValues>): TResult;
+  }
 
   interface Resource {
     [language: string]: ResourceLanguage;
