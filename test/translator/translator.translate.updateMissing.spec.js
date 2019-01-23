@@ -5,7 +5,6 @@ import PluralResolver from '../../src/PluralResolver';
 import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
-
   describe('translate() using updateMissing', () => {
     var t;
 
@@ -15,41 +14,44 @@ describe('Translator', () => {
           translation: {
             test: 'test_en',
             deep: {
-              test: 'deep_en'
-            }
-          }
+              test: 'deep_en',
+            },
+          },
         },
         de: {
           translation: {
-            test: 'test_de'
-          }
-        }
+            test: 'test_de',
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
-        interpolator: new Interpolator()
-      }, {
-        defaultNS: 'translation',
-        ns: 'translation',
-        saveMissing: true,
-        updateMissing: true,
-        interpolation: {
-          interpolateResult: true,
-          interpolateDefaultValue: true,
-          interpolateKey: true
-        }
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          defaultNS: 'translation',
+          ns: 'translation',
+          saveMissing: true,
+          updateMissing: true,
+          interpolation: {
+            interpolateResult: true,
+            interpolateDefaultValue: true,
+            interpolateKey: true,
+          },
+        },
+      );
       t.changeLanguage('en');
     });
 
     var tests = [
-      {args: ['translation:test', { defaultValue: 'new value' }], expected: 'test_en'}
+      { args: ['translation:test', { defaultValue: 'new value' }], expected: 'test_en' },
     ];
 
-    tests.forEach((test) => {
+    tests.forEach(test => {
       it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
         let wasCalled = false;
 
@@ -68,5 +70,4 @@ describe('Translator', () => {
       });
     });
   });
-
 });

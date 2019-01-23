@@ -1,11 +1,10 @@
 import i18next from '../src/i18next.js';
 
 describe('i18next', () => {
-
   before(() => {
     i18next.init({
       foo: 'bar',
-      debug: false
+      debug: false,
     });
     i18next.changeLanguage('en');
   });
@@ -14,7 +13,7 @@ describe('i18next', () => {
     describe('createInstance()', () => {
       let newInstance;
       before(() => {
-        newInstance = i18next.createInstance({bar: 'foo'});
+        newInstance = i18next.createInstance({ bar: 'foo' });
       });
 
       it('it should not inherit options from inital i18next', () => {
@@ -30,7 +29,7 @@ describe('i18next', () => {
     describe('cloneInstance()', () => {
       let newInstance;
       before(() => {
-        newInstance = i18next.cloneInstance({bar: 'foo'});
+        newInstance = i18next.cloneInstance({ bar: 'foo' });
       });
 
       it('it should inherit options from inital i18next', () => {
@@ -56,7 +55,7 @@ describe('i18next', () => {
     describe('create/cloneInstance()', () => {
       let instance1;
       let instance2;
-      before((done) => {
+      before(done => {
         instance1 = i18next.createInstance({ lng: 'en' }, () => {
           instance2 = instance1.cloneInstance({ lng: 'de' }, () => done());
         });
@@ -68,5 +67,4 @@ describe('i18next', () => {
       });
     });
   });
-
 });

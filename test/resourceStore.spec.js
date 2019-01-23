@@ -1,7 +1,6 @@
 import ResourceStore from '../src/ResourceStore.js';
 
 describe('ResourceStore', () => {
-
   describe('constructor', () => {
     it('it should set empty data if not passing them in', () => {
       let rs = new ResourceStore();
@@ -12,9 +11,9 @@ describe('ResourceStore', () => {
       const data = {
         en: {
           translation: {
-            test: 'test'
-          }
-        }
+            test: 'test',
+          },
+        },
       };
       let rs = new ResourceStore(data);
       expect(rs.toJSON()).to.equal(data);
@@ -51,57 +50,75 @@ describe('ResourceStore', () => {
         expect(rs.getResource('de.translation.nest.object')).to.eql({ something: 'deeper' });
       });
 
-      it('it should emit \'added\' event on addResource call', () => {
+      it("it should emit 'added' event on addResource call", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
         rs.addResource('fr', 'translation', 'hi', 'salut');
         expect(spy.calledWithExactly('fr', 'translation', 'hi', 'salut')).to.be.true;
       });
 
-      it('it should not emit \'added\' event on addResource call with silent option', () => {
+      it("it should not emit 'added' event on addResource call with silent option", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
         rs.addResource('fr', 'translation', 'hi', 'salut', { silent: true });
         expect(spy.notCalled).to.be.true;
       });
 
-      it('it should emit \'added\' event on addResources call', () => {
+      it("it should emit 'added' event on addResources call", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
         rs.addResources('fr', 'translation', {
-          'hi': 'salut',
-          'hello': 'bonjour',
+          hi: 'salut',
+          hello: 'bonjour',
         });
         expect(spy.calledOnce).to.be.true;
       });
 
-      it('it should not emit \'added\' event on addResources call with silent option', () => {
+      it("it should not emit 'added' event on addResources call with silent option", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
-        rs.addResources('fr', 'translation', {
-          'hi': 'salut',
-          'hello': 'bonjour',
-        }, { silent: true });
+        rs.addResources(
+          'fr',
+          'translation',
+          {
+            hi: 'salut',
+            hello: 'bonjour',
+          },
+          { silent: true },
+        );
         expect(spy.notCalled).to.be.true;
       });
 
-      it('it should emit \'added\' event on addResourceBundle call', () => {
+      it("it should emit 'added' event on addResourceBundle call", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
-        rs.addResourceBundle('fr', 'translation', {
-          'hi': 'salut',
-          'hello': 'bonjour',
-        }, true, true);
+        rs.addResourceBundle(
+          'fr',
+          'translation',
+          {
+            hi: 'salut',
+            hello: 'bonjour',
+          },
+          true,
+          true,
+        );
         expect(spy.calledOnce).to.be.true;
       });
 
-      it('it should not emit \'added\' event on addResourceBundle call with silent option', () => {
+      it("it should not emit 'added' event on addResourceBundle call with silent option", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
-        rs.addResourceBundle('fr', 'translation', {
-          'hi': 'salut',
-          'hello': 'bonjour',
-        }, true, true, { silent: true });
+        rs.addResourceBundle(
+          'fr',
+          'translation',
+          {
+            hi: 'salut',
+            hello: 'bonjour',
+          },
+          true,
+          true,
+          { silent: true },
+        );
         expect(spy.notCalled).to.be.true;
       });
     });
@@ -118,7 +135,11 @@ describe('ResourceStore', () => {
 
         // dotty
         rs.addResourceBundle('en.translation', { something1: 'deeper1' });
-        expect(rs.getResource('en.translation')).to.eql({ something: 'deeper', something1: 'deeper1', test: 'test' });
+        expect(rs.getResource('en.translation')).to.eql({
+          something: 'deeper',
+          something1: 'deeper1',
+          test: 'test',
+        });
       });
     });
 
@@ -168,5 +189,4 @@ describe('ResourceStore', () => {
       });
     });
   });
-
 });

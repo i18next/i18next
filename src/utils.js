@@ -21,21 +21,21 @@ export function makeString(object) {
 }
 
 export function copy(a, s, t) {
-  a.forEach((m) => {
+  a.forEach(m => {
     if (s[m]) t[m] = s[m];
   });
 }
 
 function getLastOfPath(object, path, Empty) {
   function cleanKey(key) {
-    return (key && key.indexOf('###') > -1) ? key.replace(/###/g, '.') : key;
+    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
   }
 
   function canNotTraverseDeeper() {
     return !object || typeof object === 'string';
   }
 
-  const stack = (typeof path !== 'string') ? [].concat(path) : path.split('.');
+  const stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
   while (stack.length > 1) {
     if (canNotTraverseDeeper()) return {};
 
@@ -47,7 +47,7 @@ function getLastOfPath(object, path, Empty) {
   if (canNotTraverseDeeper()) return {};
   return {
     obj: object,
-    k: cleanKey(stack.shift())
+    k: cleanKey(stack.shift()),
   };
 }
 
@@ -77,7 +77,12 @@ export function deepExtend(target, source, overwrite) {
   for (const prop in source) {
     if (prop in target) {
       // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+      if (
+        typeof target[prop] === 'string' ||
+        target[prop] instanceof String ||
+        typeof source[prop] === 'string' ||
+        source[prop] instanceof String
+      ) {
         if (overwrite) target[prop] = source[prop];
       } else {
         deepExtend(target[prop], source[prop], overwrite);
@@ -96,12 +101,12 @@ export function regexEscape(str) {
 
 /* eslint-disable */
 var _entityMap = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;',
-  "/": '&#x2F;'
+  '/': '&#x2F;',
 };
 /* eslint-enable */
 

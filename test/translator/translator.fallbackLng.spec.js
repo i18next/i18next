@@ -5,7 +5,6 @@ import PluralResolver from '../../src/PluralResolver';
 import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
-
   describe('translate() - fallback', () => {
     let t;
 
@@ -14,49 +13,51 @@ describe('Translator', () => {
         en: {
           translation: {
             test: 'test_en',
-            notInDE: 'test_notInDE_en'
-          }
+            notInDE: 'test_notInDE_en',
+          },
         },
         fr: {
           translation: {
             test: 'test_fr',
-            notInDE: 'test_notInDE_fr'
-          }
+            notInDE: 'test_notInDE_fr',
+          },
         },
         de: {
           translation: {
-            test: 'test_de'
-          }
-        }
+            test: 'test_de',
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
-        interpolator: new Interpolator()
-      }, {
-        defaultNS: 'translation',
-        ns: 'translation',
-        interpolation: {
-          interpolateResult: true,
-          interpolateDefaultValue: true,
-          interpolateKey: true
-        }
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          defaultNS: 'translation',
+          ns: 'translation',
+          interpolation: {
+            interpolateResult: true,
+            interpolateDefaultValue: true,
+            interpolateKey: true,
+          },
+        },
+      );
       t.changeLanguage('de');
     });
 
     const tests = [
-      { args: ['translation:notInDE', { }], expected: 'test_notInDE_en' },
-      { args: ['translation:notInDE', { fallbackLng: 'fr' }], expected: 'test_notInDE_fr' }
+      { args: ['translation:notInDE', {}], expected: 'test_notInDE_en' },
+      { args: ['translation:notInDE', { fallbackLng: 'fr' }], expected: 'test_notInDE_fr' },
     ];
 
-    tests.forEach((test) => {
-      it(`correctly translates for ${JSON.stringify(test.args) } args`, () => {
+    tests.forEach(test => {
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
         expect(t.translate(...test.args)).to.eql(test.expected);
       });
     });
   });
-
 });

@@ -6,7 +6,6 @@ import Interpolator from '../../src/Interpolator';
 import PostProcessor from '../../src/postProcessor';
 
 describe('Translator', () => {
-
   describe('translate() skip interpolation', () => {
     var t;
 
@@ -16,56 +15,73 @@ describe('Translator', () => {
           translation: {
             test: 'test_en {{key}}',
             deep: {
-              arr: ['deep_en arr {{key1}}', 'deep_en arr {{key2}}']
+              arr: ['deep_en arr {{key1}}', 'deep_en arr {{key2}}'],
             },
-          }
+          },
         },
         de: {
           translation: {
-            test: 'test_de {{key}}'
-          }
-        }
+            test: 'test_de {{key}}',
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
-        interpolator: new Interpolator(),
-      }, {
-        keySeparator: '.',
-        defaultNS: 'translation',
-        ns: 'translation',
-        interpolation: {},
-
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          keySeparator: '.',
+          defaultNS: 'translation',
+          ns: 'translation',
+          interpolation: {},
+        },
+      );
       t.changeLanguage('en');
     });
 
     var tests = [
       { args: ['translation:test', { skipInterpolation: true }], expected: 'test_en {{key}}' },
-      { args: ['translation:test', { skipInterpolation: false, key: 'value' }], expected: 'test_en value' },
-      { args: ['translation:test', { lng: 'de', skipInterpolation: true }], expected: 'test_de {{key}}' },
-      { args: ['translation:test', { lng: 'fr', skipInterpolation: true }], expected: 'test_en {{key}}' },
       {
-        args: ['translation:deep', { returnObjects: true, skipInterpolation: true }],
-        expected: { arr: ['deep_en arr {{key1}}', 'deep_en arr {{key2}}'] }
+        args: ['translation:test', { skipInterpolation: false, key: 'value' }],
+        expected: 'test_en value',
       },
       {
-        args: ['translation:deep', { returnObjects: true, skipInterpolation: false, key1: 'value1', key2: 'value2' }],
-        expected: { arr: ['deep_en arr value1', 'deep_en arr value2'] }
+        args: ['translation:test', { lng: 'de', skipInterpolation: true }],
+        expected: 'test_de {{key}}',
+      },
+      {
+        args: ['translation:test', { lng: 'fr', skipInterpolation: true }],
+        expected: 'test_en {{key}}',
+      },
+      {
+        args: ['translation:deep', { returnObjects: true, skipInterpolation: true }],
+        expected: { arr: ['deep_en arr {{key1}}', 'deep_en arr {{key2}}'] },
+      },
+      {
+        args: [
+          'translation:deep',
+          { returnObjects: true, skipInterpolation: false, key1: 'value1', key2: 'value2' },
+        ],
+        expected: { arr: ['deep_en arr value1', 'deep_en arr value2'] },
       },
       {
         args: ['translation:deep.arr', { joinArrays: ' + ', skipInterpolation: true }],
-        expected: 'deep_en arr {{key1}} + deep_en arr {{key2}}'
+        expected: 'deep_en arr {{key1}} + deep_en arr {{key2}}',
       },
       {
-        args: ['translation:deep.arr', { joinArrays: ' + ', skipInterpolation: false, key1: '1', key2: '2' }],
-        expected: 'deep_en arr 1 + deep_en arr 2'
+        args: [
+          'translation:deep.arr',
+          { joinArrays: ' + ', skipInterpolation: false, key1: '1', key2: '2' },
+        ],
+        expected: 'deep_en arr 1 + deep_en arr 2',
       },
     ];
 
-    tests.forEach((test) => {
+    tests.forEach(test => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
@@ -80,31 +96,33 @@ describe('Translator', () => {
         en: {
           translation: {
             test: 'test_en',
-            simpleArr: ['simpleArr_en 1', 'simpleArr_en 2']
-          }
+            simpleArr: ['simpleArr_en 1', 'simpleArr_en 2'],
+          },
         },
         de: {
           translation: {
-            test: 'test_de'
-          }
-        }
+            test: 'test_de',
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
-        interpolator: new Interpolator(),
-      }, {
-        keySeparator: '.',
-        defaultNS: 'translation',
-        ns: 'translation',
-        interpolation: {},
-
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          keySeparator: '.',
+          defaultNS: 'translation',
+          ns: 'translation',
+          interpolation: {},
+        },
+      );
       PostProcessor.addPostProcessor({
         name: 'postProcessValue',
-        process: (value, key, options, translator) => ("post processed: " + value),
+        process: (value, key, options, translator) => 'post processed: ' + value,
       });
       t.changeLanguage('en');
     });
@@ -112,35 +130,46 @@ describe('Translator', () => {
     var tests = [
       {
         args: ['translation:test', { skipInterpolation: true, postProcess: 'postProcessValue' }],
-        expected: 'post processed: test_en'
+        expected: 'post processed: test_en',
       },
       {
         args: ['translation:test', { skipInterpolation: false, postProcess: 'postProcessValue' }],
-        expected: 'post processed: test_en'
+        expected: 'post processed: test_en',
       },
       {
-        args: ['translation:simpleArr', { returnObjects: true, skipInterpolation: true, postProcess: 'postProcessValue' }],
-        expected: ['post processed: simpleArr_en 1', 'post processed: simpleArr_en 2']
+        args: [
+          'translation:simpleArr',
+          { returnObjects: true, skipInterpolation: true, postProcess: 'postProcessValue' },
+        ],
+        expected: ['post processed: simpleArr_en 1', 'post processed: simpleArr_en 2'],
       },
       {
-        args: ['translation:simpleArr', { returnObjects: true, skipInterpolation: false, postProcess: 'postProcessValue' }],
-        expected: ['post processed: simpleArr_en 1', 'post processed: simpleArr_en 2']
+        args: [
+          'translation:simpleArr',
+          { returnObjects: true, skipInterpolation: false, postProcess: 'postProcessValue' },
+        ],
+        expected: ['post processed: simpleArr_en 1', 'post processed: simpleArr_en 2'],
       },
       {
-        args: ['translation:simpleArr', { joinArrays: ' + ', skipInterpolation: true, postProcess: 'postProcessValue' }],
-        expected: 'post processed: simpleArr_en 1 + simpleArr_en 2'
+        args: [
+          'translation:simpleArr',
+          { joinArrays: ' + ', skipInterpolation: true, postProcess: 'postProcessValue' },
+        ],
+        expected: 'post processed: simpleArr_en 1 + simpleArr_en 2',
       },
       {
-        args: ['translation:simpleArr', { joinArrays: ' + ', skipInterpolation: false, postProcess: 'postProcessValue' }],
-        expected: 'post processed: simpleArr_en 1 + simpleArr_en 2'
+        args: [
+          'translation:simpleArr',
+          { joinArrays: ' + ', skipInterpolation: false, postProcess: 'postProcessValue' },
+        ],
+        expected: 'post processed: simpleArr_en 1 + simpleArr_en 2',
       },
     ];
 
-    tests.forEach((test) => {
+    tests.forEach(test => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
   });
-
 });

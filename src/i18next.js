@@ -63,10 +63,19 @@ class I18n extends EventEmitter {
       s.logger = baseLogger;
       s.resourceStore = this.store;
       s.languageUtils = lu;
-      s.pluralResolver = new PluralResolver(lu, { prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix });
+      s.pluralResolver = new PluralResolver(lu, {
+        prepend: this.options.pluralSeparator,
+        compatibilityJSON: this.options.compatibilityJSON,
+        simplifyPluralSuffix: this.options.simplifyPluralSuffix,
+      });
       s.interpolator = new Interpolator(this.options);
 
-      s.backendConnector = new BackendConnector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
+      s.backendConnector = new BackendConnector(
+        createClassOnDemand(this.modules.backend),
+        s.resourceStore,
+        s,
+        this.options,
+      );
       // pipe events from backendConnector
       s.backendConnector.on('*', (event, ...args) => {
         this.emit(event, ...args);
@@ -88,14 +97,23 @@ class I18n extends EventEmitter {
         this.emit(event, ...args);
       });
 
-      this.modules.external.forEach((m) => {
+      this.modules.external.forEach(m => {
         if (m.init) m.init(this);
       });
     }
 
     // append api
-    const storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle', 'getDataByLanguage'];
-    storeApi.forEach((fcName) => {
+    const storeApi = [
+      'getResource',
+      'addResource',
+      'addResources',
+      'addResourceBundle',
+      'removeResourceBundle',
+      'hasResourceBundle',
+      'getResourceBundle',
+      'getDataByLanguage',
+    ];
+    storeApi.forEach(fcName => {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
 
@@ -128,10 +146,10 @@ class I18n extends EventEmitter {
 
       const toLoad = [];
 
-      const append = (lng) => {
+      const append = lng => {
         if (!lng) return;
         const lngs = this.services.languageUtils.toResolveHierarchy(lng);
-        lngs.forEach((l) => {
+        lngs.forEach(l => {
           if (toLoad.indexOf(l) < 0) toLoad.push(l);
         });
       };
@@ -209,7 +227,7 @@ class I18n extends EventEmitter {
       if (callback) callback(err, (...args) => this.t(...args));
     };
 
-    const setLng = (l) => {
+    const setLng = l => {
       if (l) {
         this.language = l;
         this.languages = this.services.languageUtils.toResolveHierarchy(l);
@@ -218,7 +236,7 @@ class I18n extends EventEmitter {
         if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(l);
       }
 
-      this.loadResources((err) => {
+      this.loadResources(err => {
         done(err, l);
       });
     };
@@ -276,11 +294,11 @@ class I18n extends EventEmitter {
     }
     if (typeof ns === 'string') ns = [ns];
 
-    ns.forEach((n) => {
+    ns.forEach(n => {
       if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
     });
 
-    this.loadResources((err) => {
+    this.loadResources(err => {
       deferred.resolve();
       if (callback) callback(err);
     });
@@ -302,7 +320,7 @@ class I18n extends EventEmitter {
     }
 
     this.options.preload = preloaded.concat(newLngs);
-    this.loadResources((err) => {
+    this.loadResources(err => {
       deferred.resolve();
       if (callback) callback(err);
     });
@@ -314,14 +332,72 @@ class I18n extends EventEmitter {
     if (!lng) lng = this.languages && this.languages.length > 0 ? this.languages[0] : this.language;
     if (!lng) return 'rtl';
 
-    const rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm',
-      'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb',
-      'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he',
-      'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo',
-      'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam'
+    const rtlLngs = [
+      'ar',
+      'shu',
+      'sqr',
+      'ssh',
+      'xaa',
+      'yhd',
+      'yud',
+      'aao',
+      'abh',
+      'abv',
+      'acm',
+      'acq',
+      'acw',
+      'acx',
+      'acy',
+      'adf',
+      'ads',
+      'aeb',
+      'aec',
+      'afb',
+      'ajp',
+      'apc',
+      'apd',
+      'arb',
+      'arq',
+      'ars',
+      'ary',
+      'arz',
+      'auz',
+      'avl',
+      'ayh',
+      'ayl',
+      'ayn',
+      'ayp',
+      'bbz',
+      'pga',
+      'he',
+      'iw',
+      'ps',
+      'pbt',
+      'pbu',
+      'pst',
+      'prp',
+      'prd',
+      'ur',
+      'ydd',
+      'yds',
+      'yih',
+      'ji',
+      'yi',
+      'hbo',
+      'men',
+      'xmn',
+      'fa',
+      'jpr',
+      'peo',
+      'pes',
+      'prs',
+      'dv',
+      'sam',
     ];
 
-    return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0 ? 'rtl' : 'ltr';
+    return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0
+      ? 'rtl'
+      : 'ltr';
   }
 
   /* eslint class-methods-use-this: 0 */
@@ -333,7 +409,7 @@ class I18n extends EventEmitter {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
     const membersToCopy = ['store', 'services', 'language'];
-    membersToCopy.forEach((m) => {
+    membersToCopy.forEach(m => {
       clone[m] = this[m];
     });
     clone.translator = new Translator(clone.services, clone.options);

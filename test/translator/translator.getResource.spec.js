@@ -5,7 +5,6 @@ import PluralResolver from '../../src/PluralResolver';
 import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
-
   describe('getResource()', () => {
     var t;
 
@@ -13,36 +12,38 @@ describe('Translator', () => {
       const rs = new ResourceStore({
         en: {
           translation: {
-            test: 'test'
-          }
-        }
+            test: 'test',
+          },
+        },
       });
       const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator({
-        resourceStore: rs,
-        languageUtils: lu,
-        pluralResolver: new PluralResolver(lu, {prepend: '_', simplifyPluralSuffix: true}),
-        interpolator: new Interpolator()
-      }, {
-        interpolation: {
-          interpolateResult: true,
-          interpolateDefaultValue: true,
-          interpolateKey: true
-        }
-      });
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          interpolation: {
+            interpolateResult: true,
+            interpolateDefaultValue: true,
+            interpolateKey: true,
+          },
+        },
+      );
       t.changeLanguage('en');
     });
 
     var tests = [
-      {args: ['en', 'translation', 'test'], expected: 'test'},
-      {args: ['de', 'translation', 'test'], expected: undefined}
+      { args: ['en', 'translation', 'test'], expected: 'test' },
+      { args: ['de', 'translation', 'test'], expected: undefined },
     ];
 
-    tests.forEach((test) => {
+    tests.forEach(test => {
       it('correctly gets resource for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.getResource.apply(t, test.args)).to.eql(test.expected);
       });
     });
   });
-
 });

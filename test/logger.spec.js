@@ -18,13 +18,12 @@ const mockLogger = {
   output(type, args) {
     return {
       type,
-      args
+      args,
     };
-  }
+  },
 };
 
 describe('logger', () => {
-
   before(() => {
     logger.init(mockLogger, { debug: true });
   });
@@ -50,5 +49,4 @@ describe('logger', () => {
       expect(logger.deprecate('hello').args[0]).to.equal('WARNING DEPRECATED: i18next: hello');
     });
   });
-
 });
