@@ -1,3 +1,7 @@
+### 14.0.0
+
+- typescript: BREAKING Refactor generics usage [1180](https://github.com/i18next/i18next/pull/1180)
+
 ### 13.1.5
 
 - es modules: Fix bug when import by ES Module [1179](https://github.com/i18next/i18next/pull/1179)
