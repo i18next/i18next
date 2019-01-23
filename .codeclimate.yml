@@ -25,3 +25,16 @@ exclude_paths:
   - 'rollup.config.js'
   - 'karma.conf.js'
   - 'karma.backward.conf.js'
+checks:
+  file-lines:
+    config:
+      threshold: 300
+  method-lines:
+    config:
+      threshold: 70
+  complex-logic:
+    config:
+      threshold: 5
+  nested-control-flow:
+    config:
+      threshold: 5
