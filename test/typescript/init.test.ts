@@ -38,7 +38,8 @@ i18next.init(
       },
     },
   },
-  (err, t) => {
+  // not necessary but check a non-inferred arg for paranoia's sake
+  (err, t: i18next.TFunction) => {
     // init set content
     updateContent();
   },
