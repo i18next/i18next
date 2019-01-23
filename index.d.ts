@@ -468,24 +468,11 @@ declare namespace i18next {
   }
 
   /**
-   * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
-   *
-   * NOTE: if changing this, change WithT.t below - is there better way to reuse TFunction here?
-   */
-  interface TFunction<
-    TResult extends string | object | Array<string | object> = string,
-    TKeys extends string = string,
-    TValues extends object = object
-  > {
-    (key: TKeys | TKeys[], options?: TOptions<TValues>): TResult;
-  }
-
-  /**
    * WARNING: Order with generic type parameters are different from TFunction for usability
    * see: https://github.com/i18next/react-i18next/issues/662
    */
   interface WithT {
-    // same as TFunction - here to expose parameterized args - is there better way to reuse TFunction here?
+    // Expose parameterized t in the i18next interface hierarchy
     t<
       TResult extends string | object | Array<string | object> = string,
       TKeys extends string = string,
@@ -495,6 +482,8 @@ declare namespace i18next {
       options?: TOptions<TValues>,
     ): TResult;
   }
+
+  type TFunction = WithT['t'];
 
   interface Resource {
     [language: string]: ResourceLanguage;
