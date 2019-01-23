@@ -19,7 +19,7 @@ function childrenNamespacesConsumer(t: i18next.TFunction, i18n: i18next.i18n) {
   const isa: string[] = i18n.t<string[]>('friend');
   const ioa: object[] = i18n.t<object[]>('friend');
 
-  // now try t provided by NamespacesConsumer
+  // (failing) now try t provided by NamespacesConsumer
   const s: string = t('friend'); // same as <string>
   const o: object = t<object>('friend');
   const sa: string[] = t<string[]>('friend');
