@@ -467,6 +467,11 @@ declare namespace i18next {
     (key: TKeys | TKeys[], options?: TOptions<TValues>): boolean;
   }
 
+  /**
+   * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
+   *
+   * NOTE: if changing this, change WithT.t below - is there better way to reuse TFunction here?
+   */
   interface TFunction<
     TResult extends string | object | Array<string | object> = string,
     TKeys extends string = string,
@@ -480,10 +485,15 @@ declare namespace i18next {
    * see: https://github.com/i18next/react-i18next/issues/662
    */
   interface WithT {
-    /**
-     * Please have a look at the translation functions like interpolation, formatting and plurals for more details on using it.
-     */
-    t: TFunction;
+    // same as TFunction - here to expose parameterized args - is there better way to reuse TFunction here?
+    t<
+      TResult extends string | object | Array<string | object> = string,
+      TKeys extends string = string,
+      TValues extends object = object
+    >(
+      key: TKeys | TKeys[],
+      options?: TOptions<TValues>,
+    ): TResult;
   }
 
   interface Resource {
