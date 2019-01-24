@@ -1,3 +1,7 @@
+### 14.0.1
+
+- typescript: Parameterized use of TFunction fails while WithT use works [1188](https://github.com/i18next/i18next/pull/1188)
+
 ### 14.0.0
 
 - typescript: BREAKING Refactor generics usage [1180](https://github.com/i18next/i18next/pull/1180)
