@@ -105,9 +105,16 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx,js,json,md}": [
-      "prettier --write",
-      "git add"
+    "linters": {
+      "*.{ts,tsx,js,json,md}": [
+        "prettier --write",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "**/dist/**/*.js",
+      "**/react-i18next.js",
+      "**/react-i18next.min.js"
     ]
   }
 }
