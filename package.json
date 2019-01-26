@@ -113,8 +113,8 @@
     },
     "ignore": [
       "**/dist/**/*.js",
-      "**/react-i18next.js",
-      "**/react-i18next.min.js"
+      "**/i18next.js",
+      "**/i18next.min.js"
     ]
   }
 }
