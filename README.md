@@ -43,9 +43,9 @@ Our focus is providing the core to building a booming ecosystem. Independent of 
 
 ---
 
-**NEWS: localization as a service - locize.com**
+**From the creators of i18next: localization as a service - locize.com**
 
-Having done a big rewrite of i18next in spring we are proud to announce the next big step to get your webproject translated with less effort. We just released [locize](http://locize.com/?utm_source=i18next_readme&utm_medium=github) a translation management system built around the i18next ecosystem.
+A translation management system built around the i18next ecosystem - [locize.com](https://locize.com).
 
 ![locize](https://locize.com/img/ads/github_locize.png)
 
