@@ -1,3 +1,7 @@
+### 14.1.0
+
+- support plurals in returning objecttree array [1196](https://github.com/i18next/i18next/issues/1196)
+
 ### 14.0.1
 
 - typescript: Parameterized use of TFunction fails while WithT use works [1188](https://github.com/i18next/i18next/pull/1188)

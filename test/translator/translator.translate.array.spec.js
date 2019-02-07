@@ -17,6 +17,8 @@ describe('Translator', () => {
             search: {
               flagList: [['basic', 'Basic'], ['simple', 'Simple']],
             },
+            keyArray: ["hello world {{count}}", "hey {{count}}"],
+            keyArray_plural: ["hello world plural {{count}}", "hey plural {{count}}"],
           },
         },
       });
@@ -53,6 +55,14 @@ describe('Translator', () => {
       {
         args: [['search.flagList', 'flagList'], {}],
         expected: [['basic', 'Basic'], ['simple', 'Simple']],
+      },
+      {
+        args: ['keyArray', { count: 1 }],
+        expected: ["hello world 1", "hey 1"],
+      },
+      {
+        args: ['keyArray', { count: 100 }],
+        expected: ["hello world plural 100", "hey plural 100"],
       },
     ];
 

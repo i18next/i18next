@@ -98,6 +98,7 @@ class Translator extends EventEmitter {
     const resolved = this.resolve(keys, options);
     let res = resolved && resolved.res;
     const resUsedKey = (resolved && resolved.usedKey) || key;
+    const resExactUsedKey = (resolved && resolved.exactUsedKey) || key;
 
     const resType = Object.prototype.toString.apply(res);
     const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -125,12 +126,14 @@ class Translator extends EventEmitter {
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
       if (keySeparator) {
-        const copy = resType === '[object Array]' ? [] : {}; // apply child translation on a copy
+        const resTypeIsArray = resType === '[object Array]';
+        const copy = resTypeIsArray ? [] : {}; // apply child translation on a copy
 
         /* eslint no-restricted-syntax: 0 */
+        let newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
         for (const m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            const deepKey = `${resUsedKey}${keySeparator}${m}`;
+            const deepKey = `${newKeyToUse}${keySeparator}${m}`;
             copy[m] = this.translate(deepKey, {
               ...options,
               ...{ joinArrays: false, ns: namespaces },
@@ -295,7 +298,8 @@ class Translator extends EventEmitter {
 
   resolve(keys, options = {}) {
     let found;
-    let usedKey;
+    let usedKey; // plain key
+    let exactUsedKey; // key with context / plural
     let usedLng;
     let usedNS;
 
@@ -355,6 +359,7 @@ class Translator extends EventEmitter {
           /* eslint no-cond-assign: 0 */
           while ((possibleKey = finalKeys.pop())) {
             if (!this.isValidLookup(found)) {
+              exactUsedKey = possibleKey;
               found = this.getResource(code, ns, possibleKey, options);
             }
           }
@@ -362,7 +367,7 @@ class Translator extends EventEmitter {
       });
     });
 
-    return { res: found, usedKey, usedLng, usedNS };
+    return { res: found, usedKey, exactUsedKey, usedLng, usedNS };
   }
 
   isValidLookup(res) {

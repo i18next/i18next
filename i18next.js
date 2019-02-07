@@ -663,6 +663,7 @@ var Translator = function (_EventEmitter) {
     var resolved = this.resolve(keys, options);
     var res = resolved && resolved.res;
     var resUsedKey = resolved && resolved.usedKey || key;
+    var resExactUsedKey = resolved && resolved.exactUsedKey || key;
 
     var resType = Object.prototype.toString.apply(res);
     var noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -680,12 +681,14 @@ var Translator = function (_EventEmitter) {
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
       if (keySeparator) {
-        var copy$$1 = resType === '[object Array]' ? [] : {}; // apply child translation on a copy
+        var resTypeIsArray = resType === '[object Array]';
+        var copy$$1 = resTypeIsArray ? [] : {}; // apply child translation on a copy
 
         /* eslint no-restricted-syntax: 0 */
+        var newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
         for (var m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            var deepKey = '' + resUsedKey + keySeparator + m;
+            var deepKey = '' + newKeyToUse + keySeparator + m;
             copy$$1[m] = this.translate(deepKey, _extends({}, options, { joinArrays: false, ns: namespaces }));
             if (copy$$1[m] === deepKey) copy$$1[m] = res[m]; // if nothing found use orginal value as fallback
           }
@@ -811,7 +814,8 @@ var Translator = function (_EventEmitter) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     var found = void 0;
-    var usedKey = void 0;
+    var usedKey = void 0; // plain key
+    var exactUsedKey = void 0; // key with context / plural
     var usedLng = void 0;
     var usedNS = void 0;
 
@@ -863,6 +867,7 @@ var Translator = function (_EventEmitter) {
           /* eslint no-cond-assign: 0 */
           while (possibleKey = finalKeys.pop()) {
             if (!_this4.isValidLookup(found)) {
+              exactUsedKey = possibleKey;
               found = _this4.getResource(code, ns, possibleKey, options);
             }
           }
@@ -870,7 +875,7 @@ var Translator = function (_EventEmitter) {
       });
     });
 
-    return { res: found, usedKey: usedKey, usedLng: usedLng, usedNS: usedNS };
+    return { res: found, usedKey: usedKey, exactUsedKey: exactUsedKey, usedLng: usedLng, usedNS: usedNS };
   };
 
   Translator.prototype.isValidLookup = function isValidLookup(res) {
