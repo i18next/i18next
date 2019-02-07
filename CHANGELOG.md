@@ -1,3 +1,7 @@
+### 14.1.1
+
+- allow empty string for array join [1191](https://github.com/i18next/i18next/issues/1191)
+
 ### 14.1.0
 
 - support plurals in returning objecttree array [1196](https://github.com/i18next/i18next/issues/1196)

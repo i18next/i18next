@@ -53,6 +53,10 @@ describe('Translator', () => {
         expected: 'test_en_1+test_en_2+test',
       },
       {
+        args: ['translation:test', { myVar: 'test', joinArrays: '' }],
+        expected: 'test_en_1test_en_2test',
+      },
+      {
         args: [['search.flagList', 'flagList'], {}],
         expected: [['basic', 'Basic'], ['simple', 'Simple']],
       },

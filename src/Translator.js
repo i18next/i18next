@@ -114,7 +114,7 @@ class Translator extends EventEmitter {
       res &&
       handleAsObject &&
       noObject.indexOf(resType) < 0 &&
-      !(joinArrays && resType === '[object Array]')
+      !(typeof joinArrays === 'string' && resType === '[object Array]')
     ) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
@@ -143,7 +143,7 @@ class Translator extends EventEmitter {
         }
         res = copy;
       }
-    } else if (handleAsObjectInI18nFormat && joinArrays && resType === '[object Array]') {
+    } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && resType === '[object Array]') {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options);
