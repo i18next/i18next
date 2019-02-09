@@ -1,3 +1,7 @@
+### 15.0.0
+
+- update build process (while all test passes feeling more save making this a major release)
+
 ### 14.1.1
 
 - allow empty string for array join [1191](https://github.com/i18next/i18next/issues/1191)
