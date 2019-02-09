@@ -46,7 +46,10 @@ module.exports = function(karma) {
     // browserify configuration
     browserify: {
       debug: true,
-      transform: ['babelify', /*'brfs',*/ 'browserify-istanbul'],
+      transform: [
+        ['babelify', { presets: ['@babel/preset-env'] }],
+        /*'brfs',*/ 'browserify-istanbul',
+      ],
     },
 
     coverageReporter: {

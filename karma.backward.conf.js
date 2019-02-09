@@ -44,7 +44,7 @@ module.exports = function(karma) {
     // browserify configuration
     browserify: {
       debug: true,
-      transform: ['babelify' /*, 'brfs' */],
+      transform: [['babelify', { presets: ['@babel/preset-env'] }] /*, 'brfs' */],
     },
   });
 };
