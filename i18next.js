@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.iI18next = factory());
+  (global = global || self, global.i18next = factory());
 }(this, function () { 'use strict';
 
   function _defineProperty(obj, key, value) {

@@ -36,7 +36,7 @@ export default {
   external: ['react', 'react-dom'],
   // moduleId: 'i18next',
   output: {
-    name: 'iI18next',
+    name: 'i18next',
     format,
     file,
   },

@@ -1,3 +1,7 @@
+### 15.0.1
+
+- fix export name on global (typo)
+
 ### 15.0.0
 
 - update build process (while all test passes feeling more save making this a major release)
