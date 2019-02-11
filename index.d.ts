@@ -469,21 +469,12 @@ declare namespace i18next {
 
   interface WithT {
     // Expose parameterized t in the i18next interface hierarchy
-    // NOTE: duplicate of TFunction - not sure why I can't find a workable reuse pattern
-    t<
-      TResult extends string | object | Array<string | object> | undefined = string,
-      TKeys extends string = string,
-      TValues extends object = object
-    >(
-      key: TKeys | TKeys[],
-      options?: TOptions<TValues>,
-    ): TResult;
+    t: TFunction;
   }
 
-  // NOTE: somewhat duplicate of WithT.t but cannot use interface - not sure why I can't find a workable reuse pattern
   type TFunction = <
     TResult extends string | object | Array<string | object> | undefined = string,
-    TKeys extends string = string,
+    TKeys extends string | TemplateStringsArray = string,
     TValues extends object = object
   >(
     key: TKeys | TKeys[],

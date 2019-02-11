@@ -7,12 +7,14 @@ import i18next from 'i18next';
 function childrenNamespacesConsumer(t: i18next.TFunction, i18n: i18next.i18n) {
   // sanity first - tests from i18next t.test
   const is: string = i18n.t('friend'); // same as <string>
+  const is2: string = i18n.t`friend`; // same as <string>
   const io: object = i18n.t<object>('friend');
   const isa: string[] = i18n.t<string[]>('friend');
   const ioa: object[] = i18n.t<object[]>('friend');
 
   // (failing) now try t provided by NamespacesConsumer
   const s: string = t('friend'); // same as <string>
+  const s2: string = t`friend`;
   const o: object = t<object>('friend');
   const sa: string[] = t<string[]>('friend');
   const oa: object[] = t<object[]>('friend');
