@@ -1,3 +1,7 @@
+### 15.0.2
+
+- try fixing UMD build
+
 ### 15.0.1
 
 - fix export name on global (typo)

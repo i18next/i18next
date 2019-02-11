@@ -13,11 +13,10 @@ const babelOptions = {
       '@babel/preset-env',
       {
         targets: {
-          esmodules: true,
+          esmodules: false,
         },
       },
     ],
-    '@babel/react',
   ],
   babelrc: false,
 };
