@@ -485,7 +485,7 @@ declare namespace i18next {
     TInterpolationMap extends object = StringMap
   >(
     key: TKeys | TKeys[],
-    options?: TOptions<TInterpolationMap>,
+    options?: TOptions<TInterpolationMap> | string,
   ) => TResult;
 
   interface Resource {
