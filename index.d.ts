@@ -454,9 +454,12 @@ declare namespace i18next {
     interpolation?: InterpolationOptions;
   }
 
+  // indexer that is open to any value
   type StringMap = { [key: string]: any };
 
-  // Add an indexer to assure that interpolation arguments can be passed
+  /**
+   * Options that allow open ended values for interpolation unless type is provided.
+   */
   type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
 
   type Callback = (error: any, t: TFunction) => void;
