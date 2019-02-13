@@ -8,16 +8,27 @@ function basicUsage(t: i18next.TFunction) {
   t(['friend', 'tree'], { myVar: 'someValue' });
 }
 
-/**
- * Use of the exported TFunction in external utility methods such as
- *  NamespaceConsumer children t
- */
 function returnCasts(t: i18next.TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
   const o: object = t<object>('friend');
   const sa: string[] = t<string[]>('friend');
   const oa: object[] = t<object[]>('friend');
+}
+
+function defautValue(t: i18next.TFunction) {
+  t('translation:test', { defaultValue: 'test_en' });
+  t('translation:test', { defaultValue: 'test_en', count: 1 });
+  t('translation:test', {
+    defaultValue_plural: 'test_en_plural',
+    defaultValue: 'test_en',
+    count: 10,
+  });
+
+  // string (only) default value as second arg
+  //  https://www.i18next.com/translation-function/essentials#passing-a-default-value
+  //  https://github.com/i18next/i18next/blob/master/src/Translator.js#L66
+  t('translation:test', 'test_en');
 }
 
 function callsMethodWithOptionalArg(t: i18next.TFunction) {
