@@ -552,7 +552,7 @@
 
         /* eslint no-restricted-syntax: 0 */
         for (var m in resources) {
-          if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m], {
+          if (typeof resources[m] === 'string' || Object.prototype.toString.apply(resources[m]) === '[object Array]') this.addResource(lng, ns, m, resources[m], {
             silent: true
           });
         }

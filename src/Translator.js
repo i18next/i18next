@@ -143,7 +143,11 @@ class Translator extends EventEmitter {
         }
         res = copy;
       }
-    } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && resType === '[object Array]') {
+    } else if (
+      handleAsObjectInI18nFormat &&
+      typeof joinArrays === 'string' &&
+      resType === '[object Array]'
+    ) {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options);

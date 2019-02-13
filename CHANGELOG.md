@@ -1,3 +1,8 @@
+### 15.0.3
+
+- typescript: accept templatestringsarray as TKey [1199](https://github.com/i18next/i18next/pull/1199)
+- allow arrays on addResources
+
 ### 15.0.2
 
 - try fixing UMD build
