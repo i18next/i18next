@@ -1,27 +1,30 @@
 import i18next from 'i18next';
 
-interface CustomOptions {
+interface InterpolationValues {
   myVar: string;
 }
-type KeyList = 'friend' | 'tree';
+type Keys = 'friend' | 'tree';
 
-i18next.t<string, KeyList>('friend', { myVar: 'someValue' });
-i18next.t<string, KeyList>(['friend', 'tree'], { myVar: 'someValue' });
-i18next.t<string, KeyList, { myVar: 'someValue' }>('friend', { myVar: 'someValue' });
-i18next.t<string, KeyList, { myVar: 'someValue' }>(['friend', 'tree'], { myVar: 'someValue' });
+// check keys
+i18next.t<string, Keys>('friend', { myVar: 'someValue' });
+i18next.t<string, Keys>(['friend', 'tree'], { myVar: 'someValue' });
+
+// check interpolation values
+i18next.t<string, Keys, InterpolationValues>('friend', { myVar: 'someValue' });
+i18next.t<string, Keys, InterpolationValues>(['friend', 'tree'], { myVar: 'someValue' });
 
 // NOTION: disable no-unnecessary-generics for generic pattern test.
 /* tslint:disable:no-unnecessary-generics */
 interface ExWithT extends i18next.WithT {
-  t<Keys extends KeyList = KeyList, Val extends object = object, R = string>(
-    keys: Keys | Keys[],
+  t<CustomKeys extends Keys = Keys, Val extends object = object, R = string>(
+    keys: CustomKeys | CustomKeys[],
     options?: i18next.TOptions<Val>,
   ): R;
-  t<Keys extends OtherKeyList = OtherKeyList, Val extends object = object, R = string>(
-    keys: Keys | Keys[],
+  t<CustomKeys extends OtherKeyList = OtherKeyList, Val extends object = object, R = string>(
+    keys: CustomKeys | CustomKeys[],
     options?: i18next.TOptions<Val>,
   ): R;
-  t<Keys extends string = KeyList, R = string>(keys: Keys | Keys[]): R;
+  t<CustomKeys extends string = Keys, R = string>(keys: CustomKeys | CustomKeys[]): R;
 }
 
 type OtherKeyList = 'private' | 'public';
@@ -32,9 +35,9 @@ type OtherKeyList = 'private' | 'public';
 (i18next as ExWithT).t('public');
 (i18next as ExWithT).t('friend', {});
 (i18next as ExWithT).t('private', {});
-(i18next as ExWithT).t<KeyList, { myVar: 'someValue' }>('friend', { myVar: 'someValue' });
+(i18next as ExWithT).t<Keys, { myVar: 'someValue' }>('friend', { myVar: 'someValue' });
 (i18next as ExWithT).t<OtherKeyList, { myVar: 'someValue' }>('private', { myVar: 'someValue' });
-const result = (i18next as ExWithT).t<KeyList, { myVar: 'someValue' }, { result: 'result' }>(
+const result = (i18next as ExWithT).t<Keys, { myVar: 'someValue' }, { result: 'result' }>(
   'friend',
   { myVar: 'someValue' },
 );
