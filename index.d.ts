@@ -395,10 +395,6 @@ declare namespace i18next {
     compatibilityJSON?: 'v1' | 'v2' | 'v3';
   }
 
-  // Add an indexer to assure that interpolation arguments can be passed
-  type TOptions<TCustomOptions extends object = object> = TOptionsBase &
-    TCustomOptions & { [key: string]: any };
-
   interface TOptionsBase {
     /**
      * Default value to return if a translation was not found
@@ -458,13 +454,24 @@ declare namespace i18next {
     interpolation?: InterpolationOptions;
   }
 
+  // indexer that is open to any value
+  type StringMap = { [key: string]: any };
+
+  /**
+   * Options that allow open ended values for interpolation unless type is provided.
+   */
+  type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
+
   type Callback = (error: any, t: TFunction) => void;
 
   /**
    * Uses similar args as the t function and returns true if a key exists.
    */
-  interface ExistsFunction<TKeys extends string = string, TValues extends object = object> {
-    (key: TKeys | TKeys[], options?: TOptions<TValues>): boolean;
+  interface ExistsFunction<
+    TKeys extends string = string,
+    TInterpolationMap extends object = StringMap
+  > {
+    (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
   }
 
   interface WithT {
@@ -475,10 +482,10 @@ declare namespace i18next {
   type TFunction = <
     TResult extends string | object | Array<string | object> | undefined = string,
     TKeys extends string | TemplateStringsArray = string,
-    TValues extends object = object
+    TInterpolationMap extends object = StringMap
   >(
     key: TKeys | TKeys[],
-    options?: TOptions<TValues>,
+    options?: TOptions<TInterpolationMap>,
   ) => TResult;
 
   interface Resource {
