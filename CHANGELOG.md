@@ -1,3 +1,8 @@
+### 15.0.4
+
+- add default export on node.js entry [1204](https://github.com/i18next/i18next/pull/1204)
+- typescript: Add defaultValue tests and allow second arg string as defaultValue [1206](https://github.com/i18next/i18next/pull/1206)
+
 ### 15.0.3
 
 - typescript: accept templatestringsarray as TKey [1199](https://github.com/i18next/i18next/pull/1199)
