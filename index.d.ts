@@ -137,6 +137,15 @@ declare namespace i18next {
      * @default undefined
      */
     transEmptyNodeValue?: string;
+    /**
+     * Function to generate an i18nKey from the defaultValue (or Trans children)
+     * when no key is provided.
+     * By default, the defaultValue (Trans text) itself is used as the key.
+     * If you want to require keys for all translations, supply a function
+     * that always throws an error.
+     * @default undefined
+     */
+    hashTransKey?(defaultValue: TOptionsBase['defaultValue']): TOptionsBase['defaultValue'];
   }
 
   interface InitOptions {
