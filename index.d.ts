@@ -145,7 +145,7 @@ declare namespace i18next {
      * that always throws an error.
      * @default undefined
      */
-    hashTransKey?(defaultValue: typeof TOptionsBase['defaultValue']): typeof TOptionsBase['defaultValue'];
+    hashTransKey?(defaultValue: TOptionsBase['defaultValue']): TOptionsBase['defaultValue'];
   }
 
   interface InitOptions {
