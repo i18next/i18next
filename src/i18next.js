@@ -178,11 +178,7 @@ class I18n extends EventEmitter {
     if (!ns) ns = this.options.ns;
     if (!callback) callback = noop;
     this.services.backendConnector.reload(lngs, ns, err => {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        deferred.resolve();
-      }
+      deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
       callback(err);
     });
     return deferred;

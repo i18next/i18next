@@ -1,3 +1,8 @@
+### 15.0.5
+
+- typescript: Add `hashTransKey` to `ReactOptions` [1208](https://github.com/i18next/i18next/pull/1208)
+- Expose error on reloadResources [1212](https://github.com/i18next/i18next/pull/1212)
+
 ### 15.0.4
 
 - add default export on node.js entry [1204](https://github.com/i18next/i18next/pull/1204)

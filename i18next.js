@@ -2100,9 +2100,10 @@
         if (!lngs) lngs = this.languages;
         if (!ns) ns = this.options.ns;
         if (!callback) callback = noop;
-        this.services.backendConnector.reload(lngs, ns, function () {
-          deferred.resolve();
-          callback(null);
+        this.services.backendConnector.reload(lngs, ns, function (err) {
+          deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
+
+          callback(err);
         });
         return deferred;
       }
