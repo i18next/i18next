@@ -177,9 +177,13 @@ class I18n extends EventEmitter {
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
     if (!callback) callback = noop;
-    this.services.backendConnector.reload(lngs, ns, () => {
-      deferred.resolve();
-      callback(null);
+    this.services.backendConnector.reload(lngs, ns, err => {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve();
+      }
+      callback(err);
     });
     return deferred;
   }
