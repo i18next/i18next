@@ -509,10 +509,18 @@ declare namespace i18next {
     [key: string]: any;
   }
 
+  export interface Interpolator {
+    init(options: InterpolationOptions, reset: boolean): void;
+    reset(): void;
+    resetRegExp(): void;
+    interpolate(str: string, data: object, lng: string, options: InterpolationOptions): string;
+    nest(str: string, fc: Function, options: InterpolationOptions): string;
+  }
+
   interface Services {
     backendConnector: any;
     i18nFormat: any;
-    interpolator: any;
+    interpolator: Interpolator;
     languageDetector: any;
     languageUtils: any;
     logger: any;
