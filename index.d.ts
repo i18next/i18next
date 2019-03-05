@@ -510,11 +510,11 @@ declare namespace i18next {
   }
 
   export interface Interpolator {
-    init(options: InterpolationOptions, reset: boolean): void;
-    reset(): void;
-    resetRegExp(): void;
+    init(options: InterpolationOptions, reset: boolean): undefined;
+    reset(): undefined;
+    resetRegExp(): undefined;
     interpolate(str: string, data: object, lng: string, options: InterpolationOptions): string;
-    nest(str: string, fc: Function, options: InterpolationOptions): string;
+    nest(str: string, fc: (...args: any[]) => any, options: InterpolationOptions): string;
   }
 
   interface Services {
