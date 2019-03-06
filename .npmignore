@@ -2,6 +2,7 @@ src/
 test/
 coverage/
 assets/
+.circleci/
 .babelrc
 .editorconfig
 .eslintignore
@@ -13,5 +14,4 @@ karma.conf.js
 sample.html
 .codeclimate.yml
 .coveralls.yml
-.travis.yml
 tsconfig.json

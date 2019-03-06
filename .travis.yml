@@ -1,8 +1,0 @@
-language: node_js
-addons:
-  chrome: stable
-node_js:
-  - "6.2"
-before_script:
-  - npm install -g gulp
-  - npm install -g karma

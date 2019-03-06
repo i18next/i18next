@@ -1,3 +1,7 @@
+### 15.0.6
+
+- typescript: add Interpolator interface [1213](https://github.com/i18next/i18next/pull/1213)
+
 ### 15.0.5
 
 - typescript: Add `hashTransKey` to `ReactOptions` [1208](https://github.com/i18next/i18next/pull/1208)
