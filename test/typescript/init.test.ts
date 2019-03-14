@@ -425,9 +425,9 @@ i18next.init({
     hashTransKey: defaultValue => {
       if (typeof defaultValue === 'string') {
         return defaultValue.replace(/\s+/g, '_');
-      } else {
-        throw new Error("Don't know how to make key for non-string defaultValue");
       }
+
+      throw new Error("Don't know how to make key for non-string defaultValue");
     },
   },
 });
