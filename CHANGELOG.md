@@ -1,3 +1,7 @@
+### 15.0.7
+
+- typescript: Add useSuspense to ReactOptions, fix error throwing on test [1219](https://github.com/i18next/i18next/pull/1219)
+
 ### 15.0.6
 
 - typescript: add Interpolator interface [1213](https://github.com/i18next/i18next/pull/1213)
