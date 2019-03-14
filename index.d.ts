@@ -138,6 +138,11 @@ declare namespace i18next {
      */
     transEmptyNodeValue?: string;
     /**
+     * Set it to false if you do not want to use Suspense
+     * @default true
+     */
+    useSuspense?: boolean;
+    /**
      * Function to generate an i18nKey from the defaultValue (or Trans children)
      * when no key is provided.
      * By default, the defaultValue (Trans text) itself is used as the key.
