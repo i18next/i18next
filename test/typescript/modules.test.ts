@@ -29,6 +29,7 @@ const i18nFormatModule = {
 
 const thirdPartyModule = {
   type: '3rdParty' as '3rdParty',
+  init: () => null,
 };
 
 const externalModules = [thirdPartyModule];

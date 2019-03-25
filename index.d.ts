@@ -613,7 +613,8 @@ declare namespace i18next {
   }
 
   interface ThirdPartyModule {
-    type?: '3rdParty';
+    type: '3rdParty';
+    init(i18n: i18n): void;
   }
 
   interface Modules {
