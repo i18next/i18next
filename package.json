@@ -1,6 +1,6 @@
 {
   "name": "i18next",
-  "version": "15.0.7",
+  "version": "15.0.8",
   "description": "i18next internationalization framework",
   "main": "./index.js",
   "types": "index.d.ts",

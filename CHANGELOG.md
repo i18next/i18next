@@ -1,3 +1,7 @@
+### 15.0.8
+
+- typescript: adding init function to 3rdParty module typings and enforcing type property [1223](https://github.com/i18next/i18next/pull/1223)
+
 ### 15.0.7
 
 - typescript: Add useSuspense to ReactOptions, fix error throwing on test [1219](https://github.com/i18next/i18next/pull/1219)
