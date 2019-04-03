@@ -1,3 +1,7 @@
+### 15.0.9
+
+- IE: <=IE10 fix (unable to call parent constructor) [1227](https://github.com/i18next/i18next/pull/1227)
+
 ### 15.0.8
 
 - typescript: adding init function to 3rdParty module typings and enforcing type property [1223](https://github.com/i18next/i18next/pull/1223)

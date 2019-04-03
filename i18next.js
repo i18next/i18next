@@ -481,6 +481,8 @@
       _classCallCheck(this, ResourceStore);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(ResourceStore).call(this));
+      EventEmitter.call(_assertThisInitialized(_assertThisInitialized(_this))); // <=IE10 fix (unable to call parent constructor)
+
       _this.data = data || {};
       _this.options = options;
 
@@ -652,6 +654,8 @@
       _classCallCheck(this, Translator);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(Translator).call(this));
+      EventEmitter.call(_assertThisInitialized(_assertThisInitialized(_this))); // <=IE10 fix (unable to call parent constructor)
+
       copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, _assertThisInitialized(_assertThisInitialized(_this)));
       _this.options = options;
 
@@ -1577,6 +1581,8 @@
       _classCallCheck(this, Connector);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(Connector).call(this));
+      EventEmitter.call(_assertThisInitialized(_assertThisInitialized(_this))); // <=IE10 fix (unable to call parent constructor)
+
       _this.backend = backend;
       _this.store = store;
       _this.languageUtils = services.languageUtils;
@@ -1915,6 +1921,8 @@
       _classCallCheck(this, I18n);
 
       _this = _possibleConstructorReturn(this, _getPrototypeOf(I18n).call(this));
+      EventEmitter.call(_assertThisInitialized(_assertThisInitialized(_this))); // <=IE10 fix (unable to call parent constructor)
+
       _this.options = transformOptions(options);
       _this.services = {};
       _this.logger = baseLogger;
