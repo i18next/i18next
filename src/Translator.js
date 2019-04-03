@@ -6,6 +6,7 @@ import * as utils from './utils.js';
 class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
+    EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
 
     utils.copy(
       [
