@@ -839,3 +839,19 @@ declare namespace i18next {
 
 declare const i18next: i18next.i18n;
 export default i18next;
+
+export const changeLanguage: typeof i18next['changeLanguage'];
+export const cloneInstance: typeof i18next['cloneInstance'];
+export const createInstance: typeof i18next['createInstance'];
+export const dir: typeof i18next['dir'];
+export const exists: typeof i18next['exists'];
+export const getFixedT: typeof i18next['getFixedT'];
+export const init: typeof i18next['init'];
+export const loadLanguages: typeof i18next['loadLanguages'];
+export const loadNamespaces: typeof i18next['loadNamespaces'];
+export const loadResources: typeof i18next['loadResources'];
+export const off: typeof i18next['off'];
+export const on: typeof i18next['on'];
+export const setDefaultNamespace: typeof i18next['setDefaultNamespace'];
+export const t: typeof i18next['t'];
+export const use: typeof i18next['use'];
