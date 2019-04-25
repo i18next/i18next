@@ -1,4 +1,4 @@
-### 15.0.10
+### 15.1.0
 
 - trigger a languageChanging event
 
