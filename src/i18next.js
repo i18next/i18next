@@ -216,6 +216,7 @@ class I18n extends EventEmitter {
 
   changeLanguage(lng, callback) {
     const deferred = defer();
+    this.emit('languageChanging', lng);
 
     const done = (err, l) => {
       this.translator.changeLanguage(l);

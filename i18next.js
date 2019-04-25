@@ -2150,6 +2150,7 @@
         var _this4 = this;
 
         var deferred = defer();
+        this.emit('languageChanging', lng);
 
         var done = function done(err, l) {
           _this4.translator.changeLanguage(l);

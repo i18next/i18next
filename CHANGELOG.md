@@ -1,3 +1,7 @@
+### 15.0.10
+
+- trigger a languageChanging event
+
 ### 15.0.9
 
 - IE: <=IE10 fix (unable to call parent constructor) [1227](https://github.com/i18next/i18next/pull/1227)
