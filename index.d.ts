@@ -544,7 +544,7 @@ declare namespace i18next {
     read(
       language: string,
       namespace: string,
-      callback: (err: Error, data: ResourceLanguage) => void,
+      callback: (err: Error | null | undefined, data: ResourceLanguage) => void,
     ): void;
     /** Save the missing translation */
     create(languages: string[], namespace: string, key: string, fallbackValue: string): void;
@@ -552,7 +552,7 @@ declare namespace i18next {
     readMulti?(
       languages: string[],
       namespaces: string[],
-      callback: (err: Error, data: Resource) => void,
+      callback: (err: Error | null | undefined, data: Resource) => void,
     ): void;
     /** Store the translation. For backends acting as cache layer */
     save?(language: string, namespace: string, data: ResourceLanguage): void;
