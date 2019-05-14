@@ -1,3 +1,7 @@
+### 15.1.1
+
+- typescript: Update BackendModule interface to allow null or undefined for the callback [1244](https://github.com/i18next/i18next/pull/1244)
+
 ### 15.1.0
 
 - trigger a languageChanging event
