@@ -151,6 +151,16 @@ declare namespace i18next {
      * @default undefined
      */
     hashTransKey?(defaultValue: TOptionsBase['defaultValue']): TOptionsBase['defaultValue'];
+    /**
+     * Convert eg. <br/> found in translations to a react component of type br
+     * @default true
+     */
+    transSupportBasicHtmlNodes?: boolean;
+    /**
+     * Which nodes not to convert in defaultValue generation in the Trans component.
+     * @default ['br', 'strong', 'i', 'p']
+     */
+    transKeepBasicHtmlNodesFor?: string[];
   }
 
   interface InitOptions {
