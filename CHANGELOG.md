@@ -1,3 +1,7 @@
+### 15.1.2
+
+- typescript: types(ReactOptions): Add missing props to React Options interface [1247](https://github.com/i18next/i18next/pull/1247)
+
 ### 15.1.1
 
 - typescript: Update BackendModule interface to allow null or undefined for the callback [1244](https://github.com/i18next/i18next/pull/1244)
