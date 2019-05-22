@@ -50,6 +50,18 @@ describe('ResourceStore', () => {
         expect(rs.getResource('de.translation.nest.object')).to.eql({ something: 'deeper' });
       });
 
+      it('it adds resouces by addResources', () => {
+        // basic key
+        rs.addResources('fr', 'translation', {
+          hi: 'salut',
+          hello: 'bonjour',
+          foo: {
+            bar: 'dot nested',
+          },
+        });
+        expect(rs.getResource('fr', 'translation', 'foo.bar')).to.equal('dot nested');
+      });
+
       it("it should emit 'added' event on addResource call", () => {
         const spy = sinon.spy();
         rs.on('added', spy);
