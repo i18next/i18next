@@ -67,7 +67,7 @@ class ResourceStore extends EventEmitter {
     for (const m in resources) {
       if (
         typeof resources[m] === 'string' ||
-        Object.prototype.toString.apply(resources[m]) === '[object Array]'
+        /[object (Object|Array)]/.test(Object.prototype.toString.apply(resources[m]))
       )
         this.addResource(lng, ns, m, resources[m], { silent: true });
     }
