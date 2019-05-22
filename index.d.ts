@@ -417,6 +417,125 @@ declare namespace i18next {
      * @default 'v3'
      */
     compatibilityJSON?: 'v1' | 'v2' | 'v3';
+
+    /**
+     * Options for https://github.com/locize/locize-editor
+     * @default undefined
+     */
+    editor?: {
+      /**
+       * Enable on init without the need of adding querystring locize=true
+       * @default false
+       */
+      enabled?: boolean;
+      /**
+       * If set to false you will need to open the editor via API
+       * @default true
+       */
+      autoOpen?: boolean;
+
+      /**
+       * Enable by adding querystring locize=true; can be set to another value or turned off by setting to false
+       * @default 'locize'
+       */
+      enableByQS?: string | false;
+
+      /**
+       * Turn on/off by pressing key combination. Combine this with `toggleKeyCode`
+       * @default 'ctrlKey'
+       */
+      toggleKeyModifier?: 'ctrlKey' | 'metaKey' | 'altKey' | 'shiftKey';
+      /**
+       * Turn on/off by pressing key combination. Combine this with `toggleKeyModifier`
+       * @default 24 (x)
+       */
+      toggleKeyCode?: number;
+
+      /**
+       * Use lng in editor taken from query string, eg. if running with lng=cimode (i18next, locize)
+       * @default 'useLng'
+       */
+      lngOverrideQS?: string;
+
+      /**
+       * Use lng in editor, eg. if running with lng=cimode (i18next, locize)
+       * @default null
+       */
+      lngOverride?: string | null;
+
+      /**
+       * How the editor will open.
+       * Setting to window will open a new window/tab instead
+       * @default 'iframe'
+       */
+      mode?: 'iframe' | 'window';
+
+      /**
+       * Styles to adapt layout in iframe mode to your website layout.
+       * This will add a style to the `<iframe>`
+       * @default 'z-index: 2000; position: fixed; top: 0; right: 0; bottom: 0; width: 600px; box-shadow: -3px 0 5px 0 rgba(0,0,0,0.5);'
+       */
+      iframeContainerStyle?: string;
+      /**
+       * Styles to adapt layout in iframe mode to your website layout.
+       * This will add a style to the parent of `<iframe>`
+       * @default 'height: 100%; width: 600px; border: none;'
+       */
+      iframeStyle?: string;
+      /**
+       * Styles to adapt layout in iframe mode to your website layout.
+       * This will add a style to `<body>`
+       * @default 'margin-right: 605px;'
+       */
+      bodyStyle?: string;
+
+      /**
+       * Handle when locize saved the edited translations, eg. reload website
+       * @default noop
+       */
+      onEditorSaved?: (lng: null, ns: string | string[]) => void;
+    };
+
+    /**
+     * Options for https://github.com/locize/locize-lastused
+     * @default undefined
+     */
+    locizeLastUsed?: {
+      /**
+       * The id of your locize project
+       */
+      projectId: string;
+
+      /**
+       * An api key if you want to send missing keys
+       */
+      apiKey?: string;
+
+      /**
+       * The reference language of your project
+       * @default 'en'
+       */
+      referenceLng?: string;
+
+      /**
+       * Version
+       * @default 'latest'
+       */
+      version?: string;
+
+      /**
+       * Debounce interval to send data in milliseconds
+       * @default 90000
+       */
+      debounceSubmit?: number;
+
+      /**
+       * Hostnames that are allowed to send last used data.
+       * Please keep those to your local system, staging, test servers (not production)
+       * @default ['localhost']
+       */
+      allowedHosts?: string[];
+    };
   }
 
   interface TOptionsBase {
@@ -844,6 +963,11 @@ declare namespace i18next {
      * Is initialized
      */
     isInitialized: boolean;
+
+    /**
+     * Emit event
+     */
+    emit(eventName: string): void;
   }
 }
 
