@@ -1,3 +1,7 @@
+### 15.1.3
+
+- typescript: Fix type error when init with locize plugin options [1248](https://github.com/i18next/i18next/pull/1248)
+
 ### 15.1.2
 
 - typescript: types(ReactOptions): Add missing props to React Options interface [1247](https://github.com/i18next/i18next/pull/1247)
