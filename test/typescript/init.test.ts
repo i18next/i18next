@@ -431,3 +431,35 @@ i18next.init({
     },
   },
 });
+
+// Init with Locize options.
+// From https://github.com/i18next/react-i18next/blob/master/example/locize/src/i18n.js
+const locizeOptions = {
+  projectId: '',
+  apiKey: '',
+  referenceLng: 'en',
+};
+i18next.init({
+  fallbackLng: 'en',
+  debug: true,
+  saveMissing: true,
+
+  interpolation: {
+    escapeValue: false, // not needed for react as it escapes by default
+  },
+  backend: locizeOptions,
+  locizeLastUsed: locizeOptions,
+  editor: {
+    ...locizeOptions,
+    onEditorSaved: async (lng, ns) => {
+      // reload that namespace in given language
+      await i18next.reloadResources(lng, ns);
+      // trigger an event on i18n which triggers a rerender
+      // based on bindI18n below in react options
+      i18next.emit('editorSaved');
+    },
+  },
+  react: {
+    bindI18n: 'languageChanged editorSaved',
+  },
+});
