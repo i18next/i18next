@@ -9,7 +9,7 @@
         ["@babel/preset-env", { "modules": false, "useBuiltIns": false }],
         "@babel/react"
       ],
-      "plugins": ["@babel/plugin-transform-runtime"]
+      "plugins": [["@babel/plugin-transform-runtime", { "useESModules": true }]]
     }
   }
 }
