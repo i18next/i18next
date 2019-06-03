@@ -1,7 +1,7 @@
 ### 16.0.0
 
 - removes deprecated jsnext:main from package.json
-- Bundle all entry points with rollup [314](https://github.com/i18next/i18next-xhr-backend/pull/314)
+- Bundle all entry points with rollup [1256](https://github.com/i18next/i18next/pull/1256)
 - **note:** dist/es -> dist/esm, dist/commonjs -> dist/cjs (individual files -> one bundled file)
 
 ### 15.1.3
