@@ -33,7 +33,6 @@ export default {
     compress ? terser() : [],
   ),
   external: ['react', 'react-dom'],
-  // moduleId: 'i18next',
   output: {
     name: 'i18next',
     format,
