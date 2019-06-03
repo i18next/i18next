@@ -1,41 +1,42 @@
 import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
-import { argv } from 'yargs';
+import pkg from './package.json';
 
-const format = argv.format || argv.f || 'iife';
-const compress = argv.uglify;
+const getBabelOptions = ({ useESModules }) => ({
+  exclude: /node_modules/,
+  runtimeHelpers: true,
+  plugins: [['@babel/transform-runtime', { useESModules }]],
+});
 
-const babelOptions = {
-  presets: [
-    [
-      '@babel/preset-env',
-      {
-        targets: {
-          esmodules: false,
-        },
-      },
-    ],
-  ],
-  babelrc: false,
-};
+const input = './src/index.js';
+const name = 'i18next';
+// check relative and absolute paths for windows and unix
+const external = id => !id.startsWith('.') && !id.startsWith('/') && !id.includes(':');
 
-const file = {
-  amd: `dist/amd/i18next${compress ? '.min' : ''}.js`,
-  umd: `dist/umd/i18next${compress ? '.min' : ''}.js`,
-  iife: `dist/iife/i18next${compress ? '.min' : ''}.js`,
-}[format];
-
-export default {
-  input: 'src/i18next.js',
-  plugins: [babel(babelOptions), nodeResolve({ jsnext: true, main: true }), commonjs({})].concat(
-    compress ? terser() : [],
-  ),
-  external: ['react', 'react-dom'],
-  output: {
-    name: 'i18next',
-    format,
-    file,
+export default [
+  {
+    input,
+    output: { format: 'cjs', exports: 'named', file: pkg.main },
+    external,
+    plugins: [babel(getBabelOptions({ useESModules: false }))],
   },
-};
+
+  {
+    input,
+    output: { format: 'esm', file: pkg.module },
+    external,
+    plugins: [babel(getBabelOptions({ useESModules: true }))],
+  },
+
+  {
+    input,
+    output: { format: 'umd', exports: 'named', name, file: `dist/umd/${name}.js` },
+    plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve()],
+  },
+  {
+    input,
+    output: { format: 'umd', exports: 'named', name, file: `dist/umd/${name}.min.js` },
+    plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve(), terser()],
+  },
+];
