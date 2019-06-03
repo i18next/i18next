@@ -1,3 +1,9 @@
+### 16.0.0
+
+- removes deprecated jsnext:main from package.json
+- Bundle all entry points with rollup [314](https://github.com/i18next/i18next-xhr-backend/pull/314)
+- **note:** dist/es -> dist/esm, dist/commonjs -> dist/cjs (individual files -> one bundled file)
+
 ### 15.1.3
 
 - typescript: Fix type error when init with locize plugin options [1248](https://github.com/i18next/i18next/pull/1248)
