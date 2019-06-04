@@ -1,3 +1,10 @@
+### 17.0.0
+
+- removes checking in build files (umd) into source code - for CDN usage use: [https://unpkg.com/i18next@16.0.0/dist/umd/i18next.js](https://unpkg.com/i18next@16.0.0/dist/umd/i18next.js)
+- removes named exports in main file - avoids issues in mixed exports makes usage better in commonjs scenarios (node.js) - no strange `const i18next = require('i18next').default;`
+- **impact** you can't no longer `import { changeLanguage } from 'i18next'; changeLanguage('de');` you will have to `import i18next from 'i18next'; i18next.changeLanguage('de');`
+- **note** if can create a own file providing the named bound functions and use that instead, sample: [https://github.com/i18next/i18next/blob/v15.0.0/src/index.js#L5](https://github.com/i18next/i18next/blob/v15.0.0/src/index.js#L5)
+
 ### 16.0.0
 
 - removes deprecated jsnext:main from package.json
