@@ -1,3 +1,7 @@
+### 17.0.1
+
+- adapt ./index.js to 17.0.0 export
+
 ### 17.0.0
 
 - removes checking in build files (umd) into source code - for CDN usage use: [https://unpkg.com/i18next@16.0.0/dist/umd/i18next.js](https://unpkg.com/i18next@16.0.0/dist/umd/i18next.js)
