@@ -31,8 +31,22 @@ function defautValue(t: i18next.TFunction) {
   t('translation:test', 'test_en');
 }
 
+function callsMethodWithOptionalNullArg(t: i18next.TFunction) {
+  function displayHint(hint?: string | null) {
+    return String(hint);
+  }
+  displayHint(t('friend'));
+}
+
 function callsMethodWithOptionalArg(t: i18next.TFunction) {
   function displayHint(hint?: string) {
+    return String(hint);
+  }
+  displayHint(t('friend'));
+}
+
+function callsMethodWithRequiredNullArg(t: i18next.TFunction) {
+  function displayHint(hint: string | null) {
     return String(hint);
   }
   displayHint(t('friend'));
