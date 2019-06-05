@@ -623,7 +623,7 @@ declare namespace i18next {
   }
 
   type TFunction = <
-    TResult extends string | object | Array<string | object> | undefined = string,
+    TResult extends string | object | Array<string | object> | undefined | null = string,
     TKeys extends string | TemplateStringsArray = string,
     TInterpolationMap extends object = StringMap
   >(
