@@ -1,3 +1,9 @@
+### 17.0.2
+
+- typescript: Allow null as TResult [1263](https://github.com/i18next/i18next/pull/1263)
+- bring back ./i18next.js and ./i18next.min.js -> used by wildcard unpkg users...<= bad idea doing so
+- main export in package.json points to cjs dist
+
 ### 17.0.1
 
 - adapt ./index.js to 17.0.0 export
