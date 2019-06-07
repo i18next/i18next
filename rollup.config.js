@@ -31,12 +31,12 @@ export default [
 
   {
     input,
-    output: { format: 'umd', exports: 'named', name, file: `dist/umd/${name}.js` },
+    output: { format: 'umd', name, file: `dist/umd/${name}.js` },
     plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve()],
   },
   {
     input,
-    output: { format: 'umd', exports: 'named', name, file: `dist/umd/${name}.min.js` },
+    output: { format: 'umd', name, file: `dist/umd/${name}.min.js` },
     plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve(), terser()],
   },
 ];

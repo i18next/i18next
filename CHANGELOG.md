@@ -1,3 +1,7 @@
+### 17.0.3
+
+- don't do named exports for umd
+
 ### 17.0.2
 
 - typescript: Allow null as TResult [1263](https://github.com/i18next/i18next/pull/1263)
