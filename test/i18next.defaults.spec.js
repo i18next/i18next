@@ -9,9 +9,6 @@ describe('defaults', () => {
   });
 
   it('defaultValue as option', () => {
-    console.log(
-      defaults.overloadTranslationOptionHandler(['key', { defaultValue: 'option default value' }]),
-    );
     expect(
       defaults.overloadTranslationOptionHandler(['key', { defaultValue: 'option default value' }]),
     ).to.eql({ defaultValue: 'option default value' });

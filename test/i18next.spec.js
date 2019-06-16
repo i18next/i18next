@@ -67,4 +67,14 @@ describe('i18next', () => {
       });
     });
   });
+
+  describe('i18next - functions', () => {
+    describe('getFixedT', () => {
+      it('it should have lng, ns on t', () => {
+        const t = i18next.getFixedT('de', 'common');
+        expect(t.lng).to.equal('de');
+        expect(t.ns).to.equal('common');
+      });
+    });
+  });
 });
