@@ -638,7 +638,7 @@ declare namespace i18next {
   interface ResourceLanguage {
     [namespace: string]: ResourceKey;
   }
-               
+
   type ResourceKey =
     | string
     | {
