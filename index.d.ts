@@ -639,9 +639,11 @@ declare namespace i18next {
     [namespace: string]: ResourceKey;
   }
 
-  interface ResourceKey {
-    [key: string]: any;
-  }
+  type ResourceKey =
+    | string
+    | {
+        [key: string]: any;
+      };
 
   export interface Interpolator {
     init(options: InterpolationOptions, reset: boolean): undefined;

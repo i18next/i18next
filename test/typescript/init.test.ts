@@ -10,6 +10,7 @@ i18next.init(
         translation: {
           key: 'hello world',
         },
+        key: 'hello world',
       },
     },
   },
