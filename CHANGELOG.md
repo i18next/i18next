@@ -1,3 +1,7 @@
+### 17.0.4
+
+- typescript: ResourceKey type should allow top level string value [1267](https://github.com/i18next/i18next/pull/1267)
+
 ### 17.0.3
 
 - don't do named exports for umd
