@@ -15,7 +15,7 @@ let sets = [
   { lngs: ['ay','bo','cgg','fa','id','ja','jbo','ka','kk','km','ko','ky','lo',
     'ms','sah','su','th','tt','ug','vi','wo','zh'], nr: [1], fc: 3 },
 
-  { lngs: ['be','bs','dz','hr','ru','sr','uk'], nr: [1,2,5], fc: 4 },
+  { lngs: ['be','bs', 'crn', 'dz','hr','ru','sr','uk'], nr: [1,2,5], fc: 4 },
 
   { lngs: ['ar'], nr: [0,1,2,3,11,100], fc: 5 },
   { lngs: ['cs','sk'], nr: [1,2,5], fc: 6 },

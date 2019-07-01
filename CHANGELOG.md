@@ -1,3 +1,7 @@
+### 17.0.5
+
+- support montenegrien "crn" plurals
+
 ### 17.0.4
 
 - typescript: ResourceKey type should allow top level string value [1267](https://github.com/i18next/i18next/pull/1267)
