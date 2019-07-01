@@ -1081,7 +1081,7 @@
     nr: [1],
     fc: 3
   }, {
-    lngs: ['be', 'bs', 'crn', 'dz', 'hr', 'ru', 'sr', 'uk'],
+    lngs: ['be', 'bs', 'cnr', 'dz', 'hr', 'ru', 'sr', 'uk'],
     nr: [1, 2, 5],
     fc: 4
   }, {

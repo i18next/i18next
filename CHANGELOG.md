@@ -1,4 +1,4 @@
-### 17.0.5
+### 17.0.6
 
 - support montenegrien "crn" plurals
 
