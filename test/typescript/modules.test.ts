@@ -34,10 +34,16 @@ const thirdPartyModule = {
 
 const externalModules = [thirdPartyModule];
 
-i18next.modules = {
+const modules: i18next.Modules = {
   backend: backendModule,
   languageDetector: languageDetectorModule,
   i18nFormat: i18nFormatModule,
   logger: loggerModule,
   external: externalModules,
 };
+
+i18next.use(externalModules);
+i18next.use(backendModule);
+i18next.use(languageDetectorModule);
+i18next.use(loggerModule);
+i18next.use(externalModules);

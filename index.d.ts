@@ -774,7 +774,15 @@ declare namespace i18next {
      * The use function is there to load additional plugins to i18next.
      * For available module see the plugins page and don't forget to read the documentation of the plugin.
      */
-    use(module: any): i18n;
+    use(
+      module:
+        | BackendModule
+        | LoggerModule
+        | LanguageDetectorModule
+        | LanguageDetectorAsyncModule
+        | I18nFormatModule
+        | ThirdPartyModule[],
+    ): i18n;
 
     /**
      * List of modules used
