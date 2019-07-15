@@ -7,6 +7,7 @@
 //                 Philipp Katz <https://github.com/qqilihq>
 //                 Milan Konir <https://github.com/butchyyyy>
 //                 Takeo Kusama <https://github.com/tkow>
+//                 Pierre Ortega <https://github.com/PierreAndreis>
 
 declare namespace i18next {
   interface FallbackLngObjList {
