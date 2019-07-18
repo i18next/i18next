@@ -11,5 +11,6 @@
     "baseUrl": ".",
     "paths": { "i18next": ["./index.d.ts"] }
   },
-  "include": ["./index.d.ts", "./test/**/*.ts*"]
+  "include": ["./index.d.ts", "./test/**/*.ts*"],
+  "exclude": ["./test/typescript/interopModule.test.ts"]
 }
