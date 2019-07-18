@@ -2,10 +2,10 @@
 
 // This file uses <root>/tsconfig.esModuleInterop.json typescript configuration
 // VSCode doesn't support a specific tsconfig for a specific file,
-// so this code will fail on vscode lint. It works on tests
+// so this code may fail on vscode lint. It works on tests.
 
 /* esModuleInterop: true, allowSyntheticDefaultImports: true */
-import i18next, { Interpolator, WithT, Modules } from 'i18next';
+import i18next, { Interpolator, Modules, WithT } from 'i18next';
 
 i18next.init();
 

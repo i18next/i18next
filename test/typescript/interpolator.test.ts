@@ -1,6 +1,6 @@
-import * as i18next from 'i18next';
+import i18next, { Interpolator } from 'i18next';
 
-const interpolator: i18next.Interpolator = i18next.services.interpolator;
+const interpolator: Interpolator = i18next.services.interpolator;
 
 const initReturn: undefined = interpolator.init({}, false);
 

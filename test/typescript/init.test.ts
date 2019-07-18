@@ -1,4 +1,4 @@
-import * as i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
 
 // i18next.js export default as esm module because the build is apart from commonjs.
 i18next.init(
@@ -40,7 +40,7 @@ i18next.init(
     },
   },
   // not necessary but check a non-inferred arg for paranoia's sake
-  (err, t: i18next.TFunction) => {
+  (err, t: TFunction) => {
     // init set content
     updateContent();
   },

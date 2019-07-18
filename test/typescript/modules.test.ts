@@ -1,4 +1,4 @@
-import * as i18next from 'i18next';
+import i18next, { Modules } from 'i18next';
 
 const backendModule = {
   type: 'backend' as 'backend',
@@ -34,7 +34,7 @@ const thirdPartyModule = {
 
 const externalModules = [thirdPartyModule];
 
-const modules: i18next.Modules = {
+const modules: Modules = {
   backend: backendModule,
   languageDetector: languageDetectorModule,
   i18nFormat: i18nFormatModule,

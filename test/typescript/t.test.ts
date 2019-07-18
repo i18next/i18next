@@ -1,6 +1,6 @@
-import * as i18next from 'i18next';
+import i18next, { TFunction } from 'i18next';
 
-function basicUsage(t: i18next.TFunction) {
+function basicUsage(t: TFunction) {
   t('friend');
   t`friend`;
   t(['friend', 'tree']);
@@ -8,7 +8,7 @@ function basicUsage(t: i18next.TFunction) {
   t(['friend', 'tree'], { myVar: 'someValue' });
 }
 
-function returnCasts(t: i18next.TFunction) {
+function returnCasts(t: TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
   const o: object = t<object>('friend');
@@ -16,7 +16,7 @@ function returnCasts(t: i18next.TFunction) {
   const oa: object[] = t<object[]>('friend');
 }
 
-function defautValue(t: i18next.TFunction) {
+function defautValue(t: TFunction) {
   t('translation:test', { defaultValue: 'test_en' });
   t('translation:test', { defaultValue: 'test_en', count: 1 });
   t('translation:test', {
@@ -31,35 +31,35 @@ function defautValue(t: i18next.TFunction) {
   t('translation:test', 'test_en');
 }
 
-function callsMethodWithOptionalNullArg(t: i18next.TFunction) {
+function callsMethodWithOptionalNullArg(t: TFunction) {
   function displayHint(hint?: string | null) {
     return String(hint);
   }
   displayHint(t('friend'));
 }
 
-function callsMethodWithOptionalArg(t: i18next.TFunction) {
+function callsMethodWithOptionalArg(t: TFunction) {
   function displayHint(hint?: string) {
     return String(hint);
   }
   displayHint(t('friend'));
 }
 
-function callsMethodWithRequiredNullArg(t: i18next.TFunction) {
+function callsMethodWithRequiredNullArg(t: TFunction) {
   function displayHint(hint: string | null) {
     return String(hint);
   }
   displayHint(t('friend'));
 }
 
-function callsMethodWithRequiredArg(t: i18next.TFunction) {
+function callsMethodWithRequiredArg(t: TFunction) {
   function displayHint(hint: string) {
     return String(hint);
   }
   displayHint(t('friend'));
 }
 
-function arrayKey(t: i18next.TFunction) {
+function arrayKey(t: TFunction) {
   const error404 = '404';
   t([`error.${error404}`, 'error.unspecific']); // -> "The page was not found"
 
@@ -67,7 +67,7 @@ function arrayKey(t: i18next.TFunction) {
   t([`error.${error502}`, 'error.unspecific']); // -> "Something went wrong"
 }
 
-function stringKey(t: i18next.TFunction) {
+function stringKey(t: TFunction) {
   t('No one says a key can not be the fallback.');
   // -> "Niemand sagt ein key kann nicht als Ersatz dienen."
 
@@ -75,7 +75,7 @@ function stringKey(t: i18next.TFunction) {
   // -> "This will be shown if the current loaded translations to not have this."
 }
 
-function interpolation(t: i18next.TFunction) {
+function interpolation(t: TFunction) {
   // key = 'hello {{what}}'
   t('key', { what: i18next.format('world', 'uppercase') }); // -> hello WORLD
 
