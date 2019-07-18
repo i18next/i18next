@@ -1,4 +1,4 @@
-import i18next, { Modules } from 'i18next';
+import { i18next, Modules } from 'i18next';
 
 const backendModule = {
   type: 'backend' as 'backend',

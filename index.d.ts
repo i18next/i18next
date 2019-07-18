@@ -974,17 +974,8 @@ declare module 'i18next' {
     emit(eventName: string): void;
   }
 
-  /*
-    We must mirror the root level index.js exports:
-
-      var main = require('./dist/cjs/i18next.js');
-      module.exports = main;
-      module.exports.default = main;
-
-    Note: i18n is the class, i18next is the instance
-  */
+  // Note: i18n is the class, i18next is the instance
   const i18next: i18n;
-  // default export in addition to named
+  // limit typescript use to named export only to allow for same syntax with AND without esModuleInterop
   export { i18next };
-  export default i18next;
 }

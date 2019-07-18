@@ -1,4 +1,4 @@
-import i18next, { TFunction } from 'i18next';
+import { i18next, TFunction } from 'i18next';
 
 function basicUsage(t: TFunction) {
   t('friend');

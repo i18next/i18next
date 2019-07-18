@@ -1,4 +1,4 @@
-import i18next, { TOptions, WithT } from 'i18next';
+import { i18next, TOptions, WithT } from 'i18next';
 
 interface InterpolationValues {
   myVar: string;

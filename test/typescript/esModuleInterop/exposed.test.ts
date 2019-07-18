@@ -5,7 +5,7 @@
 // so this code may fail on vscode lint. It works on tests.
 
 /* esModuleInterop: true, allowSyntheticDefaultImports: true */
-import i18next, { Interpolator, Modules, WithT } from 'i18next';
+import { i18next, Interpolator, Modules, WithT } from 'i18next';
 
 i18next.init();
 
