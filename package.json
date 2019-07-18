@@ -86,7 +86,7 @@
     "test:new": "karma start karma.conf.js --singleRun",
     "test:compat": "karma start karma.backward.conf.js --singleRun",
     "test:typescript": "tslint --project tsconfig.json",
-    "test:typescript:interop": "tslint --project tsconfig.interopModule.json test/typescript/interopModule.test.ts",
+    "test:typescript:interop": "tslint --project tsconfig.esModuleInterop.json",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
     "build": "rimraf dist && rollup -c && cpy \"./dist/umd/*.js\" ./",

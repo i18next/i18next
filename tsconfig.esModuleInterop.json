@@ -4,6 +4,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["./test/typescript/interopModule.test.ts"],
+  "include": ["./test/typescript/esModuleInterop/**/*.ts"],
   "exclude": []
 }
