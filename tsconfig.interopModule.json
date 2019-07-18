@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    // Enable interop
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
