@@ -1,3 +1,7 @@
+### next
+
+- Disabled default returnedObjectHandler [1288](https://github.com/i18next/i18next/pull/1288)
+
 ### 17.0.6
 
 - support montenegrien "crn" plurals
