@@ -32,7 +32,7 @@ export function get() {
     returnEmptyString: true, // allows empty string value as valid translation
     returnObjects: false,
     joinArrays: false, // or string to join array
-    returnedObjectHandler: () => {}, // function(key, value, options) triggered if key returns object but returnObjects is set to false
+    returnedObjectHandler: false, // function(key, value, options) triggered if key returns object but returnObjects is set to false
     parseMissingKeyHandler: false, // function(key) parsed a key that was not found in t() before returning
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
