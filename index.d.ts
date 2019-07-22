@@ -1,24 +1,13 @@
-// Type definitions for i18next
-// Project: http://i18next.com
-// Definitions by: Michael Ledin <https://github.com/mxl>
-//                 Budi Irawan <https://github.com/deerawan>
-//                 Giedrius Grabauskas <https://github.com/GiedriusGrabauskas>
-//                 Silas Rech <https://github.com/lenovouser>
-//                 Philipp Katz <https://github.com/qqilihq>
-//                 Milan Konir <https://github.com/butchyyyy>
-//                 Takeo Kusama <https://github.com/tkow>
-//                 Pierre Ortega <https://github.com/PierreAndreis>
-
-declare namespace i18next {
-  interface FallbackLngObjList {
+declare module 'i18next' {
+  export interface FallbackLngObjList {
     [language: string]: string[];
   }
 
-  type FallbackLng = string | string[] | FallbackLngObjList;
+  export type FallbackLng = string | string[] | FallbackLngObjList;
 
-  type FormatFunction = (value: any, format?: string, lng?: string) => string;
+  export type FormatFunction = (value: any, format?: string, lng?: string) => string;
 
-  interface InterpolationOptions {
+  export interface InterpolationOptions {
     /**
      * Format function see formatting for details
      * @default noop
@@ -107,7 +96,7 @@ declare namespace i18next {
     maxReplaces?: number;
   }
 
-  interface ReactOptions {
+  export interface ReactOptions {
     /**
      * Set to true if you like to wait for loaded in every translated hoc
      * @default false
@@ -164,7 +153,7 @@ declare namespace i18next {
     transKeepBasicHtmlNodesFor?: string[];
   }
 
-  interface InitOptions {
+  export interface InitOptions {
     /**
      * Logs info level to console output. Helps finding issues with loading not working.
      * @default false
@@ -539,7 +528,7 @@ declare namespace i18next {
     };
   }
 
-  interface TOptionsBase {
+  export interface TOptionsBase {
     /**
      * Default value to return if a translation was not found
      */
@@ -599,31 +588,32 @@ declare namespace i18next {
   }
 
   // indexer that is open to any value
-  type StringMap = { [key: string]: any };
+  export type StringMap = { [key: string]: any };
 
   /**
    * Options that allow open ended values for interpolation unless type is provided.
    */
-  type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
+  export type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase &
+    TInterpolationMap;
 
-  type Callback = (error: any, t: TFunction) => void;
+  export type Callback = (error: any, t: TFunction) => void;
 
   /**
    * Uses similar args as the t function and returns true if a key exists.
    */
-  interface ExistsFunction<
+  export interface ExistsFunction<
     TKeys extends string = string,
     TInterpolationMap extends object = StringMap
   > {
     (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
   }
 
-  interface WithT {
+  export interface WithT {
     // Expose parameterized t in the i18next interface hierarchy
     t: TFunction;
   }
 
-  type TFunction = <
+  export type TFunction = <
     TResult extends string | object | Array<string | object> | undefined | null = string,
     TKeys extends string | TemplateStringsArray = string,
     TInterpolationMap extends object = StringMap
@@ -632,15 +622,15 @@ declare namespace i18next {
     options?: TOptions<TInterpolationMap> | string,
   ) => TResult;
 
-  interface Resource {
+  export interface Resource {
     [language: string]: ResourceLanguage;
   }
 
-  interface ResourceLanguage {
+  export interface ResourceLanguage {
     [namespace: string]: ResourceKey;
   }
 
-  type ResourceKey =
+  export type ResourceKey =
     | string
     | {
         [key: string]: any;
@@ -654,7 +644,7 @@ declare namespace i18next {
     nest(str: string, fc: (...args: any[]) => any, options: InterpolationOptions): string;
   }
 
-  interface Services {
+  export interface Services {
     backendConnector: any;
     i18nFormat: any;
     interpolator: Interpolator;
@@ -670,7 +660,7 @@ declare namespace i18next {
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
    */
-  interface BackendModule {
+  export interface BackendModule {
     type?: 'backend';
     init(services: Services, backendOptions: object, i18nextOptions: InitOptions): void;
     read(
@@ -695,7 +685,7 @@ declare namespace i18next {
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
    */
-  interface LanguageDetectorModule {
+  export interface LanguageDetectorModule {
     type?: 'languageDetector';
     init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
     /** Must return detected language */
@@ -708,7 +698,7 @@ declare namespace i18next {
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
    */
-  interface LanguageDetectorAsyncModule {
+  export interface LanguageDetectorAsyncModule {
     type?: 'languageDetector';
     /** Set to true to enable async detection */
     async: true;
@@ -722,7 +712,7 @@ declare namespace i18next {
    * Used to extend or manipulate the translated values before returning them in `t` function.
    * Need to be a singleton object.
    */
-  interface PostProcessorModule {
+  export interface PostProcessorModule {
     /** Unique name */
     name: string;
     type: 'postProcessor';
@@ -733,23 +723,23 @@ declare namespace i18next {
    * Override the built-in console logger.
    * Do not need to be a prototype function.
    */
-  interface LoggerModule {
+  export interface LoggerModule {
     type?: 'logger';
     log(...args: any[]): void;
     warn(...args: any[]): void;
     error(...args: any[]): void;
   }
 
-  interface I18nFormatModule {
+  export interface I18nFormatModule {
     type?: 'i18nFormat';
   }
 
-  interface ThirdPartyModule {
+  export interface ThirdPartyModule {
     type: '3rdParty';
-    init(i18n: i18n): void;
+    init(i18next: i18n): void;
   }
 
-  interface Modules {
+  export interface Modules {
     backend?: BackendModule;
     logger?: LoggerModule;
     languageDetector?: LanguageDetectorModule | LanguageDetectorAsyncModule;
@@ -757,7 +747,10 @@ declare namespace i18next {
     external: ThirdPartyModule[];
   }
 
-  interface i18n extends WithT {
+  export class i18n {
+    constructor(options: any, callback: any);
+
+    t: TFunction;
     /**
      * The default export of the i18next module is an i18next instance ready to be initialized by calling init.
      * You can create additional instances using the createInstance function.
@@ -980,7 +973,9 @@ declare namespace i18next {
      */
     emit(eventName: string): void;
   }
-}
 
-declare const i18next: i18next.i18n;
-export = i18next;
+  // Note: i18n is the class, i18next is the instance
+  const i18next: i18n;
+  // limit typescript use to named export only to allow for same syntax with AND without esModuleInterop
+  export { i18next };
+}
