@@ -750,7 +750,7 @@ declare namespace i18next {
     init(i18next: i18n): void;
   }
 
-  export interface Modules {
+  interface Modules {
     backend?: BackendModule;
     logger?: LoggerModule;
     languageDetector?: LanguageDetectorModule | LanguageDetectorAsyncModule;
@@ -760,9 +760,11 @@ declare namespace i18next {
 
   interface i18n {
 
+    // Expose parameterized t in the i18next interface hierarchy
     t: TFunction;
+
     /**
-     * The default  of the i18next module is an i18next instance ready to be initialized by calling init.
+     * The default of the i18next module is an i18next instance ready to be initialized by calling init.
      * You can create additional instances using the createInstance function.
      *
      * @param options - Initial options.
@@ -984,6 +986,6 @@ declare namespace i18next {
     emit(eventName: string): void;
   }
 }
-// Note: i18n is the class, i18nextInstance is the instance
-declare const i18nextInstance: i18next.i18n;
-export = i18nextInstance;
+
+declare const i18next: i18next.i18n;
+export = i18next;
