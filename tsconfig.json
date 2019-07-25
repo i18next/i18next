@@ -11,9 +11,8 @@
     "baseUrl": ".",
     "paths": { "i18next": ["./index.d.ts"] },
 
-    // defaults but for clarity
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": false
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["./index.d.ts", "./test/**/*.ts*"],
   "exclude": ["test/typescript/esModuleInterop/**/*.ts"]

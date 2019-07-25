@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    // typescript defaults to these
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": false
   },
   "include": ["./test/typescript/esModuleInterop/**/*.ts"],
   "exclude": []

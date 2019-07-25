@@ -81,12 +81,12 @@
     "watchify": "3.9.0"
   },
   "scripts": {
-    "pretest": "npm run test:typescript && npm run test:typescript:interop",
+    "pretest": "npm run test:typescript && npm run test:typescript:noninterop",
     "test": "npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",
     "test:compat": "karma start karma.backward.conf.js --singleRun",
     "test:typescript": "tslint --project tsconfig.json",
-    "test:typescript:interop": "tslint --project tsconfig.esModuleInterop.json",
+    "test:typescript:noninterop": "tslint --project tsconfig.nonEsModuleInterop.json",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
     "build": "rimraf dist && rollup -c && cpy \"./dist/umd/*.js\" ./",
