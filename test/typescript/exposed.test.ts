@@ -1,7 +1,7 @@
 /** Exercise exposed types/imports for different tsconfig esmoduleinterop settings */
 
-/* esModuleInterop: false (default), allowSyntheticDefaultImports: false (default) */
-import { i18next, Interpolator, Modules, WithT } from 'i18next';
+/* esModuleInterop: true, allowSyntheticDefaultImports: true */
+import i18next, { Interpolator, Modules, WithT } from 'i18next';
 
 i18next.init();
 
