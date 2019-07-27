@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import i18next, { TOptions, WithT } from 'i18next';
 
 interface InterpolationValues {
   myVar: string;
@@ -15,14 +15,14 @@ i18next.t<string, Keys, InterpolationValues>(['friend', 'tree'], { myVar: 'someV
 
 // NOTION: disable no-unnecessary-generics for generic pattern test.
 /* tslint:disable:no-unnecessary-generics */
-interface ExWithT extends i18next.WithT {
+interface ExWithT extends WithT {
   t<CustomKeys extends Keys = Keys, Val extends object = object, R = string>(
     keys: CustomKeys | CustomKeys[],
-    options?: i18next.TOptions<Val>,
+    options?: TOptions<Val>,
   ): R;
   t<CustomKeys extends OtherKeyList = OtherKeyList, Val extends object = object, R = string>(
     keys: CustomKeys | CustomKeys[],
-    options?: i18next.TOptions<Val>,
+    options?: TOptions<Val>,
   ): R;
   t<CustomKeys extends string = Keys, R = string>(keys: CustomKeys | CustomKeys[]): R;
 }

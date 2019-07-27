@@ -7,6 +7,7 @@
 //                 Philipp Katz <https://github.com/qqilihq>
 //                 Milan Konir <https://github.com/butchyyyy>
 //                 Takeo Kusama <https://github.com/tkow>
+//                 Pierre Ortega <https://github.com/PierreAndreis>
 
 declare namespace i18next {
   interface FallbackLngObjList {
@@ -603,7 +604,8 @@ declare namespace i18next {
   /**
    * Options that allow open ended values for interpolation unless type is provided.
    */
-  type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
+  type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & 
+  TInterpolationMap;
 
   type Callback = (error: any, t: TFunction) => void;
 
@@ -645,7 +647,7 @@ declare namespace i18next {
         [key: string]: any;
       };
 
-  export interface Interpolator {
+  interface Interpolator {
     init(options: InterpolationOptions, reset: boolean): undefined;
     reset(): undefined;
     resetRegExp(): undefined;
@@ -745,7 +747,7 @@ declare namespace i18next {
 
   interface ThirdPartyModule {
     type: '3rdParty';
-    init(i18n: i18n): void;
+    init(i18next: i18n): void;
   }
 
   interface Modules {
@@ -756,9 +758,13 @@ declare namespace i18next {
     external: ThirdPartyModule[];
   }
 
-  interface i18n extends WithT {
+  interface i18n {
+
+    // Expose parameterized t in the i18next interface hierarchy
+    t: TFunction;
+
     /**
-     * The default export of the i18next module is an i18next instance ready to be initialized by calling init.
+     * The default of the i18next module is an i18next instance ready to be initialized by calling init.
      * You can create additional instances using the createInstance function.
      *
      * @param options - Initial options.
@@ -773,7 +779,15 @@ declare namespace i18next {
      * The use function is there to load additional plugins to i18next.
      * For available module see the plugins page and don't forget to read the documentation of the plugin.
      */
-    use(module: any): i18n;
+    use(
+      module:
+        | BackendModule
+        | LoggerModule
+        | LanguageDetectorModule
+        | LanguageDetectorAsyncModule
+        | I18nFormatModule
+        | ThirdPartyModule[],
+    ): i18n;
 
     /**
      * List of modules used
@@ -974,4 +988,4 @@ declare namespace i18next {
 }
 
 declare const i18next: i18next.i18n;
-export default i18next;
+export = i18next;
