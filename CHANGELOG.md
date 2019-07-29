@@ -1,5 +1,6 @@
-### next
+### 17.0.7
 
+- typescript: Typescript imports [1291](https://github.com/i18next/i18next/pull/1291)
 - Disabled default returnedObjectHandler [1288](https://github.com/i18next/i18next/pull/1288)
 
 ### 17.0.6
