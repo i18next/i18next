@@ -7,6 +7,9 @@ import i18next, {
   ThirdPartyModule,
 } from 'i18next';
 
+// declare modules in a way that the `type` is not widened
+// @see https://github.com/microsoft/TypeScript/issues/20271#issuecomment-347020203
+
 const backendModule: BackendModule = {
   type: 'backend',
   init: () => null,
