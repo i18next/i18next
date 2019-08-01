@@ -697,7 +697,7 @@ declare namespace i18next {
     type: 'languageDetector';
     init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
     /** Must return detected language */
-    detect(): string;
+    detect(): string | undefined;
     cacheUserLanguage(lng: string): void;
   }
 
