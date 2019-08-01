@@ -1,7 +1,14 @@
-import i18next, { Modules } from 'i18next';
+import i18next, {
+  Modules,
+  BackendModule,
+  LanguageDetectorModule,
+  LoggerModule,
+  I18nFormatModule,
+  ThirdPartyModule,
+} from 'i18next';
 
-const backendModule = {
-  type: 'backend' as 'backend',
+const backendModule: BackendModule = {
+  type: 'backend',
   init: () => null,
   read: () => null,
   create: () => null,
@@ -9,26 +16,26 @@ const backendModule = {
   save: () => null,
 };
 
-const languageDetectorModule = {
-  type: 'languageDetector' as 'languageDetector',
+const languageDetectorModule: LanguageDetectorModule = {
+  type: 'languageDetector',
   init: () => null,
   detect: () => '',
   cacheUserLanguage: () => null,
 };
 
-const loggerModule = {
-  type: 'logger' as 'logger',
+const loggerModule: LoggerModule = {
+  type: 'logger',
   log: () => null,
   warn: () => null,
   error: () => null,
 };
 
-const i18nFormatModule = {
-  type: 'i18nFormat' as 'i18nFormat',
+const i18nFormatModule: I18nFormatModule = {
+  type: 'i18nFormat',
 };
 
-const thirdPartyModule = {
-  type: '3rdParty' as '3rdParty',
+const thirdPartyModule: ThirdPartyModule = {
+  type: '3rdParty',
   init: () => null,
 };
 
@@ -42,8 +49,8 @@ const modules: Modules = {
   external: externalModules,
 };
 
-i18next.use(externalModules);
 i18next.use(backendModule);
 i18next.use(languageDetectorModule);
 i18next.use(loggerModule);
+i18next.use(i18nFormatModule);
 i18next.use(externalModules);
