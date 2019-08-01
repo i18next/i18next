@@ -1,3 +1,7 @@
+### 17.0.8
+
+- typescript: Correct `use(module)` types [1296](https://github.com/i18next/i18next/pull/1296)
+
 ### 17.0.7
 
 - typescript: Typescript imports [1291](https://github.com/i18next/i18next/pull/1291)
