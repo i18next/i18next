@@ -604,8 +604,7 @@ declare namespace i18next {
   /**
    * Options that allow open ended values for interpolation unless type is provided.
    */
-  type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & 
-  TInterpolationMap;
+  type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
 
   type Callback = (error: any, t: TFunction) => void;
 
@@ -666,13 +665,17 @@ declare namespace i18next {
     resourceStore: Resource;
   }
 
+  interface Module {
+    type: 'backend' | 'logger' | 'languageDetector' | 'postProcessor' | 'i18nFormat' | '3rdParty';
+  }
+
   /**
    * Used to load data for i18next.
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
    */
-  interface BackendModule {
-    type?: 'backend';
+  interface BackendModule extends Module {
+    type: 'backend';
     init(services: Services, backendOptions: object, i18nextOptions: InitOptions): void;
     read(
       language: string,
@@ -696,8 +699,8 @@ declare namespace i18next {
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
    */
-  interface LanguageDetectorModule {
-    type?: 'languageDetector';
+  interface LanguageDetectorModule extends Module {
+    type: 'languageDetector';
     init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
     /** Must return detected language */
     detect(): string;
@@ -709,8 +712,8 @@ declare namespace i18next {
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
    */
-  interface LanguageDetectorAsyncModule {
-    type?: 'languageDetector';
+  interface LanguageDetectorAsyncModule extends Module {
+    type: 'languageDetector';
     /** Set to true to enable async detection */
     async: true;
     init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
@@ -723,7 +726,7 @@ declare namespace i18next {
    * Used to extend or manipulate the translated values before returning them in `t` function.
    * Need to be a singleton object.
    */
-  interface PostProcessorModule {
+  interface PostProcessorModule extends Module {
     /** Unique name */
     name: string;
     type: 'postProcessor';
@@ -734,18 +737,18 @@ declare namespace i18next {
    * Override the built-in console logger.
    * Do not need to be a prototype function.
    */
-  interface LoggerModule {
-    type?: 'logger';
+  interface LoggerModule extends Module {
+    type: 'logger';
     log(...args: any[]): void;
     warn(...args: any[]): void;
     error(...args: any[]): void;
   }
 
-  interface I18nFormatModule {
-    type?: 'i18nFormat';
+  interface I18nFormatModule extends Module {
+    type: 'i18nFormat';
   }
 
-  interface ThirdPartyModule {
+  interface ThirdPartyModule extends Module {
     type: '3rdParty';
     init(i18next: i18n): void;
   }
@@ -759,7 +762,6 @@ declare namespace i18next {
   }
 
   interface i18n {
-
     // Expose parameterized t in the i18next interface hierarchy
     t: TFunction;
 
@@ -779,15 +781,7 @@ declare namespace i18next {
      * The use function is there to load additional plugins to i18next.
      * For available module see the plugins page and don't forget to read the documentation of the plugin.
      */
-    use(
-      module:
-        | BackendModule
-        | LoggerModule
-        | LanguageDetectorModule
-        | LanguageDetectorAsyncModule
-        | I18nFormatModule
-        | ThirdPartyModule[],
-    ): i18n;
+    use<T extends Module>(module: T | ThirdPartyModule[]): i18n;
 
     /**
      * List of modules used
