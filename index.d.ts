@@ -669,27 +669,21 @@ declare namespace i18next {
     type: 'backend' | 'logger' | 'languageDetector' | 'postProcessor' | 'i18nFormat' | '3rdParty';
   }
 
+  type ReadCallback = (err: Error | null | undefined, data: Resource) => void;
+
   /**
    * Used to load data for i18next.
    * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
    * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
    */
-  interface BackendModule extends Module {
+  interface BackendModule<TOptions = object> extends Module {
     type: 'backend';
-    init(services: Services, backendOptions: object, i18nextOptions: InitOptions): void;
-    read(
-      language: string,
-      namespace: string,
-      callback: (err: Error | null | undefined, data: ResourceLanguage) => void,
-    ): void;
+    init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
+    read(language: string, namespace: string, callback: ReadCallback): void;
     /** Save the missing translation */
     create(languages: string[], namespace: string, key: string, fallbackValue: string): void;
     /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
-    readMulti?(
-      languages: string[],
-      namespaces: string[],
-      callback: (err: Error | null | undefined, data: Resource) => void,
-    ): void;
+    readMulti?(languages: string[], namespaces: string[], callback: ReadCallback): void;
     /** Store the translation. For backends acting as cache layer */
     save?(language: string, namespace: string, data: ResourceLanguage): void;
   }
