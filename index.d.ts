@@ -969,6 +969,11 @@ declare namespace i18next {
     isInitialized: boolean;
 
     /**
+     * Used in React SSR
+     */
+    initializedLanguageOnce: boolean;
+
+    /**
      * Emit event
      */
     emit(eventName: string): void;
