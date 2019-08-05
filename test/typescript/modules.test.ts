@@ -57,3 +57,13 @@ i18next.use(languageDetectorModule);
 i18next.use(loggerModule);
 i18next.use(i18nFormatModule);
 i18next.use(externalModules);
+
+// exercise class usage
+class MyLoggerModule implements LoggerModule {
+  type: 'logger' = 'logger';
+  log = () => null;
+  warn = () => null;
+  error = () => null;
+}
+
+i18next.use(MyLoggerModule);
