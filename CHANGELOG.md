@@ -1,3 +1,7 @@
+### 17.0.9
+
+- typescript: use() should accept a class or object [1301](https://github.com/i18next/i18next/pull/1301)
+
 ### 17.0.8
 
 - typescript: Correct `use(module)` types [1296](https://github.com/i18next/i18next/pull/1296)
