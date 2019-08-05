@@ -755,6 +755,9 @@ declare namespace i18next {
     external: ThirdPartyModule[];
   }
 
+  // helper to identify class https://stackoverflow.com/a/45983481/2363935
+  type Newable<T> = { new (...args: any[]): T };
+
   interface i18n {
     // Expose parameterized t in the i18next interface hierarchy
     t: TFunction;
@@ -774,8 +777,12 @@ declare namespace i18next {
     /**
      * The use function is there to load additional plugins to i18next.
      * For available module see the plugins page and don't forget to read the documentation of the plugin.
+     *
+     * Accepts a class or object
      */
-    use<T extends Module>(module: T | ThirdPartyModule[]): i18n;
+    use<T extends Module>(
+      module: T | Newable<T> | ThirdPartyModule[] | Newable<ThirdPartyModule>[],
+    ): i18n;
 
     /**
      * List of modules used
