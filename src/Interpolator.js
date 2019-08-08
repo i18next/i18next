@@ -93,7 +93,7 @@ class Interpolator {
     /* eslint no-cond-assign: 0 */
     while ((match = this.regexpUnescape.exec(str))) {
       value = handleFormat(match[1].trim());
-      str = str.replace(match[0], value);
+      str = str.replace(match[0], regexSafe(value));
       this.regexpUnescape.lastIndex = 0;
       replaces++;
       if (replaces >= this.maxReplaces) {
