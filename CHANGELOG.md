@@ -1,3 +1,7 @@
+### 17.0.10
+
+- Update Interpolator.js to use regexSafe for unescaped interpolation [1307](https://github.com/i18next/i18next/pull/1307)
+
 ### 17.0.9
 
 - typescript: use() should accept a class or object [1301](https://github.com/i18next/i18next/pull/1301)
