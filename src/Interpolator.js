@@ -93,6 +93,15 @@ class Interpolator {
     /* eslint no-cond-assign: 0 */
     while ((match = this.regexpUnescape.exec(str))) {
       value = handleFormat(match[1].trim());
+      if (value === undefined) {
+        if (typeof missingInterpolationHandler === 'function') {
+          const temp = missingInterpolationHandler(str, match, options);
+          value = typeof temp === 'string' ? temp : '';
+        } else {
+          this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
+          value = '';
+        }
+      }
       str = str.replace(match[0], regexSafe(value));
       this.regexpUnescape.lastIndex = 0;
       replaces++;

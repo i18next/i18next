@@ -1,3 +1,8 @@
+### 17.0.11
+
+- fix issue with unset value in interpolation throwing exception
+- typescript: Allow augmentation of TFunction to be able to add overloads [1308](https://github.com/i18next/i18next/pull/1308)
+
 ### 17.0.10
 
 - Update Interpolator.js to use regexSafe for unescaped interpolation [1307](https://github.com/i18next/i18next/pull/1307)
