@@ -227,6 +227,10 @@ describe('Interpolator', () => {
         args: ['test {{- test}}', {}],
         expected: 'test ',
       },
+      {
+        args: ['test {{- test}}', { test: null }],
+        expected: 'test ',
+      },
     ];
 
     tests.forEach(test => {
