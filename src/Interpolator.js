@@ -55,9 +55,7 @@ class Interpolator {
     const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${
-      this.suffix
-    }`;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
     const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
@@ -93,7 +91,7 @@ class Interpolator {
     /* eslint no-cond-assign: 0 */
     while ((match = this.regexpUnescape.exec(str))) {
       value = handleFormat(match[1].trim());
-      if (value === undefined) {
+      if (value === undefined || value === null) {
         if (typeof missingInterpolationHandler === 'function') {
           const temp = missingInterpolationHandler(str, match, options);
           value = typeof temp === 'string' ? temp : '';
