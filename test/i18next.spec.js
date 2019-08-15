@@ -56,14 +56,19 @@ describe('i18next', () => {
       let instance1;
       let instance2;
       before(done => {
-        instance1 = i18next.createInstance({ lng: 'en' }, () => {
+        instance1 = i18next.cloneInstance({ lng: 'en' }, () => {
           instance2 = instance1.cloneInstance({ lng: 'de' }, () => done());
         });
       });
 
       it('it should have correct lngs', () => {
         expect(instance1.language).to.equal('en');
+        expect(instance1.languages).to.eql(['en', 'dev']);
         expect(instance2.language).to.equal('de');
+        expect(instance2.languages).to.eql(['de', 'dev']);
+
+        expect(instance1.translator.language).to.equal('en');
+        expect(instance2.translator.language).to.equal('de');
       });
     });
   });
