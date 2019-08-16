@@ -5,15 +5,13 @@ class Interpolator {
   constructor(options = {}) {
     this.logger = baseLogger.create('interpolator');
 
-    this.init(options, true);
+    this.options = options;
+    this.format = (options.interpolation && options.interpolation.format) || (value => value);
+    this.init(options);
   }
 
   /* eslint no-param-reassign: 0 */
-  init(options = {}, reset) {
-    if (reset) {
-      this.options = options;
-      this.format = (options.interpolation && options.interpolation.format) || (value => value);
-    }
+  init(options = {}) {
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
     const iOpts = options.interpolation;
