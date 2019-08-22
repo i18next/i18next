@@ -53,7 +53,9 @@ class Interpolator {
     const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${
+      this.suffix
+    }`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
     const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
@@ -89,7 +91,7 @@ class Interpolator {
     /* eslint no-cond-assign: 0 */
     while ((match = this.regexpUnescape.exec(str))) {
       value = handleFormat(match[1].trim());
-      if (value === undefined || value === null) {
+      if (value === undefined) {
         if (typeof missingInterpolationHandler === 'function') {
           const temp = missingInterpolationHandler(str, match, options);
           value = typeof temp === 'string' ? temp : '';
@@ -97,6 +99,8 @@ class Interpolator {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
           value = '';
         }
+      } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
+        value = utils.makeString(value);
       }
       str = str.replace(match[0], regexSafe(value));
       this.regexpUnescape.lastIndex = 0;

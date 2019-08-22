@@ -1,3 +1,8 @@
+### 17.0.12
+
+- remove unused Interpolator#init reset param (only used internally) [1313](https://github.com/i18next/i18next/pull/1313)
+- Cope with null interpolation (unescaped case) [1310](https://github.com/i18next/i18next/pull/1310)
+
 ### 17.0.11
 
 - fix issue with unset value in interpolation throwing exception
