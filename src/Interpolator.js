@@ -67,18 +67,23 @@ class Interpolator {
     let value;
     let replaces;
 
+    const defaultData =
+      (this.options && this.options.interpolation && this.options.interpolation.defaultVariables) ||
+      {};
+    let combindedData = { ...defaultData, ...data };
+
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
     }
 
     const handleFormat = key => {
-      if (key.indexOf(this.formatSeparator) < 0) return utils.getPath(data, key);
+      if (key.indexOf(this.formatSeparator) < 0) return utils.getPath(combindedData, key);
 
       const p = key.split(this.formatSeparator);
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(utils.getPath(data, k), f, lng);
+      return this.format(utils.getPath(combindedData, k), f, lng);
     };
 
     this.resetRegExp();

@@ -29,6 +29,38 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - defaultVariables', () => {
+    var ip;
+
+    before(() => {
+      ip = new Interpolator({
+        interpolation: {
+          escapeValue: false,
+          defaultVariables: { test: '123', bit: { more: '456' } },
+        },
+      });
+    });
+
+    var tests = [
+      { args: ['test'], expected: 'test' },
+      { args: ['test {{test}}'], expected: 'test 123' },
+      {
+        args: ['test {{test}} a {{bit.more}}'],
+        expected: 'test 123 a 456',
+      },
+      // prio has passed in variables
+      { args: ['test {{ test }}', { test: '124' }], expected: 'test 124' },
+      { args: ['test {{ test }}', { test: null }], expected: 'test ' },
+      { args: ['test {{ test }}', { test: undefined }], expected: 'test ' },
+    ];
+
+    tests.forEach(test => {
+      it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('interpolate() - options', () => {
     var tests = [
       {

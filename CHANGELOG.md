@@ -1,3 +1,7 @@
+### 17.0.13
+
+- fixes: Interpolation defaultVariables not recognized on t() [1314](https://github.com/i18next/i18next/issues/1314)
+
 ### 17.0.12
 
 - remove unused Interpolator#init reset param (only used internally) [1313](https://github.com/i18next/i18next/pull/1313)

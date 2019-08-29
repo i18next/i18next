@@ -1406,17 +1406,20 @@
         var match;
         var value;
         var replaces;
+        var defaultData = this.options && this.options.interpolation && this.options.interpolation.defaultVariables || {};
+
+        var combindedData = _objectSpread({}, defaultData, data);
 
         function regexSafe(val) {
           return val.replace(/\$/g, '$$$$');
         }
 
         var handleFormat = function handleFormat(key) {
-          if (key.indexOf(_this.formatSeparator) < 0) return getPath(data, key);
+          if (key.indexOf(_this.formatSeparator) < 0) return getPath(combindedData, key);
           var p = key.split(_this.formatSeparator);
           var k = p.shift().trim();
           var f = p.join(_this.formatSeparator).trim();
-          return _this.format(getPath(data, k), f, lng);
+          return _this.format(getPath(combindedData, k), f, lng);
         };
 
         this.resetRegExp();
