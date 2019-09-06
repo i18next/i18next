@@ -623,13 +623,26 @@ declare namespace i18next {
     t: TFunction;
   }
 
+  type TFunctionResult = string | object | Array<string | object> | undefined | null;
+  type TFunctionKeys = string | TemplateStringsArray;
   interface TFunction {
+    // basic usage
     <
-      TResult extends string | object | Array<string | object> | undefined | null = string,
-      TKeys extends string | TemplateStringsArray = string,
+      TResult extends TFunctionResult = string,
+      TKeys extends TFunctionKeys = string,
       TInterpolationMap extends object = StringMap
     >(
       key: TKeys | TKeys[],
+      options?: TOptions<TInterpolationMap> | string,
+    ): TResult;
+    // overloaded usage
+    <
+      TResult extends TFunctionResult = string,
+      TKeys extends TFunctionKeys = string,
+      TInterpolationMap extends object = StringMap
+    >(
+      key: TKeys | TKeys[],
+      defaultValue?: string,
       options?: TOptions<TInterpolationMap> | string,
     ): TResult;
   }

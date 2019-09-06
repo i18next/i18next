@@ -8,6 +8,11 @@ function basicUsage(t: TFunction) {
   t(['friend', 'tree'], { myVar: 'someValue' });
 }
 
+function overloadedUsage(t: TFunction) {
+  t('friend', 'test {{myVar}}', { myVar: 'someValue' });
+  t(['friend', 'tree'], 'test {{myVar}}', { myVar: 'someValue' });
+}
+
 function returnCasts(t: TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
