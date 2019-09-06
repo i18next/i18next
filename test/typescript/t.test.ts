@@ -6,6 +6,10 @@ function basicUsage(t: TFunction) {
   t(['friend', 'tree']);
   t('friend', { myVar: 'someValue' });
   t(['friend', 'tree'], { myVar: 'someValue' });
+}
+
+function overloadedUsage(t: TFunction) {
+  t('friend', 'test {{myVar}}', { myVar: 'someValue' });
   t(['friend', 'tree'], 'test {{myVar}}', { myVar: 'someValue' });
 }
 
