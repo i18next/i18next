@@ -6,6 +6,7 @@ function basicUsage(t: TFunction) {
   t(['friend', 'tree']);
   t('friend', { myVar: 'someValue' });
   t(['friend', 'tree'], { myVar: 'someValue' });
+  t(['friend', 'tree'], 'test {{myVar}}', { myVar: 'someValue' });
 }
 
 function returnCasts(t: TFunction) {
