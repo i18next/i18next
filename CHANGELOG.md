@@ -1,3 +1,7 @@
+### 17.0.14
+
+- typescript: Allow TFunction to receive 1-3 parameters [1317](https://github.com/i18next/i18next/pull/1317)
+
 ### 17.0.13
 
 - fixes: Interpolation defaultVariables not recognized on t() [1314](https://github.com/i18next/i18next/issues/1314)
