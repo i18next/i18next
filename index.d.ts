@@ -815,6 +815,11 @@ declare namespace i18next {
     exists: ExistsFunction;
 
     /**
+     * Returns a resource data by language.
+     */
+    getDataByLanguage(lng: string): { translation: { [key: string]: string } };
+
+    /**
      * Returns a t function that defaults to given language or namespace.
      * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
      * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.

@@ -205,6 +205,12 @@ const v: string = i18next.t('my.key');
 const de = i18next.getFixedT('de');
 const z: string = de('myKey');
 
+// verify we can get the German data
+const data = i18next.getDataByLanguage('de');
+if (data.translation.myKey !== de('myKey')) {
+  console.log('something went wrong calling getDataByLanguage');
+}
+
 // or fix the namespace to anotherNamespace
 const anotherNamespace = i18next.getFixedT(null, 'anotherNamespace');
 const x: string = anotherNamespace('anotherNamespaceKey'); // no need to prefix ns i18n.t('anotherNamespace:anotherNamespaceKey');
