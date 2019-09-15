@@ -80,6 +80,13 @@ describe('i18next', () => {
         expect(t.lng).to.equal('de');
         expect(t.ns).to.equal('common');
       });
+      it('should handle default value', () => {
+        const t = i18next.getFixedT(null, null);
+        const translatedKey = t('key', 'default');
+        const translatedSecondKey = t('key', { defaultValue: 'default' });
+        expect(translatedKey).to.equal('default');
+        expect(translatedSecondKey).to.equal('default');
+      });
     });
   });
 });

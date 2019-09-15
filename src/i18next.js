@@ -10,7 +10,7 @@ import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
 import { defer } from './utils.js';
 
-function noop() {}
+function noop() { }
 
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
@@ -257,9 +257,11 @@ class I18n extends EventEmitter {
 
   getFixedT(lng, ns) {
     const fixedT = (key, opts, ...rest) => {
-      let options = { ...opts };
+      let options;
       if (typeof opts !== 'object') {
         options = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+      } else {
+        options = { ...opts };
       }
 
       options.lng = options.lng || fixedT.lng;
