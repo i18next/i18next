@@ -13,9 +13,21 @@ import i18next, {
 const backendModule: BackendModule = {
   type: 'backend',
   init: () => null,
-  read: () => null,
+  read: (_language, _namespace, callback) => {
+    callback(null, {
+      key: 'value',
+    });
+  },
   create: () => null,
-  readMulti: () => null,
+  readMulti: (_languages, _namespaces, callback) => {
+    callback(null, {
+      en: {
+        namespace: {
+          key: 'value',
+        },
+      },
+    });
+  },
   save: () => null,
 };
 
