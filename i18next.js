@@ -2215,7 +2215,7 @@
         var _this5 = this;
 
         var fixedT = function fixedT(key, opts) {
-          var options = _objectSpread({}, opts);
+          var options;
 
           if (_typeof(opts) !== 'object') {
             for (var _len3 = arguments.length, rest = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
@@ -2223,6 +2223,8 @@
             }
 
             options = _this5.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+          } else {
+            options = _objectSpread({}, opts);
           }
 
           options.lng = options.lng || fixedT.lng;

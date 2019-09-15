@@ -1,3 +1,7 @@
+### 17.0.15
+
+- Fixed default value as string in IE [1325](https://github.com/i18next/i18next/pull/1325)
+
 ### 17.0.14
 
 - typescript: Allow TFunction to receive 1-3 parameters [1317](https://github.com/i18next/i18next/pull/1317)
