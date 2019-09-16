@@ -207,9 +207,9 @@ const z: string = de('myKey');
 
 // verify we can get the German data
 const data = i18next.getDataByLanguage('de');
-if (data.translation.myKey !== de('myKey')) {
-  console.log('something went wrong calling getDataByLanguage');
-}
+
+// verify the data.translation field exists
+console.log(data.translation.myKey);
 
 // or fix the namespace to anotherNamespace
 const anotherNamespace = i18next.getFixedT(null, 'anotherNamespace');
