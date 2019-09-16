@@ -537,6 +537,12 @@ declare namespace i18next {
        */
       allowedHosts?: string[];
     };
+
+     /**
+       * Returns an array of language-codes that will be used to look up the available languages.
+       * @default []
+       */
+      allLanguages?: string[];
   }
 
   interface TOptionsBase {
