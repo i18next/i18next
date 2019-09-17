@@ -1,3 +1,8 @@
+### 17.0.16
+
+- typescript: fix incorrect callback type for backend module read callback [1322](https://github.com/i18next/i18next/pull/1322)
+- typescript: add getDataByLanguage into index.d.ts [1326](https://github.com/i18next/i18next/pull/1326)
+
 ### 17.0.15
 
 - Fixed default value as string in IE [1325](https://github.com/i18next/i18next/pull/1325)
