@@ -1,3 +1,7 @@
+### 17.0.17
+
+- fixes: missing nested key fails if no nested value found and defaultValue contains interpolation -> results in endless loop [1332](https://github.com/i18next/i18next/issues/1332)
+
 ### 17.0.16
 
 - typescript: fix incorrect callback type for backend module read callback [1322](https://github.com/i18next/i18next/pull/1322)

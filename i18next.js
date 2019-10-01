@@ -1492,6 +1492,8 @@
         var clonedOptions = _objectSpread({}, options);
 
         clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
+
+        delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
         // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
 
         function handleHasOptions(key, inheritedOptions) {
@@ -1507,8 +1509,10 @@
             if (inheritedOptions) clonedOptions = _objectSpread({}, inheritedOptions, clonedOptions);
           } catch (e) {
             this.logger.error("failed parsing options string in nesting for key ".concat(key), e);
-          }
+          } // assert we do not get a endless loop on interpolating defaultValue again and again
 
+
+          delete clonedOptions.defaultValue;
           return key;
         } // regular escape on demand
 

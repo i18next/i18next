@@ -64,6 +64,12 @@ describe('Translator', () => {
       { args: ['test', { context: 'male', count: 1 }], expected: 'test_male_en' },
       { args: ['test', { context: 'male', count: 2 }], expected: 'tests_male_en' },
       { args: ['nest'], expected: { foo: 'bar', nest: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' }] } },
+
+      // interpolation and nesting on defaultValue
+      {
+        args: ['noKeyFoundTestingDefault_1', { defaultValue: '{{val}} bar', val: '$t(foo)' }],
+        expected: 'foo bar',
+      },
     ];
 
     tests.forEach(test => {

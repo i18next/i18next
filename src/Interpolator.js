@@ -147,6 +147,7 @@ class Interpolator {
 
     let clonedOptions = { ...options };
     clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
+    delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
 
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
     function handleHasOptions(key, inheritedOptions) {
@@ -166,6 +167,8 @@ class Interpolator {
         this.logger.error(`failed parsing options string in nesting for key ${key}`, e);
       }
 
+      // assert we do not get a endless loop on interpolating defaultValue again and again
+      delete clonedOptions.defaultValue;
       return key;
     }
 
