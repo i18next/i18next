@@ -1,3 +1,7 @@
+### 17.0.18
+
+- Improve performance of EventEmitter.off [1333](https://github.com/i18next/i18next/pull/1333)
+
 ### 17.0.17
 
 - fixes: missing nested key fails if no nested value found and defaultValue contains interpolation -> results in endless loop [1332](https://github.com/i18next/i18next/issues/1332)
