@@ -17,7 +17,7 @@ class EventEmitter {
     }
 
     const observers = this.observers[event];
-    for (const i = observers.length - 1; i >= 0; i--) {
+    for (let i = observers.length - 1; i >= 0; i--) {
       const observer = observers[i];
       if (observer === listener) {
         observers.splice(i, 1);
