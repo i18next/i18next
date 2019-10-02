@@ -16,16 +16,13 @@ class EventEmitter {
       return;
     }
 
-    this.observers[event].forEach(() => {
-      if (!listener) {
-        delete this.observers[event];
-      } else {
-        const index = this.observers[event].indexOf(listener);
-        if (index > -1) {
-          this.observers[event].splice(index, 1);
-        }
+    var observers = this.observers[event];
+    for (var i = observers.length - 1; i >= 0; i--) {
+      var observer = observers[i];
+      if (observer === listener) {
+        observers.splice(i, 1);
       }
-    });
+    }
   }
 
   emit(event, ...args) {
