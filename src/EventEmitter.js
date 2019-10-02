@@ -12,17 +12,10 @@ class EventEmitter {
   }
 
   off(event, listener) {
-    if (!this.observers[event]) {
-      return;
-    }
+    if (!this.observers[event]) return;
+    if (!listener) return delete this.observers[event];
 
-    const observers = this.observers[event];
-    for (let i = observers.length - 1; i >= 0; i--) {
-      const observer = observers[i];
-      if (observer === listener) {
-        observers.splice(i, 1);
-      }
-    }
+    this.observers[event] = this.observers[event].filter(l => l !== listener);
   }
 
   emit(event, ...args) {
