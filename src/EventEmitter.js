@@ -12,20 +12,13 @@ class EventEmitter {
   }
 
   off(event, listener) {
-    if (!this.observers[event]) {
+    if (!this.observers[event]) return;
+    if (!listener) {
+      delete this.observers[event];
       return;
     }
 
-    this.observers[event].forEach(() => {
-      if (!listener) {
-        delete this.observers[event];
-      } else {
-        const index = this.observers[event].indexOf(listener);
-        if (index > -1) {
-          this.observers[event].splice(index, 1);
-        }
-      }
-    });
+    this.observers[event] = this.observers[event].filter(l => l !== listener);
   }
 
   emit(event, ...args) {

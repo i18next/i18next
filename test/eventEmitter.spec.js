@@ -66,5 +66,40 @@ describe('i18next', () => {
 
       expect(returned).to.equal(emitter);
     });
+
+    it('it should correctly unbind observers', () => {
+      const calls1 = [];
+      const listener1 = payload => {
+        calls1.push(payload);
+      };
+
+      const calls2 = [];
+      const listener2 = payload => {
+        calls2.push(payload);
+      };
+
+      const calls3 = [];
+      const listener3 = payload => {
+        calls3.push(payload);
+      };
+
+      emitter.on('events', listener1);
+      emitter.on('events', listener2);
+      emitter.on('events', listener3);
+      emitter.on('events', listener1);
+
+      emitter.emit('events', 1);
+      emitter.off('events', listener1);
+      emitter.emit('events', 2);
+      emitter.off('events', listener2);
+      emitter.emit('events', 3);
+      emitter.off('events', listener2);
+      emitter.off('events');
+      emitter.emit('events', 4);
+
+      expect(calls1).to.eql([1, 1]);
+      expect(calls2).to.eql([1, 2]);
+      expect(calls3).to.eql([1, 2, 3]);
+    });
   });
 });
