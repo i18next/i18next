@@ -13,7 +13,10 @@ class EventEmitter {
 
   off(event, listener) {
     if (!this.observers[event]) return;
-    if (!listener) return delete this.observers[event];
+    if (!listener) {
+      delete this.observers[event];
+      return;
+    }
 
     this.observers[event] = this.observers[event].filter(l => l !== listener);
   }
