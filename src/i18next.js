@@ -71,6 +71,9 @@ class I18n extends EventEmitter {
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
       s.interpolator = new Interpolator(this.options);
+      s.utils = {
+        hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
+      }
 
       s.backendConnector = new BackendConnector(
         createClassOnDemand(this.modules.backend),
@@ -288,6 +291,40 @@ class I18n extends EventEmitter {
 
   setDefaultNamespace(ns) {
     this.options.defaultNS = ns;
+  }
+
+  hasLoadedNamespace(ns) {
+    if (!this.isInitialized) {
+      this.logger.warn('hasLoadedNamespace: i18next was not initialized', this.languages);
+      return false;
+    }
+    if (!this.languages || !this.languages.length) {
+      this.logger.warn('hasLoadedNamespace: i18n.languages were undefined or empty', this.languages);
+      return false;
+    }
+
+    const lng = this.languages[0];
+    const fallbackLng = this.options ? this.options.fallbackLng : false;
+    const lastLng = this.languages[this.languages.length - 1];
+
+    // we're in cimode so this shall pass
+    if (lng.toLowerCase() === 'cimode') return true;
+
+    const loadNotPending = (l, n) => {
+      const loadState = this.services.backendConnector.state[`${l}|${n}`];
+      return loadState === -1 || loadState === 2;
+    };
+
+    // loaded -> SUCCESS
+    if (this.hasResourceBundle(lng, ns)) return true;
+
+    // were not loading at all -> SEMI SUCCESS
+    if (!this.services.backendConnector.backend) return true;
+
+    // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
+    if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
+
+    return false;
   }
 
   loadNamespaces(ns, callback) {

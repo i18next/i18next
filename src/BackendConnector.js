@@ -18,6 +18,7 @@ class Connector extends EventEmitter {
 
     this.backend = backend;
     this.store = store;
+    this.services = services;
     this.languageUtils = services.languageUtils;
     this.options = options;
     this.logger = baseLogger.create('backendConnector');
@@ -186,6 +187,18 @@ class Connector extends EventEmitter {
   }
 
   saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}) {
+    if (
+      this.services.utils &&
+      this.services.utils.hasLoadedNamespace &&
+      !this.services.utils.hasLoadedNamespace(namespace)
+    ) {
+      this.logger.warn(
+        `did not save key "${key}" for namespace "${namespace}" as the namespace was not yet loaded`,
+        'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',
+      );
+      return;
+    }
+
     if (this.backend && this.backend.create) {
       this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, {
         ...options,

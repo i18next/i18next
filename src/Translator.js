@@ -16,6 +16,7 @@ class Translator extends EventEmitter {
         'interpolator',
         'backendConnector',
         'i18nFormat',
+        'utils',
       ],
       services,
       this,
@@ -332,6 +333,13 @@ class Translator extends EventEmitter {
       namespaces.forEach(ns => {
         if (this.isValidLookup(found)) return;
         usedNS = ns;
+
+        if (this.utils && this.utils.hasLoadedNamespace && !this.utils.hasLoadedNamespace(usedNS)) {
+          this.logger.warn(
+            `key "${usedKey}" for namespace "${usedNS}" won't get resolved as namespace was not yet loaded`,
+            'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',
+          );
+        }
 
         codes.forEach(code => {
           if (this.isValidLookup(found)) return;

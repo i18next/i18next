@@ -119,6 +119,10 @@ export function appendBackwardsAPI(i18n) {
     return i18n.services.languageUtils.toResolveHierarchy(i18n.language)[0];
   };
 
+  i18n.hasLoadedNamespace = function() {
+    return true;
+  };
+
   i18n.preload = (lngs, cb) => {
     //logger.deprecate('i18next.preload() can be replaced with i18next.loadLanguages()');
     i18n.loadLanguages(lngs, cb);
