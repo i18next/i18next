@@ -5,7 +5,7 @@ DX improvements:
 - warning if accessing t before i18next was initialized or namespace loaded
 - warning and cancelling save if saveMissing key before i18next was initialized or namespace loaded
 
-Both are a clear sign you render your app / call t to early not waiting for the callbacks or Promise.resolve on i18next.init, i18next.loadNamespace or i18next.changeLanguage
+Both are a clear sign you render your app / call t to early not waiting for the callbacks or Promise.resolve on i18next.init, i18next.loadNamespace or i18next.changeLanguage.
 
 ### 17.0.18
 

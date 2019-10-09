@@ -615,7 +615,7 @@
       _this = _possibleConstructorReturn(this, _getPrototypeOf(Translator).call(this));
       EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
 
-      copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, _assertThisInitialized(_this));
+      copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat', 'utils'], services, _assertThisInitialized(_this));
       _this.options = options;
 
       if (_this.options.keySeparator === undefined) {
@@ -882,6 +882,11 @@
           namespaces.forEach(function (ns) {
             if (_this4.isValidLookup(found)) return;
             usedNS = ns;
+
+            if (_this4.utils && _this4.utils.hasLoadedNamespace && !_this4.utils.hasLoadedNamespace(usedNS)) {
+              _this4.logger.warn("key \"".concat(usedKey, "\" for namespace \"").concat(usedNS, "\" won't get resolved as namespace was not yet loaded"), 'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
+            }
+
             codes.forEach(function (code) {
               if (_this4.isValidLookup(found)) return;
               usedLng = code;
@@ -1599,6 +1604,7 @@
 
       _this.backend = backend;
       _this.store = store;
+      _this.services = services;
       _this.languageUtils = services.languageUtils;
       _this.options = options;
       _this.logger = baseLogger.create('backendConnector');
@@ -1799,6 +1805,11 @@
       key: "saveMissing",
       value: function saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
         var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
+
+        if (this.services.utils && this.services.utils.hasLoadedNamespace && !this.services.utils.hasLoadedNamespace(namespace)) {
+          this.logger.warn("did not save key \"".concat(key, "\" for namespace \"").concat(namespace, "\" as the namespace was not yet loaded"), 'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
+          return;
+        }
 
         if (this.backend && this.backend.create) {
           this.backend.create(languages, namespace, key, fallbackValue, null
@@ -2003,6 +2014,9 @@
             simplifyPluralSuffix: this.options.simplifyPluralSuffix
           });
           s.interpolator = new Interpolator(this.options);
+          s.utils = {
+            hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
+          };
           s.backendConnector = new Connector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options); // pipe events from backendConnector
 
           s.backendConnector.on('*', function (event) {
@@ -2259,9 +2273,44 @@
         this.options.defaultNS = ns;
       }
     }, {
+      key: "hasLoadedNamespace",
+      value: function hasLoadedNamespace(ns) {
+        var _this6 = this;
+
+        if (!this.isInitialized) {
+          this.logger.warn('hasLoadedNamespace: i18next was not initialized', this.languages);
+          return false;
+        }
+
+        if (!this.languages || !this.languages.length) {
+          this.logger.warn('hasLoadedNamespace: i18n.languages were undefined or empty', this.languages);
+          return false;
+        }
+
+        var lng = this.languages[0];
+        var fallbackLng = this.options ? this.options.fallbackLng : false;
+        var lastLng = this.languages[this.languages.length - 1]; // we're in cimode so this shall pass
+
+        if (lng.toLowerCase() === 'cimode') return true;
+
+        var loadNotPending = function loadNotPending(l, n) {
+          var loadState = _this6.services.backendConnector.state["".concat(l, "|").concat(n)];
+
+          return loadState === -1 || loadState === 2;
+        }; // loaded -> SUCCESS
+
+
+        if (this.hasResourceBundle(lng, ns)) return true; // were not loading at all -> SEMI SUCCESS
+
+        if (!this.services.backendConnector.backend) return true; // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
+
+        if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
+        return false;
+      }
+    }, {
       key: "loadNamespaces",
       value: function loadNamespaces(ns, callback) {
-        var _this6 = this;
+        var _this7 = this;
 
         var deferred = defer();
 
@@ -2272,7 +2321,7 @@
 
         if (typeof ns === 'string') ns = [ns];
         ns.forEach(function (n) {
-          if (_this6.options.ns.indexOf(n) < 0) _this6.options.ns.push(n);
+          if (_this7.options.ns.indexOf(n) < 0) _this7.options.ns.push(n);
         });
         this.loadResources(function (err) {
           deferred.resolve();
@@ -2322,7 +2371,7 @@
     }, {
       key: "cloneInstance",
       value: function cloneInstance() {
-        var _this7 = this;
+        var _this8 = this;
 
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
@@ -2334,7 +2383,7 @@
         var clone = new I18n(mergedOptions);
         var membersToCopy = ['store', 'services', 'language'];
         membersToCopy.forEach(function (m) {
-          clone[m] = _this7[m];
+          clone[m] = _this8[m];
         });
         clone.translator = new Translator(clone.services, clone.options);
         clone.translator.on('*', function (event) {
