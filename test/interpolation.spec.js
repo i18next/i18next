@@ -51,7 +51,9 @@ describe('Interpolator', () => {
       // prio has passed in variables
       { args: ['test {{ test }}', { test: '124' }], expected: 'test 124' },
       { args: ['test {{ test }}', { test: null }], expected: 'test ' },
-      { args: ['test {{ test }}', { test: undefined }], expected: 'test ' },
+
+      // Override default variable only with null, not with undefined.
+      { args: ['test {{ test }}', { test: undefined }], expected: 'test 123' },
     ];
 
     tests.forEach(test => {

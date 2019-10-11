@@ -72,6 +72,15 @@ export function getPath(object, path) {
   return obj[k];
 }
 
+export function getPathWithDefaults(data, defaultData, key) {
+  const value = getPath(data, key);
+  if (value !== undefined) {
+    return value;
+  }
+  // Fallback to default values
+  return getPath(defaultData, key);
+}
+
 export function deepExtend(target, source, overwrite) {
   /* eslint no-restricted-syntax: 0 */
   for (const prop in source) {
