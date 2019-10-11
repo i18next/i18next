@@ -381,6 +381,16 @@
     if (!obj) return undefined;
     return obj[k];
   }
+  function getPathWithDefaults(data, defaultData, key) {
+    var value = getPath(data, key);
+
+    if (value !== undefined) {
+      return value;
+    } // Fallback to default values
+
+
+    return getPath(defaultData, key);
+  }
   function deepExtend(target, source, overwrite) {
     /* eslint no-restricted-syntax: 0 */
     for (var prop in source) {
@@ -1406,18 +1416,19 @@
         var replaces;
         var defaultData = this.options && this.options.interpolation && this.options.interpolation.defaultVariables || {};
 
-        var combindedData = _objectSpread({}, defaultData, data);
-
         function regexSafe(val) {
           return val.replace(/\$/g, '$$$$');
         }
 
         var handleFormat = function handleFormat(key) {
-          if (key.indexOf(_this.formatSeparator) < 0) return getPath(combindedData, key);
+          if (key.indexOf(_this.formatSeparator) < 0) {
+            return getPathWithDefaults(data, defaultData, key);
+          }
+
           var p = key.split(_this.formatSeparator);
           var k = p.shift().trim();
           var f = p.join(_this.formatSeparator).trim();
-          return _this.format(getPath(combindedData, k), f, lng);
+          return _this.format(getPathWithDefaults(data, defaultData, k), f, lng);
         };
 
         this.resetRegExp();

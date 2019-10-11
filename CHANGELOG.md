@@ -1,3 +1,7 @@
+### 17.2.0
+
+- Support using ImmutableJS Records as the data model in interpolation [1339](https://github.com/i18next/i18next/pull/1339)
+
 ### 17.1.0
 
 DX improvements:
