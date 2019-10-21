@@ -305,6 +305,12 @@ declare namespace i18next {
     postProcess?: false | string | string[];
 
     /**
+     * passthrough the resolved object including 'usedNS', 'usedLang' etc into options object of postprocessors as 'i18nResolved' property
+     * @default false
+     */
+    postProcessPassResolved?: boolean;
+
+    /**
      * Allows null values as valid translation
      * @default true
      */

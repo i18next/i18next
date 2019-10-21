@@ -296,7 +296,15 @@ class Translator extends EventEmitter {
       postProcessorNames.length &&
       options.applyPostProcessor !== false
     ) {
-      res = postProcessor.handle(postProcessorNames, res, key, options, this);
+      res = postProcessor.handle(
+        postProcessorNames,
+        res,
+        key,
+        this.options && this.options.postProcessPassResolved
+          ? { i18nResolved: resolved, ...options }
+          : options,
+        this,
+      );
     }
 
     return res;
