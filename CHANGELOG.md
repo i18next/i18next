@@ -1,3 +1,7 @@
+### 17.3.0
+
+- pass used language & namespace to postprocessor [1341](https://github.com/i18next/i18next/pull/1341)
+
 ### 17.2.0
 
 - Support using ImmutableJS Records as the data model in interpolation [1339](https://github.com/i18next/i18next/pull/1339)
