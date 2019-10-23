@@ -229,6 +229,12 @@ declare namespace i18next {
     lowerCaseLng?: boolean;
 
     /**
+     * Language will be lowercased EN --> en while leaving full locales like en-US
+     * @default false
+     */
+    cleanCode?: boolean;
+
+    /**
      * String or array of namespaces to load
      * @default 'translation'
      */
