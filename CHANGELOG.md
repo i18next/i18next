@@ -1,3 +1,7 @@
+### 17.3.1
+
+- typescript: Add missing `cleanCode` option to TypeScript def [1344](https://github.com/i18next/i18next/pull/1344)
+
 ### 17.3.0
 
 - pass used language & namespace to postprocessor [1341](https://github.com/i18next/i18next/pull/1341)
