@@ -1,3 +1,13 @@
+### 18.0.0
+
+- When calling `i18next.changeLanguage()` both `i18next.language` and `i18next.languages` will be set to the new language after calling `loadResources` -> means when accessing `t` function meanwhile you will get still the translations for the previous language instead of the fallback.
+
+- **When is this breaking?** this does not break any current test - but if you depend on accessing i18next.language or i18next.dir during language change and expect the new language this will break your app.
+
+- Reasoning: In react-i18next we get in a not ready state for loaded translations while we would prefer just waiting for the new language ready and trigger a rerender then - also a triggered rerender outside of the bound events would end in Suspense...
+
+- How can I get the language i18next will be set to? `i18next.isLanguageChangingTo` is set to the language called
+
 ### 17.3.1
 
 - typescript: Add missing `cleanCode` option to TypeScript def [1344](https://github.com/i18next/i18next/pull/1344)

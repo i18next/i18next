@@ -106,11 +106,18 @@ describe('i18next', function() {
         expect(i18n.dir()).to.equal('ltr');
       });
 
-      it('returns rtl for ar, ar-IR', function() {
-        i18n.setLng('ar');
-        expect(i18n.dir()).to.equal('rtl');
-        i18n.setLng('ar-IR');
-        expect(i18n.dir()).to.equal('rtl');
+      it('returns rtl for ar', function(done) {
+        i18n.setLng('ar', function() {
+          expect(i18n.dir()).to.equal('rtl');
+          done();
+        });
+      });
+
+      it('returns rtl for ar-IR', function(done) {
+        i18n.setLng('ar-Ir', function() {
+          expect(i18n.dir()).to.equal('rtl');
+          done();
+        });
       });
     });
 

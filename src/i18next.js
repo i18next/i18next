@@ -145,9 +145,13 @@ class I18n extends EventEmitter {
   }
 
   /* eslint consistent-return: 0 */
-  loadResources(callback = noop) {
+  loadResources(language, callback = noop) {
+    let usedCallback = callback;
+    let usedLng = typeof language === 'string' ? language : this.language;
+    if (typeof language === 'function') usedCallback = language;
+
     if (!this.options.resources || this.options.partialBundledLanguages) {
-      if (this.language && this.language.toLowerCase() === 'cimode') return callback(); // avoid loading resources for cimode
+      if (usedLng && usedLng.toLowerCase() === 'cimode') return usedCallback(); // avoid loading resources for cimode
 
       const toLoad = [];
 
@@ -159,21 +163,21 @@ class I18n extends EventEmitter {
         });
       };
 
-      if (!this.language) {
+      if (!usedLng) {
         // at least load fallbacks in this case
         const fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
         fallbacks.forEach(l => append(l));
       } else {
-        append(this.language);
+        append(usedLng);
       }
 
       if (this.options.preload) {
         this.options.preload.forEach(l => append(l));
       }
 
-      this.services.backendConnector.load(toLoad, this.options.ns, callback);
+      this.services.backendConnector.load(toLoad, this.options.ns, usedCallback);
     } else {
-      callback(null);
+      usedCallback(null);
     }
   }
 
@@ -218,16 +222,25 @@ class I18n extends EventEmitter {
   }
 
   changeLanguage(lng, callback) {
+    this.isLanguageChangingTo = lng;
     const deferred = defer();
     this.emit('languageChanging', lng);
 
     const done = (err, l) => {
-      this.translator.changeLanguage(l);
-
       if (l) {
+        this.language = l;
+        this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        this.translator.changeLanguage(l);
+
+
+
+        this.isLanguageChangingTo = undefined;
         this.emit('languageChanged', l);
         this.logger.log('languageChanged', l);
+      } else {
+        this.isLanguageChangingTo = undefined;
       }
+
 
       deferred.resolve((...args) => this.t(...args));
       if (callback) callback(err, (...args) => this.t(...args));
@@ -235,14 +248,16 @@ class I18n extends EventEmitter {
 
     const setLng = l => {
       if (l) {
-        this.language = l;
-        this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        if (!this.language) {
+          this.language = l;
+          this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        }
         if (!this.translator.language) this.translator.changeLanguage(l);
 
         if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(l);
       }
 
-      this.loadResources(err => {
+      this.loadResources(l, err => {
         done(err, l);
       });
     };
