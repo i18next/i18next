@@ -3,6 +3,8 @@ import EventEmitter from './EventEmitter.js';
 import postProcessor from './postProcessor.js';
 import * as utils from './utils.js';
 
+const checkedLoadedFor = {};
+
 class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
@@ -342,9 +344,17 @@ class Translator extends EventEmitter {
         if (this.isValidLookup(found)) return;
         usedNS = ns;
 
-        if (this.utils && this.utils.hasLoadedNamespace && !this.utils.hasLoadedNamespace(usedNS)) {
+        if (
+          !checkedLoadedFor[`${codes[0]}-${ns}`] &&
+          this.utils &&
+          this.utils.hasLoadedNamespace &&
+          !this.utils.hasLoadedNamespace(usedNS)
+        ) {
+          checkedLoadedFor[`${codes[0]}-${ns}`] = true;
           this.logger.warn(
-            `key "${usedKey}" for namespace "${usedNS}" won't get resolved as namespace was not yet loaded`,
+            `key "${usedKey}" for namespace "${usedNS}" for languages "${codes.join(
+              ', ',
+            )}" won't get resolved as namespace was not yet loaded`,
             'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',
           );
         }

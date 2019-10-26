@@ -1,3 +1,7 @@
+### 18.0.1
+
+- check loadedNamespace only once per lng-ns inside using `t` for better performance
+
 ### 18.0.0
 
 - When calling `i18next.changeLanguage()` both `i18next.language` and `i18next.languages` will be set to the new language after calling `loadResources` -> means when accessing `t` function meanwhile you will get still the translations for the previous language instead of the fallback.

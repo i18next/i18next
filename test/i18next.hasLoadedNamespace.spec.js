@@ -96,6 +96,24 @@ describe('i18next', () => {
         expect(i18n.hasLoadedNamespace('ns1')).to.equal(false);
       });
 
+      describe('translator - calling t', () => {
+        it('it should not log anything if loaded ns', () => {
+          i18n.t('keyNotFound');
+          expect(Logger.entries.warn.length).to.equal(0);
+          Logger.reset();
+        });
+
+        it('it should not call saveMissing create on backend if not loaded ns', () => {
+          i18n.t('ns1:keyNotFound');
+
+          expect(Logger.entries.warn.length).to.equal(2);
+          expect(Logger.entries.warn[0]).to.equal(
+            'i18next::translator: key "keyNotFound" for namespace "ns1" for languages "en-US, en, dev" won\'t get resolved as namespace was not yet loaded',
+          );
+          Logger.reset();
+        });
+      });
+
       describe('backendConnector - saveMissing', () => {
         it('it should call saveMissing create on backend if loaded ns', () => {
           i18n.t('keyNotFound');
@@ -110,27 +128,9 @@ describe('i18next', () => {
           expect(Backend.created.length).to.equal(0);
           Backend.reset();
 
-          expect(Logger.entries.warn.length).to.equal(2);
-          expect(Logger.entries.warn[1]).to.equal(
-            'i18next::backendConnector: did not save key "keyNotFound" for namespace "ns1" as the namespace was not yet loaded',
-          );
-          Logger.reset();
-        });
-      });
-
-      describe('translator - calling t', () => {
-        it('it should not log anything if loaded ns', () => {
-          i18n.t('keyNotFound');
-          expect(Logger.entries.warn.length).to.equal(0);
-          Logger.reset();
-        });
-
-        it('it should not call saveMissing create on backend if not loaded ns', () => {
-          i18n.t('ns1:keyNotFound');
-
-          expect(Logger.entries.warn.length).to.equal(2);
+          expect(Logger.entries.warn.length).to.equal(1);
           expect(Logger.entries.warn[0]).to.equal(
-            'i18next::translator: key "keyNotFound" for namespace "ns1" won\'t get resolved as namespace was not yet loaded',
+            'i18next::backendConnector: did not save key "keyNotFound" for namespace "ns1" as the namespace was not yet loaded',
           );
           Logger.reset();
         });
