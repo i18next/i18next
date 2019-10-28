@@ -610,6 +610,8 @@
     }
   };
 
+  var checkedLoadedFor = {};
+
   var Translator =
   /*#__PURE__*/
   function (_EventEmitter) {
@@ -895,8 +897,10 @@
             if (_this4.isValidLookup(found)) return;
             usedNS = ns;
 
-            if (_this4.utils && _this4.utils.hasLoadedNamespace && !_this4.utils.hasLoadedNamespace(usedNS)) {
-              _this4.logger.warn("key \"".concat(usedKey, "\" for namespace \"").concat(usedNS, "\" won't get resolved as namespace was not yet loaded"), 'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
+            if (!checkedLoadedFor["".concat(codes[0], "-").concat(ns)] && _this4.utils && _this4.utils.hasLoadedNamespace && !_this4.utils.hasLoadedNamespace(usedNS)) {
+              checkedLoadedFor["".concat(codes[0], "-").concat(ns)] = true;
+
+              _this4.logger.warn("key \"".concat(usedKey, "\" for namespace \"").concat(usedNS, "\" for languages \"").concat(codes.join(', '), "\" won't get resolved as namespace was not yet loaded"), 'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
             }
 
             codes.forEach(function (code) {
