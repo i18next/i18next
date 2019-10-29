@@ -1,3 +1,7 @@
+### 19.0.0
+
+- typescript: Typescript use `export default` for esm-first approach [1352](https://github.com/i18next/i18next/pull/1352)
+
 ### 18.0.1
 
 - check loadedNamespace only once per lng-ns inside using `t` for better performance
