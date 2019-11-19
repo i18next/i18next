@@ -199,6 +199,9 @@ class Connector extends EventEmitter {
       return;
     }
 
+    // ignore non valid keys
+    if (key === undefined || key === null || key === '') return;
+
     if (this.backend && this.backend.create) {
       this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, {
         ...options,

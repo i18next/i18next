@@ -74,7 +74,7 @@ class Translator extends EventEmitter {
     if (!options) options = {};
 
     // non valid keys handling
-    if (keys === undefined || keys === null) return '';
+    if (keys === undefined || keys === null/* || keys === ''*/) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     // separators
