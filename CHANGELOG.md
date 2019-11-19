@@ -1,3 +1,7 @@
+### 19.0.1
+
+- ignore non valid keys in saveMissing [1359](https://github.com/i18next/i18next/pull/1359)
+
 ### 19.0.0
 
 - typescript: Typescript use `export default` for esm-first approach [1352](https://github.com/i18next/i18next/pull/1352)
