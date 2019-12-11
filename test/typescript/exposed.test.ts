@@ -1,7 +1,7 @@
 /** Exercise exposed types/imports for different tsconfig esmoduleinterop settings */
 
 /* esModuleInterop: true, allowSyntheticDefaultImports: true */
-import i18next, { Interpolator, Modules, WithT } from 'i18next';
+import i18next, { Interpolator, Modules, WithT, ResourceStore } from 'i18next';
 
 i18next.init();
 
@@ -12,3 +12,6 @@ const mockWithT: WithT = {
 };
 
 const modules: Modules = { external: [] };
+
+const resourceStore: ResourceStore = i18next.services.resourceStore;
+resourceStore.data['en'];

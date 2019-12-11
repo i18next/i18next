@@ -672,6 +672,12 @@ export interface Interpolator {
   nest(str: string, fc: (...args: any[]) => any, options: InterpolationOptions): string;
 }
 
+export class ResourceStore {
+  constructor(data: Resource, options: InitOptions);
+  public data: Resource;
+  public options: InitOptions;
+}
+
 export interface Services {
   backendConnector: any;
   i18nFormat: any;
@@ -680,7 +686,7 @@ export interface Services {
   languageUtils: any;
   logger: any;
   pluralResolver: any;
-  resourceStore: Resource;
+  resourceStore: ResourceStore;
 }
 
 export interface Module {
