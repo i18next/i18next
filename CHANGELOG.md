@@ -1,3 +1,7 @@
+### 19.0.2
+
+- typescript: Type ResourceStore [1366](https://github.com/i18next/i18next/pull/1366)
+
 ### 19.0.1
 
 - ignore non valid keys in saveMissing [1359](https://github.com/i18next/i18next/pull/1359)
