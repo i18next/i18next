@@ -1,3 +1,7 @@
+### 19.0.3
+
+- fixes retry interval in backend connector [1378](https://github.com/i18next/i18next/issues/1378)
+
 ### 19.0.2
 
 - typescript: Type ResourceStore [1366](https://github.com/i18next/i18next/pull/1366)

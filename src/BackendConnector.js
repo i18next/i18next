@@ -177,7 +177,7 @@ class Connector extends EventEmitter {
   loadOne(name, prefix = '') {
     const [lng, ns] = name.split('|');
 
-    this.read(lng, ns, 'read', null, null, (err, data) => {
+    this.read(lng, ns, 'read', undefined, undefined, (err, data) => {
       if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);
       if (!err && data)
         this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`, data);

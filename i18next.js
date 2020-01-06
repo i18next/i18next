@@ -1813,7 +1813,7 @@
             lng = _name$split4[0],
             ns = _name$split4[1];
 
-        this.read(lng, ns, 'read', null, null, function (err, data) {
+        this.read(lng, ns, 'read', undefined, undefined, function (err, data) {
           if (err) _this5.logger.warn("".concat(prefix, "loading namespace ").concat(ns, " for language ").concat(lng, " failed"), err);
           if (!err && data) _this5.logger.log("".concat(prefix, "loaded namespace ").concat(ns, " for language ").concat(lng), data);
 
