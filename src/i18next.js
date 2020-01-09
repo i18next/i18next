@@ -106,6 +106,10 @@ class I18n extends EventEmitter {
         if (m.init) m.init(this);
       });
     }
+    
+    if (!this.modules.languageDetector && !this.options.lng) {
+      this.logger.warn('init: no languageDetector is used and no lng is defined');
+    }
 
     // append api
     const storeApi = [
@@ -231,16 +235,12 @@ class I18n extends EventEmitter {
         this.language = l;
         this.languages = this.services.languageUtils.toResolveHierarchy(l);
         this.translator.changeLanguage(l);
-
-
-
         this.isLanguageChangingTo = undefined;
         this.emit('languageChanged', l);
         this.logger.log('languageChanged', l);
       } else {
         this.isLanguageChangingTo = undefined;
       }
-
 
       deferred.resolve((...args) => this.t(...args));
       if (callback) callback(err, (...args) => this.t(...args));
