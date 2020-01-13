@@ -73,6 +73,9 @@ describe('i18next', () => {
           expect(i18n.hasLoadedNamespace('translation')).to.equal(false);
 
           expect(Logger.entries.warn[0]).to.equal(
+            'i18next: init: no languageDetector is used and no lng is defined',
+          );
+          expect(Logger.entries.warn[1]).to.equal(
             'i18next: hasLoadedNamespace: i18n.languages were undefined or empty',
           );
           Logger.reset();
