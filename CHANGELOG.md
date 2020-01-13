@@ -1,3 +1,7 @@
+### next
+
+- explict warning when no languageDetector is used and no lng is defined [1381](https://github.com/i18next/i18next/pull/1381)
+
 ### 19.0.3
 
 - fixes retry interval in backend connector [1378](https://github.com/i18next/i18next/issues/1378)
