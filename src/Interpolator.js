@@ -40,6 +40,8 @@ class Interpolator {
 
     this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
 
+    this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false;
+
     // the regexp
     this.resetRegExp();
   }
@@ -76,15 +78,15 @@ class Interpolator {
     }
 
     const handleFormat = key => {
-      if (key.indexOf(this.formatSeparator) < 0) {
-        return utils.getPathWithDefaults(data, defaultData, key);
+      if (this.alwaysFormat || key.includes(this.formatSeparator)) {
+        const p = key.split(this.formatSeparator);
+        const k = p.shift().trim();
+        const f = p.join(this.formatSeparator).trim();
+
+        return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng);
       }
 
-      const p = key.split(this.formatSeparator);
-      const k = p.shift().trim();
-      const f = p.join(this.formatSeparator).trim();
-
-      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng);
+      return utils.getPathWithDefaults(data, defaultData, key);
     };
 
     this.resetRegExp();

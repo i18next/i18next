@@ -230,6 +230,33 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - with formatter always', () => {
+    let ip;
+
+    before(() => {
+      ip = new Interpolator({
+        interpolation: {
+          alwaysFormat: true,
+          format: function(value, format, lng) {
+            if (format === 'uppercase') return value.toUpperCase();
+            return value.toLowerCase();
+          },
+        },
+      });
+    });
+
+    var tests = [
+      { args: ['test {{test, uppercase}}', { test: 'up' }], expected: 'test UP' },
+      { args: ['test {{test}}', { test: 'DOWN' }], expected: 'test down' },
+    ];
+
+    tests.forEach(test => {
+      it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('interpolate() - unescape', () => {
     var ip;
 
