@@ -79,8 +79,8 @@ class Interpolator {
 
     const handleFormat = key => {
       if (key.indexOf(this.formatSeparator) < 0) {
-        const value = utils.getPathWithDefaults(data, defaultData, key);
-        return this.alwaysFormat ? this.format(value, undefined, lng) : value;
+        const path = utils.getPathWithDefaults(data, defaultData, key);
+        return this.alwaysFormat ? this.format(path, undefined, lng) : path;
       }
 
       const p = key.split(this.formatSeparator);
