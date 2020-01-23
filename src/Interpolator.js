@@ -78,17 +78,16 @@ class Interpolator {
     }
 
     const handleFormat = key => {
-      if (key.includes(this.formatSeparator)) {
-        const p = key.split(this.formatSeparator);
-        const k = p.shift().trim();
-        const f = p.join(this.formatSeparator).trim();
-
-        return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng);
+      if (key.indexOf(this.formatSeparator) < 0) {
+        const value = utils.getPathWithDefaults(data, defaultData, key);
+        return this.alwaysFormat ? this.format(value, undefined, lng) : value;
       }
 
-      const value = utils.getPathWithDefaults(data, defaultData, key);
+      const p = key.split(this.formatSeparator);
+      const k = p.shift().trim();
+      const f = p.join(this.formatSeparator).trim();
 
-      return this.alwaysFormat ? this.format(value, undefined, lng) : value;
+      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng);
     };
 
     this.resetRegExp();
