@@ -78,7 +78,7 @@ class Interpolator {
     }
 
     const handleFormat = key => {
-      if (this.alwaysFormat || key.includes(this.formatSeparator)) {
+      if (key.includes(this.formatSeparator)) {
         const p = key.split(this.formatSeparator);
         const k = p.shift().trim();
         const f = p.join(this.formatSeparator).trim();
@@ -86,7 +86,9 @@ class Interpolator {
         return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng);
       }
 
-      return utils.getPathWithDefaults(data, defaultData, key);
+      const value = utils.getPathWithDefaults(data, defaultData, key);
+
+      return this.alwaysFormat ? this.format(value, undefined, lng) : value;
     };
 
     this.resetRegExp();
