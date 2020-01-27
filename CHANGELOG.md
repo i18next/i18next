@@ -1,6 +1,8 @@
-### next
+### 19.1.0
 
 - explict warning when no languageDetector is used and no lng is defined [1381](https://github.com/i18next/i18next/pull/1381)
+- Add option to always format interpolated values [1385](https://github.com/i18next/i18next/pull/1385)
+- pass all options to format function [992#issuecomment-577797162](https://github.com/i18next/i18next/issues/992#issuecomment-577797162)
 
 ### 19.0.3
 

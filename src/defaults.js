@@ -52,7 +52,7 @@ export function get() {
     },
     interpolation: {
       escapeValue: true,
-      format: (value, format, lng) => value,
+      format: (value, format, lng, options) => value,
       prefix: '{{',
       suffix: '}}',
       formatSeparator: ',',

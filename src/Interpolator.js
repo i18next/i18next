@@ -87,7 +87,7 @@ class Interpolator {
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng);
+      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, options);
     };
 
     this.resetRegExp();
