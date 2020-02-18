@@ -336,6 +336,15 @@ describe('Interpolator', () => {
         ],
         expected: 'test success',
       },
+      {
+        args: [
+          '$t(test, is, {"key": "success"})',
+          function(key, opts) {
+            return 'test, is ' + opts.key;
+          },
+        ],
+        expected: 'test, is success',
+      },
     ];
 
     tests.forEach(test => {
