@@ -158,8 +158,9 @@ class Interpolator {
       if (key.indexOf(',') < 0) return key;
 
       const p = key.split(',');
-      key = p.shift();
-      let optionsString = p.join(',');
+
+      let optionsString = p.pop();
+      key = p.join(',');
       optionsString = this.interpolate(optionsString, clonedOptions);
       optionsString = optionsString.replace(/'/g, '"');
 
