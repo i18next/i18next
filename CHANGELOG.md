@@ -1,3 +1,7 @@
+### 19.2.0
+
+- Add ability to use commas in nested keys [1398](https://github.com/i18next/i18next/pull/1398)
+
 ### 19.1.0
 
 - explict warning when no languageDetector is used and no lng is defined [1381](https://github.com/i18next/i18next/pull/1381)

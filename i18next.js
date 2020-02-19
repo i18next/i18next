@@ -1518,8 +1518,8 @@
         function handleHasOptions(key, inheritedOptions) {
           if (key.indexOf(',') < 0) return key;
           var p = key.split(',');
-          key = p.shift();
-          var optionsString = p.join(',');
+          var optionsString = p.pop();
+          key = p.join(',');
           optionsString = this.interpolate(optionsString, clonedOptions);
           optionsString = optionsString.replace(/'/g, '"');
 
