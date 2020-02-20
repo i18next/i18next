@@ -169,7 +169,8 @@ class Interpolator {
 
         if (inheritedOptions) clonedOptions = { ...inheritedOptions, ...clonedOptions };
       } catch (e) {
-        this.logger.error(`failed parsing options string in nesting for key ${key}`, e);
+        this.logger.warn(`failed parsing options string in nesting for key ${key}`, e);
+        return key;
       }
 
       // assert we do not get a endless loop on interpolating defaultValue again and again
