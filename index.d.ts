@@ -84,9 +84,15 @@ export interface InterpolationOptions {
    */
   nestingSuffixEscaped?: string;
   /**
+   * Separates options from key
+   * @default ','
+   */
+  nestingOptionsSeparator?: string;
+  /**
    * Global variables to use in interpolation replacements
    * @default undefined
    */
+
   defaultVariables?: { [index: string]: any };
   /**
    * After how many interpolation runs to break out before throwing a stack overflow

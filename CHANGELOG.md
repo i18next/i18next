@@ -1,3 +1,7 @@
+### 19.3.1
+
+- typescript: add `options.interpolation.nestingOptionsSeparator`
+
 ### 19.3.0
 
 - Double fix for 1395 issue [1399](https://github.com/i18next/i18next/pull/1399)
