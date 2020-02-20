@@ -38,6 +38,10 @@ class Interpolator {
       ? utils.regexEscape(iOpts.nestingSuffix)
       : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
 
+    this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator
+      ? iOpts.nestingOptionsSeparator
+      : iOpts.nestingOptionsSeparator || ',';
+
     this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
 
     this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false;
@@ -155,12 +159,13 @@ class Interpolator {
 
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
     function handleHasOptions(key, inheritedOptions) {
-      if (key.indexOf(',') < 0) return key;
+      const sep = this.nestingOptionsSeparator;
+      if (key.indexOf(sep) < 0) return key;
 
-      const p = key.split(',');
+      const p = key.split(sep);
 
       let optionsString = p.pop();
-      key = p.join(',');
+      key = p.join(sep);
       optionsString = this.interpolate(optionsString, clonedOptions);
       optionsString = optionsString.replace(/'/g, '"');
 
@@ -170,7 +175,7 @@ class Interpolator {
         if (inheritedOptions) clonedOptions = { ...inheritedOptions, ...clonedOptions };
       } catch (e) {
         this.logger.warn(`failed parsing options string in nesting for key ${key}`, e);
-        return key;
+        return `${key}${sep}${optionsString}`;
       }
 
       // assert we do not get a endless loop on interpolating defaultValue again and again

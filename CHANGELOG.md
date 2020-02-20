@@ -1,3 +1,8 @@
+### 19.3.0
+
+- Double fix for 1395 issue [1399](https://github.com/i18next/i18next/pull/1399)
+- adds `options.interpolation.nestingOptionsSeparator: ','` to specify that separator
+
 ### 19.2.0
 
 - Add ability to use commas in nested keys [1398](https://github.com/i18next/i18next/pull/1398)

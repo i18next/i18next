@@ -1394,6 +1394,7 @@
         this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
         this.nestingPrefix = iOpts.nestingPrefix ? regexEscape(iOpts.nestingPrefix) : iOpts.nestingPrefixEscaped || regexEscape('$t(');
         this.nestingSuffix = iOpts.nestingSuffix ? regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || regexEscape(')');
+        this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator ? iOpts.nestingOptionsSeparator : iOpts.nestingOptionsSeparator || ',';
         this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
         this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false; // the regexp
 
@@ -1516,10 +1517,11 @@
         // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
 
         function handleHasOptions(key, inheritedOptions) {
-          if (key.indexOf(',') < 0) return key;
-          var p = key.split(',');
+          var sep = this.nestingOptionsSeparator;
+          if (key.indexOf(sep) < 0) return key;
+          var p = key.split(sep);
           var optionsString = p.pop();
-          key = p.join(',');
+          key = p.join(sep);
           optionsString = this.interpolate(optionsString, clonedOptions);
           optionsString = optionsString.replace(/'/g, '"');
 
@@ -1527,7 +1529,8 @@
             clonedOptions = JSON.parse(optionsString);
             if (inheritedOptions) clonedOptions = _objectSpread({}, inheritedOptions, clonedOptions);
           } catch (e) {
-            this.logger.error("failed parsing options string in nesting for key ".concat(key), e);
+            this.logger.warn("failed parsing options string in nesting for key ".concat(key), e);
+            return "".concat(key).concat(sep).concat(optionsString);
           } // assert we do not get a endless loop on interpolating defaultValue again and again
 
 
@@ -1933,6 +1936,7 @@
         unescapePrefix: '-',
         nestingPrefix: '$t(',
         nestingSuffix: ')',
+        nestingOptionsSeparator: ',',
         // nestingPrefixEscaped: '$t(',
         // nestingSuffixEscaped: ')',
         // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data

@@ -63,6 +63,7 @@ export function get() {
 
       nestingPrefix: '$t(',
       nestingSuffix: ')',
+      nestingOptionsSeparator: ',',
       // nestingPrefixEscaped: '$t(',
       // nestingSuffixEscaped: ')',
       // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
