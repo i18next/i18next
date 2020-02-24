@@ -162,10 +162,10 @@ class Interpolator {
       const sep = this.nestingOptionsSeparator;
       if (key.indexOf(sep) < 0) return key;
 
-      const p = key.split(sep);
+      const c = key.split(new RegExp(`${sep}[ ]*{`));
 
-      let optionsString = p.pop();
-      key = p.join(sep);
+      let optionsString = `{${c[1]}`;
+      key = c[0];
       optionsString = this.interpolate(optionsString, clonedOptions);
       optionsString = optionsString.replace(/'/g, '"');
 

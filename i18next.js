@@ -1519,9 +1519,9 @@
         function handleHasOptions(key, inheritedOptions) {
           var sep = this.nestingOptionsSeparator;
           if (key.indexOf(sep) < 0) return key;
-          var p = key.split(sep);
-          var optionsString = p.pop();
-          key = p.join(sep);
+          var c = key.split(new RegExp("".concat(sep, "[ ]*{")));
+          var optionsString = "{".concat(c[1]);
+          key = c[0];
           optionsString = this.interpolate(optionsString, clonedOptions);
           optionsString = optionsString.replace(/'/g, '"');
 
