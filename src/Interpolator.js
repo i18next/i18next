@@ -185,6 +185,12 @@ class Interpolator {
 
     // regular escape on demand
     while ((match = this.nestingRegexp.exec(str))) {
+      let formatters = [];
+
+      if (match[0].includes(this.formatSeparator)) {
+        [match[1], ...formatters] = match[1].split(this.formatSeparator).map(elem => elem.trim());
+      }
+
       value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
 
       // is only the nesting key (key1 = '$(key2)') return the value without stringify
@@ -196,6 +202,9 @@ class Interpolator {
         this.logger.warn(`missed to resolve ${match[1]} for nesting ${str}`);
         value = '';
       }
+
+      value = formatters.reduce((v, f) => this.format(v, f, options.lng, options), value.trim());
+
       // Nested keys should not be escaped by default #854
       // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);

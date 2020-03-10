@@ -81,6 +81,7 @@
     "watchify": "3.9.0"
   },
   "scripts": {
+    "prepare": "npm run build",
     "pretest": "npm run test:typescript && npm run test:typescript:noninterop",
     "test": "npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",
