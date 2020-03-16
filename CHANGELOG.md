@@ -1,3 +1,7 @@
+### 19.3.3
+
+- backendConnector extend initial retry from 250 to 350
+
 ### 19.3.2
 
 - fix the nested string options parsing introduced in v19.2.0 which broke having multiple options

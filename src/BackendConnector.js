@@ -131,7 +131,7 @@ class Connector extends EventEmitter {
     this.queue = this.queue.filter(q => !q.done);
   }
 
-  read(lng, ns, fcName, tried = 0, wait = 250, callback) {
+  read(lng, ns, fcName, tried = 0, wait = 350, callback) {
     if (!lng.length) return callback(null, {}); // noting to load
 
     return this.backend[fcName](lng, ns, (err, data) => {

@@ -1748,7 +1748,7 @@
         var _this3 = this;
 
         var tried = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-        var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 250;
+        var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 350;
         var callback = arguments.length > 5 ? arguments[5] : undefined;
         if (!lng.length) return callback(null, {}); // noting to load
 
