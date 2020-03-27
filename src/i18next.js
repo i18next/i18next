@@ -469,12 +469,19 @@ class I18n extends EventEmitter {
     membersToCopy.forEach(m => {
       clone[m] = this[m];
     });
+    clone.services = { ...this.services };
+    clone.services.utils = {
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+    };
     clone.translator = new Translator(clone.services, clone.options);
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);
     });
     clone.init(mergedOptions, callback);
     clone.translator.options = clone.options; // sync options
+    clone.translator.backendConnector.services.utils = {
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+    };
 
     return clone;
   }
