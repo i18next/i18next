@@ -1,3 +1,7 @@
+### 19.3.4
+
+- fix cloning of service.utils binding to clone [1415](https://github.com/i18next/i18next/pull/1415)
+
 ### 19.3.3
 
 - backendConnector extend initial retry from 250 to 350
