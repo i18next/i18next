@@ -198,6 +198,9 @@ class I18n extends EventEmitter {
   }
 
   use(module) {
+    if (!module) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()')
+    if (!module.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()')
+
     if (module.type === 'backend') {
       this.modules.backend = module;
     }
