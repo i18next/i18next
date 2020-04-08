@@ -1,3 +1,7 @@
+### 19.4.0
+
+- support formatting in nesting [1419](https://github.com/i18next/i18next/pull/1419)
+
 ### 19.3.4
 
 - fix cloning of service.utils binding to clone [1415](https://github.com/i18next/i18next/pull/1415)
