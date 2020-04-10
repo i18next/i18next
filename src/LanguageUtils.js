@@ -76,6 +76,7 @@ class LanguageUtil {
     let found = fallbacks[code];
     if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
     if (!found) found = fallbacks[this.formatLanguageCode(code)];
+    if (!found) found = fallbacks[this.getLanguagePartFromCode(code)];
     if (!found) found = fallbacks.default;
 
     return found || [];

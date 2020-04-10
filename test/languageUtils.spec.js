@@ -36,6 +36,8 @@ describe('LanguageUtils', () => {
           'de-CH': ['fr', 'it', 'en'],
           'zh-Hans': ['zh-Hant', 'zh', 'en'],
           'zh-Hant': ['zh-Hans', 'zh', 'en'],
+          nb: ['no'],
+          nn: ['no'],
           default: ['en'],
         },
       });
@@ -45,7 +47,8 @@ describe('LanguageUtils', () => {
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'de-CH', 'en'] },
       { args: ['de-CH'], expected: ['de-CH', 'de', 'fr', 'it', 'en'] },
-      { args: ['nb-NO'], expected: ['nb-NO', 'nb', 'en'] },
+      { args: ['nb-NO'], expected: ['nb-NO', 'nb', 'no'] },
+      { args: ['nn'], expected: ['nn', 'no'] },
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en'] },
     ];
 
