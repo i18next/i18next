@@ -1,3 +1,7 @@
+### 19.4.1
+
+- add getLanguagePartFromCode as in language fallback resolution [1424](https://github.com/i18next/i18next/pull/1424)
+
 ### 19.4.0
 
 - support formatting in nesting [1419](https://github.com/i18next/i18next/pull/1419)
