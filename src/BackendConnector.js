@@ -15,9 +15,10 @@ class Connector extends EventEmitter {
   constructor(backend, store, services, options = {}) {
     super();
     if (
-      typeof navigator !== 'undefined' &&
-      navigator.userAgent &&
-      navigator.userAgent.indexOf('MSIE') > -1
+      typeof window !== 'undefined' &&
+      window.navigator &&
+      window.navigator.userAgent &&
+      window.navigator.userAgent.indexOf('MSIE') > -1
     ) {
       EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
     }

@@ -15,7 +15,7 @@ function noop() { }
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
-    if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.indexOf('MSIE') > -1) {
+    if (typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1) {
       EventEmitter.call(this) // <=IE10 fix (unable to call parent constructor)
     }
 
