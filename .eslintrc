@@ -27,3 +27,4 @@ globals:
   it: true
   before: true
   after: true
+  window: true

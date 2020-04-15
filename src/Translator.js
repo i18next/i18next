@@ -8,7 +8,9 @@ const checkedLoadedFor = {};
 class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
-    EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
+    if (utils.isIE10) {
+      EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
+    }
 
     utils.copy(
       [
@@ -74,7 +76,7 @@ class Translator extends EventEmitter {
     if (!options) options = {};
 
     // non valid keys handling
-    if (keys === undefined || keys === null/* || keys === ''*/) return '';
+    if (keys === undefined || keys === null /* || keys === ''*/) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     // separators
