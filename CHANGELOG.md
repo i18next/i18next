@@ -1,3 +1,7 @@
+### 19.4.2
+
+- fix for deno [1428](https://github.com/i18next/i18next/pull/1428)
+
 ### 19.4.1
 
 - add getLanguagePartFromCode as in language fallback resolution [1424](https://github.com/i18next/i18next/pull/1424)
