@@ -4,7 +4,13 @@ import * as utils from './utils.js';
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
     super();
-    EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
+    if (
+      typeof navigator !== 'undefined' &&
+      navigator.userAgent &&
+      navigator.userAgent.indexOf('MSIE') > -1
+    ) {
+      EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
+    }
 
     this.data = data || {};
     this.options = options;
