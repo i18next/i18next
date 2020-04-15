@@ -8,12 +8,7 @@ const checkedLoadedFor = {};
 class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
-    if (
-      typeof window !== 'undefined' &&
-      window.navigator &&
-      window.navigator.userAgent &&
-      window.navigator.userAgent.indexOf('MSIE') > -1
-    ) {
+    if (utils.isIE10) {
       EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
     }
 
