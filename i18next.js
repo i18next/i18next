@@ -1573,6 +1573,8 @@
            *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
            */
 
+          var doReduce = false;
+
           if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
             var _match$1$split$map = match[1].split(this.formatSeparator).map(function (elem) {
               return elem.trim();
@@ -1582,6 +1584,7 @@
 
             match[1] = _match$1$split$map2[0];
             formatters = _match$1$split$map2.slice(1);
+            doReduce = true;
           }
 
           value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions); // is only the nesting key (key1 = '$(key2)') return the value without stringify
@@ -1595,10 +1598,13 @@
             value = '';
           }
 
-          value = formatters.reduce(function (v, f) {
-            return _this2.format(v, f, options.lng, options);
-          }, value.trim()); // Nested keys should not be escaped by default #854
+          if (doReduce) {
+            value = formatters.reduce(function (v, f) {
+              return _this2.format(v, f, options.lng, options);
+            }, value.trim());
+          } // Nested keys should not be escaped by default #854
           // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
+
 
           str = str.replace(match[0], value);
           this.regexp.lastIndex = 0;
