@@ -23,6 +23,8 @@ describe('i18next.translation.formatting', () => {
               key5: 'Here is some text',
               key6: 'Here is some text with numb3r5',
               key7: 'Here is some: text? with, (punctuation)',
+              withSpace: ' there',
+              keyWithNesting: 'hi$t(withSpace)',
             },
           },
         },
@@ -70,6 +72,10 @@ describe('i18next.translation.formatting', () => {
       {
         args: ['missingTranslationTest'],
         expected: 'No text will be shown when the translation key is missing: ',
+      },
+      {
+        args: ['keyWithNesting'],
+        expected: 'hi there',
       },
     ];
 

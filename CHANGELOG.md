@@ -1,3 +1,7 @@
+### 19.4.3
+
+- fix regression introduced in "support formatting in nesting" [1419](https://github.com/i18next/i18next/pull/1419)
+
 ### 19.4.2
 
 - fix for deno [1428](https://github.com/i18next/i18next/pull/1428)

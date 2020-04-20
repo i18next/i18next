@@ -196,8 +196,10 @@ class Interpolator {
        *   - Not t(a, { "key": "{{variable}}" })
        *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
        */
+      let doReduce = false;
       if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
         [match[1], ...formatters] = match[1].split(this.formatSeparator).map(elem => elem.trim());
+        doReduce = true;
       }
 
       value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
@@ -212,7 +214,9 @@ class Interpolator {
         value = '';
       }
 
-      value = formatters.reduce((v, f) => this.format(v, f, options.lng, options), value.trim());
+      if (doReduce) {
+        value = formatters.reduce((v, f) => this.format(v, f, options.lng, options), value.trim());
+      }
 
       // Nested keys should not be escaped by default #854
       // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
