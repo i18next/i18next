@@ -1,6 +1,6 @@
 # i18next: learn once - translate everywhere
 
-## visit ➡️ [i18next.com](https://i18next.com)
+## visit ➡️ [i18next.com](https://www.i18next.com)
 
 ```js
 import i18next from 'https://deno.land/x/i18next/index.js';
