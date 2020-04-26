@@ -700,7 +700,7 @@ export interface Module {
 }
 
 export type CallbackError = Error | null | undefined;
-export type ReadCallback = (err: CallbackError, data: ResourceKey) => void;
+export type ReadCallback = (err: CallbackError, data: ResourceKey | boolean) => void;
 export type MultiReadCallback = (err: CallbackError, data: Resource) => void;
 
 /**
