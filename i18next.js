@@ -2067,6 +2067,7 @@
 
         this.options = _objectSpread({}, get(), this.options, transformOptions(options));
         this.format = this.options.interpolation.format;
+        var thereIsACallback = !!callback;
         if (!callback) callback = noop;
 
         function createClassOnDemand(ClassOrObject) {
@@ -2145,7 +2146,7 @@
             return (_this2$store = _this2.store)[fcName].apply(_this2$store, arguments);
           };
         });
-        var deferred = defer();
+        var deferred = !thereIsACallback ? defer() : this;
 
         var load = function load() {
           _this2.changeLanguage(_this2.options.lng, function (err, t) {
@@ -2155,7 +2156,7 @@
 
             _this2.emit('initialized', _this2.options);
 
-            deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
+            if (!thereIsACallback) deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
 
             callback(err, t);
           });
@@ -2220,12 +2221,13 @@
     }, {
       key: "reloadResources",
       value: function reloadResources(lngs, ns, callback) {
-        var deferred = defer();
+        var thereIsACallback = !!callback;
+        var deferred = !thereIsACallback ? defer() : this;
         if (!lngs) lngs = this.languages;
         if (!ns) ns = this.options.ns;
         if (!callback) callback = noop;
         this.services.backendConnector.reload(lngs, ns, function (err) {
-          deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
+          if (!thereIsACallback) deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
 
           callback(err);
         });
@@ -2269,7 +2271,8 @@
         var _this4 = this;
 
         this.isLanguageChangingTo = lng;
-        var deferred = defer();
+        var thereIsACallback = !!callback;
+        var deferred = !thereIsACallback ? defer() : this;
         this.emit('languageChanging', lng);
 
         var done = function done(err, l) {
@@ -2288,7 +2291,7 @@
             _this4.isLanguageChangingTo = undefined;
           }
 
-          deferred.resolve(function () {
+          if (!thereIsACallback) deferred.resolve(function () {
             return _this4.t.apply(_this4, arguments);
           });
           if (callback) callback(err, function () {
@@ -2414,11 +2417,13 @@
       value: function loadNamespaces(ns, callback) {
         var _this7 = this;
 
-        var deferred = defer();
+        var thereIsACallback = !!callback;
+        var deferred = !thereIsACallback ? defer() : this;
 
         if (!this.options.ns) {
           callback && callback();
-          return Promise.resolve();
+          if (!thereIsACallback) return Promise.resolve();
+          return;
         }
 
         if (typeof ns === 'string') ns = [ns];
@@ -2426,7 +2431,7 @@
           if (_this7.options.ns.indexOf(n) < 0) _this7.options.ns.push(n);
         });
         this.loadResources(function (err) {
-          deferred.resolve();
+          if (!thereIsACallback) deferred.resolve();
           if (callback) callback(err);
         });
         return deferred;
@@ -2434,7 +2439,8 @@
     }, {
       key: "loadLanguages",
       value: function loadLanguages(lngs, callback) {
-        var deferred = defer();
+        var thereIsACallback = !!callback;
+        var deferred = !thereIsACallback ? defer() : this;
         if (typeof lngs === 'string') lngs = [lngs];
         var preloaded = this.options.preload || [];
         var newLngs = lngs.filter(function (lng) {
@@ -2443,12 +2449,13 @@
 
         if (!newLngs.length) {
           if (callback) callback();
-          return Promise.resolve();
+          if (!thereIsACallback) return Promise.resolve();
+          return;
         }
 
         this.options.preload = preloaded.concat(newLngs);
         this.loadResources(function (err) {
-          deferred.resolve();
+          if (!thereIsACallback) deferred.resolve();
           if (callback) callback(err);
         });
         return deferred;
