@@ -1,3 +1,7 @@
+### 19.4.4
+
+- typescript: Allow passing retry boolean to `ReadCallback` [1439](https://github.com/i18next/i18next/pull/1439)
+
 ### 19.4.3
 
 - fix regression introduced in "support formatting in nesting" [1419](https://github.com/i18next/i18next/pull/1419)
