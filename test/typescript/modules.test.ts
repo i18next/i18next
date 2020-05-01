@@ -72,6 +72,7 @@ i18next.use(externalModules);
 
 // exercise class usage
 class MyLoggerModule implements LoggerModule {
+  static type: 'logger' = 'logger';
   type: 'logger' = 'logger';
   log = () => null;
   warn = () => null;
