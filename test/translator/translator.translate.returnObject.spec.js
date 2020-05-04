@@ -21,6 +21,7 @@ describe('Translator', () => {
               hello: 'hello {{what}}',
               foo: 'bar',
             },
+            requirements: ['lorem ipsum', 'lorem ipsum', 'hello {{what}}'],
             boolean: { value: true },
             number: { value: 42 },
           },
@@ -55,11 +56,7 @@ describe('Translator', () => {
           returnObjects: true,
           ns: ['common', 'special', 'withContext'],
           defaultNS: 'common',
-          interpolation: {
-            interpolateResult: true,
-            interpolateDefaultValue: true,
-            interpolateKey: true,
-          },
+          interpolation: {},
         },
       );
       t.changeLanguage('en');
@@ -72,6 +69,10 @@ describe('Translator', () => {
       {
         args: ['common:somethingElse', { min: '1', max: '1000', what: 'world' }],
         expected: { range: '[1..1000]', hello: 'hello world', foo: 'bar' },
+      },
+      {
+        args: ['common:requirements', { what: 'world' }],
+        expected: ['lorem ipsum', 'lorem ipsum', 'hello world'],
       },
 
       // should not overwrite store value
@@ -88,6 +89,7 @@ describe('Translator', () => {
 
     tests.forEach(test => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+        console.warn(t.translate.apply(t, test.args));
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
