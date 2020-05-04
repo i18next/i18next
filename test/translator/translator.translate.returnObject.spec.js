@@ -16,6 +16,11 @@ describe('Translator', () => {
             something: {
               range: '[{{min}}..{{max}}]',
             },
+            somethingElse: {
+              range: '[{{min}}..{{max}}]',
+              hello: 'hello {{what}}',
+              foo: 'bar',
+            },
             boolean: { value: true },
             number: { value: 42 },
           },
@@ -64,8 +69,14 @@ describe('Translator', () => {
       { args: ['common:test'], expected: ['common_test_en_1', 'common_test_en_2'] },
       { args: ['special:test'], expected: ['special_test_en_1', 'special_test_en_2'] },
 
+      {
+        args: ['common:somethingElse', { min: '1', max: '1000', what: 'world' }],
+        expected: { range: '[1..1000]', hello: 'hello world', foo: 'bar' },
+      },
+
       // should not overwrite store value
       { args: ['common:something'], expected: { range: '[..]' } },
+      { args: ['common:something', { min: '1', max: '1000' }], expected: { range: '[1..1000]' } },
       { args: ['common:something.range', { min: '1', max: '1000' }], expected: '[1..1000]' },
       { args: ['common:boolean'], expected: { value: true } },
       { args: ['common:number'], expected: { value: 42 } },
