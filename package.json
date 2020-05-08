@@ -2,8 +2,27 @@
   "name": "i18next",
   "version": "19.4.4",
   "description": "i18next internationalization framework",
-  "main": "./dist/cjs/i18next.js",
-  "module": "./dist/esm/i18next.js",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./src/index.js",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "default": "./src/index.js"
+    },
+    "./cjs": {
+      "default": "./dist/cjs/index.js"
+    },
+    "./dist/cjs": {
+      "default": "./dist/cjs/index.js"
+    },
+    "./esm": {
+      "default": "./dist/esm/index.js"
+    },
+    "./dist/esm": {
+      "default": "./dist/esm/index.js"
+    }
+  },
   "types": "./index.d.ts",
   "keywords": [
     "i18next",
@@ -21,10 +40,9 @@
     "type": "git",
     "url": "https://github.com/i18next/i18next.git"
   },
-  "dependencies": {
-    "@babel/runtime": "^7.3.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-async-generator-functions": "^7.2.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
@@ -35,6 +53,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "babelify": "^10.0.0",
     "browserify": "14.0.0",
     "browserify-istanbul": "2.0.0",
@@ -83,13 +102,15 @@
   "scripts": {
     "pretest": "npm run test:typescript && npm run test:typescript:noninterop",
     "test": "npm run test:new && npm run test:compat",
-    "test:new": "karma start karma.conf.js --singleRun",
-    "test:compat": "karma start karma.backward.conf.js --singleRun",
+    "test:new": "karma start karma.conf.cjs --singleRun",
+    "test:compat": "karma start karma.backward.conf.cjs --singleRun",
     "test:typescript": "tslint --project tsconfig.json",
     "test:typescript:noninterop": "tslint --project tsconfig.nonEsModuleInterop.json",
-    "tdd": "karma start karma.conf.js",
-    "tdd:compat": "karma start karma.backward.conf.js",
-    "build": "rimraf dist && rollup -c && cpy \"./dist/umd/*.js\" ./",
+    "tdd": "karma start karma.conf.cjs",
+    "tdd:compat": "karma start karma.backward.conf.cjs",
+    "cjs": "rimraf dist/cjs && babel src -d dist/cjs --presets=@babel/preset-env --plugins=add-module-exports && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+    "browser": "rollup -c && cpy \"./dist/umd/*.js\" ./",
+    "build": "npm run cjs && npm run browser",
     "preversion": "npm run test && npm run build && git push",
     "postversion": "git push && git push --tags",
     "prettier": "prettier --write \"{,**/}*.{ts,tsx,js,json,md}\""

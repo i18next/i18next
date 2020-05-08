@@ -23,8 +23,8 @@ exclude_paths:
   - 'i18next.min.js'
   - 'index.d.ts'
   - 'rollup.config.js'
-  - 'karma.conf.js'
-  - 'karma.backward.conf.js'
+  - 'karma.conf.cjs'
+  - 'karma.backward.conf.cjs'
 checks:
   file-lines:
     config:

@@ -15,16 +15,17 @@ const name = 'i18next';
 const external = id => !id.startsWith('.') && !id.startsWith('/') && !id.includes(':');
 
 export default [
-  {
-    input,
-    output: { format: 'cjs', file: pkg.main },
-    external,
-    plugins: [babel(getBabelOptions({ useESModules: false }))],
-  },
+  // {
+  //   input,
+  //   output: { format: 'cjs', file: pkg.main },
+  //   external,
+  //   plugins: [babel(getBabelOptions({ useESModules: false }))],
+  // },
 
   {
     input,
-    output: { format: 'esm', file: pkg.module },
+    // output: { format: 'esm', file: pkg.module },
+    output: { format: 'esm', file: `dist/esm/${name}.js` },
     external,
     plugins: [babel(getBabelOptions({ useESModules: true }))],
   },

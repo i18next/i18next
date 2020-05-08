@@ -1,3 +1,7 @@
+### 20.0.0
+
+- by default i18next is now exported as module (for Node.js > 13)
+
 ### 19.4.4
 
 - typescript: Allow passing retry boolean to `ReadCallback` [1439](https://github.com/i18next/i18next/pull/1439)
