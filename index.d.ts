@@ -680,8 +680,19 @@ export interface Interpolator {
 
 export class ResourceStore {
   constructor(data: Resource, options: InitOptions);
+
   public data: Resource;
   public options: InitOptions;
+
+  /**
+   * Gets fired when resources got added
+   */
+  on(event: 'added', callback: (lng: string, ns: string) => void): void;
+
+  /**
+   * Gets fired when resources got removed.
+   */
+  on(event: 'removed', callback: (lng: string, ns: string) => void): void;
 }
 
 export interface Services {
@@ -825,6 +836,11 @@ export interface i18n {
    * Internal container for all used plugins and implementation details like languageUtils, pluralResolvers, etc.
    */
   services: Services;
+
+  /**
+   * Internal container for translation resources
+   */
+  store: ResourceStore;
 
   /**
    * Uses similar args as the t function and returns true if a key exists.
