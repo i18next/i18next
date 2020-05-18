@@ -754,7 +754,7 @@ export interface Services {
   resourceStore: ResourceStore;
 }
 
-export type SupportedType =
+export type ModuleType =
   | 'backend'
   | 'logger'
   | 'languageDetector'
@@ -763,7 +763,7 @@ export type SupportedType =
   | '3rdParty';
 
 export interface Module {
-  type: SupportedType;
+  type: ModuleType;
 }
 
 export type CallbackError = Error | null | undefined;
@@ -889,8 +889,6 @@ export interface i18n {
    * @param module Accepts a class or object
    */
   use<T extends Module>(module: T | NewableModule<T>): this;
-
-  use<T extends ThirdPartyModule>(module: T[] | Array<NewableModule<T>>): this;
 
   /**
    * List of modules used
