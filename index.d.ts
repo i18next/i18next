@@ -679,10 +679,9 @@ declare namespace i18next {
     nest(str: string, fc: (...args: any[]) => any, options: InterpolationOptions): string;
   }
 
-  export class ResourceStore {
-    constructor(data: Resource, options: InitOptions);
-    public data: Resource;
-    public options: InitOptions;
+  export interface ResourceStore {
+    data: Resource;
+    options: InitOptions;
   }
 
   export interface Services {
