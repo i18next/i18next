@@ -581,11 +581,11 @@ export interface TOptionsBase {
   /**
    * Override char to separate keys
    */
-  keySeparator?: string;
+  keySeparator?: false | string;
   /**
    * Override char to split namespace from key
    */
-  nsSeparator?: string;
+  nsSeparator?: false | string;
   /**
    * Accessing an object not a translation string (can be set globally too)
    */
