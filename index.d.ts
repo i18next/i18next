@@ -685,14 +685,9 @@ export class ResourceStore {
   public options: InitOptions;
 
   /**
-   * Gets fired when resources got added
+   * Gets fired when resources got added or removed
    */
-  on(event: 'added', callback: (lng: string, ns: string) => void): void;
-
-  /**
-   * Gets fired when resources got removed.
-   */
-  on(event: 'removed', callback: (lng: string, ns: string) => void): void;
+  on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
 }
 
 export interface Services {
