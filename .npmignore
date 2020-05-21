@@ -15,3 +15,8 @@ sample.html
 .codeclimate.yml
 .coveralls.yml
 tsconfig.json
+.prettierignore
+.prettierrc
+rollup.config.js
+tsconfig.nonEsModuleInterop
+tslint.json

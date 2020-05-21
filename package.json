@@ -4,12 +4,12 @@
   "description": "i18next internationalization framework",
   "type": "module",
   "main": "./dist/cjs/index.js",
-  "module": "./src/index.js",
+  "module": "./esm/i18next.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "require": "./dist/cjs/index.js",
-      "default": "./src/index.js"
+      "default": "./esm/i18next.js"
     },
     "./cjs": {
       "default": "./dist/cjs/index.js"
