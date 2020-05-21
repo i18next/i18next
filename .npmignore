@@ -11,6 +11,9 @@ assets/
 bower.json
 gulpfile.js
 karma.conf.js
+karma.backward.conf.js
+karma.conf.cjs
+karma.backward.conf.cjs
 sample.html
 .codeclimate.yml
 .coveralls.yml
@@ -20,3 +23,4 @@ tsconfig.json
 rollup.config.js
 tsconfig.nonEsModuleInterop
 tslint.json
+CHANGELOG.md
