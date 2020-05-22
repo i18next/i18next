@@ -332,6 +332,9 @@ i18next.on('removed', (lng: string, ns: string) => {});
 i18next.on('languageChanged', (lng: string) => {});
 i18next.on('customEvent', () => {});
 
+i18next.store.on('added', (lng: string, ns: string) => {});
+i18next.store.on('removed', (lng: string, ns: string) => {});
+
 i18next.getResource('en', 'test', 'key');
 i18next.getResource('en', 'test', 'key', { keySeparator: '-' });
 
