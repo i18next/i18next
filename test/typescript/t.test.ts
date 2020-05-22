@@ -140,4 +140,9 @@ function interpolation(t: TFunction) {
 
   t('arrayOfObjects.0.name');
   // -> "tom"
+
+  t('welcome here :)', { nsSeparator: false });
+  // -> "welcome here :)"
+  t('welcome ...', { keySeparator: false });
+  // -> "welcome ..."
 }
