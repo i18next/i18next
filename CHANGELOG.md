@@ -1,3 +1,7 @@
+### 19.4.5
+
+- Add store events to typings [1451](https://github.com/i18next/i18next/pull/1451)
+
 ### 19.4.4
 
 - typescript: Allow passing retry boolean to `ReadCallback` [1439](https://github.com/i18next/i18next/pull/1439)
