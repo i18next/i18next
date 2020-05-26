@@ -108,7 +108,7 @@ class I18n extends EventEmitter {
         if (m.init) m.init(this);
       });
     }
-    
+
     if (!this.modules.languageDetector && !this.options.lng) {
       this.logger.warn('init: no languageDetector is used and no lng is defined');
     }
@@ -439,6 +439,7 @@ class I18n extends EventEmitter {
       'pst',
       'prp',
       'prd',
+      'ug',
       'ur',
       'ydd',
       'yds',
