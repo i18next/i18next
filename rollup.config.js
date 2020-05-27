@@ -7,6 +7,7 @@ const getBabelOptions = ({ useESModules }) => ({
   exclude: /node_modules/,
   runtimeHelpers: true,
   plugins: [['@babel/transform-runtime', { useESModules }]],
+  comments: false,
 });
 
 const input = './src/index.js';
