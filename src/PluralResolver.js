@@ -78,9 +78,9 @@ function createRules() {
 }
 
 class PluralResolver {
-  constructor(languageUtils, options = {}) {
+  constructor(languageUtils, opt = {}) {
     this.languageUtils = languageUtils;
-    this.options = options;
+    this.options = opt;
 
     this.logger = baseLogger.create('pluralResolver');
 

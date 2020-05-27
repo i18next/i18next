@@ -13,38 +13,38 @@ import { defer, isIE10 } from './utils.js';
 function noop() { }
 
 class I18n extends EventEmitter {
-  constructor(options = {}, callback) {
+  constructor(opt = {}, clb) {
     super();
     if (isIE10) {
       EventEmitter.call(this) // <=IE10 fix (unable to call parent constructor)
     }
 
-    this.options = transformOptions(options);
+    this.options = transformOptions(opt);
     this.services = {};
     this.logger = baseLogger;
     this.modules = { external: [] };
 
-    if (callback && !this.isInitialized && !options.isClone) {
+    if (clb && !this.isInitialized && !opt.isClone) {
       // https://github.com/i18next/i18next/issues/879
       if (!this.options.initImmediate) {
-        this.init(options, callback);
+        this.init(opt, clb);
         return this;
       }
       setTimeout(() => {
-        this.init(options, callback);
+        this.init(opt, clb);
       }, 0);
     }
   }
 
-  init(options = {}, callback) {
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
+  init(opt = {}, clb) {
+    if (typeof opt === 'function') {
+      clb = opt;
+      opt = {};
     }
-    this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
+    this.options = { ...getDefaults(), ...this.options, ...transformOptions(opt) };
 
     this.format = this.options.interpolation.format;
-    if (!callback) callback = noop;
+    if (!clb) clb = noop;
 
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return null;
@@ -128,7 +128,7 @@ class I18n extends EventEmitter {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
 
-    const deferred = defer();
+    const def = defer();
 
     const load = () => {
       this.changeLanguage(this.options.lng, (err, t) => {
@@ -136,8 +136,8 @@ class I18n extends EventEmitter {
         this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
 
-        deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
-        callback(err, t);
+        def.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
+        clb(err, t);
       });
     };
 
@@ -147,12 +147,12 @@ class I18n extends EventEmitter {
       setTimeout(load, 0);
     }
 
-    return deferred;
+    return def;
   }
 
   /* eslint consistent-return: 0 */
-  loadResources(language, callback = noop) {
-    let usedCallback = callback;
+  loadResources(language, clb = noop) {
+    let usedCallback = clb;
     let usedLng = typeof language === 'string' ? language : this.language;
     if (typeof language === 'function') usedCallback = language;
 
@@ -187,52 +187,52 @@ class I18n extends EventEmitter {
     }
   }
 
-  reloadResources(lngs, ns, callback) {
-    const deferred = defer();
+  reloadResources(lngs, ns, clb) {
+    const def = defer();
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
-    if (!callback) callback = noop;
+    if (!clb) clb = noop;
     this.services.backendConnector.reload(lngs, ns, err => {
-      deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
-      callback(err);
+      def.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
+      clb(err);
     });
-    return deferred;
+    return def;
   }
 
-  use(module) {
-    if (!module) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()')
-    if (!module.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()')
+  use(m) {
+    if (!m) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()')
+    if (!m.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()')
 
-    if (module.type === 'backend') {
-      this.modules.backend = module;
+    if (m.type === 'backend') {
+      this.modules.backend = m;
     }
 
-    if (module.type === 'logger' || (module.log && module.warn && module.error)) {
-      this.modules.logger = module;
+    if (m.type === 'logger' || (m.log && m.warn && m.error)) {
+      this.modules.logger = m;
     }
 
-    if (module.type === 'languageDetector') {
-      this.modules.languageDetector = module;
+    if (m.type === 'languageDetector') {
+      this.modules.languageDetector = m;
     }
 
-    if (module.type === 'i18nFormat') {
-      this.modules.i18nFormat = module;
+    if (m.type === 'i18nFormat') {
+      this.modules.i18nFormat = m;
     }
 
-    if (module.type === 'postProcessor') {
-      postProcessor.addPostProcessor(module);
+    if (m.type === 'postProcessor') {
+      postProcessor.addPostProcessor(m);
     }
 
-    if (module.type === '3rdParty') {
-      this.modules.external.push(module);
+    if (m.type === '3rdParty') {
+      this.modules.external.push(m);
     }
 
     return this;
   }
 
-  changeLanguage(lng, callback) {
+  changeLanguage(lng, clb) {
     this.isLanguageChangingTo = lng;
-    const deferred = defer();
+    const def = defer();
     this.emit('languageChanging', lng);
 
     const done = (err, l) => {
@@ -247,8 +247,8 @@ class I18n extends EventEmitter {
         this.isLanguageChangingTo = undefined;
       }
 
-      deferred.resolve((...args) => this.t(...args));
-      if (callback) callback(err, (...args) => this.t(...args));
+      def.resolve((...args) => this.t(...args));
+      if (clb) clb(err, (...args) => this.t(...args));
     };
 
     const setLng = l => {
@@ -275,22 +275,22 @@ class I18n extends EventEmitter {
       setLng(lng);
     }
 
-    return deferred;
+    return def;
   }
 
   getFixedT(lng, ns) {
     const fixedT = (key, opts, ...rest) => {
-      let options;
+      let opt;
       if (typeof opts !== 'object') {
-        options = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+        opt = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
       } else {
-        options = { ...opts };
+        opt = { ...opts };
       }
 
-      options.lng = options.lng || fixedT.lng;
-      options.lngs = options.lngs || fixedT.lngs;
-      options.ns = options.ns || fixedT.ns;
-      return this.t(key, options);
+      opt.lng = opt.lng || fixedT.lng;
+      opt.lngs = opt.lngs || fixedT.lngs;
+      opt.ns = opt.ns || fixedT.ns;
+      return this.t(key, opt);
     };
     if (typeof lng === 'string') {
       fixedT.lng = lng;
@@ -347,11 +347,11 @@ class I18n extends EventEmitter {
     return false;
   }
 
-  loadNamespaces(ns, callback) {
-    const deferred = defer();
+  loadNamespaces(ns, clb) {
+    const def = defer();
 
     if (!this.options.ns) {
-      callback && callback();
+      clb && clb();
       return Promise.resolve();
     }
     if (typeof ns === 'string') ns = [ns];
@@ -361,15 +361,15 @@ class I18n extends EventEmitter {
     });
 
     this.loadResources(err => {
-      deferred.resolve();
-      if (callback) callback(err);
+      def.resolve();
+      if (clb) clb(err);
     });
 
-    return deferred;
+    return def;
   }
 
-  loadLanguages(lngs, callback) {
-    const deferred = defer();
+  loadLanguages(lngs, clb) {
+    const def = defer();
 
     if (typeof lngs === 'string') lngs = [lngs];
     const preloaded = this.options.preload || [];
@@ -377,17 +377,17 @@ class I18n extends EventEmitter {
     const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0);
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
-      if (callback) callback();
+      if (clb) clb();
       return Promise.resolve();
     }
 
     this.options.preload = preloaded.concat(newLngs);
     this.loadResources(err => {
-      deferred.resolve();
-      if (callback) callback(err);
+      def.resolve();
+      if (clb) clb(err);
     });
 
-    return deferred;
+    return def;
   }
 
   dir(lng) {
@@ -464,15 +464,15 @@ class I18n extends EventEmitter {
   }
 
   /* eslint class-methods-use-this: 0 */
-  createInstance(options = {}, callback) {
-    return new I18n(options, callback);
+  createInstance(opt = {}, clb) {
+    return new I18n(opt, clb);
   }
 
-  cloneInstance(options = {}, callback = noop) {
-    const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
-    const clone = new I18n(mergedOptions);
-    const membersToCopy = ['store', 'services', 'language'];
-    membersToCopy.forEach(m => {
+  cloneInstance(opt = {}, clb = noop) {
+    const mOpt = { ...this.options, ...opt, ...{ isClone: true } };
+    const clone = new I18n(mOpt);
+    const memToCopy = ['store', 'services', 'language'];
+    memToCopy.forEach(m => {
       clone[m] = this[m];
     });
     clone.services = { ...this.services };
@@ -483,8 +483,8 @@ class I18n extends EventEmitter {
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);
     });
-    clone.init(mergedOptions, callback);
-    clone.translator.options = clone.options; // sync options
+    clone.init(mOpt, clb);
+    clone.translator.options = clone.options; // sync opt
     clone.translator.backendConnector.services.utils = {
       hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
     };

@@ -28,12 +28,12 @@ export function get() {
     missingInterpolationHandler: false, // function(str, match)
 
     postProcess: false, // string or array of postProcessor names
-    postProcessPassResolved: false, // pass resolved object into 'options.i18nResolved' for postprocessor
+    postProcessPassResolved: false, // pass resolved object into 'opt.i18nResolved' for postprocessor
     returnNull: true, // allows null value as valid translation
     returnEmptyString: true, // allows empty string value as valid translation
     returnObjects: false,
     joinArrays: false, // or string to join array
-    returnedObjectHandler: false, // function(key, value, options) triggered if key returns object but returnObjects is set to false
+    returnedObjectHandler: false, // function(key, value, opt) triggered if key returns object but returnObjects is set to false
     parseMissingKeyHandler: false, // function(key) parsed a key that was not found in t() before returning
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
@@ -43,16 +43,16 @@ export function get() {
       if (typeof args[1] === 'string') ret.defaultValue = args[1];
       if (typeof args[2] === 'string') ret.tDescription = args[2];
       if (typeof args[2] === 'object' || typeof args[3] === 'object') {
-        var options = args[3] || args[2];
-        Object.keys(options).forEach(function(key) {
-          ret[key] = options[key];
+        var opt = args[3] || args[2];
+        Object.keys(opt).forEach(function(key) {
+          ret[key] = opt[key];
         });
       }
       return ret;
     },
     interpolation: {
       escapeValue: true,
-      format: (value, format, lng, options) => value,
+      format: (value, format, lng, opt) => value,
       prefix: '{{',
       suffix: '}}',
       formatSeparator: ',',
@@ -73,16 +73,16 @@ export function get() {
 }
 
 /* eslint no-param-reassign: 0 */
-export function transformOptions(options) {
+export function transformOptions(opt) {
   // create namespace object if namespace is passed in as string
-  if (typeof options.ns === 'string') options.ns = [options.ns];
-  if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
-  if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
+  if (typeof opt.ns === 'string') opt.ns = [opt.ns];
+  if (typeof opt.fallbackLng === 'string') opt.fallbackLng = [opt.fallbackLng];
+  if (typeof opt.fallbackNS === 'string') opt.fallbackNS = [opt.fallbackNS];
 
   // extend whitelist with cimode
-  if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-    options.whitelist = options.whitelist.concat(['cimode']);
+  if (opt.whitelist && opt.whitelist.indexOf('cimode') < 0) {
+    opt.whitelist = opt.whitelist.concat(['cimode']);
   }
 
-  return options;
+  return opt;
 }

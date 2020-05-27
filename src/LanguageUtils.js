@@ -5,8 +5,8 @@ function capitalize(string) {
 }
 
 class LanguageUtil {
-  constructor(options) {
-    this.options = options;
+  constructor(opt) {
+    this.options = opt;
 
     this.whitelist = this.options.whitelist || false;
     this.logger = baseLogger.create('languageUtils');

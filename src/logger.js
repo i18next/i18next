@@ -20,15 +20,15 @@ const consoleLogger = {
 };
 
 class Logger {
-  constructor(concreteLogger, options = {}) {
-    this.init(concreteLogger, options);
+  constructor(concreteLogger, opt = {}) {
+    this.init(concreteLogger, opt);
   }
 
-  init(concreteLogger, options = {}) {
-    this.prefix = options.prefix || 'i18next:';
+  init(concreteLogger, opt = {}) {
+    this.prefix = opt.prefix || 'i18next:';
     this.logger = concreteLogger || consoleLogger;
-    this.options = options;
-    this.debug = options.debug;
+    this.options = opt;
+    this.debug = opt.debug;
   }
 
   setDebug(bool) {

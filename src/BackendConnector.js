@@ -12,7 +12,7 @@ function remove(arr, what) {
 }
 
 class Connector extends EventEmitter {
-  constructor(backend, store, services, options = {}) {
+  constructor(backend, store, services, opt = {}) {
     super();
     if (utils.isIE10) {
       EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
@@ -22,18 +22,18 @@ class Connector extends EventEmitter {
     this.store = store;
     this.services = services;
     this.languageUtils = services.languageUtils;
-    this.options = options;
+    this.options = opt;
     this.logger = baseLogger.create('backendConnector');
 
     this.state = {};
     this.queue = [];
 
     if (this.backend && this.backend.init) {
-      this.backend.init(services, options.backend, options);
+      this.backend.init(services, opt.backend, opt);
     }
   }
 
-  queueLoad(languages, namespaces, options, callback) {
+  queueLoad(languages, nss, opt, clb) {
     // find what needs to be loaded
     const toLoad = [];
     const pending = [];
@@ -41,12 +41,12 @@ class Connector extends EventEmitter {
     const toLoadNamespaces = [];
 
     languages.forEach(lng => {
-      let hasAllNamespaces = true;
+      let hasAllNss = true;
 
-      namespaces.forEach(ns => {
+      nss.forEach(ns => {
         const name = `${lng}|${ns}`;
 
-        if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
+        if (!opt.reload && this.store.hasResourceBundle(lng, ns)) {
           this.state[name] = 2; // loaded
         } else if (this.state[name] < 0) {
           // nothing to do for err
@@ -55,7 +55,7 @@ class Connector extends EventEmitter {
         } else {
           this.state[name] = 1; // pending
 
-          hasAllNamespaces = false;
+          hasAllNss = false;
 
           if (pending.indexOf(name) < 0) pending.push(name);
           if (toLoad.indexOf(name) < 0) toLoad.push(name);
@@ -63,7 +63,7 @@ class Connector extends EventEmitter {
         }
       });
 
-      if (!hasAllNamespaces) toLoadLanguages.push(lng);
+      if (!hasAllNss) toLoadLanguages.push(lng);
     });
 
     if (toLoad.length || pending.length) {
@@ -71,7 +71,7 @@ class Connector extends EventEmitter {
         pending,
         loaded: {},
         errors: [],
-        callback,
+        clb,
       });
     }
 
@@ -98,7 +98,7 @@ class Connector extends EventEmitter {
     // consolidated loading done in this run - only emit once for a loaded namespace
     const loaded = {};
 
-    // callback if ready
+    // clb if ready
     this.queue.forEach(q => {
       utils.pushPath(q.loaded, [lng], ns);
       remove(q.pending, name);
@@ -119,9 +119,9 @@ class Connector extends EventEmitter {
         /* eslint no-param-reassign: 0 */
         q.done = true;
         if (q.errors.length) {
-          q.callback(q.errors);
+          q.clb(q.errors);
         } else {
-          q.callback();
+          q.clb();
         }
       }
     });
@@ -133,34 +133,34 @@ class Connector extends EventEmitter {
     this.queue = this.queue.filter(q => !q.done);
   }
 
-  read(lng, ns, fcName, tried = 0, wait = 350, callback) {
-    if (!lng.length) return callback(null, {}); // noting to load
+  read(lng, ns, fcName, tried = 0, wait = 350, clb) {
+    if (!lng.length) return clb(null, {}); // noting to load
 
     return this.backend[fcName](lng, ns, (err, data) => {
       if (err && data /* = retryFlag */ && tried < 5) {
         setTimeout(() => {
-          this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
+          this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, clb);
         }, wait);
         return;
       }
-      callback(err, data);
+      clb(err, data);
     });
   }
 
   /* eslint consistent-return: 0 */
-  prepareLoading(languages, namespaces, options = {}, callback) {
+  prepareLoading(languages, namespaces, opt = {}, clb) {
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
-      return callback && callback();
+      return clb && clb();
     }
 
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    const toLoad = this.queueLoad(languages, namespaces, options, callback);
+    const toLoad = this.queueLoad(languages, namespaces, opt, clb);
     if (!toLoad.toLoad.length) {
-      if (!toLoad.pending.length) callback(); // nothing to load and no pendings...callback now
-      return null; // pendings will trigger callback
+      if (!toLoad.pending.length) clb(); // nothing to load and no pendings...clb now
+      return null; // pendings will trigger clb
     }
 
     toLoad.toLoad.forEach(name => {
@@ -168,12 +168,12 @@ class Connector extends EventEmitter {
     });
   }
 
-  load(languages, namespaces, callback) {
-    this.prepareLoading(languages, namespaces, {}, callback);
+  load(languages, namespaces, clb) {
+    this.prepareLoading(languages, namespaces, {}, clb);
   }
 
-  reload(languages, namespaces, callback) {
-    this.prepareLoading(languages, namespaces, { reload: true }, callback);
+  reload(languages, namespaces, clb) {
+    this.prepareLoading(languages, namespaces, { reload: true }, clb);
   }
 
   loadOne(name, prefix = '') {
@@ -188,7 +188,7 @@ class Connector extends EventEmitter {
     });
   }
 
-  saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}) {
+  saveMissing(languages, namespace, key, fallbackValue, isUpdate, opt = {}) {
     if (
       this.services.utils &&
       this.services.utils.hasLoadedNamespace &&
@@ -196,7 +196,7 @@ class Connector extends EventEmitter {
     ) {
       this.logger.warn(
         `did not save key "${key}" for namespace "${namespace}" as the namespace was not yet loaded`,
-        'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',
+        'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the clb or Promise to resolve before accessing it!!!',
       );
       return;
     }
@@ -205,8 +205,8 @@ class Connector extends EventEmitter {
     if (key === undefined || key === null || key === '') return;
 
     if (this.backend && this.backend.create) {
-      this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, {
-        ...options,
+      this.backend.create(languages, namespace, key, fallbackValue, null /* unused clb */, {
+        ...opt,
         isUpdate,
       });
     }

@@ -6,11 +6,9 @@ import * as utils from './utils.js';
 const checkedLoadedFor = {};
 
 class Translator extends EventEmitter {
-  constructor(services, options = {}) {
+  constructor(services, opt = {}) {
     super();
-    if (utils.isIE10) {
-      EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
-    }
+    if (utils.isIE10) EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
 
     utils.copy(
       [
@@ -26,10 +24,8 @@ class Translator extends EventEmitter {
       this,
     );
 
-    this.options = options;
-    if (this.options.keySeparator === undefined) {
-      this.options.keySeparator = '.';
-    }
+    this.options = opt;
+    if (this.options.keySeparator === undefined) this.options.keySeparator = '.';
 
     this.logger = baseLogger.create('translator');
   }
@@ -38,27 +34,23 @@ class Translator extends EventEmitter {
     if (lng) this.language = lng;
   }
 
-  exists(key, options = { interpolation: {} }) {
-    const resolved = this.resolve(key, options);
-    return resolved && resolved.res !== undefined;
+  exists(key, opt = { interpolation: {} }) {
+    const r = this.resolve(key, opt);
+    return r && r.res !== undefined;
   }
 
-  extractFromKey(key, options) {
-    let nsSeparator = options.nsSeparator || this.options.nsSeparator;
-    if (nsSeparator === undefined) nsSeparator = ':';
+  extractFromKey(key, opt) {
+    let nsSep = opt.nsSeparator || this.options.nsSeparator;
+    if (nsSep === undefined) nsSep = ':';
 
-    const keySeparator =
-      options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
+    const keySep = opt.keySeparator !== undefined ? opt.keySeparator : this.options.keySeparator;
 
-    let namespaces = options.ns || this.options.defaultNS;
-    if (nsSeparator && key.indexOf(nsSeparator) > -1) {
-      const parts = key.split(nsSeparator);
-      if (
-        nsSeparator !== keySeparator ||
-        (nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]) > -1)
-      )
+    let namespaces = opt.ns || this.options.defaultNS;
+    if (nsSep && key.indexOf(nsSep) > -1) {
+      const parts = key.split(nsSep);
+      if (nsSep !== keySep || (nsSep === keySep && this.options.ns.indexOf(parts[0]) > -1))
         namespaces = parts.shift();
-      key = parts.join(keySeparator);
+      key = parts.join(keySep);
     }
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
@@ -68,70 +60,66 @@ class Translator extends EventEmitter {
     };
   }
 
-  translate(keys, options) {
-    if (typeof options !== 'object' && this.options.overloadTranslationOptionHandler) {
+  translate(keys, opt) {
+    if (typeof opt !== 'object' && this.options.overloadTranslationOptionHandler) {
       /* eslint prefer-rest-params: 0 */
-      options = this.options.overloadTranslationOptionHandler(arguments);
+      opt = this.options.overloadTranslationOptionHandler(arguments);
     }
-    if (!options) options = {};
+    if (!opt) opt = {};
 
     // non valid keys handling
     if (keys === undefined || keys === null /* || keys === ''*/) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     // separators
-    const keySeparator =
-      options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
+    const keySep = opt.keySeparator !== undefined ? opt.keySeparator : this.options.keySeparator;
 
     // get namespace(s)
-    const { key, namespaces } = this.extractFromKey(keys[keys.length - 1], options);
-    const namespace = namespaces[namespaces.length - 1];
+    const { key, namespaces } = this.extractFromKey(keys[keys.length - 1], opt);
+    const ns = namespaces[namespaces.length - 1];
 
     // return key on CIMode
-    const lng = options.lng || this.language;
+    const lng = opt.lng || this.language;
     const appendNamespaceToCIMode =
-      options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
+      opt.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
     if (lng && lng.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
-        const nsSeparator = options.nsSeparator || this.options.nsSeparator;
-        return namespace + nsSeparator + key;
+        const nsSeparator = opt.nsSeparator || this.options.nsSeparator;
+        return ns + nsSeparator + key;
       }
-
       return key;
     }
 
     // resolve from store
-    const resolved = this.resolve(keys, options);
+    const resolved = this.resolve(keys, opt);
     let res = resolved && resolved.res;
     const resUsedKey = (resolved && resolved.usedKey) || key;
     const resExactUsedKey = (resolved && resolved.exactUsedKey) || key;
 
     const resType = Object.prototype.toString.apply(res);
     const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
-    const joinArrays =
-      options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
+    const joinArrays = opt.joinArrays !== undefined ? opt.joinArrays : this.options.joinArrays;
 
     // object
-    const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
-    const handleAsObject =
-      typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
+    const hndAsObjInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
+    const hndAsObj = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
     if (
-      handleAsObjectInI18nFormat &&
+      hndAsObjInI18nFormat &&
       res &&
-      handleAsObject &&
+      hndAsObj &&
       noObject.indexOf(resType) < 0 &&
       !(typeof joinArrays === 'string' && resType === '[object Array]')
     ) {
-      if (!options.returnObjects && !this.options.returnObjects) {
-        this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+      if (!opt.returnObjects && !this.options.returnObjects) {
+        this.logger.warn('accessing an object - but returnObjects opt is not enabled!');
         return this.options.returnedObjectHandler
-          ? this.options.returnedObjectHandler(resUsedKey, res, options)
+          ? this.options.returnedObjectHandler(resUsedKey, res, opt)
           : `key '${key} (${this.language})' returned an object instead of string.`;
       }
 
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
-      if (keySeparator) {
+      if (keySep) {
         const resTypeIsArray = resType === '[object Array]';
         const copy = resTypeIsArray ? [] : {}; // apply child translation on a copy
 
@@ -139,9 +127,9 @@ class Translator extends EventEmitter {
         let newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
         for (const m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            const deepKey = `${newKeyToUse}${keySeparator}${m}`;
+            const deepKey = `${newKeyToUse}${keySep}${m}`;
             copy[m] = this.translate(deepKey, {
-              ...options,
+              ...opt,
               ...{ joinArrays: false, ns: namespaces },
             });
             if (copy[m] === deepKey) copy[m] = res[m]; // if nothing found use orginal value as fallback
@@ -150,27 +138,27 @@ class Translator extends EventEmitter {
         res = copy;
       }
     } else if (
-      handleAsObjectInI18nFormat &&
+      hndAsObjInI18nFormat &&
       typeof joinArrays === 'string' &&
       resType === '[object Array]'
     ) {
       // array special treatment
       res = res.join(joinArrays);
-      if (res) res = this.extendTranslation(res, keys, options);
+      if (res) res = this.extendTranslation(res, keys, opt);
     } else {
       // string, empty or null
       let usedDefault = false;
       let usedKey = false;
 
       // fallback value
-      if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
+      if (!this.isValidLookup(res) && opt.defaultValue !== undefined) {
         usedDefault = true;
 
-        if (options.count !== undefined) {
-          const suffix = this.pluralResolver.getSuffix(lng, options.count);
-          res = options[`defaultValue${suffix}`];
+        if (opt.count !== undefined) {
+          const suffix = this.pluralResolver.getSuffix(lng, opt.count);
+          res = opt[`defaultValue${suffix}`];
         }
-        if (!res) res = options.defaultValue;
+        if (!res) res = opt.defaultValue;
       }
       if (!this.isValidLookup(res)) {
         usedKey = true;
@@ -178,62 +166,59 @@ class Translator extends EventEmitter {
       }
 
       // save missing
-      const updateMissing =
-        options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
-      if (usedKey || usedDefault || updateMissing) {
+      const updMissing = opt.defaultValue && opt.defaultValue !== res && this.options.updateMissing;
+      if (usedKey || usedDefault || updMissing) {
         this.logger.log(
-          updateMissing ? 'updateKey' : 'missingKey',
+          updMissing ? 'updateKey' : 'missingKey',
           lng,
-          namespace,
+          ns,
           key,
-          updateMissing ? options.defaultValue : res,
+          updMissing ? opt.defaultValue : res,
         );
 
         let lngs = [];
         const fallbackLngs = this.languageUtils.getFallbackCodes(
           this.options.fallbackLng,
-          options.lng || this.language,
+          opt.lng || this.language,
         );
         if (this.options.saveMissingTo === 'fallback' && fallbackLngs && fallbackLngs[0]) {
           for (let i = 0; i < fallbackLngs.length; i++) {
             lngs.push(fallbackLngs[i]);
           }
         } else if (this.options.saveMissingTo === 'all') {
-          lngs = this.languageUtils.toResolveHierarchy(options.lng || this.language);
+          lngs = this.languageUtils.toResolveHierarchy(opt.lng || this.language);
         } else {
-          lngs.push(options.lng || this.language);
+          lngs.push(opt.lng || this.language);
         }
 
         const send = (l, k) => {
           if (this.options.missingKeyHandler) {
             this.options.missingKeyHandler(
               l,
-              namespace,
+              ns,
               k,
-              updateMissing ? options.defaultValue : res,
-              updateMissing,
-              options,
+              updMissing ? opt.defaultValue : res,
+              updMissing,
+              opt,
             );
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
             this.backendConnector.saveMissing(
               l,
-              namespace,
+              ns,
               k,
-              updateMissing ? options.defaultValue : res,
-              updateMissing,
-              options,
+              updMissing ? opt.defaultValue : res,
+              updMissing,
+              opt,
             );
           }
-          this.emit('missingKey', l, namespace, k, res);
+          this.emit('missingKey', l, ns, k, res);
         };
 
         if (this.options.saveMissing) {
-          const needsPluralHandling =
-            options.count !== undefined && typeof options.count !== 'string';
-          if (this.options.saveMissingPlurals && needsPluralHandling) {
+          const doPlHnd = opt.count !== undefined && typeof opt.count !== 'string';
+          if (this.options.saveMissingPlurals && doPlHnd) {
             lngs.forEach(l => {
               const plurals = this.pluralResolver.getPluralFormsOfKey(l, key);
-
               plurals.forEach(p => send([l], p));
             });
           } else {
@@ -243,11 +228,10 @@ class Translator extends EventEmitter {
       }
 
       // extend
-      res = this.extendTranslation(res, keys, options, resolved);
+      res = this.extendTranslation(res, keys, opt, resolved);
 
       // append namespace if still key
-      if (usedKey && res === key && this.options.appendNamespaceToMissingKey)
-        res = `${namespace}:${key}`;
+      if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${ns}:${key}`;
 
       // parseMissingKeyHandler
       if (usedKey && this.options.parseMissingKeyHandler)
@@ -258,55 +242,50 @@ class Translator extends EventEmitter {
     return res;
   }
 
-  extendTranslation(res, key, options, resolved) {
+  extendTranslation(res, key, opt, resolved) {
     if (this.i18nFormat && this.i18nFormat.parse) {
-      res = this.i18nFormat.parse(
-        res,
-        options,
-        resolved.usedLng,
-        resolved.usedNS,
-        resolved.usedKey,
-        { resolved },
-      );
-    } else if (!options.skipInterpolation) {
+      res = this.i18nFormat.parse(res, opt, resolved.usedLng, resolved.usedNS, resolved.usedKey, {
+        resolved,
+      });
+    } else if (!opt.skipInterpolation) {
       // i18next.parsing
-      if (options.interpolation)
+      if (opt.interpolation)
         this.interpolator.init({
-          ...options,
-          ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } },
+          ...opt,
+          ...{ interpolation: { ...this.options.interpolation, ...opt.interpolation } },
         });
 
       // interpolate
-      let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
+      let data = opt.replace && typeof opt.replace !== 'string' ? opt.replace : opt;
       if (this.options.interpolation.defaultVariables)
         data = { ...this.options.interpolation.defaultVariables, ...data };
-      res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
+      res = this.interpolator.interpolate(res, data, opt.lng || this.language, opt);
 
       // nesting
-      if (options.nest !== false)
-        res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
+      if (opt.nest !== false)
+        res = this.interpolator.nest(res, (...args) => this.translate(...args), opt);
 
-      if (options.interpolation) this.interpolator.reset();
+      if (opt.interpolation) this.interpolator.reset();
     }
 
     // post process
-    const postProcess = options.postProcess || this.options.postProcess;
-    const postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
+    const postP = opt.postProcess || this.options.postProcess;
+    const postPNames = typeof postP === 'string' ? [postP] : postP;
 
     if (
       res !== undefined &&
       res !== null &&
-      postProcessorNames &&
-      postProcessorNames.length &&
-      options.applyPostProcessor !== false
+      postPNames &&
+      postPNames.length &&
+      opt.applyPostProcessor !== false
     ) {
       res = postProcessor.handle(
-        postProcessorNames,
+        postPNames,
         res,
         key,
         this.options && this.options.postProcessPassResolved
-          ? { i18nResolved: resolved, ...options }
-          : options,
+          ? { i18nResolved: resolved, ...opt }
+          : opt,
         this,
       );
     }
@@ -314,7 +293,7 @@ class Translator extends EventEmitter {
     return res;
   }
 
-  resolve(keys, options = {}) {
+  resolve(keys, opt = {}) {
     let found;
     let usedKey; // plain key
     let exactUsedKey; // key with context / plural
@@ -326,23 +305,21 @@ class Translator extends EventEmitter {
     // forEach possible key
     keys.forEach(k => {
       if (this.isValidLookup(found)) return;
-      const extracted = this.extractFromKey(k, options);
+      const extracted = this.extractFromKey(k, opt);
       const key = extracted.key;
       usedKey = key;
-      let namespaces = extracted.namespaces;
-      if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
+      let nss = extracted.namespaces;
+      if (this.options.fallbackNS) nss = nss.concat(this.options.fallbackNS);
 
-      const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
-      const needsContextHandling =
-        options.context !== undefined &&
-        typeof options.context === 'string' &&
-        options.context !== '';
+      const doPlHnd = opt.count !== undefined && typeof opt.count !== 'string';
+      const doCtxHnd =
+        opt.context !== undefined && typeof opt.context === 'string' && opt.context !== '';
 
-      const codes = options.lngs
-        ? options.lngs
-        : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
+      const codes = opt.lngs
+        ? opt.lngs
+        : this.languageUtils.toResolveHierarchy(opt.lng || this.language, opt.fallbackLng);
 
-      namespaces.forEach(ns => {
+      nss.forEach(ns => {
         if (this.isValidLookup(found)) return;
         usedNS = ns;
 
@@ -369,22 +346,20 @@ class Translator extends EventEmitter {
           const finalKeys = [finalKey];
 
           if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
-            this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
+            this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, opt);
           } else {
             let pluralSuffix;
-            if (needsPluralHandling)
-              pluralSuffix = this.pluralResolver.getSuffix(code, options.count);
+            if (doPlHnd) pluralSuffix = this.pluralResolver.getSuffix(code, opt.count);
 
             // fallback for plural if context not found
-            if (needsPluralHandling && needsContextHandling)
-              finalKeys.push(finalKey + pluralSuffix);
+            if (doPlHnd && doCtxHnd) finalKeys.push(finalKey + pluralSuffix);
 
             // get key for context if needed
-            if (needsContextHandling)
-              finalKeys.push((finalKey += `${this.options.contextSeparator}${options.context}`));
+            if (doCtxHnd)
+              finalKeys.push((finalKey += `${this.options.contextSeparator}${opt.context}`));
 
             // get key for plural if needed
-            if (needsPluralHandling) finalKeys.push((finalKey += pluralSuffix));
+            if (doPlHnd) finalKeys.push((finalKey += pluralSuffix));
           }
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
@@ -393,7 +368,7 @@ class Translator extends EventEmitter {
           while ((possibleKey = finalKeys.pop())) {
             if (!this.isValidLookup(found)) {
               exactUsedKey = possibleKey;
-              found = this.getResource(code, ns, possibleKey, options);
+              found = this.getResource(code, ns, possibleKey, opt);
             }
           }
         });
@@ -411,10 +386,10 @@ class Translator extends EventEmitter {
     );
   }
 
-  getResource(code, ns, key, options = {}) {
+  getResource(code, ns, key, opt = {}) {
     if (this.i18nFormat && this.i18nFormat.getResource)
-      return this.i18nFormat.getResource(code, ns, key, options);
-    return this.resourceStore.getResource(code, ns, key, options);
+      return this.i18nFormat.getResource(code, ns, key, opt);
+    return this.resourceStore.getResource(code, ns, key, opt);
   }
 }
 

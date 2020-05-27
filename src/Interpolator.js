@@ -2,19 +2,19 @@ import * as utils from './utils.js';
 import baseLogger from './logger.js';
 
 class Interpolator {
-  constructor(options = {}) {
+  constructor(opt = {}) {
     this.logger = baseLogger.create('interpolator');
 
-    this.options = options;
-    this.format = (options.interpolation && options.interpolation.format) || (value => value);
-    this.init(options);
+    this.options = opt;
+    this.format = (opt.interpolation && opt.interpolation.format) || (value => value);
+    this.init(opt);
   }
 
   /* eslint no-param-reassign: 0 */
-  init(options = {}) {
-    if (!options.interpolation) options.interpolation = { escapeValue: true };
+  init(opt = {}) {
+    if (!opt.interpolation) opt.interpolation = { escapeValue: true };
 
-    const iOpts = options.interpolation;
+    const iOpts = opt.interpolation;
 
     this.escape = iOpts.escape !== undefined ? iOpts.escape : utils.escape;
     this.escapeValue = iOpts.escapeValue !== undefined ? iOpts.escapeValue : true;
@@ -68,7 +68,7 @@ class Interpolator {
     this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
   }
 
-  interpolate(str, data, lng, options) {
+  interpolate(str, data, lng, opt) {
     let match;
     let value;
     let replaces;
@@ -91,13 +91,13 @@ class Interpolator {
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, options);
+      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, opt);
     };
 
     this.resetRegExp();
 
     const missingInterpolationHandler =
-      (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
+      (opt && opt.missingInterpolationHandler) || this.options.missingInterpolationHandler;
 
     replaces = 0;
     // unescape if has unescapePrefix/Suffix
@@ -106,7 +106,7 @@ class Interpolator {
       value = handleFormat(match[1].trim());
       if (value === undefined) {
         if (typeof missingInterpolationHandler === 'function') {
-          const temp = missingInterpolationHandler(str, match, options);
+          const temp = missingInterpolationHandler(str, match, opt);
           value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
@@ -129,7 +129,7 @@ class Interpolator {
       value = handleFormat(match[1].trim());
       if (value === undefined) {
         if (typeof missingInterpolationHandler === 'function') {
-          const temp = missingInterpolationHandler(str, match, options);
+          const temp = missingInterpolationHandler(str, match, opt);
           value = typeof temp === 'string' ? temp : '';
         } else {
           this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
@@ -149,11 +149,11 @@ class Interpolator {
     return str;
   }
 
-  nest(str, fc, options = {}) {
+  nest(str, fc, opt = {}) {
     let match;
     let value;
 
-    let clonedOptions = { ...options };
+    let clonedOptions = { ...opt };
     clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
     delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
 
@@ -164,18 +164,18 @@ class Interpolator {
 
       const c = key.split(new RegExp(`${sep}[ ]*{`));
 
-      let optionsString = `{${c[1]}`;
+      let optString = `{${c[1]}`;
       key = c[0];
-      optionsString = this.interpolate(optionsString, clonedOptions);
-      optionsString = optionsString.replace(/'/g, '"');
+      optString = this.interpolate(optString, clonedOptions);
+      optString = optString.replace(/'/g, '"');
 
       try {
-        clonedOptions = JSON.parse(optionsString);
+        clonedOptions = JSON.parse(optString);
 
         if (inheritedOptions) clonedOptions = { ...inheritedOptions, ...clonedOptions };
       } catch (e) {
-        this.logger.warn(`failed parsing options string in nesting for key ${key}`, e);
-        return `${key}${sep}${optionsString}`;
+        this.logger.warn(`failed parsing opt string in nesting for key ${key}`, e);
+        return `${key}${sep}${optString}`;
       }
 
       // assert we do not get a endless loop on interpolating defaultValue again and again
@@ -215,7 +215,7 @@ class Interpolator {
       }
 
       if (doReduce) {
-        value = formatters.reduce((v, f) => this.format(v, f, options.lng, options), value.trim());
+        value = formatters.reduce((v, f) => this.format(v, f, opt.lng, opt), value.trim());
       }
 
       // Nested keys should not be escaped by default #854
