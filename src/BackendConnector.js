@@ -84,7 +84,9 @@ class Connector extends EventEmitter {
   }
 
   loaded(name, err, data) {
-    const [lng, ns] = name.split('|');
+    const s = name.split('|');
+    const lng = s[0];
+    const ns = s[1];
 
     if (err) this.emit('failedLoading', lng, ns, err);
 
@@ -177,7 +179,9 @@ class Connector extends EventEmitter {
   }
 
   loadOne(name, prefix = '') {
-    const [lng, ns] = name.split('|');
+    const s = name.split('|');
+    const lng = s[0];
+    const ns = s[1];
 
     this.read(lng, ns, 'read', undefined, undefined, (err, data) => {
       if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);

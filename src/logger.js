@@ -15,7 +15,7 @@ const consoleLogger = {
 
   output(type, args) {
     /* eslint no-console: 0 */
-    if (console && console[type]) console[type](...args);
+    if (console && console[type]) console[type].apply(console, args);
   },
 };
 

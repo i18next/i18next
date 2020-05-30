@@ -198,7 +198,9 @@ class Interpolator {
        */
       let doReduce = false;
       if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
-        [match[1], ...formatters] = match[1].split(this.formatSeparator).map(elem => elem.trim());
+        const r = match[1].split(this.formatSeparator).map(elem => elem.trim());
+        match[1] = r.shift();
+        formatters = r;
         doReduce = true;
       }
 
