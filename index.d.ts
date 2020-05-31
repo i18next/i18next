@@ -690,8 +690,9 @@ export class ResourceStore {
   on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
   /**
    * Remove event listener
+   * removes all callback when callback not specified
    */
-  off(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
+  off(event: 'added' | 'removed', callback?: (lng: string, ns: string) => void): void;
 }
 
 export interface Services {
@@ -965,8 +966,9 @@ export interface i18n {
 
   /**
    * Remove event listener
+   * removes all callback when callback not specified
    */
-  off(event: string, listener: (...args: any[]) => void): void;
+  off(event: string, listener?: (...args: any[]) => void): void;
 
   /**
    * Gets one value by given key.
