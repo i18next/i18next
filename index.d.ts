@@ -688,6 +688,10 @@ export class ResourceStore {
    * Gets fired when resources got added or removed
    */
   on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
+  /**
+   * Remove event listener
+   */
+  off(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
 }
 
 export interface Services {
