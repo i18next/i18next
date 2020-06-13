@@ -16,4 +16,5 @@ const modules: Modules = { external: [] };
 const resourceStore: ResourceStore = i18next.services.resourceStore;
 resourceStore.on('added', console.log);
 resourceStore.off('added', console.log);
+resourceStore.off('added');
 resourceStore.data['en'];
