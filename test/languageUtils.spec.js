@@ -17,6 +17,8 @@ describe('LanguageUtils', () => {
       { args: ['de-CH'], expected: ['de-CH', 'de', 'en'] },
       { args: ['nb-NO'], expected: ['nb-NO', 'nb', 'en'] },
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en'] },
+      { args: ['de-x-custom1'], expected: ['de-x-custom1', 'de', 'en'] },
+      { args: ['de-DE-x-custom1'], expected: ['de-DE-x-custom1', 'de', 'en'] },
     ];
 
     tests.forEach(test => {

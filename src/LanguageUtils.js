@@ -18,6 +18,7 @@ class LanguageUtil {
     const p = code.split('-');
     if (p.length === 2) return null;
     p.pop();
+    if (p[p.length - 1].toLowerCase() === 'x') return null;
     return this.formatLanguageCode(p.join('-'));
   }
 
