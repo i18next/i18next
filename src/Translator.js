@@ -190,7 +190,7 @@ class Translator extends EventEmitter {
         );
         if (keySeparator) {
           const fk = this.resolve(key, { ...options, keySeparator: false });
-          if (fk && fk.res) this.logger.warn('Are translations flat instead of nested?');
+          if (fk && fk.res) this.logger.warn('Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.');
         }
 
         let lngs = [];
