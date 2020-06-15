@@ -188,6 +188,10 @@ class Translator extends EventEmitter {
           key,
           updateMissing ? options.defaultValue : res,
         );
+        if (keySeparator) {
+          const fk = this.resolve(key, { ...options, keySeparator: false });
+          if (fk && fk.res) this.logger.warn('Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.');
+        }
 
         let lngs = [];
         const fallbackLngs = this.languageUtils.getFallbackCodes(
@@ -354,10 +358,10 @@ class Translator extends EventEmitter {
         ) {
           checkedLoadedFor[`${codes[0]}-${ns}`] = true;
           this.logger.warn(
-            `key "${usedKey}" for namespace "${usedNS}" for languages "${codes.join(
+            `key "${usedKey}" for languages "${codes.join(
               ', ',
-            )}" won't get resolved as namespace was not yet loaded`,
-            'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',
+            )}" won't get resolved as namespace "${usedNS}" was not yet loaded`,
+            'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',
           );
         }
 
