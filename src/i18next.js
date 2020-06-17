@@ -313,7 +313,7 @@ class I18n extends EventEmitter {
     this.options.defaultNS = ns;
   }
 
-  hasLoadedNamespace(ns) {
+  hasLoadedNamespace(ns, options = {}) {
     if (!this.isInitialized) {
       this.logger.warn('hasLoadedNamespace: i18next was not initialized', this.languages);
       return false;
@@ -334,6 +334,12 @@ class I18n extends EventEmitter {
       const loadState = this.services.backendConnector.state[`${l}|${n}`];
       return loadState === -1 || loadState === 2;
     };
+
+    // optional injected check
+    if (options.precheck) {
+      const preResult = options.precheck(this, loadNotPending);
+      if (preResult !== undefined) return preResult;
+    }
 
     // loaded -> SUCCESS
     if (this.hasResourceBundle(lng, ns)) return true;
