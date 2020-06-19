@@ -193,13 +193,13 @@ export interface InitOptions {
    * Array of allowed languages
    * @default false
    */
-  whitelist?: false | string[];
+  supportedLngs?: false | string[];
 
   /**
-   * If true will pass eg. en-US if finding en in whitelist
+   * If true will pass eg. en-US if finding en in supportedLngs
    * @default false
    */
-  nonExplicitWhitelist?: boolean;
+  nonExplicitSupportedLngs?: boolean;
 
   /**
    * Language codes to lookup, given set language is
@@ -863,7 +863,7 @@ export interface i18n {
 
   /**
    * Is set to the current detected or set language.
-   * If you need the primary used language depending on your configuration (whitelist, load) you will prefer using i18next.languages[0].
+   * If you need the primary used language depending on your configuration (supportedLngs, load) you will prefer using i18next.languages[0].
    */
   language: string;
 
