@@ -83,6 +83,37 @@ class LanguageUtil {
     );
   }
 
+  getBestMatchFromCodes(codes) {
+    if (!codes) return null;
+
+    let found;
+
+    // pick first supported code or if no restriction pick the first one (highest prio)
+    codes.forEach(code => {
+      if (found) return;
+      let cleanedLng = this.formatLanguageCode(code);
+      if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
+    });
+
+    // if we got no match in supportedLngs yet - check for similar locales
+    // first  de-CH --> de
+    // second de-CH --> de-DE
+    if (!found && this.options.supportedLngs) {
+      codes.forEach(code => {
+        if (found) return;
+
+        let lngOnly = this.getLanguagePartFromCode(code);
+        if (this.isSupportedCode(lngOnly)) return (found = lngOnly);
+
+        found = this.options.supportedLngs.find(supportedLng => {
+          if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
+        });
+      });
+    }
+
+    return found;
+  }
+
   getFallbackCodes(fallbacks, code) {
     if (!fallbacks) return [];
     if (typeof fallbacks === 'string') fallbacks = [fallbacks];

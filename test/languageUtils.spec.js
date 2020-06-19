@@ -211,4 +211,29 @@ describe('LanguageUtils', () => {
       });
     });
   });
+
+  describe('getBestMatchFromCodes()', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: ['en'],
+        supportedLngs: ['en-US', 'en', 'de-DE'],
+      });
+    });
+
+    var tests = [
+      { args: [['en']], expected: 'en' },
+      { args: [['ru', 'en']], expected: 'en' },
+      { args: [['en-GB']], expected: 'en' },
+      { args: [['ru', 'en-GB']], expected: 'en' },
+      { args: [['de-CH']], expected: 'de-DE' },
+    ];
+
+    tests.forEach(test => {
+      it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 });

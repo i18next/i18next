@@ -1,5 +1,7 @@
 ### next
 
+- language detectors can return an array of languages and let i18next figure out best match
+
 - rename option whitelist to supportedLngs
 - rename option nonExpicitWhitelist to nonExplicitSupportedLngs
 - rename function languageUtils.isWhitelisted to languageUtils.isSupportedCode

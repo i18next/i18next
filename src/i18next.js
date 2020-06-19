@@ -262,7 +262,10 @@ class I18n extends EventEmitter {
       if (callback) callback(err, (...args) => this.t(...args));
     };
 
-    const setLng = l => {
+    const setLng = lngs => {
+      // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
+      const l = typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
+
       if (l) {
         if (!this.language) {
           this.language = l;
