@@ -41,6 +41,17 @@ class I18n extends EventEmitter {
       callback = options;
       options = {};
     }
+
+    // temporal backwards compatibility WHITELIST REMOVAL
+    if (options.whitelist && !options.supportedLngs) {
+      this.logger.deprecate('whitelist', 'option "whitelist" will be renamed to "supportedLngs" in the next major - please make sure to rename this option asap.');
+    }
+    if (options.nonExplicitWhitelist && !options.nonExplicitSupportedLngs) {
+      this.logger.deprecate('whitelist', 'options "nonExplicitWhitelist" will be renamed to "nonExplicitSupportedLngs" in the next major - please make sure to rename this option asap.');
+    }
+    // end temporal backwards compatibility WHITELIST REMOVAL
+
+
     this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
 
     this.format = this.options.interpolation.format;

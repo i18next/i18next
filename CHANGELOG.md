@@ -1,3 +1,15 @@
+### next
+
+- rename option whitelist to supportedLngs
+- rename option nonExpicitWhitelist to nonExplicitSupportedLngs
+- rename function languageUtils.isWhitelisted to languageUtils.isSupportedCode
+
+This changes are made with temporal backwards compatiblity and will warn your for deprecated usage of old terms to give users and plugin providers some time to adapt their code base.
+
+The temporal backwards compatiblity will be removed in a follow up major release.
+
+Learn more about why this change was made [here](https://github.com/i18next/i18next/issues/1466).
+
 ### 19.4.5
 
 - Add store events to typings [1451](https://github.com/i18next/i18next/pull/1451)

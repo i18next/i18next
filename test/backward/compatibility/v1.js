@@ -63,7 +63,7 @@ export function convertAPIOptions(options) {
     };
   }
 
-  options.whitelist = options.lngWhitelist;
+  options.supportedLngs = options.lngWhitelist;
   options.preload = options.preload;
   if (options.load === 'current') options.load = 'currentOnly';
   if (options.load === 'unspecific') options.load = 'languageOnly';

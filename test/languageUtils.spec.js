@@ -161,11 +161,11 @@ describe('LanguageUtils', () => {
     });
   });
 
-  describe('toResolveHierarchy() - whitelist', () => {
+  describe('toResolveHierarchy() - supportedLngs', () => {
     var cu;
 
     before(() => {
-      cu = new LanguageUtils({ fallbackLng: 'en', whitelist: ['nb-NO', 'de', 'en'] });
+      cu = new LanguageUtils({ fallbackLng: 'en', supportedLngs: ['nb-NO', 'de', 'en'] });
       cu.logger.setDebug(false); // silence
     });
 
@@ -186,14 +186,14 @@ describe('LanguageUtils', () => {
     });
   });
 
-  describe('toResolveHierarchy() - non explicit whitelist ', () => {
+  describe('toResolveHierarchy() - non explicit supportedLngs ', () => {
     var cu;
 
     before(() => {
       cu = new LanguageUtils({
         fallbackLng: ['en'],
-        whitelist: ['de', 'en', 'zh'],
-        nonExplicitWhitelist: true,
+        supportedLngs: ['de', 'en', 'zh'],
+        nonExplicitSupportedLngs: true,
       });
     });
 

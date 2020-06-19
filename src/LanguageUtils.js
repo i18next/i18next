@@ -8,7 +8,11 @@ class LanguageUtil {
   constructor(options) {
     this.options = options;
 
-    this.whitelist = this.options.whitelist || false;
+    // temporal backwards compatibility WHITELIST REMOVAL
+    this.whitelist = this.options.supportedLngs || false;
+    // end temporal backwards compatibility WHITELIST REMOVAL
+
+    this.supportedLngs = this.options.supportedLngs || false;
     this.logger = baseLogger.create('languageUtils');
   }
 
@@ -59,11 +63,24 @@ class LanguageUtil {
     return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
   }
 
+  // temporal backwards compatibility WHITELIST REMOVAL
   isWhitelisted(code) {
-    if (this.options.load === 'languageOnly' || this.options.nonExplicitWhitelist) {
+    this.logger.deprecate(
+      'languageUtils.isWhitelisted',
+      'function "isWhitelisted" will be renamed to "isSupportedCode" in the next major - please make sure to rename it\'s usage asap.',
+    );
+
+    return this.isSupportedCode(code);
+  }
+  // end temporal backwards compatibility WHITELIST REMOVAL
+
+  isSupportedCode(code) {
+    if (this.options.load === 'languageOnly' || this.options.nonExplicitSupportedLngs) {
       code = this.getLanguagePartFromCode(code);
     }
-    return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1;
+    return (
+      !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.indexOf(code) > -1
+    );
   }
 
   getFallbackCodes(fallbacks, code) {
@@ -92,10 +109,10 @@ class LanguageUtil {
     const codes = [];
     const addCode = c => {
       if (!c) return;
-      if (this.isWhitelisted(c)) {
+      if (this.isSupportedCode(c)) {
         codes.push(c);
       } else {
-        this.logger.warn(`rejecting non-whitelisted language code: ${c}`);
+        this.logger.warn(`rejecting language code not found in supportedLngs: ${c}`);
       }
     };
 
