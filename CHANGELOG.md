@@ -1,4 +1,4 @@
-### next
+### 19.5.0
 
 - language detectors can return an array of languages and let i18next figure out best match
 
