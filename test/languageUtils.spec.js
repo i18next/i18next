@@ -228,6 +228,8 @@ describe('LanguageUtils', () => {
       { args: [['en-GB']], expected: 'en' },
       { args: [['ru', 'en-GB']], expected: 'en' },
       { args: [['de-CH']], expected: 'de-DE' },
+      { args: [['ru']], expected: 'en' },
+      { args: [[]], expected: 'en' },
     ];
 
     tests.forEach(test => {

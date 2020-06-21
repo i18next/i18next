@@ -111,6 +111,9 @@ class LanguageUtil {
       });
     }
 
+    // if nothing found, use fallbackLng
+    if (!found) found = this.getFallbackCodes(this.options.fallbackLng)[0];
+
     return found;
   }
 
