@@ -1,3 +1,7 @@
+### 19.5.1
+
+- getBestMatchFromCodes: use fallbackLng if nothing found, fixes #1470 [1471](https://github.com/i18next/i18next/pull/1471)
+
 ### 19.5.0
 
 - language detectors can return an array of languages and let i18next figure out best match

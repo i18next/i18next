@@ -190,6 +190,18 @@ export interface InitOptions {
   fallbackLng?: false | FallbackLng;
 
   /**
+   * DEPRECATED use supportedLngs
+   * @default false
+   */
+  whitelist?: false | string[];
+
+  /**
+   * DEPRECTADED use nonExplicitSupportedLngs
+   * @default false
+   */
+  nonExplicitWhiteliest?: boolean;
+
+  /**
    * Array of allowed languages
    * @default false
    */
