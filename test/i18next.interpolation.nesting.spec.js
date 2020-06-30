@@ -56,6 +56,22 @@ describe('i18next.interpolation.nesting', () => {
         args: ['test103'],
         expected: 'this test is full success',
       },
+      {
+        args: ['$t(test1)', { a: 'foo' }],
+        expected: 'test nest value foo',
+      },
+      {
+        args: ['$t(translation:test1)', { a: 'foo' }],
+        expected: 'test nest value foo',
+      },
+      {
+        args: ['something $t(test1)', { a: 'foo' }],
+        expected: 'something test nest value foo',
+      },
+      {
+        args: ['something $t(translation:test1)', { a: 'foo' }],
+        expected: 'something test nest value foo',
+      },
     ];
 
     tests.forEach(test => {
