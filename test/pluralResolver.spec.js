@@ -166,6 +166,10 @@ describe('PluralResolver', () => {
       { args: ['mk', 1], expected: '' },
       { args: ['mk', 2], expected: 'plural' },
       { args: ['mk', 0], expected: 'plural' },
+      { args: ['mk', 11], expected: 'plural' },
+      { args: ['mk', 21], expected: '' },
+      { args: ['mk', 31], expected: '' },
+      { args: ['mk', 311], expected: 'plural' },
 
       // mnk
       { args: ['mnk', 0], expected: '0' },
