@@ -354,6 +354,15 @@ describe('Interpolator', () => {
         ],
         expected: 'test, is, ok',
       },
+      {
+        args: [
+          '$t(ns:test)',
+          function() {
+            return 'test from ns';
+          },
+        ],
+        expected: 'test from ns',
+      },
     ];
 
     tests.forEach(test => {

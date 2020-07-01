@@ -52,6 +52,13 @@ class Translator extends EventEmitter {
 
     let namespaces = options.ns || this.options.defaultNS;
     if (nsSeparator && key.indexOf(nsSeparator) > -1) {
+      const m = key.match(this.interpolator.nestingRegexp);
+      if (m && m.length > 0) {
+        return {
+          key,
+          namespaces,
+        };
+      }
       const parts = key.split(nsSeparator);
       if (
         nsSeparator !== keySeparator ||
@@ -190,7 +197,10 @@ class Translator extends EventEmitter {
         );
         if (keySeparator) {
           const fk = this.resolve(key, { ...options, keySeparator: false });
-          if (fk && fk.res) this.logger.warn('Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.');
+          if (fk && fk.res)
+            this.logger.warn(
+              'Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.',
+            );
         }
 
         let lngs = [];
