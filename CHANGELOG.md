@@ -1,3 +1,7 @@
+### 19.5.2
+
+- fix nesting interpolation with prepended namespace, fixes #1474 [1475](https://github.com/i18next/i18next/pull/1475)
+
 ### 19.5.1
 
 - getBestMatchFromCodes: use fallbackLng if nothing found, fixes #1470 [1471](https://github.com/i18next/i18next/pull/1471)
