@@ -55,7 +55,7 @@ let _rulesPluralsTypes = {
   14: function(n) {return Number((n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3);},
   15: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);},
   16: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2);},
-  17: function(n) {return Number(n==1 || n%10==1 ? 0 : 1);},
+  17: function(n) {return Number(n==1 || n%10==1 && n%100!=11 ? 0 : 1);},
   18: function(n) {return Number(n==0 ? 0 : n==1 ? 1 : 2);},
   19: function(n) {return Number(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
   20: function(n) {return Number(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
