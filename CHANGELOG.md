@@ -1,3 +1,7 @@
+### 19.5.3
+
+- fix Macedonian plural formula [1476](https://github.com/i18next/i18next/pull/1476)
+
 ### 19.5.2
 
 - fix nesting interpolation with prepended namespace, fixes #1474 [1475](https://github.com/i18next/i18next/pull/1475)
