@@ -1,3 +1,8 @@
+### 19.5.4
+
+- typescript fix: getDataByLanguage typings & test [1472](https://github.com/i18next/i18next/pull/1472)
+- typescript fix: type declarion of exposed EventEmitter#off methods [1460](https://github.com/i18next/i18next/pull/1460)
+
 ### 19.5.3
 
 - fix Macedonian plural formula [1476](https://github.com/i18next/i18next/pull/1476)
