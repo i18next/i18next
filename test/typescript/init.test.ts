@@ -209,7 +209,7 @@ const z: string = de('myKey');
 const data = i18next.getDataByLanguage('de');
 
 // verify the data.translation field exists
-console.log(data.translation.myKey);
+console.log(data ? data.translation.myKey : 'data does not exist');
 
 // or fix the namespace to anotherNamespace
 const anotherNamespace = i18next.getFixedT(null, 'anotherNamespace');
