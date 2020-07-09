@@ -31,12 +31,14 @@ class Interpolator {
     this.unescapePrefix = iOpts.unescapeSuffix ? '' : iOpts.unescapePrefix || '-';
     this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
 
-    this.nestingPrefix = iOpts.nestingPrefix
-      ? utils.regexEscape(iOpts.nestingPrefix)
-      : iOpts.nestingPrefixEscaped || utils.regexEscape('$t(');
-    this.nestingSuffix = iOpts.nestingSuffix
-      ? utils.regexEscape(iOpts.nestingSuffix)
-      : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
+    if (iOpts.nestingPrefix !== false)
+      this.nestingPrefix = iOpts.nestingPrefix
+        ? utils.regexEscape(iOpts.nestingPrefix)
+        : iOpts.nestingPrefixEscaped || utils.regexEscape('$t(');
+    if (iOpts.nestingSuffix !== false)
+      this.nestingSuffix = iOpts.nestingSuffix
+        ? utils.regexEscape(iOpts.nestingSuffix)
+        : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
 
     this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator
       ? iOpts.nestingOptionsSeparator
@@ -64,8 +66,10 @@ class Interpolator {
     }`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
-    const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
-    this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
+    if (this.nestingPrefix !== false || this.nestingSuffix !== false) {
+      const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
+      this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
+    }
   }
 
   interpolate(str, data, lng, options) {
@@ -182,6 +186,8 @@ class Interpolator {
       delete clonedOptions.defaultValue;
       return key;
     }
+
+    if (!this.nestingRegexp) return str;
 
     // regular escape on demand
     while ((match = this.nestingRegexp.exec(str))) {
