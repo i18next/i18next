@@ -44,7 +44,8 @@ class Translator extends EventEmitter {
   }
 
   extractFromKey(key, options) {
-    let nsSeparator = options.nsSeparator || this.options.nsSeparator;
+    let nsSeparator =
+      options.nsSeparator !== undefined ? options.nsSeparator : this.options.nsSeparator;
     if (nsSeparator === undefined) nsSeparator = ':';
 
     const keySeparator =

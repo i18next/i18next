@@ -616,7 +616,7 @@
     }, {
       key: "extractFromKey",
       value: function extractFromKey(key, options) {
-        var nsSeparator = options.nsSeparator || this.options.nsSeparator;
+        var nsSeparator = options.nsSeparator !== undefined ? options.nsSeparator : this.options.nsSeparator;
         if (nsSeparator === undefined) nsSeparator = ':';
         var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
         var namespaces = options.ns || this.options.defaultNS;

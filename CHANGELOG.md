@@ -1,3 +1,7 @@
+### 19.5.6
+
+- fix local usage of nsSeparator option
+
 ### 19.5.5
 
 - fix: recursion when passing nesting to interpolated [1480](https://github.com/i18next/i18next/pull/1480)
