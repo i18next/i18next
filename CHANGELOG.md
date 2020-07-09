@@ -1,3 +1,7 @@
+### 19.5.5
+
+- fix: recursion when passing nesting to interpolated [1480](https://github.com/i18next/i18next/pull/1480)
+
 ### 19.5.4
 
 - typescript fix: getDataByLanguage typings & test [1472](https://github.com/i18next/i18next/pull/1472)

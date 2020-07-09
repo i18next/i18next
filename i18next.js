@@ -644,7 +644,7 @@
       }
     }, {
       key: "translate",
-      value: function translate(keys, options) {
+      value: function translate(keys, options, lastKey) {
         var _this2 = this;
 
         if (_typeof(options) !== 'object' && this.options.overloadTranslationOptionHandler) {
@@ -709,7 +709,7 @@
           }
         } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && resType === '[object Array]') {
           res = res.join(joinArrays);
-          if (res) res = this.extendTranslation(res, keys, options);
+          if (res) res = this.extendTranslation(res, keys, options, lastKey);
         } else {
           var usedDefault = false;
           var usedKey = false;
@@ -782,7 +782,7 @@
             }
           }
 
-          res = this.extendTranslation(res, keys, options, resolved);
+          res = this.extendTranslation(res, keys, options, resolved, lastKey);
           if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = "".concat(namespace, ":").concat(key);
           if (usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
         }
@@ -791,7 +791,7 @@
       }
     }, {
       key: "extendTranslation",
-      value: function extendTranslation(res, key, options, resolved) {
+      value: function extendTranslation(res, key, options, resolved, lastKey) {
         var _this3 = this;
 
         if (this.i18nFormat && this.i18nFormat.parse) {
@@ -806,7 +806,17 @@
           if (this.options.interpolation.defaultVariables) data = _objectSpread({}, this.options.interpolation.defaultVariables, data);
           res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
           if (options.nest !== false) res = this.interpolator.nest(res, function () {
-            return _this3.translate.apply(_this3, arguments);
+            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+              args[_key] = arguments[_key];
+            }
+
+            if (lastKey && lastKey[0] === args[0]) {
+              _this3.logger.warn("It seems you are nesting recursively key: ".concat(args[0], " in key: ").concat(key[0]));
+
+              return null;
+            }
+
+            return _this3.translate.apply(_this3, args.concat([key]));
           }, options);
           if (options.interpolation) this.interpolator.reset();
         }
