@@ -75,7 +75,7 @@ class Translator extends EventEmitter {
     };
   }
 
-  translate(keys, options) {
+  translate(keys, options, lastKey) {
     if (typeof options !== 'object' && this.options.overloadTranslationOptionHandler) {
       /* eslint prefer-rest-params: 0 */
       options = this.options.overloadTranslationOptionHandler(arguments);
@@ -163,7 +163,7 @@ class Translator extends EventEmitter {
     ) {
       // array special treatment
       res = res.join(joinArrays);
-      if (res) res = this.extendTranslation(res, keys, options);
+      if (res) res = this.extendTranslation(res, keys, options, lastKey);
     } else {
       // string, empty or null
       let usedDefault = false;
@@ -257,7 +257,7 @@ class Translator extends EventEmitter {
       }
 
       // extend
-      res = this.extendTranslation(res, keys, options, resolved);
+      res = this.extendTranslation(res, keys, options, resolved, lastKey);
 
       // append namespace if still key
       if (usedKey && res === key && this.options.appendNamespaceToMissingKey)
@@ -272,7 +272,7 @@ class Translator extends EventEmitter {
     return res;
   }
 
-  extendTranslation(res, key, options, resolved) {
+  extendTranslation(res, key, options, resolved, lastKey) {
     if (this.i18nFormat && this.i18nFormat.parse) {
       res = this.i18nFormat.parse(
         res,
@@ -298,7 +298,19 @@ class Translator extends EventEmitter {
 
       // nesting
       if (options.nest !== false)
-        res = this.interpolator.nest(res, (...args) => this.translate(...args), options);
+        res = this.interpolator.nest(
+          res,
+          (...args) => {
+            if (lastKey && lastKey[0] === args[0]) {
+              this.logger.warn(
+                `It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`,
+              );
+              return null;
+            }
+            return this.translate(...args, key);
+          },
+          options,
+        );
 
       if (options.interpolation) this.interpolator.reset();
     }
