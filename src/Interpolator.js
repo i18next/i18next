@@ -31,14 +31,16 @@ class Interpolator {
     this.unescapePrefix = iOpts.unescapeSuffix ? '' : iOpts.unescapePrefix || '-';
     this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
 
-    if (iOpts.nestingPrefix !== false)
+    if (iOpts.nestingPrefix !== false) {
       this.nestingPrefix = iOpts.nestingPrefix
         ? utils.regexEscape(iOpts.nestingPrefix)
         : iOpts.nestingPrefixEscaped || utils.regexEscape('$t(');
-    if (iOpts.nestingSuffix !== false)
+    }
+    if (iOpts.nestingSuffix !== false) {
       this.nestingSuffix = iOpts.nestingSuffix
         ? utils.regexEscape(iOpts.nestingSuffix)
         : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
+    }
 
     this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator
       ? iOpts.nestingOptionsSeparator
