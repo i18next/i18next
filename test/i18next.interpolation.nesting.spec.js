@@ -24,6 +24,8 @@ describe('i18next.interpolation.nesting', () => {
               // , in key and two options , separated
               test103: '$t(test103, is, {"key": "success", "key2": "full"})',
               'test103, is': 'this test is {{key2}} {{key}}',
+              keyA1: '{{text}} interpolated',
+              keyB1: 'Text to interpolate => $t(keyA1, { "text": "foo" })',
             },
           },
         },
@@ -71,6 +73,10 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['something $t(translation:test1)', { a: 'foo' }],
         expected: 'something test nest value foo',
+      },
+      {
+        args: ['keyB1'],
+        expected: 'Text to interpolate => foo interpolated',
       },
     ];
 
