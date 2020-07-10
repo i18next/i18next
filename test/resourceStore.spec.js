@@ -141,6 +141,12 @@ describe('ResourceStore', () => {
           test: 'test',
         });
       });
+
+      it('without polluting the prototype', () => {
+        const malicious_payload = '{"__proto__":{"vulnerable":"Polluted"}}';
+        rs.addResourceBundle('en', 'translation', JSON.parse(malicious_payload), true, true);
+        expect({}.vulnerable).to.eql(undefined);
+      });
     });
 
     describe('can check resources bundle', () => {
