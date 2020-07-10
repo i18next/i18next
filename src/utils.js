@@ -84,21 +84,22 @@ export function getPathWithDefaults(data, defaultData, key) {
 export function deepExtend(target, source, overwrite) {
   /* eslint no-restricted-syntax: 0 */
   for (const prop in source) {
-    if (prop in target) {
-      if (prop === '__proto__') continue;
-      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-      if (
-        typeof target[prop] === 'string' ||
-        target[prop] instanceof String ||
-        typeof source[prop] === 'string' ||
-        source[prop] instanceof String
-      ) {
-        if (overwrite) target[prop] = source[prop];
+    if (prop !== '__proto__') {
+      if (prop in target) {
+        // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
+        if (
+          typeof target[prop] === 'string' ||
+          target[prop] instanceof String ||
+          typeof source[prop] === 'string' ||
+          source[prop] instanceof String
+        ) {
+          if (overwrite) target[prop] = source[prop];
+        } else {
+          deepExtend(target[prop], source[prop], overwrite);
+        }
       } else {
-        deepExtend(target[prop], source[prop], overwrite);
+        target[prop] = source[prop];
       }
-    } else {
-      target[prop] = source[prop];
     }
   }
   return target;
