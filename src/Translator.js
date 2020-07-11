@@ -290,6 +290,15 @@ class Translator extends EventEmitter {
           ...options,
           ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } },
         });
+      const skipOnVariables =
+        (options.interpolation && options.interpolation.skipOnVariables) ||
+        this.options.interpolation.skipOnVariables;
+      let nestBef;
+      if (skipOnVariables) {
+        const nb = res.match(this.interpolator.nestingRegexp);
+        // has nesting aftbeforeer interpolation
+        nestBef = nb && nb.length;
+      }
 
       // interpolate
       let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
@@ -298,6 +307,12 @@ class Translator extends EventEmitter {
       res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
 
       // nesting
+      if (skipOnVariables) {
+        const na = res.match(this.interpolator.nestingRegexp);
+        // has nesting after interpolation
+        const nestAft = na && na.length;
+        if (nestBef < nestAft) options.nest = false;
+      }
       if (options.nest !== false)
         res = this.interpolator.nest(
           res,
