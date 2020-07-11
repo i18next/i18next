@@ -1,3 +1,8 @@
+### 19.6.0
+
+- fix prototype pollution
+- introduce new interpolation option skipOnVariables [1483](https://github.com/i18next/i18next/pull/1483)
+
 ### 19.5.6
 
 - fix local usage of nsSeparator option
