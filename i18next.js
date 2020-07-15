@@ -1434,60 +1434,48 @@
 
         this.resetRegExp();
         var missingInterpolationHandler = options && options.missingInterpolationHandler || this.options.missingInterpolationHandler;
-        replaces = 0;
+        var skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+        var todos = [{
+          regex: this.regexpUnescape,
+          safeValue: function safeValue(val) {
+            return regexSafe(val);
+          }
+        }, {
+          regex: this.regexp,
+          safeValue: function safeValue(val) {
+            return _this.escapeValue ? regexSafe(_this.escape(val)) : regexSafe(val);
+          }
+        }];
+        todos.forEach(function (todo) {
+          replaces = 0;
 
-        while (match = this.regexpUnescape.exec(str)) {
-          value = handleFormat(match[1].trim());
+          while (match = todo.regex.exec(str)) {
+            value = handleFormat(match[1].trim());
 
-          if (value === undefined) {
-            if (typeof missingInterpolationHandler === 'function') {
-              var temp = missingInterpolationHandler(str, match, options);
-              value = typeof temp === 'string' ? temp : '';
-            } else {
-              this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
-              value = '';
+            if (value === undefined) {
+              if (typeof missingInterpolationHandler === 'function') {
+                var temp = missingInterpolationHandler(str, match, options);
+                value = typeof temp === 'string' ? temp : '';
+              } else if (skipOnVariables) {
+                value = match[0];
+              } else {
+                _this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
+
+                value = '';
+              }
+            } else if (typeof value !== 'string' && !_this.useRawValueToEscape) {
+              value = makeString(value);
             }
-          } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-            value = makeString(value);
-          }
 
-          str = str.replace(match[0], regexSafe(value));
-          this.regexpUnescape.lastIndex = 0;
-          replaces++;
+            str = str.replace(match[0], todo.safeValue(value));
+            todo.regex.lastIndex = 0;
+            replaces++;
 
-          if (replaces >= this.maxReplaces) {
-            break;
-          }
-        }
-
-        replaces = 0;
-
-        while (match = this.regexp.exec(str)) {
-          value = handleFormat(match[1].trim());
-
-          if (value === undefined) {
-            if (typeof missingInterpolationHandler === 'function') {
-              var _temp = missingInterpolationHandler(str, match, options);
-
-              value = typeof _temp === 'string' ? _temp : '';
-            } else {
-              this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
-              value = '';
+            if (replaces >= _this.maxReplaces) {
+              break;
             }
-          } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-            value = makeString(value);
           }
-
-          value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
-          str = str.replace(match[0], value);
-          this.regexp.lastIndex = 0;
-          replaces++;
-
-          if (replaces >= this.maxReplaces) {
-            break;
-          }
-        }
-
+        });
         return str;
       }
     }, {

@@ -1,3 +1,8 @@
+### 19.6.1
+
+- extend interpolation option skipOnVariables [1488](https://github.com/i18next/i18next/pull/1488)
+- typescript: Change bindStore to bindI18nStore in ReactOptions type and update default values [1489](https://github.com/i18next/i18next/pull/1489)
+
 ### 19.6.0
 
 - fix prototype pollution
