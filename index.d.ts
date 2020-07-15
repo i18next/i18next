@@ -119,12 +119,12 @@ export interface ReactOptions {
   defaultTransParent?: string;
   /**
    * Set which events trigger a re-render, can be set to false or string of events
-   * @default 'languageChanged loaded'
+   * @default 'languageChanged'
    */
   bindI18n?: string | false;
   /**
    * Set which events on store trigger a re-render, can be set to false or string of events
-   * @default 'added removed'
+   * @default ''
    */
   bindI18nStore?: string | false;
   /**
