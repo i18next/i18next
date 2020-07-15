@@ -77,10 +77,6 @@ class Interpolator {
       (this.options && this.options.interpolation && this.options.interpolation.defaultVariables) ||
       {};
 
-    const skipOnVariables =
-      (options && options.interpolation && options.interpolation.skipOnVariables) ||
-      this.options.interpolation.skipOnVariables;
-
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
     }
@@ -102,6 +98,10 @@ class Interpolator {
 
     const missingInterpolationHandler =
       (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
+
+    const skipOnVariables =
+      (options && options.interpolation && options.interpolation.skipOnVariables) ||
+      this.options.interpolation.skipOnVariables;
 
     const todos = [
       {
