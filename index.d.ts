@@ -126,7 +126,7 @@ export interface ReactOptions {
    * Set which events on store trigger a re-render, can be set to false or string of events
    * @default 'added removed'
    */
-  bindStore?: string | false;
+  bindI18nStore?: string | false;
   /**
    * Set fallback value for Trans components without children
    * @default undefined
