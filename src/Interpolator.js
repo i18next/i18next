@@ -99,53 +99,48 @@ class Interpolator {
     const missingInterpolationHandler =
       (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
 
-    replaces = 0;
-    // unescape if has unescapePrefix/Suffix
-    /* eslint no-cond-assign: 0 */
-    while ((match = this.regexpUnescape.exec(str))) {
-      value = handleFormat(match[1].trim());
-      if (value === undefined) {
-        if (typeof missingInterpolationHandler === 'function') {
-          const temp = missingInterpolationHandler(str, match, options);
-          value = typeof temp === 'string' ? temp : '';
-        } else {
-          this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
-          value = '';
-        }
-      } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-        value = utils.makeString(value);
-      }
-      str = str.replace(match[0], regexSafe(value));
-      this.regexpUnescape.lastIndex = 0;
-      replaces++;
-      if (replaces >= this.maxReplaces) {
-        break;
-      }
-    }
+    const skipOnVariables =
+      (options && options.interpolation && options.interpolation.skipOnVariables) ||
+      this.options.interpolation.skipOnVariables;
 
-    replaces = 0;
-    // regular escape on demand
-    while ((match = this.regexp.exec(str))) {
-      value = handleFormat(match[1].trim());
-      if (value === undefined) {
-        if (typeof missingInterpolationHandler === 'function') {
-          const temp = missingInterpolationHandler(str, match, options);
-          value = typeof temp === 'string' ? temp : '';
-        } else {
-          this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
-          value = '';
+    const todos = [
+      {
+        // unescape if has unescapePrefix/Suffix
+        regex: this.regexpUnescape,
+        safeValue: val => regexSafe(val),
+      },
+      {
+        // regular escape on demand
+        regex: this.regexp,
+        safeValue: val => (this.escapeValue ? regexSafe(this.escape(val)) : regexSafe(val)),
+      },
+    ];
+    todos.forEach(todo => {
+      replaces = 0;
+      /* eslint no-cond-assign: 0 */
+      while ((match = todo.regex.exec(str))) {
+        value = handleFormat(match[1].trim());
+        if (value === undefined) {
+          if (typeof missingInterpolationHandler === 'function') {
+            const temp = missingInterpolationHandler(str, match, options);
+            value = typeof temp === 'string' ? temp : '';
+          } else if (skipOnVariables) {
+            value = match[0];
+          } else {
+            this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
+            value = '';
+          }
+        } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
+          value = utils.makeString(value);
         }
-      } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-        value = utils.makeString(value);
+        str = str.replace(match[0], todo.safeValue(value));
+        todo.regex.lastIndex = 0;
+        replaces++;
+        if (replaces >= this.maxReplaces) {
+          break;
+        }
       }
-      value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
-      str = str.replace(match[0], value);
-      this.regexp.lastIndex = 0;
-      replaces++;
-      if (replaces >= this.maxReplaces) {
-        break;
-      }
-    }
+    });
     return str;
   }
 

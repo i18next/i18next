@@ -47,6 +47,10 @@ describe('i18next.interpolation.nesting', () => {
         args: ['keyWithNestAndVar', { a: '$t(nested)' }],
         expected: '$t(nested2) value $t(nested)',
       },
+      {
+        args: ['key', { a: '{{nested}}' }],
+        expected: 'value {{nested}}',
+      },
     ];
 
     tests.forEach(test => {
