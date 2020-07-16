@@ -14,6 +14,7 @@ describe('i18next.interpolation.nesting', () => {
           en: {
             translation: {
               key: 'value {{a}}',
+              key2: 'value {{a}} {{b}}',
               keyWithoutVar: 'value',
               nested: 'nested stuff',
               keyWithNest: '$t(nested2) value',
@@ -50,6 +51,10 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['key', { a: '{{nested}}' }],
         expected: 'value {{nested}}',
+      },
+      {
+        args: ['key2', { a: '{{nested}}', b: 'something' }],
+        expected: 'value {{nested}} something',
       },
     ];
 

@@ -1458,6 +1458,7 @@
                 value = typeof temp === 'string' ? temp : '';
               } else if (skipOnVariables) {
                 value = match[0];
+                continue;
               } else {
                 _this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
 

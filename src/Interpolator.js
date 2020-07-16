@@ -126,6 +126,7 @@ class Interpolator {
             value = typeof temp === 'string' ? temp : '';
           } else if (skipOnVariables) {
             value = match[0];
+            continue; // this makes sure it continues to detect others
           } else {
             this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
             value = '';

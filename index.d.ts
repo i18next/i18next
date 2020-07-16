@@ -99,6 +99,12 @@ export interface InterpolationOptions {
    * @default 1000
    */
   maxReplaces?: number;
+
+  /**
+   * If true, it will skip to interpolate the variables
+   * @default false
+   */
+  skipOnVariables?: boolean;
 }
 
 export interface ReactOptions {
