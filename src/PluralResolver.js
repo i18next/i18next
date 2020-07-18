@@ -12,7 +12,7 @@ let sets = [
     'ne','nl','nn','no','nso','pa','pap','pms','ps','pt-PT','rm','sco',
     'se','si','so','son','sq','sv','sw','ta','te','tk','ur','yo'], nr: [1,2], fc: 2 },
 
-  { lngs: ['ay','bo','cgg','fa','id','ja','jbo','ka','kk','km','ko','ky','lo',
+  { lngs: ['ay','bo','cgg','fa','ht','id','ja','jbo','ka','kk','km','ko','ky','lo',
     'ms','sah','su','th','tt','ug','vi','wo','zh'], nr: [1], fc: 3 },
 
   { lngs: ['be','bs', 'cnr', 'dz','hr','ru','sr','uk'], nr: [1,2,5], fc: 4 },
