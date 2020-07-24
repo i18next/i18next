@@ -1,3 +1,7 @@
+### 19.6.3
+
+- plural rules for ht and iw
+
 ### 19.6.2
 
 - fix interpolation with option skipOnVariables when there are multiple placeholders [1490](https://github.com/i18next/i18next/issues/1490)
