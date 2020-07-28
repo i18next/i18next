@@ -205,7 +205,7 @@ export interface InitOptions {
    * DEPRECTADED use nonExplicitSupportedLngs
    * @default false
    */
-  nonExplicitWhiteliest?: boolean;
+  nonExplicitWhitelist?: boolean;
 
   /**
    * Array of allowed languages
