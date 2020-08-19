@@ -89,4 +89,46 @@ describe('i18next', () => {
       });
     });
   });
+
+  describe('chained resource manipulation', () => {
+    describe('can add resources', () => {
+      it('it adds resouces by addResource', () => {
+        i18next
+          .addResource('de', 'translation', 'test', 'test')
+          .addResource('de', 'translation', 'nest.test', 'test_nest');
+        expect(i18next.getResource('de', 'translation', 'test')).to.equal('test');
+        expect(i18next.getResource('de', 'translation', 'nest.test')).to.equal('test_nest');
+      });
+
+      it('it adds resouces by addResources', () => {
+        i18next
+          .addResources('fr', 'translation', {
+            hi: 'salut',
+          })
+          .addResources('fr', 'translation', {
+            hi: 'salut',
+            hello: 'bonjour',
+          });
+        expect(i18next.getResource('fr', 'translation', 'hi')).to.equal('salut');
+        expect(i18next.getResource('fr', 'translation', 'hello')).to.equal('bonjour');
+      });
+
+      it('it adds resouces by addResourceBundle', () => {
+        i18next
+          .addResourceBundle('en.translation', { something1: 'deeper1' })
+          .addResourceBundle('en.translation', { something2: 'deeper2' });
+        expect(i18next.getResource('en.translation')).to.eql({
+          something1: 'deeper1',
+          something2: 'deeper2',
+        });
+      });
+
+      describe('can remove resources bundle', () => {
+        it('it removes resouces by removeResourceBundle', () => {
+          i18next.removeResourceBundle('en', 'translation');
+          expect(i18next.getResourceBundle('en', 'translation')).to.be.not.ok;
+        });
+      });
+    });
+  });
 });

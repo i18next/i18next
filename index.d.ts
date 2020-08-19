@@ -1002,12 +1002,12 @@ export interface i18n {
     key: string,
     value: string,
     options?: { keySeparator?: string; silent?: boolean },
-  ): void;
+  ): i18n;
 
   /**
    * Adds multiple key/values.
    */
-  addResources(lng: string, ns: string, resources: any): void;
+  addResources(lng: string, ns: string, resources: any): i18n;
 
   /**
    * Adds a complete bundle.
@@ -1020,7 +1020,7 @@ export interface i18n {
     resources: any,
     deep?: boolean,
     overwrite?: boolean,
-  ): void;
+  ): i18n;
 
   /**
    * Checks if a resource bundle exists.
@@ -1035,7 +1035,7 @@ export interface i18n {
   /**
    * Removes an existing bundle.
    */
-  removeResourceBundle(lng: string, ns: string): void;
+  removeResourceBundle(lng: string, ns: string): i18n;
 
   /**
    * Current options
