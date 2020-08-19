@@ -127,16 +127,24 @@ class I18n extends EventEmitter {
     // append api
     const storeApi = [
       'getResource',
-      'addResource',
-      'addResources',
-      'addResourceBundle',
-      'removeResourceBundle',
       'hasResourceBundle',
       'getResourceBundle',
       'getDataByLanguage',
     ];
     storeApi.forEach(fcName => {
       this[fcName] = (...args) => this.store[fcName](...args);
+    });
+    const storeApiChained = [
+      'addResource',
+      'addResources',
+      'addResourceBundle',
+      'removeResourceBundle',
+    ];
+    storeApiChained.forEach(fcName => {
+      this[fcName] = (...args) => {
+        this.store[fcName](...args);
+        return this;
+      };
     });
 
     const deferred = defer();
