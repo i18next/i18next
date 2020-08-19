@@ -1,3 +1,7 @@
+### 19.7.0
+
+- resource manipulation functions are now chainable
+
 ### 19.6.3
 
 - plural rules for ht and iw
