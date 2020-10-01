@@ -2,7 +2,7 @@ export interface FallbackLngObjList {
   [language: string]: string[];
 }
 
-export type FallbackLng = string | string[] | FallbackLngObjList;
+export type FallbackLng = string | string[] | FallbackLngObjList | (() => string | string[] | FallbackLngObjList);
 
 export type FormatFunction = (value: any, format?: string, lng?: string) => string;
 
