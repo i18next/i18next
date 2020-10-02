@@ -1,3 +1,7 @@
+### 19.8.0
+
+- allow fallbackLng as function [1508](https://github.com/i18next/i18next/pull/1508)
+
 ### 19.7.0
 
 - resource manipulation functions are now chainable
