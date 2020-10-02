@@ -61,6 +61,92 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('toResolveHierarchy() - fallback function returns object', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: () => ({
+          de: ['de-CH', 'en'],
+          'de-CH': ['fr', 'it', 'en'],
+          'zh-Hans': ['zh-Hant', 'zh', 'en'],
+          'zh-Hant': ['zh-Hans', 'zh', 'en'],
+          nb: ['no'],
+          nn: ['no'],
+          default: ['en'],
+        }),
+      });
+    });
+
+    var tests = [
+      { args: ['en'], expected: ['en'] },
+      { args: ['de'], expected: ['de', 'de-CH', 'en'] },
+      { args: ['de-CH'], expected: ['de-CH', 'de', 'fr', 'it', 'en'] },
+      { args: ['nb-NO'], expected: ['nb-NO', 'nb', 'no'] },
+      { args: ['nn'], expected: ['nn', 'no'] },
+      { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en'] },
+    ];
+
+    tests.forEach(test => {
+      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
+  describe('toResolveHierarchy() - fallback function returns string', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: () => 'en',
+      });
+    });
+
+    var tests = [
+      { args: ['en'], expected: ['en'] },
+      { args: ['de'], expected: ['de', 'en'] },
+      { args: ['de', 'fr'], expected: ['de', 'fr'] },
+      { args: ['de', ['fr', 'en']], expected: ['de', 'fr', 'en'] },
+      { args: ['de', ['fr', 'de']], expected: ['de', 'fr'] },
+      { args: ['de-CH'], expected: ['de-CH', 'de', 'en'] },
+      { args: ['nb-NO'], expected: ['nb-NO', 'nb', 'en'] },
+      { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en'] },
+      { args: ['de-x-custom1'], expected: ['de-x-custom1', 'de', 'en'] },
+      { args: ['de-DE-x-custom1'], expected: ['de-DE-x-custom1', 'de', 'en'] },
+    ];
+
+    tests.forEach(test => {
+      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
+  describe('toResolveHierarchy() - fallback function returns array', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: () => ['de', 'en', 'zh'],
+      });
+    });
+
+    var tests = [
+      { args: ['en'], expected: ['en', 'de', 'zh'] },
+      { args: ['de'], expected: ['de', 'en', 'zh'] },
+      { args: ['de-AT'], expected: ['de-AT', 'de', 'en', 'zh'] },
+      { args: ['zh-HK'], expected: ['zh-HK', 'zh', 'de', 'en'] },
+      { args: ['zh-CN'], expected: ['zh-CN', 'zh', 'de', 'en'] },
+    ];
+
+    tests.forEach(test => {
+      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('toResolveHierarchy() - cleanCode Option', () => {
     var cu;
 
