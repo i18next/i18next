@@ -2001,7 +2001,7 @@
           });
         }
 
-        if (!this.modules.languageDetector && !this.options.lng) {
+        if (!this.services.languageDetector && !this.options.lng) {
           this.logger.warn('init: no languageDetector is used and no lng is defined');
         }
 
@@ -2028,8 +2028,7 @@
         var load = function load() {
           _this2.changeLanguage(_this2.options.lng, function (err, t) {
             _this2.isInitialized = true;
-
-            _this2.logger.log('initialized', _this2.options);
+            if (!_this2.options.isClone) _this2.logger.log('initialized', _this2.options);
 
             _this2.emit('initialized', _this2.options);
 

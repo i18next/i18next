@@ -1,3 +1,8 @@
+### 19.8.1
+
+- fix "no languageDetector is used" log statement
+- do not log "initialized" on cloned instances
+
 ### 19.8.0
 
 - allow fallbackLng as function [1508](https://github.com/i18next/i18next/pull/1508)

@@ -120,7 +120,7 @@ class I18n extends EventEmitter {
       });
     }
 
-    if (!this.modules.languageDetector && !this.options.lng) {
+    if (!this.services.languageDetector && !this.options.lng) {
       this.logger.warn('init: no languageDetector is used and no lng is defined');
     }
 
@@ -152,7 +152,7 @@ class I18n extends EventEmitter {
     const load = () => {
       this.changeLanguage(this.options.lng, (err, t) => {
         this.isInitialized = true;
-        this.logger.log('initialized', this.options);
+        if (!this.options.isClone) this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
 
         deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
