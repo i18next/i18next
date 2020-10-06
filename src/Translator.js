@@ -317,7 +317,7 @@ class Translator extends EventEmitter {
         res = this.interpolator.nest(
           res,
           (...args) => {
-            if (lastKey && lastKey[0] === args[0]) {
+            if (lastKey && lastKey[0] === args[0] && !options.context) {
               this.logger.warn(
                 `It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`,
               );

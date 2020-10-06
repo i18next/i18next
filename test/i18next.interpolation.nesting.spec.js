@@ -28,6 +28,9 @@ describe('i18next.interpolation.nesting', () => {
               keyB1: 'Text to interpolate => $t(keyA1, { "text": "foo" })',
               keyA1rec: '{{text}} interpolated | $t(keyB1rec)',
               keyB1rec: 'Text to interpolate => $t(keyA1rec, { "text": "foo" })',
+              test_foo: "foo $t(test, { 'context': 'bar' })",
+              test_bar: "bar $t(test, { 'context': 'baz' })",
+              test_baz: 'baz',
             },
           },
         },
@@ -83,6 +86,10 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['keyB1rec'],
         expected: 'Text to interpolate => foo interpolated | ',
+      },
+      {
+        args: ['test', { context: 'foo' }],
+        expected: 'foo bar baz',
       },
     ];
 

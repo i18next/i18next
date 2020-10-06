@@ -827,7 +827,7 @@
               args[_key] = arguments[_key];
             }
 
-            if (lastKey && lastKey[0] === args[0]) {
+            if (lastKey && lastKey[0] === args[0] && !options.context) {
               _this3.logger.warn("It seems you are nesting recursively key: ".concat(args[0], " in key: ").concat(key[0]));
 
               return null;
