@@ -142,10 +142,16 @@ describe('ResourceStore', () => {
         });
       });
 
-      it('without polluting the prototype', () => {
+      it('without polluting the prototype by __proto__', () => {
         const malicious_payload = '{"__proto__":{"vulnerable":"Polluted"}}';
         rs.addResourceBundle('en', 'translation', JSON.parse(malicious_payload), true, true);
         expect({}.vulnerable).to.eql(undefined);
+      });
+
+      it('without polluting the prototype by constructor', () => {
+        const malicious_payload = '{"constructor": {"prototype": {"polluted": "yes"}}}';
+        rs.addResourceBundle('en', 'translation', JSON.parse(malicious_payload), true);
+        expect({}.polluted).to.eql(undefined);
       });
     });
 

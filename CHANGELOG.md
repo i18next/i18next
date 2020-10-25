@@ -1,3 +1,7 @@
+### 19.8.3
+
+- fix prototype pollution with constructor
+
 ### 19.8.2
 
 - allow nesting recursively with context (could theoretically generate infinite loop, prevented in [1480](https://github.com/i18next/i18next/pull/1480))
