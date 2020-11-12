@@ -16,20 +16,20 @@ i18next provides:
 
 - Flexible connection to [backend](https://www.i18next.com/plugins-and-utils.html#backends) (loading translations via xhr, ...)
 - Optional [caching](https://www.i18next.com/plugins-and-utils.html#caches), user [language detection](https://www.i18next.com/plugins-and-utils.html#language-detector), ...
-- Proper [pluralizations](https://www.i18next.com/plurals.html)
-- Translation [context](https://www.i18next.com/context.html)
-- [Nesting](https://www.i18next.com/nesting.html), [Variable replacement](https://www.i18next.com/interpolation.html)
-- Flexibility: [Use it everywhere](https://www.i18next.com/supported-frameworks.html)
-- Extensibility: eg. [sprintf](https://www.i18next.com/plugins-and-utils.html#post-processors)
+- Proper [pluralizations](https://www.i18next.com/translation-function/plurals)
+- Translation [context](https://www.i18next.com/translation-function/context)
+- [Nesting](https://www.i18next.com/translation-function/nesting), [Variable replacement](https://www.i18next.com/translation-function/interpolation)
+- Flexibility: [Use it everywhere](https://www.i18next.com/overview/supported-frameworks)
+- Extensibility: eg. [sprintf](https://www.i18next.com/overview/plugins-and-utils#post-processors)
 - ...
 
 For more information visit the website:
 
-- [Getting started](https://www.i18next.com/getting-started.html)
-- [Translation Functionality](https://www.i18next.com/essentials.html)
-- [API](https://www.i18next.com/api.html)
+- [Getting started](https://www.i18next.com/overview/getting-started)
+- [Translation Functionality](https://www.i18next.com/translation-function/essentials)
+- [API](https://www.i18next.com/overview/api)
 
-Our focus is providing the core to building a booming ecosystem. Independent of the building blocks you choose, be it react, angular or even good old jquery proper translation capabilities are just [one step away](https://www.i18next.com/supported-frameworks.html).
+Our focus is providing the core to building a booming ecosystem. Independent of the building blocks you choose, be it react, angular or even good old jquery proper translation capabilities are just [one step away](https://www.i18next.com/overview/supported-frameworks).
 
 ---
 
