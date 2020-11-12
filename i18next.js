@@ -360,7 +360,7 @@
   }
   function deepExtend(target, source, overwrite) {
     for (var prop in source) {
-      if (prop !== '__proto__') {
+      if (prop !== '__proto__' && prop !== 'constructor') {
         if (prop in target) {
           if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
             if (overwrite) target[prop] = source[prop];
