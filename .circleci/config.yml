@@ -2,14 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:lts
+      - image:  circleci/node:latest-browsers
         environment:
           CHROME_BIN: '/usr/bin/google-chrome'
     steps:
       - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@6'
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
