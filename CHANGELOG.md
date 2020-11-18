@@ -1,3 +1,7 @@
+### 19.8.4
+
+- update format function signature for TS [1520](https://github.com/i18next/i18next/pull/1480))
+
 ### 19.8.3
 
 - fix prototype pollution with constructor
