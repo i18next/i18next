@@ -4,7 +4,7 @@ export interface FallbackLngObjList {
 
 export type FallbackLng = string | string[] | FallbackLngObjList | ((code:string) => string | string[] | FallbackLngObjList);
 
-export type FormatFunction = (value: any, format?: string, lng?: string) => string;
+export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & { [key: string]: any }) => string;
 
 export interface InterpolationOptions {
   /**
