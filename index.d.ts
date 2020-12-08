@@ -2,6 +2,11 @@ export interface FallbackLngObjList {
   [language: string]: string[];
 }
 
+/**
+ * Augment this with a 'keys' key where you can add all the available translation keys
+ */
+export interface I18nTranslationKeys {}
+
 export type FallbackLng = string | string[] | FallbackLngObjList | ((code:string) => string | string[] | FallbackLngObjList);
 
 export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & { [key: string]: any }) => string;
@@ -639,7 +644,7 @@ export type Callback = (error: any, t: TFunction) => void;
  * Uses similar args as the t function and returns true if a key exists.
  */
 export interface ExistsFunction<
-  TKeys extends string = string,
+  TKeys extends TranslationKeys = TranslationKeys,
   TInterpolationMap extends object = StringMap
 > {
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
@@ -652,11 +657,16 @@ export interface WithT {
 
 export type TFunctionResult = string | object | Array<string | object> | undefined | null;
 export type TFunctionKeys = string | TemplateStringsArray;
+
+/**
+ * Gets the defined translation keys if they have been overridden, 'string' type otherwise
+ */
+type TranslationKeys = I18nTranslationKeys['keys'] extends string ? I18nTranslationKeys['keys'] : TFunctionKeys;
 export interface TFunction {
   // basic usage
   <
     TResult extends TFunctionResult = string,
-    TKeys extends TFunctionKeys = string,
+    TKeys extends TranslationKeys = TranslationKeys,
     TInterpolationMap extends object = StringMap
   >(
     key: TKeys | TKeys[],
@@ -665,7 +675,7 @@ export interface TFunction {
   // overloaded usage
   <
     TResult extends TFunctionResult = string,
-    TKeys extends TFunctionKeys = string,
+    TKeys extends TranslationKeys = TranslationKeys,
     TInterpolationMap extends object = StringMap
   >(
     key: TKeys | TKeys[],
