@@ -120,6 +120,10 @@ class I18n extends EventEmitter {
       });
     }
 
+    if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
+      const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng)
+      if (codes.length > 0 && codes[0] !== 'dev') this.options.lng = codes[0]
+    }
     if (!this.services.languageDetector && !this.options.lng) {
       this.logger.warn('init: no languageDetector is used and no lng is defined');
     }
