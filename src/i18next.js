@@ -270,8 +270,9 @@ class I18n extends EventEmitter {
         this.isLanguageChangingTo = undefined;
       }
 
-      deferred.resolve((...args) => this.t(...args));
-      if (callback) callback(err, (...args) => this.t(...args));
+      const tFn = this.t.bind(this);
+      deferred.resolve(tFn);
+      if (callback) callback(err, tFn);
     };
 
     const setLng = lngs => {
