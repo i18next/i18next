@@ -71,7 +71,7 @@
     "prettier": "^1.15.3",
     "rimraf": "2.5.4",
     "rollup": "^2.34.1",
-    "rollup-plugin-babel": "^4.3.2",
+    "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "rollup-plugin-terser": "^4.0.4",
