@@ -1,3 +1,7 @@
+### 19.8.6
+
+- regression fix because of last prototype pollution fix in v19.8.5
+
 ### 19.8.5
 
 - fix potential prototype pollution when backend plugin resolves a malicious language value
