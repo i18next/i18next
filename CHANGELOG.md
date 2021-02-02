@@ -1,3 +1,7 @@
+### 19.8.7
+
+- use "Object.prototype.hasOwnProperty" instead of "object.hasOwnProperty", fixes [1542](https://github.com/i18next/i18next/issues/1542)
+
 ### 19.8.6
 
 - regression fix because of last prototype pollution fix in v19.8.5

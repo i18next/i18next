@@ -316,7 +316,7 @@
       var key = cleanKey(stack.shift());
       if (!object[key] && Empty) object[key] = new Empty();
 
-      if (object.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(object, key)) {
         object = object[key];
       } else {
         object = {};
