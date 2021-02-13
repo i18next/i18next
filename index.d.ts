@@ -882,7 +882,7 @@ export interface i18n {
    * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
    * HINT: For easy testing - setting lng to 'cimode' will set t function to always return the key.
    */
-  changeLanguage(lng: string, callback?: Callback): Promise<TFunction>;
+  changeLanguage(lng?: string, callback?: Callback): Promise<TFunction>;
 
   /**
    * Is set to the current detected or set language.
