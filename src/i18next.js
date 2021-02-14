@@ -154,14 +154,17 @@ class I18n extends EventEmitter {
     const deferred = defer();
 
     const load = () => {
-      this.changeLanguage(this.options.lng, (err, t) => {
+      const finish = (err, t) => {
         this.isInitialized = true;
         if (!this.options.isClone) this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
 
         deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
         callback(err, t);
-      });
+      };
+      // fix for use cases when calling changeLanguage before finished to initialized (i.e. https://github.com/i18next/i18next/issues/1552)
+      if (this.languages && this.options.compatibilityAPI !== 'v1') return finish(null, this.t.bind(this));
+      this.changeLanguage(this.options.lng, finish);
     };
 
     if (this.options.resources || !this.options.initImmediate) {
