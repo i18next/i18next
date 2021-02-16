@@ -1,3 +1,7 @@
+### 19.8.8
+
+- fix for cases when calling changeLanguage before finished to initialize [1552](https://github.com/i18next/i18next/issues/1552)
+
 ### 19.8.7
 
 - use "Object.prototype.hasOwnProperty" instead of "object.hasOwnProperty", fixes [1542](https://github.com/i18next/i18next/issues/1542)

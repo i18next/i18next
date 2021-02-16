@@ -2036,7 +2036,7 @@
         var deferred = defer();
 
         var load = function load() {
-          _this2.changeLanguage(_this2.options.lng, function (err, t) {
+          var finish = function finish(err, t) {
             _this2.isInitialized = true;
             if (!_this2.options.isClone) _this2.logger.log('initialized', _this2.options);
 
@@ -2044,7 +2044,11 @@
 
             deferred.resolve(t);
             callback(err, t);
-          });
+          };
+
+          if (_this2.languages && _this2.options.compatibilityAPI !== 'v1') return finish(null, _this2.t.bind(_this2));
+
+          _this2.changeLanguage(_this2.options.lng, finish);
         };
 
         if (this.options.resources || !this.options.initImmediate) {
