@@ -1,3 +1,7 @@
+### 19.8.9
+
+- warn if i18next gets initialized multiple times
+
 ### 19.8.8
 
 - fix for cases when calling changeLanguage before finished to initialize [1552](https://github.com/i18next/i18next/issues/1552)

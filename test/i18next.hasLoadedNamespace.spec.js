@@ -52,7 +52,7 @@ const Backend = {
   },
 };
 
-const i18n = i18next.createInstance();
+let i18n = i18next.createInstance();
 i18n.use(Backend);
 i18n.use(Logger);
 
@@ -86,7 +86,7 @@ describe('i18next', () => {
 
     describe('called init() properly', () => {
       before(done => {
-        i18n.init({ debug: true, saveMissing: true, lng: 'en-US' }, () => {
+        i18n = i18n.cloneInstance({ debug: true, saveMissing: true, lng: 'en-US' }, () => {
           done();
         });
       });

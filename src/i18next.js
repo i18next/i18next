@@ -155,6 +155,7 @@ class I18n extends EventEmitter {
 
     const load = () => {
       const finish = (err, t) => {
+        if (this.isInitialized) this.logger.warn('init: i18next is already initialized. You should call init just once!');
         this.isInitialized = true;
         if (!this.options.isClone) this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
