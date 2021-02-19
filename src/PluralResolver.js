@@ -102,18 +102,17 @@ class PluralResolver {
   }
 
   getPluralFormsOfKey(code, key) {
-    const ret = [];
+    return this.getSuffixes(code).map((suffix) => key + suffix)
+  }
 
+  getSuffixes(code) {
     const rule = this.getRule(code);
 
-    if (!rule) return ret;
+    if (!rule) {
+      return [];
+    }
 
-    rule.numbers.forEach((n) => {
-      const suffix = this.getSuffix(code, n);
-      ret.push(`${key}${suffix}`);
-    });
-
-    return ret;
+    return rule.numbers.map((number) => this.getSuffix(code, number))
   }
 
   getSuffix(code, count) {
