@@ -52,14 +52,31 @@ describe('Translator', () => {
           interpolateKey: true,
         },
       });
+
       t.changeLanguage('en');
     });
 
-    it('correctly sends missing', () => {
-      expect(t.translate('translation:test', { defaultValue: 'new value' })).to.eql('test_en');
-      expect(missingKeyHandler.calledOnce).to.be.true;
-      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
-        .true;
+    describe('without default value', () => {
+      it('does not invoke missingKeyHandler', () => {
+        expect(t.translate('translation:test')).to.eql('test_en');
+        expect(missingKeyHandler.notCalled).to.be.true;
+      });
+    });
+
+    describe('with an unchanged default value', () => {
+      it('does not invoke missingKeyHandler', () => {
+        expect(t.translate('translation:test', { defaultValue: 'test_en' })).to.eql('test_en');
+        expect(missingKeyHandler.notCalled).to.be.true;
+      });
+    });
+
+    describe('with a new default value', () => {
+      it('correctly sends missing', () => {
+        expect(t.translate('translation:test', { defaultValue: 'new value' })).to.eql('test_en');
+        expect(missingKeyHandler.calledOnce).to.be.true;
+        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
+          .true;
+      });
     });
   });
 
@@ -81,19 +98,49 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    it('correctly sends missing', () => {
-      expect(
-        t.translate('translation:test', {
-          count: 1,
-          defaultValue: 'new value',
-          defaultValue_plural: 'new values',
-        }),
-      ).to.eql('test_en');
-      expect(missingKeyHandler.calledTwice).to.be.true;
-      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
-        .true;
-      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test_plural', 'new values', true))
-        .to.be.true;
+    describe('without a count option', () => {
+      it('only sends one missing key', () => {
+        expect(
+          t.translate('translation:test', {
+            defaultValue: 'new value',
+            defaultValue_plural: 'new values',
+          }),
+        ).to.eql('test_en');
+        expect(missingKeyHandler.calledOnce).to.be.true;
+        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
+          .true;
+      });
+    });
+
+    describe('with a non-numeric count option', () => {
+      it('only sends one missing key', () => {
+        expect(
+          t.translate('translation:test', {
+            count: 'foo',
+            defaultValue: 'new value',
+            defaultValue_plural: 'new values',
+          }),
+        ).to.eql('test_en');
+        expect(missingKeyHandler.calledOnce).to.be.true;
+      });
+    });
+
+    describe('with a numeric count option', () => {
+      it('sends correct missing keys per default plural values', () => {
+        expect(
+          t.translate('translation:test', {
+            count: 1,
+            defaultValue: 'new value',
+            defaultValue_plural: 'new values',
+          }),
+        ).to.eql('test_en');
+        expect(missingKeyHandler.calledTwice).to.be.true;
+        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
+          .true;
+        expect(
+          missingKeyHandler.calledWith(['en'], 'translation', 'test_plural', 'new values', true),
+        ).to.be.true;
+      });
     });
   });
 });

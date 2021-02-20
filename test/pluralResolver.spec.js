@@ -262,4 +262,28 @@ describe('PluralResolver', () => {
       );
     });
   });
+
+  describe('getSuffixes()', () => {
+    let pr;
+
+    before(() => {
+      let lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, { simplifyPluralSuffix: true, prepend: '_' });
+    });
+
+    var tests = [
+      { args: [], expected: [] },
+      { args: ['en'], expected: ['', '_plural'] },
+      { args: ['ar'], expected: ['_0', '_1', '_2', '_3', '_4', '_5'] },
+    ];
+
+    tests.forEach(test => {
+      it(
+        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
+        () => {
+          expect(pr.getSuffixes.apply(pr, test.args)).to.eql(test.expected);
+        },
+      );
+    });
+  });
 });

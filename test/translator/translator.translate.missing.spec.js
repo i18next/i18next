@@ -56,7 +56,7 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    it('correctly sends missing', () => {
+    it('correctly sends missing for "translation:test.missing"', () => {
       expect(t.translate('translation:test.missing')).to.eql('test.missing');
       expect(missingKeyHandler.calledWith(['en'], 'translation', 'test.missing', 'test.missing')).to
         .be.true;

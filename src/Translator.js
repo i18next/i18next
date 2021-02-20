@@ -171,7 +171,7 @@ class Translator extends EventEmitter {
       let usedKey = false;
 
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
-      const hasDefaultValue = this.hasDefaultValue(options);
+      const hasDefaultValue = Translator.hasDefaultValue(options);
       const defaultValueSuffix = needsPluralHandling
         ? this.pluralResolver.getSuffix(lng, options.count)
         : '';
@@ -220,38 +220,38 @@ class Translator extends EventEmitter {
           lngs.push(options.lng || this.language);
         }
 
-        const send = (lng, key, fallbackValue = defaultValue) => {
+        const send = (l, k, fallbackValue) => {
           if (this.options.missingKeyHandler) {
             this.options.missingKeyHandler(
-              lng,
+              l,
               namespace,
-              key,
+              k,
               updateMissing ? fallbackValue : res,
               updateMissing,
               options,
             );
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
             this.backendConnector.saveMissing(
-              lng,
+              l,
               namespace,
-              key,
+              k,
               updateMissing ? fallbackValue : res,
               updateMissing,
               options,
             );
           }
-          this.emit('missingKey', lng, namespace, key, res);
+          this.emit('missingKey', l, namespace, k, res);
         };
 
         if (this.options.saveMissing) {
           if (this.options.saveMissingPlurals && needsPluralHandling) {
-            lngs.forEach(lng => {
-              this.pluralResolver.getSuffixes(lng).forEach(suffix => {
-                send([lng], key + suffix, options[`defaultValue${suffix}`]);
+            lngs.forEach(language => {
+              this.pluralResolver.getSuffixes(language).forEach(suffix => {
+                send([language], key + suffix, options[`defaultValue${suffix}`]);
               });
             });
           } else {
-            send(lngs, key);
+            send(lngs, key, defaultValue);
           }
         }
       }
@@ -458,12 +458,12 @@ class Translator extends EventEmitter {
     return this.resourceStore.getResource(code, ns, key, options);
   }
 
-  hasDefaultValue(options) {
+  static hasDefaultValue(options) {
     const prefix = 'defaultValue';
 
     for (const option in options) {
       if (
-        options.hasOwnProperty(option) &&
+        Object.prototype.hasOwnProperty.call(options, option) &&
         prefix === option.substring(0, prefix.length) &&
         undefined !== options[option]
       ) {
