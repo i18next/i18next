@@ -170,15 +170,17 @@ class Translator extends EventEmitter {
       let usedDefault = false;
       let usedKey = false;
 
-      // fallback value
-      if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
-        usedDefault = true;
+      const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+      const hasDefaultValue = Translator.hasDefaultValue(options);
+      const defaultValueSuffix = needsPluralHandling
+        ? this.pluralResolver.getSuffix(lng, options.count)
+        : '';
+      const defaultValue = options[`defaultValue${defaultValueSuffix}`];
 
-        if (options.count !== undefined) {
-          const suffix = this.pluralResolver.getSuffix(lng, options.count);
-          res = options[`defaultValue${suffix}`];
-        }
-        if (!res) res = options.defaultValue;
+      // fallback value
+      if (!this.isValidLookup(res) && hasDefaultValue) {
+        usedDefault = true;
+        res = defaultValue;
       }
       if (!this.isValidLookup(res)) {
         usedKey = true;
@@ -186,15 +188,14 @@ class Translator extends EventEmitter {
       }
 
       // save missing
-      const updateMissing =
-        options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
+      const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
       if (usedKey || usedDefault || updateMissing) {
         this.logger.log(
           updateMissing ? 'updateKey' : 'missingKey',
           lng,
           namespace,
           key,
-          updateMissing ? options.defaultValue : res,
+          updateMissing ? defaultValue : res,
         );
         if (keySeparator) {
           const fk = this.resolve(key, { ...options, keySeparator: false });
@@ -219,13 +220,13 @@ class Translator extends EventEmitter {
           lngs.push(options.lng || this.language);
         }
 
-        const send = (l, k) => {
+        const send = (l, k, fallbackValue) => {
           if (this.options.missingKeyHandler) {
             this.options.missingKeyHandler(
               l,
               namespace,
               k,
-              updateMissing ? options.defaultValue : res,
+              updateMissing ? fallbackValue : res,
               updateMissing,
               options,
             );
@@ -234,7 +235,7 @@ class Translator extends EventEmitter {
               l,
               namespace,
               k,
-              updateMissing ? options.defaultValue : res,
+              updateMissing ? fallbackValue : res,
               updateMissing,
               options,
             );
@@ -243,16 +244,14 @@ class Translator extends EventEmitter {
         };
 
         if (this.options.saveMissing) {
-          const needsPluralHandling =
-            options.count !== undefined && typeof options.count !== 'string';
           if (this.options.saveMissingPlurals && needsPluralHandling) {
-            lngs.forEach(l => {
-              const plurals = this.pluralResolver.getPluralFormsOfKey(l, key);
-
-              plurals.forEach(p => send([l], p));
+            lngs.forEach(language => {
+              this.pluralResolver.getSuffixes(language).forEach(suffix => {
+                send([language], key + suffix, options[`defaultValue${suffix}`]);
+              });
             });
           } else {
-            send(lngs, key);
+            send(lngs, key, defaultValue);
           }
         }
       }
@@ -457,6 +456,22 @@ class Translator extends EventEmitter {
     if (this.i18nFormat && this.i18nFormat.getResource)
       return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
+  }
+
+  static hasDefaultValue(options) {
+    const prefix = 'defaultValue';
+
+    for (const option in options) {
+      if (
+        Object.prototype.hasOwnProperty.call(options, option) &&
+        prefix === option.substring(0, prefix.length) &&
+        undefined !== options[option]
+      ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 
