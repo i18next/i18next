@@ -1,3 +1,8 @@
+### 19.9.0
+
+- Improve updateMissing default plural behavior [1558](https://github.com/i18next/i18next/pull/1558)
+- typescript: type definitions improvements for backend [1560](https://github.com/i18next/i18next/pull/1560)
+
 ### 19.8.9
 
 - warn if i18next gets initialized multiple times
