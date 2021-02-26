@@ -125,6 +125,25 @@ describe('Translator', () => {
       });
     });
 
+    describe('without a default plural value', () => {
+      [1, 2].forEach(count => {
+        it(`count=${count}: sends falls back on singular default value`, () => {
+          expect(
+            t.translate('translation:test', {
+              count,
+              defaultValue: 'new value',
+            }),
+          ).to.eql('test_en');
+          expect(missingKeyHandler.calledTwice).to.be.true;
+          expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to
+            .be.true;
+          expect(
+            missingKeyHandler.calledWith(['en'], 'translation', 'test_plural', 'new value', true),
+          ).to.be.true;
+        });
+      });
+    });
+
     describe('with a numeric count option', () => {
       it('sends correct missing keys per default plural values', () => {
         expect(
