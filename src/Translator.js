@@ -175,7 +175,7 @@ class Translator extends EventEmitter {
       const defaultValueSuffix = needsPluralHandling
         ? this.pluralResolver.getSuffix(lng, options.count)
         : '';
-      const defaultValue = options[`defaultValue${defaultValueSuffix}`];
+      const defaultValue = options[`defaultValue${defaultValueSuffix}`] || options.defaultValue;
 
       // fallback value
       if (!this.isValidLookup(res) && hasDefaultValue) {
@@ -247,7 +247,7 @@ class Translator extends EventEmitter {
           if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach(language => {
               this.pluralResolver.getSuffixes(language).forEach(suffix => {
-                send([language], key + suffix, options[`defaultValue${suffix}`]);
+                send([language], key + suffix, options[`defaultValue${suffix}`] || defaultValue);
               });
             });
           } else {
