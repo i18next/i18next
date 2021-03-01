@@ -1,3 +1,7 @@
+### 19.9.1
+
+- Fallback on singular defaultValue [1563](https://github.com/i18next/i18next/pull/1563)
+
 ### 19.9.0
 
 - Improve updateMissing default plural behavior [1558](https://github.com/i18next/i18next/pull/1558)
