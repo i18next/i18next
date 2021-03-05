@@ -16,6 +16,7 @@ export type FormatFunction = (
   format?: string,
   lng?: string,
   options?: InterpolationOptions & { [key: string]: any },
+  key?: string,
 ) => string;
 
 export interface InterpolationOptions {

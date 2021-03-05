@@ -1,3 +1,7 @@
+### 20.0.1
+
+- Add interpolation key name to format function
+
 ### 20.0.0
 
 - add support to proper augment PluginOptions type [1583](https://github.com/i18next/i18next/pull/1583)

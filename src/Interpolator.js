@@ -59,9 +59,7 @@ class Interpolator {
     const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${
-      this.suffix
-    }`;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
     const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
@@ -84,14 +82,22 @@ class Interpolator {
     const handleFormat = key => {
       if (key.indexOf(this.formatSeparator) < 0) {
         const path = utils.getPathWithDefaults(data, defaultData, key);
-        return this.alwaysFormat ? this.format(path, undefined, lng) : path;
+        return this.alwaysFormat
+          ? this.format(path, undefined, lng, { ...options, ...data }, key)
+          : path;
       }
 
       const p = key.split(this.formatSeparator);
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, options);
+      return this.format(
+        utils.getPathWithDefaults(data, defaultData, k),
+        f,
+        lng,
+        { ...options, ...data },
+        k,
+      );
     };
 
     this.resetRegExp();
@@ -196,6 +202,7 @@ class Interpolator {
       if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
         const r = match[1].split(this.formatSeparator).map(elem => elem.trim());
         match[1] = r.shift();
+        r.push(match[1]);
         formatters = r;
         doReduce = true;
       }
@@ -213,7 +220,10 @@ class Interpolator {
       }
 
       if (doReduce) {
-        value = formatters.reduce((v, f) => this.format(v, f, options.lng, options), value.trim());
+        value = formatters.reduce(
+          (v, f, k) => this.format(v, f, options.lng, options, k),
+          value.trim(),
+        );
       }
 
       // Nested keys should not be escaped by default #854

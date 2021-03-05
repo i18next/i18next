@@ -25,15 +25,22 @@ describe('i18next.translation.formatting', () => {
               key7: 'Here is some: text? with, (punctuation)',
               withSpace: ' there',
               keyWithNesting: 'hi$t(withSpace)',
+              twoInterpolationsWithUniqueFormatOptions:
+                'The value is {{localValue, currency}} or {{altValue, currency}}',
             },
           },
         },
         interpolation: {
-          format: function(value, format, lng) {
+          format: function(value, format, lng, options, key) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
             if (format === 'underscore') return value.replace(/\s+/g, '_');
             if (format === 'encodeuricomponent') return encodeURIComponent(value);
+            if (format === 'currency')
+              return Intl.NumberFormat(options.parmOptions[key].locale, {
+                style: 'currency',
+                currency: options.parmOptions[key].currency,
+              }).format(value);
             return value;
           },
         },
@@ -76,6 +83,20 @@ describe('i18next.translation.formatting', () => {
       {
         args: ['keyWithNesting'],
         expected: 'hi there',
+      },
+      {
+        args: [
+          'twoInterpolationsWithUniqueFormatOptions',
+          {
+            localValue: 12345.67,
+            altValue: 16543.21,
+            parmOptions: {
+              localValue: { currency: 'USD', locale: 'en-US' },
+              altValue: { currency: 'CAD', locale: 'fr-CA' },
+            },
+          },
+        ],
+        expected: 'The value is $12,345.67 or 16 543,21 $ CA',
       },
     ];
 
