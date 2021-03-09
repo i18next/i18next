@@ -1,3 +1,7 @@
+### 19.8.10
+
+- try to fix another edge case issue [1570](https://github.com/i18next/i18next/issues/1570) introduces by fixing [1552](https://github.com/i18next/i18next/issues/1552)
+
 ### 19.8.9
 
 - warn if i18next gets initialized multiple times
