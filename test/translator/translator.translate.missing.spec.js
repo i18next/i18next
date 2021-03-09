@@ -1,126 +1,132 @@
-import Translator from '../../src/Translator';
-import ResourceStore from '../../src/ResourceStore.js';
+import Interpolator from '../../src/Interpolator';
 import LanguageUtils from '../../src/LanguageUtils';
 import PluralResolver from '../../src/PluralResolver';
-import Interpolator from '../../src/Interpolator';
+import ResourceStore from '../../src/ResourceStore.js';
+import Translator from '../../src/Translator';
+
+const NB_PLURALS_ARABIC = 6;
 
 describe('Translator', () => {
-  describe('translate() using missing', () => {
-    var t;
+  let t;
+  let tServices;
+  let missingKeyHandler;
 
-    before(() => {
-      const rs = new ResourceStore({
-        en: {
-          translation: {
-            test: 'test_en',
-            deep: {
-              test: 'deep_en',
-            },
+  beforeEach(() => {
+    const rs = new ResourceStore({
+      en: {
+        translation: {
+          test: 'test_en',
+          deep: {
+            test: 'deep_en',
           },
         },
-        de: {
-          translation: {
-            test: 'test_de',
-          },
+      },
+      de: {
+        translation: {
+          test: 'test_de',
+        },
+      },
+    });
+
+    const lu = new LanguageUtils({ fallbackLng: 'en' });
+
+    tServices = {
+      resourceStore: rs,
+      languageUtils: lu,
+      pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+      interpolator: new Interpolator(),
+    };
+
+    missingKeyHandler = sinon.spy();
+  });
+
+  describe('translate() saveMissing', () => {
+    beforeEach(() => {
+      t = new Translator(tServices, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        missingKeyHandler,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true,
         },
       });
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator(
-        {
-          resourceStore: rs,
-          languageUtils: lu,
-          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
-          interpolator: new Interpolator(),
-        },
-        {
-          defaultNS: 'translation',
-          ns: 'translation',
-          saveMissing: true,
-          interpolation: {
-            interpolateResult: true,
-            interpolateDefaultValue: true,
-            interpolateKey: true,
-          },
-        },
-      );
       t.changeLanguage('en');
     });
 
-    var tests = [{ args: ['translation:test.missing'], expected: 'test.missing' }];
+    it('correctly sends missing for "translation:test.missing"', () => {
+      expect(t.translate('translation:test.missing')).to.eql('test.missing');
+      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test.missing', 'test.missing')).to
+        .be.true;
+    });
+  });
 
-    tests.forEach(test => {
+  describe('translate() saveMissing with saveMissingPlurals options', () => {
+    beforeEach(() => {
+      t = new Translator(tServices, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        saveMissingPlurals: true,
+        missingKeyHandler,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true,
+        },
+      });
+      t.changeLanguage('ar');
+    });
+
+    [
+      { args: ['translation:test.missing', { count: 10 }], expected: NB_PLURALS_ARABIC },
+      { args: ['translation:test.missing', { count: 0 }], expected: NB_PLURALS_ARABIC },
+    ].forEach(test => {
       it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
-        t.options.missingKeyHandler = (lngs, namespace, key, res) => {
-          expect(lngs).to.eql(['en']);
-          expect(namespace).to.eql('translation');
-          expect(key).to.eql(test.expected);
-          expect(res).to.eql(test.expected);
-        };
-
-        expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+        t.translate.apply(t, test.args);
+        expect(missingKeyHandler.callCount).to.eql(test.expected);
+        expect(
+          missingKeyHandler
+            .getCall(0)
+            .calledWith(['ar'], 'translation', 'test.missing_0', 'test.missing'),
+        ).to.be.true;
       });
     });
   });
 
-  describe('translate() using missing with saveMissingPlurals options', () => {
-    const NB_PLURALS_ARABIC = 6;
-    var t;
-
-    before(() => {
-      const rs = new ResourceStore({
-        en: {
-          translation: {
-            test: 'test_en',
-            deep: {
-              test: 'deep_en',
-            },
-          },
-        },
-        de: {
-          translation: {
-            test: 'test_de',
-          },
+  describe('translate() saveMissing with saveMissingPlurals and defaults', () => {
+    beforeEach(() => {
+      t = new Translator(tServices, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        saveMissingPlurals: true,
+        missingKeyHandler,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true,
         },
       });
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      t = new Translator(
-        {
-          resourceStore: rs,
-          languageUtils: lu,
-          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
-          interpolator: new Interpolator(),
-        },
-        {
-          defaultNS: 'translation',
-          ns: 'translation',
-          saveMissing: true,
-          saveMissingPlurals: true,
-          interpolation: {
-            interpolateResult: true,
-            interpolateDefaultValue: true,
-            interpolateKey: true,
-          },
-        },
-      );
       t.changeLanguage('ar');
+
+      t.translate('translation:test.missing', {
+        count: 0,
+        defaultValue_0: 'default0',
+        defaultValue_1: 'default1', // ignored
+      });
     });
 
-    var tests = [
-      { args: ['translation:test.missing', { count: 10 }], expected: NB_PLURALS_ARABIC },
-      { args: ['translation:test.missing', { count: 0 }], expected: NB_PLURALS_ARABIC },
-    ];
-
-    tests.forEach(test => {
-      it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
-        let todo = test.expected;
-        t.options.missingKeyHandler = (lngs, namespace, key, res) => {
-          // console.warn(lngs, namespace, key, res);
-          todo--;
-        };
-
-        t.translate.apply(t, test.args);
-        expect(todo).to.eql(0);
-      });
+    it('correctly sends missing resolved value', () => {
+      expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ARABIC);
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_0', 'default0')).to
+        .be.true;
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_1', 'default0')).to
+        .be.true;
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_2', 'default0')).to
+        .be.true;
     });
   });
 });

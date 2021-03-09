@@ -2,9 +2,18 @@ export interface FallbackLngObjList {
   [language: string]: string[];
 }
 
-export type FallbackLng = string | string[] | FallbackLngObjList | ((code:string) => string | string[] | FallbackLngObjList);
+export type FallbackLng =
+  | string
+  | string[]
+  | FallbackLngObjList
+  | ((code: string) => string | string[] | FallbackLngObjList);
 
-export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & { [key: string]: any }) => string;
+export type FormatFunction = (
+  value: any,
+  format?: string,
+  lng?: string,
+  options?: InterpolationOptions & { [key: string]: any },
+) => string;
 
 export interface InterpolationOptions {
   /**
@@ -729,8 +738,11 @@ export interface Module {
 }
 
 export type CallbackError = Error | null | undefined;
-export type ReadCallback = (err: CallbackError, data: ResourceKey | boolean) => void;
-export type MultiReadCallback = (err: CallbackError, data: Resource) => void;
+export type ReadCallback = (
+  err: CallbackError,
+  data: ResourceKey | boolean | null | undefined,
+) => void;
+export type MultiReadCallback = (err: CallbackError, data: Resource | null | undefined) => void;
 
 /**
  * Used to load data for i18next.
@@ -742,9 +754,9 @@ export interface BackendModule<TOptions = object> extends Module {
   init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
   read(language: string, namespace: string, callback: ReadCallback): void;
   /** Save the missing translation */
-  create(languages: string[], namespace: string, key: string, fallbackValue: string): void;
+  create?(languages: string[], namespace: string, key: string, fallbackValue: string): void;
   /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
-  readMulti?(languages: string[], namespaces: string[], callback: ReadCallback): void;
+  readMulti?(languages: string[], namespaces: string[], callback: MultiReadCallback): void;
   /** Store the translation. For backends acting as cache layer */
   save?(language: string, namespace: string, data: ResourceLanguage): void;
 }

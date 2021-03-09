@@ -4,7 +4,7 @@ import baseLogger from './logger.js';
 /* eslint-disable */
 let sets = [
   { lngs: ['ach','ak','am','arn','br','fil','gun','ln','mfe','mg','mi','oc', 'pt', 'pt-BR',
-    'tg','ti','tr','uz','wa'], nr: [1,2], fc: 1 },
+    'tg', 'tl', 'ti','tr','uz','wa'], nr: [1,2], fc: 1 },
 
   { lngs: ['af','an','ast','az','bg','bn','ca','da','de','dev','el','en',
     'eo','es','et','eu','fi','fo','fur','fy','gl','gu','ha','hi',
@@ -102,18 +102,17 @@ class PluralResolver {
   }
 
   getPluralFormsOfKey(code, key) {
-    const ret = [];
+    return this.getSuffixes(code).map((suffix) => key + suffix)
+  }
 
+  getSuffixes(code) {
     const rule = this.getRule(code);
 
-    if (!rule) return ret;
+    if (!rule) {
+      return [];
+    }
 
-    rule.numbers.forEach((n) => {
-      const suffix = this.getSuffix(code, n);
-      ret.push(`${key}${suffix}`);
-    });
-
-    return ret;
+    return rule.numbers.map((number) => this.getSuffix(code, number))
   }
 
   getSuffix(code, count) {
