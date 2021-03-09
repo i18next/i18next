@@ -2061,7 +2061,7 @@
             callback(err, t);
           };
 
-          if (_this2.languages && _this2.options.compatibilityAPI !== 'v1') return finish(null, _this2.t.bind(_this2));
+          if (_this2.languages && _this2.options.compatibilityAPI !== 'v1' && !_this2.isInitialized) return finish(null, _this2.t.bind(_this2));
 
           _this2.changeLanguage(_this2.options.lng, finish);
         };
