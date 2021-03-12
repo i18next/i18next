@@ -18,7 +18,7 @@ const external = id => !id.startsWith('.') && !id.startsWith('/') && !id.include
 export default [
   {
     input,
-    output: { format: 'cjs', file: pkg.main },
+    output: { format: 'cjs', file: `dist/cjs/${name}.js` },
     external,
     plugins: [babel(getBabelOptions({ useESModules: false }))],
   },

@@ -1,8 +1,8 @@
 {
   "name": "i18next",
-  "version": "19.9.2",
+  "version": "19.9.2-patch.1",
   "description": "i18next internationalization framework",
-  "main": "./dist/cjs/i18next.js",
+  "main": "./index.js",
   "module": "./dist/esm/i18next.js",
   "types": "./index.d.ts",
   "keywords": [
