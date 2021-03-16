@@ -18,11 +18,13 @@ describe('i18next.translation.formatting', () => {
                 'The following text is uppercased, underscored, then uri component encoded: $t(key7, uppercase, underscore, encodeuricomponent)',
               oneFormatterUsingAnotherFormatterTest:
                 'The following text is lowercased: $t(twoFormattersTogetherTest, lowercase)',
+              oneFormatterUsingCurrencyTest: 'The following text is an amount: $t(key8, currency)',
               missingTranslationTest:
                 'No text will be shown when the translation key is missing: $t(, uppercase)',
               key5: 'Here is some text',
               key6: 'Here is some text with numb3r5',
               key7: 'Here is some: text? with, (punctuation)',
+              key8: '10000',
               withSpace: ' there',
               keyWithNesting: 'hi$t(withSpace)',
               twoInterpolationsWithUniqueFormatOptions:
@@ -31,15 +33,15 @@ describe('i18next.translation.formatting', () => {
           },
         },
         interpolation: {
-          format: function(value, format, lng, options, key) {
+          format: function(value, format, lng, options) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
             if (format === 'underscore') return value.replace(/\s+/g, '_');
             if (format === 'encodeuricomponent') return encodeURIComponent(value);
             if (format === 'currency')
-              return Intl.NumberFormat(options.parmOptions[key].locale, {
+              return Intl.NumberFormat(options.parmOptions[options.interpolationkey].locale, {
                 style: 'currency',
-                currency: options.parmOptions[key].currency,
+                currency: options.parmOptions[options.interpolationkey].currency,
               }).format(value);
             return value;
           },
@@ -97,6 +99,17 @@ describe('i18next.translation.formatting', () => {
           },
         ],
         expected: 'The value is $12,345.67 or 16 543,21 $ CA',
+      },
+      {
+        args: [
+          'oneFormatterUsingCurrencyTest',
+          {
+            parmOptions: {
+              key8: { currency: 'USD', locale: 'en-US' },
+            },
+          },
+        ],
+        expected: 'The following text is an amount: $10,000.00',
       },
     ];
 

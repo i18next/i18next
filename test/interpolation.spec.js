@@ -174,14 +174,14 @@ describe('Interpolator', () => {
       ip = new Interpolator({
         interpolation: {
           escapeValue: false,
-          format: function(value, format, lng, options, key) {
+          format: function(value, format, lng, options) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
             if (format === 'throw') throw new Error('Formatter error');
             if (format === 'currency')
-              return Intl.NumberFormat(options.parmOptions[key].locale, {
+              return Intl.NumberFormat(options.parmOptions[options.interpolationkey].locale, {
                 style: 'currency',
-                currency: options.parmOptions[key].currency,
+                currency: options.parmOptions[options.interpolationkey].currency,
               }).format(value);
             return value;
           },

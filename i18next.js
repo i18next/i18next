@@ -387,6 +387,14 @@
   }
   var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
 
+  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function _createSuper$3(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$3(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
   function deepFind(obj, path) {
     var keySeparator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '.';
     if (!obj) return undefined;
@@ -1487,13 +1495,17 @@
         var handleFormat = function handleFormat(key) {
           if (key.indexOf(_this.formatSeparator) < 0) {
             var path = getPathWithDefaults(data, defaultData, key);
-            return _this.alwaysFormat ? _this.format(path, undefined, lng, _objectSpread$2(_objectSpread$2({}, options), data), key) : path;
+            return _this.alwaysFormat ? _this.format(path, undefined, lng, _objectSpread$2(_objectSpread$2(_objectSpread$2({}, options), data), {}, {
+              interpolationkey: key
+            })) : path;
           }
 
           var p = key.split(_this.formatSeparator);
           var k = p.shift().trim();
           var f = p.join(_this.formatSeparator).trim();
-          return _this.format(getPathWithDefaults(data, defaultData, k), f, lng, _objectSpread$2(_objectSpread$2({}, options), data), k);
+          return _this.format(getPathWithDefaults(data, defaultData, k), f, lng, _objectSpread$2(_objectSpread$2(_objectSpread$2({}, options), data), {}, {
+            interpolationkey: k
+          }));
         };
 
         this.resetRegExp();
@@ -1587,7 +1599,6 @@
               return elem.trim();
             });
             match[1] = r.shift();
-            r.push(match[1]);
             formatters = r;
             doReduce = true;
           }
@@ -1602,8 +1613,10 @@
           }
 
           if (doReduce) {
-            value = formatters.reduce(function (v, f, k) {
-              return _this2.format(v, f, options.lng, options, k);
+            value = formatters.reduce(function (v, f) {
+              return _this2.format(v, f, options.lng, _objectSpread$2(_objectSpread$2({}, options), {}, {
+                interpolationkey: match[1].trim()
+              }));
             }, value.trim());
           }
 
@@ -1910,7 +1923,7 @@
       },
       interpolation: {
         escapeValue: true,
-        format: function format(value, _format, lng, options, key) {
+        format: function format(value, _format, lng, options) {
           return value;
         },
         prefix: '{{',

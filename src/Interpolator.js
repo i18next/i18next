@@ -83,7 +83,7 @@ class Interpolator {
       if (key.indexOf(this.formatSeparator) < 0) {
         const path = utils.getPathWithDefaults(data, defaultData, key);
         return this.alwaysFormat
-          ? this.format(path, undefined, lng, { ...options, ...data }, key)
+          ? this.format(path, undefined, lng, { ...options, ...data, interpolationkey: key })
           : path;
       }
 
@@ -91,13 +91,11 @@ class Interpolator {
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(
-        utils.getPathWithDefaults(data, defaultData, k),
-        f,
-        lng,
-        { ...options, ...data },
-        k,
-      );
+      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, {
+        ...options,
+        ...data,
+        interpolationkey: k,
+      });
     };
 
     this.resetRegExp();
@@ -202,7 +200,6 @@ class Interpolator {
       if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
         const r = match[1].split(this.formatSeparator).map(elem => elem.trim());
         match[1] = r.shift();
-        r.push(match[1]);
         formatters = r;
         doReduce = true;
       }
@@ -221,7 +218,9 @@ class Interpolator {
 
       if (doReduce) {
         value = formatters.reduce(
-          (v, f, k) => this.format(v, f, options.lng, options, k),
+          /* eslint-disable-line no-loop-func:0 */
+          (v, f) =>
+            this.format(v, f, options.lng, { ...options, interpolationkey: match[1].trim() }),
           value.trim(),
         );
       }
