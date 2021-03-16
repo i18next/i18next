@@ -2,9 +2,18 @@ export interface FallbackLngObjList {
   [language: string]: string[];
 }
 
-export type FallbackLng = string | string[] | FallbackLngObjList | ((code:string) => string | string[] | FallbackLngObjList);
+export type FallbackLng =
+  | string
+  | string[]
+  | FallbackLngObjList
+  | ((code: string) => string | string[] | FallbackLngObjList);
 
-export type FormatFunction = (value: any, format?: string, lng?: string, options?: InterpolationOptions & { [key: string]: any }) => string;
+export type FormatFunction = (
+  value: any,
+  format?: string,
+  lng?: string,
+  options?: InterpolationOptions & { [key: string]: any },
+) => string;
 
 export interface InterpolationOptions {
   /**
@@ -729,7 +738,10 @@ export interface Module {
 }
 
 export type CallbackError = Error | null | undefined;
-export type ReadCallback = (err: CallbackError, data: ResourceKey | boolean | null | undefined) => void;
+export type ReadCallback = (
+  err: CallbackError,
+  data: ResourceKey | boolean | null | undefined,
+) => void;
 export type MultiReadCallback = (err: CallbackError, data: Resource | null | undefined) => void;
 
 /**
