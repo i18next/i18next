@@ -1,5 +1,5 @@
 {
-  "name": "i18next",
+  "name": "@prebsch-exo/i18next",
   "version": "19.9.2-patch.1",
   "description": "i18next internationalization framework",
   "main": "./index.js",
