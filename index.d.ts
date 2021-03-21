@@ -1,3 +1,6 @@
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+type MergeBy<T, K> = Omit<T, keyof K> & K;
+
 export interface FallbackLngObjList {
   [language: string]: string[];
 }
@@ -178,8 +181,6 @@ export interface ReactOptions {
  */
 export interface PluginOptions {}
 
-type FallbackOptions<F, T = PluginOptions, K = keyof T> = [K] extends [never] ? F : T;
-
 interface DefaultPluginOptions {
     /**
    * Options for language detection - check documentation of plugin
@@ -206,7 +207,7 @@ interface DefaultPluginOptions {
      i18nFormat?: object;
 }
 
-export interface InitOptions extends FallbackOptions<DefaultPluginOptions> {
+export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions> {
   /**
    * Logs info level to console output. Helps finding issues with loading not working.
    * @default false
