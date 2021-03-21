@@ -8,6 +8,16 @@ describe('ResourceStore', () => {
           translation: {
             a: {
               nested: 'a nested value',
+              'more.of': {
+                nested: {
+                  here: {
+                    wow: 'cool',
+                  },
+                  'and.even.more': {
+                    gaga: 'strange',
+                  },
+                },
+              },
             },
             'a.flat': 'a flat value',
             'b.flat': {
@@ -50,6 +60,12 @@ describe('ResourceStore', () => {
 
       ret = rs.getResource('en', 'translation', 'b.flat.more2.deeper.key');
       expect(ret).to.equal('very deep');
+
+      ret = rs.getResource('en', 'translation', 'a.more.of.nested.here.wow');
+      expect(ret).to.equal('cool');
+
+      ret = rs.getResource('en', 'translation', 'a.more.of.nested.and.even.more.gaga');
+      expect(ret).to.equal('strange');
 
       ret = rs.getResource('en', 'translation', 'a.wrong');
       expect(ret).to.equal(undefined);

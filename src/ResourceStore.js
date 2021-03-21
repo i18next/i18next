@@ -12,26 +12,21 @@ function deepFind(obj, path, keySeparator = '.') {
     }
     if (current[paths[i]] === undefined) {
       let j = 2;
-      let mix = current;
       let p = paths.slice(i, i + j).join(keySeparator);
-      while (
-        paths.length > i + j &&
-        (p = paths.slice(i, i + j).join(keySeparator)) &&
-        (mix = mix[p]) &&
-        !mix
-      ) {
+      let mix = current[p];
+      while (mix === undefined && paths.length > i + j) {
         j++;
+        p = paths.slice(i, i + j).join(keySeparator);
+        mix = current[p];
       }
-      if (mix) {
-        if (typeof mix === 'string') return mix;
-        if (p && typeof mix[p] === 'string') return mix[p];
-        const joinedPath = paths.slice(i + j).join(keySeparator);
-        if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
-      }
+      if (mix === undefined) return undefined;
+      if (typeof mix === 'string') return mix;
+      if (p && typeof mix[p] === 'string') return mix[p];
+      const joinedPath = paths.slice(i + j).join(keySeparator);
+      if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
       return undefined;
-    } else {
-      current = current[paths[i]];
     }
+    current = current[paths[i]];
   }
   return current;
 }
