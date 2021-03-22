@@ -1,6 +1,36 @@
 import EventEmitter from './EventEmitter.js';
 import * as utils from './utils.js';
 
+function deepFind(obj, path, keySeparator = '.') {
+  if (!obj) return undefined;
+  if (obj[path]) return obj[path];
+  const paths = path.split(keySeparator);
+  let current = obj;
+  for (let i = 0; i < paths.length; ++i) {
+    if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
+      return undefined;
+    }
+    if (current[paths[i]] === undefined) {
+      let j = 2;
+      let p = paths.slice(i, i + j).join(keySeparator);
+      let mix = current[p];
+      while (mix === undefined && paths.length > i + j) {
+        j++;
+        p = paths.slice(i, i + j).join(keySeparator);
+        mix = current[p];
+      }
+      if (mix === undefined) return undefined;
+      if (typeof mix === 'string') return mix;
+      if (p && typeof mix[p] === 'string') return mix[p];
+      const joinedPath = paths.slice(i + j).join(keySeparator);
+      if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
+      return undefined;
+    }
+    current = current[paths[i]];
+  }
+  return current;
+}
+
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
     super();
@@ -12,6 +42,9 @@ class ResourceStore extends EventEmitter {
     this.options = options;
     if (this.options.keySeparator === undefined) {
       this.options.keySeparator = '.';
+    }
+    if (this.options.ignoreJSONStructure === undefined) {
+      this.options.ignoreJSONStructure = true;
     }
   }
 
@@ -32,6 +65,11 @@ class ResourceStore extends EventEmitter {
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
+    const ignoreJSONStructure =
+      options.ignoreJSONStructure !== undefined
+        ? options.ignoreJSONStructure
+        : this.options.ignoreJSONStructure;
+
     let path = [lng, ns];
     if (key && typeof key !== 'string') path = path.concat(key);
     if (key && typeof key === 'string')
@@ -41,7 +79,10 @@ class ResourceStore extends EventEmitter {
       path = lng.split('.');
     }
 
-    return utils.getPath(this.data, path);
+    const result = utils.getPath(this.data, path);
+    if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
+
+    return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {
