@@ -1,3 +1,6 @@
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+type MergeBy<T, K> = Omit<T, keyof K> & K;
+
 export interface FallbackLngObjList {
   [language: string]: string[];
 }
@@ -173,7 +176,38 @@ export interface ReactOptions {
   transKeepBasicHtmlNodesFor?: string[];
 }
 
-export interface InitOptions {
+/**
+ * This interface can be augmented by users to add types to `i18next` default PluginOptions.
+ */
+export interface PluginOptions {}
+
+interface DefaultPluginOptions {
+    /**
+   * Options for language detection - check documentation of plugin
+   * @default undefined
+   */
+     detection?: object;
+
+     /**
+      * Options for backend - check documentation of plugin
+      * @default undefined
+      */
+     backend?: object;
+
+     /**
+      * Options for cache layer - check documentation of plugin
+      * @default undefined
+      */
+     cache?: object;
+
+     /**
+      * Options for i18n message format - check documentation of plugin
+      * @default undefined
+      */
+     i18nFormat?: object;
+}
+
+export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions> {
   /**
    * Logs info level to console output. Helps finding issues with loading not working.
    * @default false
@@ -377,30 +411,6 @@ export interface InitOptions {
    * @see https://www.i18next.com/interpolation.html
    */
   interpolation?: InterpolationOptions;
-
-  /**
-   * Options for language detection - check documentation of plugin
-   * @default undefined
-   */
-  detection?: object;
-
-  /**
-   * Options for backend - check documentation of plugin
-   * @default undefined
-   */
-  backend?: object;
-
-  /**
-   * Options for cache layer - check documentation of plugin
-   * @default undefined
-   */
-  cache?: object;
-
-  /**
-   * Options for i18n message format - check documentation of plugin
-   * @default undefined
-   */
-  i18nFormat?: object;
 
   /**
    * Options for react - check documentation of plugin
