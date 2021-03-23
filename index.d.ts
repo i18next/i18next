@@ -35,6 +35,12 @@ export interface InterpolationOptions {
    */
   escape?(str: string): string;
 
+
+  /**
+   * Always format interpolated values.
+   * @default false
+   */
+   alwaysFormat?: boolean;
   /**
    * Escape passed in values to avoid xss injection
    * @default true
