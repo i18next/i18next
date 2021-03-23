@@ -402,6 +402,43 @@
   }
   var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
 
+  function deepFind(obj, path) {
+    var keySeparator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '.';
+    if (!obj) return undefined;
+    if (obj[path]) return obj[path];
+    var paths = path.split(keySeparator);
+    var current = obj;
+
+    for (var i = 0; i < paths.length; ++i) {
+      if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
+        return undefined;
+      }
+
+      if (current[paths[i]] === undefined) {
+        var j = 2;
+        var p = paths.slice(i, i + j).join(keySeparator);
+        var mix = current[p];
+
+        while (mix === undefined && paths.length > i + j) {
+          j++;
+          p = paths.slice(i, i + j).join(keySeparator);
+          mix = current[p];
+        }
+
+        if (mix === undefined) return undefined;
+        if (typeof mix === 'string') return mix;
+        if (p && typeof mix[p] === 'string') return mix[p];
+        var joinedPath = paths.slice(i + j).join(keySeparator);
+        if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
+        return undefined;
+      }
+
+      current = current[paths[i]];
+    }
+
+    return current;
+  }
+
   var ResourceStore = function (_EventEmitter) {
     _inherits(ResourceStore, _EventEmitter);
 
@@ -428,6 +465,10 @@
         _this.options.keySeparator = '.';
       }
 
+      if (_this.options.ignoreJSONStructure === undefined) {
+        _this.options.ignoreJSONStructure = true;
+      }
+
       return _this;
     }
 
@@ -452,6 +493,7 @@
       value: function getResource(lng, ns, key) {
         var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
         var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
+        var ignoreJSONStructure = options.ignoreJSONStructure !== undefined ? options.ignoreJSONStructure : this.options.ignoreJSONStructure;
         var path = [lng, ns];
         if (key && typeof key !== 'string') path = path.concat(key);
         if (key && typeof key === 'string') path = path.concat(keySeparator ? key.split(keySeparator) : key);
@@ -460,7 +502,9 @@
           path = lng.split('.');
         }
 
-        return getPath(this.data, path);
+        var result = getPath(this.data, path);
+        if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
+        return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
       }
     }, {
       key: "addResource",

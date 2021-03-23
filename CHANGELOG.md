@@ -1,3 +1,8 @@
+### 20.0.0
+
+- add support to proper augment PluginOptions type [1583](https://github.com/i18next/i18next/pull/1583)
+- introduce ignoreJSONStructure flag, to automatically lookup for a flat key if a nested key is not found an vice-versa [1584](https://github.com/i18next/i18next/pull/1584) (MAJOR: because of ignoreJSONStructure is true by default)
+
 ### 19.9.2
 
 - try to fix another edge case issue [1570](https://github.com/i18next/i18next/issues/1570) introduces by fixing [1552](https://github.com/i18next/i18next/issues/1552)
