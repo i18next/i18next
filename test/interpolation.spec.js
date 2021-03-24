@@ -174,10 +174,15 @@ describe('Interpolator', () => {
       ip = new Interpolator({
         interpolation: {
           escapeValue: false,
-          format: function(value, format, lng) {
+          format: function(value, format, lng, options) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
             if (format === 'throw') throw new Error('Formatter error');
+            if (format === 'currency')
+              return Intl.NumberFormat(options.parmOptions[options.interpolationkey].locale, {
+                style: 'currency',
+                currency: options.parmOptions[options.interpolationkey].currency,
+              }).format(value);
             return value;
           },
         },
@@ -187,6 +192,20 @@ describe('Interpolator', () => {
     var tests = [
       { args: ['test {{test, uppercase}}', { test: 'up' }], expected: 'test UP' },
       { args: ['test {{test, lowercase}}', { test: 'DOWN' }], expected: 'test down' },
+      {
+        args: [
+          'test {{localValue, currency}} {{altValue, currency}}',
+          {
+            localValue: 12345.67,
+            altValue: 16543.21,
+            parmOptions: {
+              localValue: { currency: 'USD', locale: 'en-US' },
+              altValue: { currency: 'CAD', locale: 'fr-CA' },
+            },
+          },
+        ],
+        expected: 'test $12,345.67 16 543,21 $ CA',
+      },
     ];
 
     tests.forEach(test => {

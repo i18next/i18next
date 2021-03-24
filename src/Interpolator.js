@@ -59,9 +59,7 @@ class Interpolator {
     const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${
-      this.suffix
-    }`;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
     const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
@@ -84,14 +82,20 @@ class Interpolator {
     const handleFormat = key => {
       if (key.indexOf(this.formatSeparator) < 0) {
         const path = utils.getPathWithDefaults(data, defaultData, key);
-        return this.alwaysFormat ? this.format(path, undefined, lng) : path;
+        return this.alwaysFormat
+          ? this.format(path, undefined, lng, { ...options, ...data, interpolationkey: key })
+          : path;
       }
 
       const p = key.split(this.formatSeparator);
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, options);
+      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, {
+        ...options,
+        ...data,
+        interpolationkey: k,
+      });
     };
 
     this.resetRegExp();
@@ -213,7 +217,12 @@ class Interpolator {
       }
 
       if (doReduce) {
-        value = formatters.reduce((v, f) => this.format(v, f, options.lng, options), value.trim());
+        value = formatters.reduce(
+          /* eslint-disable-line no-loop-func:0 */
+          (v, f) =>
+            this.format(v, f, options.lng, { ...options, interpolationkey: match[1].trim() }),
+          value.trim(),
+        );
       }
 
       // Nested keys should not be escaped by default #854

@@ -1,3 +1,7 @@
+### 20.0.1
+
+- Add interpolation key name to format function
+
 ### 20.0.0
 
 - add support to proper augment PluginOptions type [1583](https://github.com/i18next/i18next/pull/1583)
@@ -15,6 +19,10 @@
 
 - Improve updateMissing default plural behavior [1558](https://github.com/i18next/i18next/pull/1558)
 - typescript: type definitions improvements for backend [1560](https://github.com/i18next/i18next/pull/1560)
+
+### 19.8.10
+
+- try to fix another edge case issue [1570](https://github.com/i18next/i18next/issues/1570) introduces by fixing [1552](https://github.com/i18next/i18next/issues/1552)
 
 ### 19.8.9
 
