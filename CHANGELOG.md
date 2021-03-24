@@ -1,6 +1,7 @@
-### 20.0.1
+### 20.1.0
 
-- Add interpolation key name to format function
+- Add alwaysFormat into the types [1586](https://github.com/i18next/i18next/pull/1586)
+- Add interpolation key name to format function [1571](https://github.com/i18next/i18next/pull/1571)
 
 ### 20.0.0
 
