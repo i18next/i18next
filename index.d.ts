@@ -585,6 +585,12 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
      */
     allowedHosts?: string[];
   };
+
+  /**
+   * Automatically lookup for a flat key if a nested key is not found an vice-versa
+   * @default true
+   */
+  ignoreJSONStructure?: boolean;
 }
 
 export interface TOptionsBase {
