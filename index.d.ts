@@ -1024,7 +1024,12 @@ export interface i18n {
   /**
    * Gets one value by given key.
    */
-  getResource(lng: string, ns: string, key: string, options?: { keySeparator?: string }): any;
+  getResource(
+    lng: string,
+    ns: string,
+    key: string,
+    options?: Pick<InitOptions, 'keySeparator' | 'ignoreJSONStructure'>,
+  ): any;
 
   /**
    * Adds one key/value.
