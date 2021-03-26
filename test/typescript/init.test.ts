@@ -13,6 +13,7 @@ i18next.init(
         key: 'hello world',
       },
     },
+    ignoreJSONStructure: false,
   },
   (err, t) => {
     // initialized and ready to go!
@@ -38,6 +39,7 @@ i18next.init(
         },
       },
     },
+    ignoreJSONStructure: true,
   },
   // not necessary but check a non-inferred arg for paranoia's sake
   (err, t: TFunction) => {
@@ -336,7 +338,7 @@ i18next.store.on('added', (lng: string, ns: string) => {});
 i18next.store.on('removed', (lng: string, ns: string) => {});
 
 i18next.getResource('en', 'test', 'key');
-i18next.getResource('en', 'test', 'key', { keySeparator: '-' });
+i18next.getResource('en', 'test', 'key', { keySeparator: '-', ignoreJSONStructure: false });
 
 i18next.addResource('en', 'test', 'key', 'value');
 i18next.addResource('en', 'test', 'key', 'value', {
