@@ -35,12 +35,11 @@ export interface InterpolationOptions {
    */
   escape?(str: string): string;
 
-
   /**
    * Always format interpolated values.
    * @default false
    */
-   alwaysFormat?: boolean;
+  alwaysFormat?: boolean;
   /**
    * Escape passed in values to avoid xss injection
    * @default true
@@ -188,29 +187,29 @@ export interface ReactOptions {
 export interface PluginOptions {}
 
 interface DefaultPluginOptions {
-    /**
+  /**
    * Options for language detection - check documentation of plugin
    * @default undefined
    */
-     detection?: object;
+  detection?: object;
 
-     /**
-      * Options for backend - check documentation of plugin
-      * @default undefined
-      */
-     backend?: object;
+  /**
+   * Options for backend - check documentation of plugin
+   * @default undefined
+   */
+  backend?: object;
 
-     /**
-      * Options for cache layer - check documentation of plugin
-      * @default undefined
-      */
-     cache?: object;
+  /**
+   * Options for cache layer - check documentation of plugin
+   * @default undefined
+   */
+  cache?: object;
 
-     /**
-      * Options for i18n message format - check documentation of plugin
-      * @default undefined
-      */
-     i18nFormat?: object;
+  /**
+   * Options for i18n message format - check documentation of plugin
+   * @default undefined
+   */
+  i18nFormat?: object;
 }
 
 export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions> {
@@ -586,6 +585,12 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
      */
     allowedHosts?: string[];
   };
+
+  /**
+   * Automatically lookup for a flat key if a nested key is not found an vice-versa
+   * @default true
+   */
+  ignoreJSONStructure?: boolean;
 }
 
 export interface TOptionsBase {
@@ -1019,7 +1024,12 @@ export interface i18n {
   /**
    * Gets one value by given key.
    */
-  getResource(lng: string, ns: string, key: string, options?: { keySeparator?: string }): any;
+  getResource(
+    lng: string,
+    ns: string,
+    key: string,
+    options?: Pick<InitOptions, 'keySeparator' | 'ignoreJSONStructure'>,
+  ): any;
 
   /**
    * Adds one key/value.
