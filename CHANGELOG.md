@@ -1,3 +1,7 @@
+### vNext
+
+- add ignoreJSONStructure into the types
+
 ### 20.1.0
 
 - Add alwaysFormat into the types [1586](https://github.com/i18next/i18next/pull/1586)
