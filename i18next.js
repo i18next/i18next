@@ -1537,7 +1537,7 @@
             }
 
             str = str.replace(match[0], todo.safeValue(value));
-            todo.regex.lastIndex = 0;
+            if (!skipOnVariables) todo.regex.lastIndex = 0;
             replaces++;
 
             if (replaces >= _this.maxReplaces) {
@@ -1586,7 +1586,7 @@
           var formatters = [];
           var doReduce = false;
 
-          if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
+          if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
             var r = match[1].split(this.formatSeparator).map(function (elem) {
               return elem.trim();
             });

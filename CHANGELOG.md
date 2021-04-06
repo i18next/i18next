@@ -1,7 +1,8 @@
-### vNext
+### 20.2.0
 
 - add ignoreJSONStructure into the types
-- stop recursive interpolation also for "{{variable}}" when skipOnVariables is true
+- stop recursive interpolation also for "{{variable}}" when skipOnVariables is true [1595](https://github.com/i18next/i18next/issues/1595)
+- old browser fix for "includes" usage [1597](https://github.com/i18next/i18next/pull/1597)
 
 ### 20.1.0
 
