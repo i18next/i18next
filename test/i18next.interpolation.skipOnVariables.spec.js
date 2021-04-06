@@ -56,6 +56,13 @@ describe('i18next.interpolation.nesting', () => {
         args: ['key2', { a: '{{nested}}', b: 'something' }],
         expected: 'value {{nested}} something',
       },
+      {
+        args: [
+          '{{a}} {{w}} {{a}} {{other}}',
+          { a: '{{b}}', b: 'c', w: 'normal', other: 'whatever' },
+        ],
+        expected: '{{b}} normal {{b}} whatever',
+      },
     ];
 
     tests.forEach(test => {

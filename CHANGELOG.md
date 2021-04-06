@@ -1,6 +1,7 @@
 ### vNext
 
 - add ignoreJSONStructure into the types
+- stop recursive interpolation also for "{{variable}}" when skipOnVariables is true
 
 ### 20.1.0
 

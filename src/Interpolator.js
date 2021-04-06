@@ -59,7 +59,9 @@ class Interpolator {
     const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${
+      this.suffix
+    }`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
     const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
@@ -139,7 +141,7 @@ class Interpolator {
           value = utils.makeString(value);
         }
         str = str.replace(match[0], todo.safeValue(value));
-        todo.regex.lastIndex = 0;
+        if (!skipOnVariables) todo.regex.lastIndex = 0;
         replaces++;
         if (replaces >= this.maxReplaces) {
           break;
