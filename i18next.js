@@ -1070,7 +1070,7 @@
       value: function getBestMatchFromCodes(codes) {
         var _this = this;
 
-        if (!codes) return null;
+        if (!codes || !codes.length) return null;
         var found;
         codes.forEach(function (code) {
           if (found) return;
