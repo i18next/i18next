@@ -63,6 +63,13 @@ describe('i18next.interpolation.nesting', () => {
         ],
         expected: '{{b}} normal {{b}} whatever',
       },
+      {
+        args: [
+          '{{a}} {{w}} {{a}} {{other}}',
+          { a: '     {{b}}', b: 'c', w: 'normal', other: 'whatever' },
+        ],
+        expected: '     {{b}} normal      {{b}} whatever',
+      },
     ];
 
     tests.forEach(test => {

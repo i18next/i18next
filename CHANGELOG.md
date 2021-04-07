@@ -1,3 +1,7 @@
+### 20.2.1
+
+- fix lastIndex in regex when skipOnVariables is true
+
 ### 20.2.0
 
 - add ignoreJSONStructure into the types
