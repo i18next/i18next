@@ -888,7 +888,7 @@ export interface i18n {
    *
    * @param module Accepts a class or object
    */
-  use<T extends Module>(module: T | NewableModule<T>): this;
+  use<T extends Module>(module: T | NewableModule<T> | Newable<T>): this;
 
   /**
    * List of modules used
