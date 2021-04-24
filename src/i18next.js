@@ -9,6 +9,7 @@ import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
 import { defer, isIE10 } from './utils.js';
+import TaskQueue from './TaskQueue.js';
 
 function noop() { }
 
@@ -23,6 +24,7 @@ class I18n extends EventEmitter {
     this.services = {};
     this.logger = baseLogger;
     this.modules = { external: [] };
+    this._changeLangTaskQueue = new TaskQueue();
 
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
@@ -278,6 +280,10 @@ class I18n extends EventEmitter {
       if (callback) callback(err, (...args) => this.t(...args));
     };
 
+    const taskId = this._changeLangTaskQueue.push(done, {
+      context: this
+    });
+
     const setLng = lngs => {
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
       const l = typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
@@ -293,7 +299,7 @@ class I18n extends EventEmitter {
       }
 
       this.loadResources(l, err => {
-        done(err, l);
+        this._changeLangTaskQueue.done(taskId, [err, l]);
       });
     };
 

@@ -88,6 +88,55 @@ describe('i18next', () => {
         expect(translatedSecondKey).to.equal('default');
       });
     });
+
+    describe('changeLanguage', () => {
+      it('it should keep changeLanguage call in order', () => {
+        const instance = i18next.createInstance();
+        const makeLang = (lan, delay) => ({
+          delay,
+          value: {
+            foo: `${lan}`,
+          },
+        });
+        const langMap = {
+          en: makeLang('en', 100),
+          zh: makeLang('zh', 500),
+          es: makeLang('es', 300),
+          jp: makeLang('jp', 200),
+        };
+
+        return new Promise(resolve => {
+          instance
+            .use({
+              type: 'backend',
+              read: function(language, namespace, callback) {
+                const lang = langMap[language];
+
+                setTimeout(() => {
+                  callback(null, lang.value);
+                }, lang.delay);
+              },
+            })
+            .init(
+              {
+                fallbackLng: 'en',
+              },
+              (err, t) => {
+                resolve(
+                  Promise.all([
+                    instance.changeLanguage('en'),
+                    instance.changeLanguage('zh'),
+                    instance.changeLanguage('jp'),
+                    instance.changeLanguage('es'),
+                  ]).then(() => {
+                    expect(t('foo')).to.equal('es');
+                  }),
+                );
+              },
+            );
+        });
+      });
+    });
   });
 
   describe('chained resource manipulation', () => {
