@@ -1,3 +1,7 @@
+### 20.2.2
+
+- fix plural equations for Kazakh [1608](https://github.com/i18next/i18next/pull/1608)
+
 ### 20.2.1
 
 - fix lastIndex in regex when skipOnVariables is true
