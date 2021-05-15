@@ -279,6 +279,8 @@ class I18n extends EventEmitter {
     };
 
     const setLng = lngs => {
+      // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
+      if (!lng && !lngs && this.services.languageDetector) lngs = [];
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
       const l = typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
 

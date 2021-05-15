@@ -1,3 +1,7 @@
+### 20.2.3
+
+- if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
+
 ### 20.2.2
 
 - fix plural equations for Kazakh [1608](https://github.com/i18next/i18next/pull/1608)
