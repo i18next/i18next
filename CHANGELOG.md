@@ -1,3 +1,7 @@
+### 20.2.4
+
+- fix types for LanguageDetector detect function
+
 ### 20.2.3
 
 - if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
