@@ -1,3 +1,7 @@
+### 20.3.0
+
+- add simple toJSON function to fix uncontrolled serialization, fixes [1322](https://github.com/i18next/react-i18next/issues/1322)
+
 ### 20.2.4
 
 - fix types for LanguageDetector detect function

@@ -1,4 +1,5 @@
 import i18next from '../src/i18next.js';
+import { get as getDefaults } from '../src/defaults';
 
 describe('i18next', () => {
   before(() => {
@@ -128,6 +129,51 @@ describe('i18next', () => {
           i18next.removeResourceBundle('en', 'translation');
           expect(i18next.getResourceBundle('en', 'translation')).to.be.not.ok;
         });
+      });
+    });
+  });
+
+  describe('#JSON.stringify', () => {
+    let newInstance;
+    before(() => {
+      newInstance = i18next.createInstance({ some: 'options' });
+    });
+
+    it('it should JSON.stringify non-initialized without errors', () => {
+      expect(JSON.stringify(newInstance)).to.equal(
+        JSON.stringify({
+          options: { some: 'options' },
+        }),
+      );
+    });
+
+    it('it should JSON.stringify initialized without errors', done => {
+      newInstance.init({ other: 'opts' }, err => {
+        if (err) return done(err);
+
+        newInstance.addResourceBundle('en', 'translation', { key: 'value' });
+        newInstance.changeLanguage('en');
+
+        expect(JSON.stringify(newInstance)).to.equal(
+          JSON.stringify({
+            options: {
+              ...getDefaults(),
+              some: 'options',
+              other: 'opts',
+              ignoreJSONStructure: true,
+            },
+            store: {
+              en: {
+                translation: {
+                  key: 'value',
+                },
+              },
+            },
+            language: 'en',
+            languages: ['en', 'dev'],
+          }),
+        );
+        done();
       });
     });
   });

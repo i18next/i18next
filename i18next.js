@@ -2468,6 +2468,16 @@
         };
         return clone;
       }
+    }, {
+      key: "toJSON",
+      value: function toJSON() {
+        return {
+          options: this.options,
+          store: this.store,
+          language: this.language,
+          languages: this.languages
+        };
+      }
     }]);
 
     return I18n;

@@ -529,6 +529,15 @@ class I18n extends EventEmitter {
 
     return clone;
   }
+
+  toJSON() {
+    return {
+      options: this.options,
+      store: this.store,
+      language: this.language,
+      languages: this.languages
+    };
+  }
 }
 
 export default new I18n();
