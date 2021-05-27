@@ -131,7 +131,9 @@ class Translator extends EventEmitter {
       !(typeof joinArrays === 'string' && resType === '[object Array]')
     ) {
       if (!options.returnObjects && !this.options.returnObjects) {
-        this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+        if (!this.options.returnedObjectHandler) {
+          this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+        }
         return this.options.returnedObjectHandler
           ? this.options.returnedObjectHandler(resUsedKey, res, options)
           : `key '${key} (${this.language})' returned an object instead of string.`;
