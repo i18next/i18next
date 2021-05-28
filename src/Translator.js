@@ -133,7 +133,7 @@ class Translator extends EventEmitter {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler
-          ? this.options.returnedObjectHandler(resUsedKey, res, options)
+          ? this.options.returnedObjectHandler(resUsedKey, res, { ...options, ns: namespaces })
           : `key '${key} (${this.language})' returned an object instead of string.`;
       }
 

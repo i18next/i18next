@@ -93,4 +93,87 @@ describe('Translator', () => {
       });
     });
   });
+  describe('translate() with returnObjects=false', () => {
+    let t;
+    let rs;
+    let lu;
+    before(() => {
+      rs = new ResourceStore({
+        en: {
+          common: {
+            array: ['common_array_en_1', 'common_array_en_2'],
+            object: {
+              value: 'common_object_en_value',
+            },
+            array_with_context: ['lorem ipsum', 'lorem ipsum', 'hello {{what}}'],
+          },
+          special: {
+            array: ['special_array_en_1', 'special_array_en_2'],
+          },
+        },
+      });
+      lu = new LanguageUtils({ fallbackLng: 'en' });
+
+      t = new Translator(
+        {
+          resourceStore: rs,
+          languageUtils: lu,
+          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          interpolator: new Interpolator(),
+        },
+        {
+          keySeparator: '.',
+          contextSeparator: '_',
+          returnObjects: false,
+          returnedObjectHandler: (...args) => args,
+          ns: ['common', 'special'],
+          defaultNS: 'common',
+          interpolation: {},
+        },
+      );
+
+      t.changeLanguage('en');
+    });
+
+    var tests = [
+      {
+        args: ['common:array'],
+        expected: ['array', ['common_array_en_1', 'common_array_en_2'], { ns: ['common'] }],
+      },
+      {
+        args: ['array'],
+        expected: ['array', ['common_array_en_1', 'common_array_en_2'], { ns: ['common'] }],
+      },
+      {
+        args: ['common:array_with_context', { what: 'world' }],
+        expected: [
+          'array_with_context',
+          ['lorem ipsum', 'lorem ipsum', 'hello {{what}}'],
+          { what: 'world', ns: ['common'] },
+        ],
+      },
+      {
+        args: ['common:object', { what: 'world' }],
+        expected: [
+          'object',
+          { value: 'common_object_en_value' },
+          { what: 'world', ns: ['common'] },
+        ],
+      },
+      {
+        args: ['special:array'],
+        expected: ['array', ['special_array_en_1', 'special_array_en_2'], { ns: ['special'] }],
+      },
+    ];
+
+    describe('and "returnedObjectHandler" defined', () => {
+      tests.forEach(test => {
+        it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+          expect(JSON.stringify(t.translate.apply(t, test.args))).to.eql(
+            JSON.stringify(test.expected),
+          );
+        });
+      });
+    });
+  });
 });
