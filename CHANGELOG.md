@@ -1,3 +1,8 @@
+### 20.3.1
+
+- add 'ns' to the 'returnedObjectHandler' options [1619](https://github.com/i18next/i18next/pull/1619)
+- disable warn 'accessing an object' when the 'returnedObjectHandler' is defined [1617](https://github.com/i18next/i18next/pull/1617)
+
 ### 20.3.0
 
 - add simple toJSON function to fix uncontrolled serialization, fixes [1322](https://github.com/i18next/react-i18next/issues/1322)
