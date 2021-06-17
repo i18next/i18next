@@ -378,7 +378,7 @@ class Translator extends EventEmitter {
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const needsContextHandling =
         options.context !== undefined &&
-        typeof options.context === 'string' &&
+        (typeof options.context === 'string' || typeof options.context === 'number') &&
         options.context !== '';
 
       const codes = options.lngs

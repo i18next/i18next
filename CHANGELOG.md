@@ -1,3 +1,7 @@
+### 20.3.2
+
+- context can also be a number [1622](https://github.com/i18next/i18next/issues/1622)
+
 ### 20.3.1
 
 - add 'ns' to the 'returnedObjectHandler' options [1619](https://github.com/i18next/i18next/pull/1619)
