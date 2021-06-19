@@ -1,5 +1,24 @@
 {
+  "dependencyDashboard": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "extends": [
+      "group:all",
+      "schedule:weekly"
+    ]
+  },
   "extends": [
-    "config:base"
-  ]
+    ":preserveSemverRanges",
+    "group:all",
+    "schedule:weekly"
+  ],
+  "lockFileMaintenance": {
+    "commitMessageAction": "Update",
+    "enabled": true,
+    "extends": [
+      "group:all",
+      "schedule:weekly"
+    ]
+  },
+  "separateMajorMinor": false
 }
