@@ -57,7 +57,7 @@
     "karma": "2.0.0",
     "karma-browserify": "5.1.1",
     "karma-chai": "0.1.0",
-    "karma-chrome-launcher": "2.2.0",
+    "karma-chrome-launcher": "3.1.0",
     "karma-cli": "1.0.1",
     "karma-coverage": "douglasduteil/karma-coverage#next",
     "karma-coveralls": "2.1.0",
