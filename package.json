@@ -68,7 +68,7 @@
     "karma-spec-reporter": "0.0.32",
     "lint-staged": "^8.1.0",
     "mocha": "3.2.0",
-    "prettier": "^1.15.3",
+    "prettier": "^2.3.2",
     "rimraf": "2.5.4",
     "rollup": "^2.34.1",
     "@rollup/plugin-babel": "^5.2.2",
