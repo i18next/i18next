@@ -78,7 +78,7 @@
     "sinon": "1.17.7",
     "tslint": "^5.12.1",
     "typescript": "^3.6.4",
-    "watchify": "3.9.0"
+    "watchify": "3.11.1"
   },
   "scripts": {
     "pretest": "npm run test:typescript && npm run test:typescript:noninterop",
