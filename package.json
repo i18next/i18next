@@ -39,7 +39,7 @@
     "browserify": "14.0.0",
     "browserify-istanbul": "3.0.1",
     "chai": "3.5.0",
-    "coveralls": "2.11.16",
+    "coveralls": "3.1.1",
     "cpy-cli": "^2.0.0",
     "dtslint": "^4.1.1",
     "eslint": "3.15.0",
