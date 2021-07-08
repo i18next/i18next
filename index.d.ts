@@ -179,6 +179,11 @@ export interface ReactOptions {
    * @default ['br', 'strong', 'i', 'p']
    */
   transKeepBasicHtmlNodesFor?: string[];
+  /**
+   * Wrap text nodes in a user-specified element.
+   * @default ''
+   */
+  transWrapTextNodes?: string;
 }
 
 /**
