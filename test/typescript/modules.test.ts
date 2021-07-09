@@ -68,10 +68,12 @@ i18next.use(backendModule);
 i18next.use(languageDetectorModule);
 i18next.use(loggerModule);
 i18next.use(i18nFormatModule);
-i18next.use(externalModules);
+i18next.use(thirdPartyModule);
 
 // exercise class usage
+// Need both static and member definitions of type to satisfy use() signature, see #1442
 class MyLoggerModule implements LoggerModule {
+  static type: 'logger' = 'logger';
   type: 'logger' = 'logger';
   log = () => null;
   warn = () => null;

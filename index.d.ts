@@ -759,8 +759,16 @@ export interface Services {
   resourceStore: ResourceStore;
 }
 
+export type ModuleType =
+  | 'backend'
+  | 'logger'
+  | 'languageDetector'
+  | 'postProcessor'
+  | 'i18nFormat'
+  | '3rdParty';
+
 export interface Module {
-  type: 'backend' | 'logger' | 'languageDetector' | 'postProcessor' | 'i18nFormat' | '3rdParty';
+  type: ModuleType;
 }
 
 export type CallbackError = Error | null | undefined;
@@ -855,7 +863,13 @@ export interface Modules {
 }
 
 // helper to identify class https://stackoverflow.com/a/45983481/2363935
-export type Newable<T> = { new (...args: any[]): T };
+export interface Newable<T> {
+  new (...args: any[]): T;
+}
+
+export interface NewableModule<T extends Module> extends Newable<T> {
+  type: T['type'];
+}
 
 export interface i18n {
   // Expose parameterized t in the i18next interface hierarchy
@@ -877,11 +891,9 @@ export interface i18n {
    * The use function is there to load additional plugins to i18next.
    * For available module see the plugins page and don't forget to read the documentation of the plugin.
    *
-   * Accepts a class or object
+   * @param module Accepts a class or object
    */
-  use<T extends Module>(
-    module: T | Newable<T> | ThirdPartyModule[] | Newable<ThirdPartyModule>[],
-  ): i18n;
+  use<T extends Module>(module: T | NewableModule<T> | Newable<T>): this;
 
   /**
    * List of modules used
