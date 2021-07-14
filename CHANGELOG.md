@@ -1,3 +1,7 @@
+### 20.3.3
+
+- add transWrapTextNodes to types [1626](https://github.com/i18next/i18next/pull/1626)
+
 ### 20.3.2
 
 - context can also be a number [1622](https://github.com/i18next/i18next/issues/1622)
