@@ -2,14 +2,14 @@ type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 type MergeBy<T, K> = Omit<T, keyof K> & K;
 
 export interface FallbackLngObjList {
-  [language: string]: string[];
+  [language: string]: readonly string[];
 }
 
 export type FallbackLng =
   | string
-  | string[]
+  | readonly string[]
   | FallbackLngObjList
-  | ((code: string) => string | string[] | FallbackLngObjList);
+  | ((code: string) => string | readonly string[] | FallbackLngObjList);
 
 export type FormatFunction = (
   value: any,
@@ -178,7 +178,7 @@ export interface ReactOptions {
    * Which nodes not to convert in defaultValue generation in the Trans component.
    * @default ['br', 'strong', 'i', 'p']
    */
-  transKeepBasicHtmlNodesFor?: string[];
+  transKeepBasicHtmlNodesFor?: readonly string[];
   /**
    * Wrap text nodes in a user-specified element.
    * @default ''
@@ -252,7 +252,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * DEPRECATED use supportedLngs
    * @default false
    */
-  whitelist?: false | string[];
+  whitelist?: false | readonly string[];
 
   /**
    * DEPRECTADED use nonExplicitSupportedLngs
@@ -264,7 +264,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * Array of allowed languages
    * @default false
    */
-  supportedLngs?: false | string[];
+  supportedLngs?: false | readonly string[];
 
   /**
    * If true will pass eg. en-US if finding en in supportedLngs
@@ -285,7 +285,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * Array of languages to preload. Important on server-side to assert translations are loaded before rendering views.
    * @default false
    */
-  preload?: false | string[];
+  preload?: false | readonly string[];
 
   /**
    * Language will be lowercased eg. en-US --> en-us
@@ -303,7 +303,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * String or array of namespaces to load
    * @default 'translation'
    */
-  ns?: string | string[];
+  ns?: string | readonly string[];
 
   /**
    * Default namespace used if not passed to translation function
@@ -315,7 +315,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * String or array of namespaces to lookup key if not found in given namespace.
    * @default false
    */
-  fallbackNS?: false | string | string[];
+  fallbackNS?: false | string | readonly string[];
 
   /**
    * Calls save missing key function on backend if key not found
@@ -343,7 +343,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    */
   missingKeyHandler?:
     | false
-    | ((lngs: string[], ns: string, key: string, fallbackValue: string) => void);
+    | ((lngs: readonly string[], ns: string, key: string, fallbackValue: string) => void);
 
   /**
    * Receives a key that was not found in `t()` and returns a value, that will be returned by `t()`
@@ -373,7 +373,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * String or array of postProcessors to apply per default
    * @default false
    */
-  postProcess?: false | string | string[];
+  postProcess?: false | string | readonly string[];
 
   /**
    * passthrough the resolved object including 'usedNS', 'usedLang' etc into options object of postprocessors as 'i18nResolved' property
@@ -547,7 +547,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
      * Handle when locize saved the edited translations, eg. reload website
      * @default noop
      */
-    onEditorSaved?: (lng: null, ns: string | string[]) => void;
+    onEditorSaved?: (lng: null, ns: string | readonly string[]) => void;
   };
 
   /**
@@ -588,7 +588,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
      * Please keep those to your local system, staging, test servers (not production)
      * @default ['localhost']
      */
-    allowedHosts?: string[];
+    allowedHosts?: readonly string[];
   };
 
   /**
@@ -622,7 +622,7 @@ export interface TOptionsBase {
   /**
    * Override languages to use
    */
-  lngs?: string[];
+  lngs?: readonly string[];
   /**
    * Override language to lookup key if not found see fallbacks for details
    */
@@ -630,7 +630,7 @@ export interface TOptionsBase {
   /**
    * Override namespaces (string or array)
    */
-  ns?: string | string[];
+  ns?: string | readonly string[];
   /**
    * Override char to separate keys
    */
@@ -650,7 +650,7 @@ export interface TOptionsBase {
   /**
    * String or array of postProcessors to apply see interval plurals as a sample
    */
-  postProcess?: string | string[];
+  postProcess?: string | readonly string[];
   /**
    * Override interpolation options
    */
@@ -780,9 +780,18 @@ export interface BackendModule<TOptions = object> extends Module {
   init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
   read(language: string, namespace: string, callback: ReadCallback): void;
   /** Save the missing translation */
-  create?(languages: string[], namespace: string, key: string, fallbackValue: string): void;
+  create?(
+    languages: readonly string[],
+    namespace: string,
+    key: string,
+    fallbackValue: string,
+  ): void;
   /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
-  readMulti?(languages: string[], namespaces: string[], callback: MultiReadCallback): void;
+  readMulti?(
+    languages: readonly string[],
+    namespaces: readonly string[],
+    callback: MultiReadCallback,
+  ): void;
   /** Store the translation. For backends acting as cache layer */
   save?(language: string, namespace: string, data: ResourceLanguage): void;
 }
@@ -796,7 +805,7 @@ export interface LanguageDetectorModule extends Module {
   type: 'languageDetector';
   init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
   /** Must return detected language */
-  detect(): string | string[] | undefined;
+  detect(): string | readonly string[] | undefined;
   cacheUserLanguage(lng: string): void;
 }
 
@@ -811,7 +820,7 @@ export interface LanguageDetectorAsyncModule extends Module {
   async: true;
   init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
   /** Must call callback passing detected language */
-  detect(callback: (lng: string | string[] | undefined) => void): void;
+  detect(callback: (lng: string | readonly string[] | undefined) => void): void;
   cacheUserLanguage(lng: string): void;
 }
 
@@ -913,8 +922,8 @@ export interface i18n {
    * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
    * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
    */
-  getFixedT(lng: string | string[], ns?: string | string[]): TFunction;
-  getFixedT(lng: null, ns: string | string[]): TFunction;
+  getFixedT(lng: string | readonly string[], ns?: string | readonly string[]): TFunction;
+  getFixedT(lng: null, ns: string | readonly string[]): TFunction;
 
   /**
    * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
@@ -931,27 +940,27 @@ export interface i18n {
   /**
    * Is set to an array of language-codes that will be used it order to lookup the translation value.
    */
-  languages: string[];
+  languages: readonly string[];
 
   /**
    * Loads additional namespaces not defined in init options.
    */
-  loadNamespaces(ns: string | string[], callback?: Callback): Promise<void>;
+  loadNamespaces(ns: string | readonly string[], callback?: Callback): Promise<void>;
 
   /**
    * Loads additional languages not defined in init options (preload).
    */
-  loadLanguages(lngs: string | string[], callback?: Callback): Promise<void>;
+  loadLanguages(lngs: string | readonly string[], callback?: Callback): Promise<void>;
 
   /**
    * Reloads resources on given state. Optionally you can pass an array of languages and namespaces as params if you don't want to reload all.
    */
   reloadResources(
-    lngs?: string | string[],
-    ns?: string | string[],
+    lngs?: string | readonly string[],
+    ns?: string | readonly string[],
     callback?: () => void,
   ): Promise<void>;
-  reloadResources(lngs: null, ns: string | string[], callback?: () => void): Promise<void>;
+  reloadResources(lngs: null, ns: string | readonly string[], callback?: () => void): Promise<void>;
 
   /**
    * Changes the default namespace.
@@ -1002,7 +1011,7 @@ export interface i18n {
    */
   on(
     event: 'missingKey',
-    callback: (lngs: string[], namespace: string, key: string, res: string) => void,
+    callback: (lngs: readonly string[], namespace: string, key: string, res: string) => void,
   ): void;
 
   /**
