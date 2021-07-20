@@ -50,7 +50,7 @@ i18next.init(
 
 i18next.init(
   {
-    ns: ['common', 'moduleA', 'moduleB'],
+    ns: ['common', 'moduleA', 'moduleB'] as const,
     defaultNS: 'moduleA',
   },
   (err, t) => {
@@ -243,7 +243,7 @@ i18next.loadLanguages(['de', 'fr'], (err, t) => {
 i18next.reloadResources();
 
 // reload languages
-i18next.reloadResources(['de', 'fr']);
+i18next.reloadResources(['de', 'fr'] as const);
 
 // reload namespaces for all languages
 i18next.reloadResources(null, ['ns1', 'ns2']);
@@ -261,7 +261,7 @@ i18next.dir('ar'); // -> "rtl";
 const newInstance = i18next.createInstance(
   {
     fallbackLng: 'en',
-    ns: ['file1', 'file2'],
+    ns: ['file1', 'file2'] as const,
     defaultNS: 'file1',
     debug: true,
   },
