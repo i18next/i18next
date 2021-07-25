@@ -1,3 +1,7 @@
+### 20.3.5
+
+- change init warning to only trigger if not using useSSR on react-i18next
+
 ### 20.3.4
 
 - fix(types): only use readonly array of strings in API [1629](https://github.com/i18next/i18next/pull/1629)
