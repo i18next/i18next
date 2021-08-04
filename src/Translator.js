@@ -364,7 +364,8 @@ class Translator extends EventEmitter {
     let usedLng;
     let usedNS;
 
-    if (typeof keys === 'string') keys = [keys];
+    if (!keys) keys = [];
+    else if (typeof keys === 'string') keys = [keys];
 
     // forEach possible key
     keys.forEach(k => {
