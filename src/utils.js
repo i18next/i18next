@@ -139,7 +139,3 @@ export const isIE10 =
   window.navigator &&
   window.navigator.userAgent &&
   window.navigator.userAgent.indexOf('MSIE') > -1;
-
-export function isOptional(str) {
-  return str === undefined || str === null;
-}

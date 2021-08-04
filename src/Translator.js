@@ -2,7 +2,6 @@ import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 import postProcessor from './postProcessor.js';
 import * as utils from './utils.js';
-import { isOptional } from './utils.js';
 
 const checkedLoadedFor = {};
 
@@ -40,7 +39,7 @@ class Translator extends EventEmitter {
   }
 
   exists(key, options = { interpolation: {} }) {
-    if (isOptional(key)) {
+    if (key === undefined || key === null) {
       return false;
     }
 
@@ -89,7 +88,7 @@ class Translator extends EventEmitter {
     if (!options) options = {};
 
     // non valid keys handling
-    if (isOptional(keys) /* || keys === ''*/) return '';
+    if (keys === undefined || keys === null /* || keys === ''*/) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     // separators
