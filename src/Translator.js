@@ -39,6 +39,10 @@ class Translator extends EventEmitter {
   }
 
   exists(key, options = { interpolation: {} }) {
+    if (key === undefined || key === null) {
+      return false;
+    }
+
     const resolved = this.resolve(key, options);
     return resolved && resolved.res !== undefined;
   }
