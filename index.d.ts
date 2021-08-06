@@ -343,7 +343,13 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    */
   missingKeyHandler?:
     | false
-    | ((lngs: readonly string[], ns: string, key: string, fallbackValue: string) => void);
+    | ((
+        lngs: readonly string[],
+        ns: string,
+        key: string,
+        fallbackValue: string,
+        options: any,
+      ) => void);
 
   /**
    * Receives a key that was not found in `t()` and returns a value, that will be returned by `t()`
