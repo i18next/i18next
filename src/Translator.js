@@ -270,7 +270,7 @@ class Translator extends EventEmitter {
         res = `${namespace}:${key}`;
 
       // parseMissingKeyHandler
-      if (usedKey && this.options.parseMissingKeyHandler)
+      if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler)
         res = this.options.parseMissingKeyHandler(res);
     }
 
