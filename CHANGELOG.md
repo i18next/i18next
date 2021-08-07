@@ -2,6 +2,8 @@
 
 - change to return false when a nullable argument is passed [1635](https://github.com/i18next/i18next/pull/1635)
 - make sure parseMissingKeyHandler is called when defaultValue is provided [1354](https://github.com/i18next/react-i18next/issues/1354)
+- types: Fix i18n.use() cannot pass module constructors in TypeScript [1442](https://github.com/i18next/i18next/pull/1442)
+- types: fix TypeScript definition for "loaded" event handler [1637](https://github.com/i18next/i18next/issues/1637)
 
 ### 20.3.5
 

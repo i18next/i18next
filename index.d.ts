@@ -1018,7 +1018,7 @@ export interface i18n {
   /**
    * Gets fired on loaded resources.
    */
-  on(event: 'loaded', callback: (loaded: boolean) => void): void;
+  on(event: 'loaded', callback: (loaded: { [language: string]: readonly string[] }) => void): void;
 
   /**
    * Gets fired if loading resources failed.
