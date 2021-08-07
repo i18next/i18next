@@ -348,6 +348,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
         ns: string,
         key: string,
         fallbackValue: string,
+        updateMissing: boolean,
         options: any,
       ) => void);
 
