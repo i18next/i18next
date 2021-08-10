@@ -1,4 +1,4 @@
-### 20.x.x
+### 20.4.0
 
 - change to return false when a nullable argument is passed [1635](https://github.com/i18next/i18next/pull/1635)
 - make sure parseMissingKeyHandler is called when defaultValue is provided [1354](https://github.com/i18next/react-i18next/issues/1354)
