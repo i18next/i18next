@@ -236,7 +236,7 @@ class Translator extends EventEmitter {
               l,
               namespace,
               k,
-              updateMissing ? fallbackValue : res,
+              updateMissing ? fallbackValue : resForMissing,
               updateMissing,
               options,
             );
