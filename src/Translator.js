@@ -193,6 +193,10 @@ class Translator extends EventEmitter {
         res = key;
       }
 
+      const missingKeyNoValueFallbackToKey =
+        options.missingKeyNoValueFallbackToKey || this.options.missingKeyNoValueFallbackToKey;
+      const resForMissing = missingKeyNoValueFallbackToKey && usedKey ? undefined : res;
+
       // save missing
       const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
       if (usedKey || usedDefault || updateMissing) {
@@ -241,7 +245,7 @@ class Translator extends EventEmitter {
               l,
               namespace,
               k,
-              updateMissing ? fallbackValue : res,
+              updateMissing ? fallbackValue : resForMissing,
               updateMissing,
               options,
             );

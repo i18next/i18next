@@ -1,3 +1,7 @@
+### 20.5.0
+
+- introduce missingKeyNoValueFallbackToKey option
+
 ### 20.4.0
 
 - change to return false when a nullable argument is passed [1635](https://github.com/i18next/i18next/pull/1635)

@@ -338,6 +338,13 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
   saveMissingTo?: 'current' | 'all' | 'fallback';
 
   /**
+   * Used to not fallback to the key as default value, when using saveMissing functionality.
+   * i.e. when using with i18next-http-backend this will result in having a key with an empty string value.
+   * @default false
+   */
+  missingKeyNoValueFallbackToKey?: boolean;
+
+  /**
    * Used for custom missing key handling (needs saveMissing set to true!)
    * @default false
    */
