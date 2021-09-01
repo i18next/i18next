@@ -947,9 +947,15 @@ export interface i18n {
    * Returns a t function that defaults to given language or namespace.
    * Both params could be arrays of languages or namespaces and will be treated as fallbacks in that case.
    * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
+   *
+   * Accepts optional keyPrefix that will be automatically applied to returned t function.
    */
-  getFixedT(lng: string | readonly string[], ns?: string | readonly string[]): TFunction;
-  getFixedT(lng: null, ns: string | readonly string[]): TFunction;
+  getFixedT(
+    lng: string | readonly string[],
+    ns?: string | readonly string[],
+    keyPrefix?: string,
+  ): TFunction;
+  getFixedT(lng: null, ns: string | readonly string[] | null, keyPrefix?: string): TFunction;
 
   /**
    * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.

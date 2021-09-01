@@ -88,6 +88,12 @@ describe('i18next', () => {
         expect(translatedKey).to.equal('default');
         expect(translatedSecondKey).to.equal('default');
       });
+      it('should apply keyPrefix', () => {
+        i18next.addResource('fr', 'translation', 'deeply.nested.key', 'ici!');
+        const t = i18next.getFixedT('fr', null, 'deeply.nested');
+        expect(t('key')).to.equal('ici!');
+        expect(t.keyPrefix).to.equal('deeply.nested');
+      });
     });
   });
 

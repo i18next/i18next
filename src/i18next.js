@@ -310,7 +310,7 @@ class I18n extends EventEmitter {
     return deferred;
   }
 
-  getFixedT(lng, ns) {
+  getFixedT(lng, ns, keyPrefix) {
     const fixedT = (key, opts, ...rest) => {
       let options;
       if (typeof opts !== 'object') {
@@ -322,7 +322,10 @@ class I18n extends EventEmitter {
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;
-      return this.t(key, options);
+
+      const keySeparator = this.options.keySeparator || '.';
+      const resultKey = keyPrefix ? `${keyPrefix}${keySeparator}${key}` : key;
+      return this.t(resultKey, options);
     };
     if (typeof lng === 'string') {
       fixedT.lng = lng;
@@ -330,6 +333,7 @@ class I18n extends EventEmitter {
       fixedT.lngs = lng;
     }
     fixedT.ns = ns;
+    fixedT.keyPrefix = keyPrefix;
     return fixedT;
   }
 
