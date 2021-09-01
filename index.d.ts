@@ -948,7 +948,7 @@ export interface i18n {
     ns?: string | readonly string[],
     keyPrefix?: string,
   ): TFunction;
-  getFixedT(lng: null, ns: string | readonly string[], keyPrefix?: string): TFunction;
+  getFixedT(lng: null, ns: string | readonly string[] | null, keyPrefix?: string): TFunction;
 
   /**
    * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
