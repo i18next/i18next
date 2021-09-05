@@ -200,13 +200,20 @@ class Translator extends EventEmitter {
       // save missing
       const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
       if (usedKey || usedDefault || updateMissing) {
-        this.logger.log(
-          updateMissing ? 'updateKey' : 'missingKey',
-          lng,
-          namespace,
-          key,
-          updateMissing ? defaultValue : res,
-        );
+        if (
+          this.options.saveMissing ||
+          this.options.updateMissing ||
+          !this.resourceStore.hasResourceBundle(lng, namespace) ||
+          Object.keys(this.resourceStore.getDataByLanguage(lng)[namespace]).length > 0
+        ) {
+          this.logger.log(
+            updateMissing ? 'updateKey' : 'missingKey',
+            lng,
+            namespace,
+            key,
+            updateMissing ? defaultValue : res,
+          );
+        }
         if (keySeparator) {
           const fk = this.resolve(key, { ...options, keySeparator: false });
           if (fk && fk.res)
