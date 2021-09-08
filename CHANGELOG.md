@@ -1,3 +1,7 @@
+### 20.6.1
+
+- fix deepFind if looking for nesting array item
+
 ### 20.6.0
 
 - feature: key prefix option [1644](https://github.com/i18next/i18next/pull/1644)
