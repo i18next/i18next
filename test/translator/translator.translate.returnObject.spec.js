@@ -139,10 +139,6 @@ describe('Translator', () => {
     });
 
     describe('and "returnedObjectHandler" defined', () => {
-      afterEach(() => {
-        loggerStub.reset();
-      });
-
       it('should not emit a warning', () => {
         t.translate.apply(t, ['common:array']);
         expect(

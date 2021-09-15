@@ -563,7 +563,7 @@ describe('i18next', function() {
 
         describe('changing the language', function() {
           beforeEach(function(done) {
-            spy.reset();
+            spy.resetHistory();
             //if (i18n.sync.resStore) i18n.sync.resStore = {}; // to reset for test on server!
             i18n.setLng('de-DE', function(t) {
               done();
@@ -1140,7 +1140,7 @@ describe('i18next', function() {
       });
 
       it('it should preload resources for languages', function(done) {
-        spy.reset();
+        spy.resetHistory();
         //if (i18n.sync.resStore) i18n.sync.resStore = {}; // to reset for test on server!
         i18n.preload('de-DE', function(t) {
           expect(spy.callCount).to.be(2); // de-DE, de
