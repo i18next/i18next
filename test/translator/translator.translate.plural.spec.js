@@ -12,20 +12,20 @@ describe('Translator', () => {
       const rs = new ResourceStore({
         en: {
           translation: {
-            test: 'test_en',
-            test_plural: 'tests_en',
+            test_one: 'test_en',
+            test_other: 'tests_en',
           },
         },
         de: {
           translation: {
-            test: 'test_de',
-            test_plural: 'tests_de',
+            test_one: 'test_de',
+            test_other: 'tests_de',
           },
         },
         ja: {
           translation: {
             test: 'test_ja',
-            test_0: 'tests_ja',
+            test_other: 'tests_ja',
           },
         },
       });

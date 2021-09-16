@@ -90,7 +90,7 @@ describe('Translator', () => {
         expect(
           missingKeyHandler
             .getCall(0)
-            .calledWith(['ar'], 'translation', 'test.missing_0', 'test.missing'),
+            .calledWith(['ar'], 'translation', 'test.missing_zero', 'test.missing'),
         ).to.be.true;
       });
     });
@@ -114,18 +114,18 @@ describe('Translator', () => {
 
       t.translate('translation:test.missing', {
         count: 0,
-        defaultValue_0: 'default0',
-        defaultValue_1: 'default1', // ignored
+        defaultValue_zero: 'default0',
+        defaultValue_one: 'default1', // ignored
       });
     });
 
     it('correctly sends missing resolved value', () => {
       expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ARABIC);
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_0', 'default0')).to
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_zero', 'default0'))
+        .to.be.true;
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_one', 'default0')).to
         .be.true;
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_1', 'default0')).to
-        .be.true;
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_2', 'default0')).to
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_two', 'default0')).to
         .be.true;
     });
   });

@@ -23,8 +23,8 @@ describe('Translator', () => {
                 ['simple', 'Simple'],
               ],
             },
-            keyArray: ['hello world {{count}}', 'hey {{count}}'],
-            keyArray_plural: ['hello world plural {{count}}', 'hey plural {{count}}'],
+            keyArray_one: ['hello world {{count}}', 'hey {{count}}'],
+            keyArray_other: ['hello world plural {{count}}', 'hey plural {{count}}'],
           },
         },
       });

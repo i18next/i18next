@@ -17,10 +17,10 @@ describe('Translator', () => {
             key3: 'It is: {{val}}',
 
             // context with pluralization
-            test: 'test_en',
-            test_plural: 'tests_en',
-            test_male: 'test_male_en',
-            test_male_plural: 'tests_male_en',
+            test_one: 'test_en',
+            test_other: 'tests_en',
+            test_male_one: 'test_male_en',
+            test_male_other: 'tests_male_en',
 
             nest: {
               foo: 'bar',

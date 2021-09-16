@@ -135,10 +135,10 @@ describe('Translator', () => {
             }),
           ).to.eql('test_en');
           expect(missingKeyHandler.calledTwice).to.be.true;
-          expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to
-            .be.true;
+          expect(missingKeyHandler.calledWith(['en'], 'translation', 'test_one', 'new value', true))
+            .to.be.true;
           expect(
-            missingKeyHandler.calledWith(['en'], 'translation', 'test_plural', 'new value', true),
+            missingKeyHandler.calledWith(['en'], 'translation', 'test_other', 'new value', true),
           ).to.be.true;
         });
       });
@@ -149,15 +149,15 @@ describe('Translator', () => {
         expect(
           t.translate('translation:test', {
             count: 1,
-            defaultValue: 'new value',
-            defaultValue_plural: 'new values',
+            defaultValue_one: 'new value',
+            defaultValue_other: 'new values',
           }),
         ).to.eql('test_en');
         expect(missingKeyHandler.calledTwice).to.be.true;
-        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
-          .true;
+        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test_one', 'new value', true))
+          .to.be.true;
         expect(
-          missingKeyHandler.calledWith(['en'], 'translation', 'test_plural', 'new values', true),
+          missingKeyHandler.calledWith(['en'], 'translation', 'test_other', 'new values', true),
         ).to.be.true;
       });
     });
