@@ -83,7 +83,7 @@ describe('Translator', () => {
     [
       { args: ['translation:test.missing', { count: 10 }], expected: NB_PLURALS_ARABIC },
       { args: ['translation:test.missing', { count: 0 }], expected: NB_PLURALS_ARABIC },
-    ].forEach(test => {
+    ].forEach((test) => {
       it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
         t.translate.apply(t, test.args);
         expect(missingKeyHandler.callCount).to.eql(test.expected);

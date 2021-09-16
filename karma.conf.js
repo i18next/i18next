@@ -1,6 +1,6 @@
 //const istanbul = require( 'browserify-istanbul' );
 
-module.exports = function(karma) {
+module.exports = function (karma) {
   karma.set({
     frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
 

@@ -21,7 +21,7 @@ describe('LanguageUtils', () => {
       { args: ['de-DE-x-custom1'], expected: ['de-DE-x-custom1', 'de', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -54,7 +54,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -87,7 +87,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -116,7 +116,7 @@ describe('LanguageUtils', () => {
       { args: ['de-DE-x-custom1'], expected: ['de-DE-x-custom1', 'de', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -140,7 +140,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-CN'], expected: ['zh-CN', 'zh', 'de', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -165,7 +165,7 @@ describe('LanguageUtils', () => {
       { args: ['ZH-HANT-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -190,7 +190,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-Hant-MO'], expected: ['zh-hant-mo', 'zh-hant', 'zh', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -215,7 +215,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-Hant-MO'], expected: ['zh', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -240,7 +240,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -265,7 +265,7 @@ describe('LanguageUtils', () => {
       { args: ['nb-NO'], expected: ['nb-NO', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -291,7 +291,7 @@ describe('LanguageUtils', () => {
       { args: ['zh-CN'], expected: ['zh-CN', 'zh', 'en'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
@@ -318,7 +318,7 @@ describe('LanguageUtils', () => {
       { args: [[]], expected: 'en' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
         expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
       });

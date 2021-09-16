@@ -126,7 +126,7 @@ describe('Translator', () => {
     });
 
     describe('without a default plural value', () => {
-      [1, 2].forEach(count => {
+      [1, 2].forEach((count) => {
         it(`count=${count}: sends falls back on singular default value`, () => {
           expect(
             t.translate('translation:test', {

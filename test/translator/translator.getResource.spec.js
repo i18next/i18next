@@ -40,7 +40,7 @@ describe('Translator', () => {
       { args: ['de', 'translation', 'test'], expected: undefined },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly gets resource for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.getResource.apply(t, test.args)).to.eql(test.expected);
       });

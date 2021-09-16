@@ -21,7 +21,7 @@ export function makeString(object) {
 }
 
 export function copy(a, s, t) {
-  a.forEach(m => {
+  a.forEach((m) => {
     if (s[m]) t[m] = s[m];
   });
 }
@@ -128,7 +128,7 @@ var _entityMap = {
 
 export function escape(data) {
   if (typeof data === 'string') {
-    return data.replace(/[&<>"'\/]/g, s => _entityMap[s]);
+    return data.replace(/[&<>"'\/]/g, (s) => _entityMap[s]);
   }
 
   return data;

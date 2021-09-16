@@ -40,10 +40,10 @@ class Connector extends EventEmitter {
     const toLoadLanguages = [];
     const toLoadNamespaces = [];
 
-    languages.forEach(lng => {
+    languages.forEach((lng) => {
       let hasAllNamespaces = true;
 
-      namespaces.forEach(ns => {
+      namespaces.forEach((ns) => {
         const name = `${lng}|${ns}`;
 
         if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
@@ -101,7 +101,7 @@ class Connector extends EventEmitter {
     const loaded = {};
 
     // callback if ready
-    this.queue.forEach(q => {
+    this.queue.forEach((q) => {
       utils.pushPath(q.loaded, [lng], ns);
       remove(q.pending, name);
 
@@ -109,10 +109,10 @@ class Connector extends EventEmitter {
 
       if (q.pending.length === 0 && !q.done) {
         // only do once per loaded -> this.emit('loaded', q.loaded);
-        Object.keys(q.loaded).forEach(l => {
+        Object.keys(q.loaded).forEach((l) => {
           if (!loaded[l]) loaded[l] = [];
           if (q.loaded[l].length) {
-            q.loaded[l].forEach(ns => {
+            q.loaded[l].forEach((ns) => {
               if (loaded[l].indexOf(ns) < 0) loaded[l].push(ns);
             });
           }
@@ -132,7 +132,7 @@ class Connector extends EventEmitter {
     this.emit('loaded', loaded);
 
     // remove done load requests
-    this.queue = this.queue.filter(q => !q.done);
+    this.queue = this.queue.filter((q) => !q.done);
   }
 
   read(lng, ns, fcName, tried = 0, wait = 350, callback) {
@@ -165,7 +165,7 @@ class Connector extends EventEmitter {
       return null; // pendings will trigger callback
     }
 
-    toLoad.toLoad.forEach(name => {
+    toLoad.toLoad.forEach((name) => {
       this.loadOne(name);
     });
   }

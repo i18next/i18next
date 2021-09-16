@@ -49,7 +49,7 @@ export function get() {
       if (typeof args[2] === 'string') ret.tDescription = args[2];
       if (typeof args[2] === 'object' || typeof args[3] === 'object') {
         var options = args[3] || args[2];
-        Object.keys(options).forEach(function(key) {
+        Object.keys(options).forEach(function (key) {
           ret[key] = options[key];
         });
       }

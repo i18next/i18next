@@ -255,8 +255,8 @@ class Translator extends EventEmitter {
 
         if (this.options.saveMissing) {
           if (this.options.saveMissingPlurals && needsPluralHandling) {
-            lngs.forEach(language => {
-              this.pluralResolver.getSuffixes(language).forEach(suffix => {
+            lngs.forEach((language) => {
+              this.pluralResolver.getSuffixes(language).forEach((suffix) => {
                 send([language], key + suffix, options[`defaultValue${suffix}`] || defaultValue);
               });
             });
@@ -375,7 +375,7 @@ class Translator extends EventEmitter {
     if (typeof keys === 'string') keys = [keys];
 
     // forEach possible key
-    keys.forEach(k => {
+    keys.forEach((k) => {
       if (this.isValidLookup(found)) return;
       const extracted = this.extractFromKey(k, options);
       const key = extracted.key;
@@ -393,7 +393,7 @@ class Translator extends EventEmitter {
         ? options.lngs
         : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
 
-      namespaces.forEach(ns => {
+      namespaces.forEach((ns) => {
         if (this.isValidLookup(found)) return;
         usedNS = ns;
 
@@ -412,7 +412,7 @@ class Translator extends EventEmitter {
           );
         }
 
-        codes.forEach(code => {
+        codes.forEach((code) => {
           if (this.isValidLookup(found)) return;
           usedLng = code;
 

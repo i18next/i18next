@@ -59,7 +59,7 @@ describe('Translator', () => {
       { args: ['test: with a sentence. or more text', { lng: 'en-US' }], expected: 'test_en' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });

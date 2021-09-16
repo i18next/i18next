@@ -41,7 +41,7 @@ describe('PluralResolver', () => {
       { args: ['he'], expected: true },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly returns needsPlural for ' + JSON.stringify(test.args) + ' args', () => {
         expect(pr.needsPlural.apply(pr, test.args)).to.eql(test.expected);
       });
@@ -210,7 +210,7 @@ describe('PluralResolver', () => {
       { args: ['he', 101], expected: '3' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly returns suffix for ' + JSON.stringify(test.args) + ' args', () => {
         expect(pr.getSuffix.apply(pr, test.args)).to.eql(test.expected);
       });
@@ -230,7 +230,7 @@ describe('PluralResolver', () => {
       { args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it(
         'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
         () => {
@@ -253,7 +253,7 @@ describe('PluralResolver', () => {
       { args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it(
         'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
         () => {
@@ -277,7 +277,7 @@ describe('PluralResolver', () => {
       { args: ['ar'], expected: ['_0', '_1', '_2', '_3', '_4', '_5'] },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it(
         'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
         () => {

@@ -3,8 +3,8 @@ import i18next from '../src/i18next.js';
 describe('i18next', () => {
   describe('promise based api', () => {
     describe('init()', () => {
-      it('it should return a promise', done => {
-        i18next.init().then(t => {
+      it('it should return a promise', (done) => {
+        i18next.init().then((t) => {
           expect(typeof t).to.equal('function');
           done();
         });
@@ -12,9 +12,9 @@ describe('i18next', () => {
     });
 
     describe('changeLanguage()', () => {
-      it('it should return a promise', done => {
+      it('it should return a promise', (done) => {
         i18next.init();
-        i18next.changeLanguage().then(t => {
+        i18next.changeLanguage().then((t) => {
           expect(typeof t).to.equal('function');
           done();
         });
@@ -22,7 +22,7 @@ describe('i18next', () => {
     });
 
     describe('loadLanguages()', () => {
-      it('it should return a promise', done => {
+      it('it should return a promise', (done) => {
         i18next.init();
         i18next.loadLanguages('en').then(() => {
           done();
@@ -31,7 +31,7 @@ describe('i18next', () => {
     });
 
     describe('loadNamespaces()', () => {
-      it('it should return a promise', done => {
+      it('it should return a promise', (done) => {
         i18next.init();
         i18next.loadNamespaces('common').then(() => {
           done();
@@ -40,7 +40,7 @@ describe('i18next', () => {
     });
 
     describe('reloadResources()', () => {
-      it('it should return a promise', done => {
+      it('it should return a promise', (done) => {
         i18next.init();
         i18next.reloadResources().then(() => {
           done();

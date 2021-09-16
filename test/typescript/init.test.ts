@@ -325,8 +325,8 @@ newInstance.init(
   },
 );
 
-i18next.on('initialized', options => {});
-i18next.on('loaded', loaded => {});
+i18next.on('initialized', (options) => {});
+i18next.on('loaded', (loaded) => {});
 i18next.on('failedLoading', (lng: string, ns: string, msg: string) => {});
 i18next.on('missingKey', (lngs: string[], namespace: string, key: string, res: string) => {});
 i18next.on('added', (lng: string, ns: string) => {});
@@ -434,7 +434,7 @@ i18next.init({
 
 i18next.init({
   react: {
-    hashTransKey: defaultValue => {
+    hashTransKey: (defaultValue) => {
       if (typeof defaultValue === 'string') {
         return defaultValue.replace(/\s+/g, '_');
       }

@@ -22,7 +22,7 @@ describe('Interpolator', () => {
       { args: ['test {{test.deep}}', { test: { deep: '123' } }], expected: 'test 123' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -56,7 +56,7 @@ describe('Interpolator', () => {
       { args: ['test {{ test }}', { test: undefined }], expected: 'test 123' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -150,7 +150,7 @@ describe('Interpolator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       describe(test.description || 'when called with ' + JSON.stringify(test.options), () => {
         var ip;
 
@@ -158,7 +158,7 @@ describe('Interpolator', () => {
           ip = new Interpolator(test.options);
         });
 
-        Object.keys(test.expected).forEach(key => {
+        Object.keys(test.expected).forEach((key) => {
           it(key + ' is set correctly', () => {
             expect(ip[key]).to.eql(test.expected[key]);
           });
@@ -174,7 +174,7 @@ describe('Interpolator', () => {
       ip = new Interpolator({
         interpolation: {
           escapeValue: false,
-          format: function(value, format, lng, options) {
+          format: function (value, format, lng, options) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
             if (format === 'throw') throw new Error('Formatter error');
@@ -208,7 +208,7 @@ describe('Interpolator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -232,7 +232,7 @@ describe('Interpolator', () => {
       ip = new Interpolator({
         interpolation: {
           formatSeparator: '|',
-          format: function(value, format, lng) {
+          format: function (value, format, lng) {
             if (format === 'uppercase') return value.toUpperCase();
             return value;
           },
@@ -242,7 +242,7 @@ describe('Interpolator', () => {
 
     var tests = [{ args: ['test {{test | uppercase}}', { test: 'up' }], expected: 'test UP' }];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -256,7 +256,7 @@ describe('Interpolator', () => {
       ip = new Interpolator({
         interpolation: {
           alwaysFormat: true,
-          format: function(value, format, lng) {
+          format: function (value, format, lng) {
             if (format === 'uppercase') return value.toUpperCase();
             return value.toLowerCase();
           },
@@ -269,7 +269,7 @@ describe('Interpolator', () => {
       { args: ['test {{test}}', { test: 'DOWN' }], expected: 'test down' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -313,7 +313,7 @@ describe('Interpolator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -331,7 +331,7 @@ describe('Interpolator', () => {
       {
         args: [
           'test $t(test)',
-          function() {
+          function () {
             return 'success';
           },
         ],
@@ -340,7 +340,7 @@ describe('Interpolator', () => {
       {
         args: [
           '$t(test, {"key": "success"})',
-          function(key, opts) {
+          function (key, opts) {
             return 'test ' + opts.key;
           },
         ],
@@ -349,7 +349,7 @@ describe('Interpolator', () => {
       {
         args: [
           "$t(test, {'key': 'success'})",
-          function(key, opts) {
+          function (key, opts) {
             return 'test ' + opts.key;
           },
         ],
@@ -358,7 +358,7 @@ describe('Interpolator', () => {
       {
         args: [
           '$t(test, is, {"key": "success"})',
-          function(key, opts) {
+          function (key, opts) {
             return 'test, is ' + opts.key;
           },
         ],
@@ -367,7 +367,7 @@ describe('Interpolator', () => {
       {
         args: [
           '$t(test, is, ok)',
-          function() {
+          function () {
             return 'test, is, ok';
           },
         ],
@@ -376,7 +376,7 @@ describe('Interpolator', () => {
       {
         args: [
           '$t(ns:test)',
-          function() {
+          function () {
             return 'test from ns';
           },
         ],
@@ -384,7 +384,7 @@ describe('Interpolator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly nests for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.nest.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -427,7 +427,7 @@ describe('Interpolator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -453,7 +453,7 @@ describe('Interpolator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });
@@ -474,7 +474,7 @@ describe('Interpolator', () => {
       });
     });
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it(
         'correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args',
         () => {
@@ -499,7 +499,7 @@ describe('Interpolator', () => {
       });
     });
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it(
         'correctly calls missingInterpolationHandler for ' + JSON.stringify(test.args) + ' args',
         () => {
@@ -529,7 +529,7 @@ describe('Interpolator', () => {
       });
     });
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly interpolates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(ip.interpolate.apply(ip, test.args)).to.eql(test.expected);
       });

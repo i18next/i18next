@@ -56,7 +56,7 @@ describe('i18next', () => {
     describe('create/cloneInstance()', () => {
       let instance1;
       let instance2;
-      before(done => {
+      before((done) => {
         instance1 = i18next.cloneInstance({ lng: 'en' }, () => {
           instance2 = instance1.cloneInstance({ lng: 'de' }, () => done());
         });
@@ -153,8 +153,8 @@ describe('i18next', () => {
       );
     });
 
-    it('it should JSON.stringify initialized without errors', done => {
-      newInstance.init({ other: 'opts' }, err => {
+    it('it should JSON.stringify initialized without errors', (done) => {
+      newInstance.init({ other: 'opts' }, (err) => {
         if (err) return done(err);
 
         newInstance.addResourceBundle('en', 'translation', { key: 'value' });

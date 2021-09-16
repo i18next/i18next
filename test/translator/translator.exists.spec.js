@@ -57,7 +57,7 @@ describe('Translator', () => {
       { args: ['deep.test', { lng: 'en-US', nsSeparator: '.' }], expected: true },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.exists.apply(t, test.args)).to.eql(test.expected);
       });
@@ -65,7 +65,7 @@ describe('Translator', () => {
 
     const nullishArgs = ['', undefined, null];
 
-    nullishArgs.forEach(nullishArg => {
+    nullishArgs.forEach((nullishArg) => {
       it(`should return false if a "${nullishArg}" key is passed as an argument`, () => {
         expect(t.exists(nullishArg)).to.false;
       });

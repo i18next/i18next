@@ -1,3 +1,4 @@
 i18next.js
 i18next.min.js
 src/PluralResolver.js
+test/locales/en/nonjson.json

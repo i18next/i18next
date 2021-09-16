@@ -6,7 +6,7 @@ class Interpolator {
     this.logger = baseLogger.create('interpolator');
 
     this.options = options;
-    this.format = (options.interpolation && options.interpolation.format) || (value => value);
+    this.format = (options.interpolation && options.interpolation.format) || ((value) => value);
     this.init(options);
   }
 
@@ -59,9 +59,7 @@ class Interpolator {
     const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
     this.regexp = new RegExp(regexpStr, 'g');
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${
-      this.suffix
-    }`;
+    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
     this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
 
     const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
@@ -81,7 +79,7 @@ class Interpolator {
       return val.replace(/\$/g, '$$$$');
     }
 
-    const handleFormat = key => {
+    const handleFormat = (key) => {
       if (key.indexOf(this.formatSeparator) < 0) {
         const path = utils.getPathWithDefaults(data, defaultData, key);
         return this.alwaysFormat
@@ -113,15 +111,15 @@ class Interpolator {
       {
         // unescape if has unescapePrefix/Suffix
         regex: this.regexpUnescape,
-        safeValue: val => regexSafe(val),
+        safeValue: (val) => regexSafe(val),
       },
       {
         // regular escape on demand
         regex: this.regexp,
-        safeValue: val => (this.escapeValue ? regexSafe(this.escape(val)) : regexSafe(val)),
+        safeValue: (val) => (this.escapeValue ? regexSafe(this.escape(val)) : regexSafe(val)),
       },
     ];
-    todos.forEach(todo => {
+    todos.forEach((todo) => {
       replaces = 0;
       /* eslint no-cond-assign: 0 */
       while ((match = todo.regex.exec(str))) {
@@ -206,7 +204,7 @@ class Interpolator {
        */
       let doReduce = false;
       if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
-        const r = match[1].split(this.formatSeparator).map(elem => elem.trim());
+        const r = match[1].split(this.formatSeparator).map((elem) => elem.trim());
         match[1] = r.shift();
         formatters = r;
         doReduce = true;

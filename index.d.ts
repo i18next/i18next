@@ -689,7 +689,7 @@ export type Callback = (error: any, t: TFunction) => void;
  */
 export interface ExistsFunction<
   TKeys extends string = string,
-  TInterpolationMap extends object = StringMap
+  TInterpolationMap extends object = StringMap,
 > {
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
@@ -706,7 +706,7 @@ export interface TFunction {
   <
     TResult extends TFunctionResult = string,
     TKeys extends TFunctionKeys = string,
-    TInterpolationMap extends object = StringMap
+    TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
     options?: TOptions<TInterpolationMap> | string,
@@ -715,7 +715,7 @@ export interface TFunction {
   <
     TResult extends TFunctionResult = string,
     TKeys extends TFunctionKeys = string,
-    TInterpolationMap extends object = StringMap
+    TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
     defaultValue?: string,
