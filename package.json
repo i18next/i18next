@@ -91,15 +91,11 @@
     "build": "rimraf dist && rollup -c && cpy \"./dist/umd/*.js\" ./",
     "preversion": "npm run test && npm run build && git push",
     "postversion": "git push && git push --tags",
-    "prettier": "prettier --write \"{,**/}*.{ts,tsx,js,json,md}\""
+    "prettier": "prettier --write \"{,**/}*.{ts,tsx,js,json,md}\"",
+    "prepare": "husky install"
   },
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{ts,tsx,js,json,md}": "prettier --write"
   }
