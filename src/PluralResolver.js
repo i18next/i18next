@@ -140,23 +140,6 @@ class PluralResolver {
         .map(pluralCategory => `${this.options.prepend}${pluralCategory}`);
     }
 
-    /*
-      few
-      many
-      one
-      two
-      zero
-      other
-        |
-        v
-      0: zero
-      1: one
-      2: two
-      3: few
-      4: many
-      5: other
-    */
-
     return rule.numbers.map((number) => this.getSuffix(code, number));
   }
 
@@ -175,7 +158,7 @@ class PluralResolver {
     return '';
   }
 
-  getSuffixRetroCompatible(code, count) {
+  getSuffixRetroCompatible(rule, count) {
     const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
     let suffix = rule.numbers[idx];
 
