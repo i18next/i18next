@@ -2,218 +2,114 @@ import PluralResolver from '../src/PluralResolver';
 import LanguageUtils from '../src/LanguageUtils';
 
 describe('PluralResolver', () => {
+  describe('getRule()', () => {
+    let pr;
+
+    before(() => {
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, {});
+    });
+
+    it('correctly returns getRule for a supported locale', () => {
+      const expected = {
+        resolvedOptions: () => {},
+        select: () => {},
+      };
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
+        .returns(expected);
+
+      const locale = 'en';
+
+      expect(pr.getRule(locale)).to.deep.equal(expected);
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
+
+      pluralRulesStub.restore();
+    });
+
+    it('correctly returns getRule for an unsupported locale', () => {
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').throws();
+
+      const locale = 'en';
+
+      expect(pr.getRule(locale)).to.be.undefined;
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
+
+      pluralRulesStub.restore();
+    });
+  });
+
   describe('needsPlural()', () => {
     let pr;
 
     before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { simplifyPluralSuffix: true });
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, {});
     });
 
-    var tests = [
-      { args: ['en'], expected: true },
-      { args: ['fr'], expected: true },
-      { args: ['ar'], expected: true },
-      { args: ['ru'], expected: true },
-      { args: ['ms'], expected: false },
-      { args: ['lo'], expected: false },
-      { args: ['su'], expected: false },
-      { args: ['ach'], expected: true },
-      { args: ['af'], expected: true },
-      { args: ['ay'], expected: false },
-      { args: ['be'], expected: true },
-      { args: ['cs'], expected: true },
-      { args: ['csb'], expected: true },
-      { args: ['cy'], expected: true },
-      { args: ['ga'], expected: true },
-      { args: ['gd'], expected: true },
-      { args: ['is'], expected: true },
-      { args: ['jv'], expected: true },
-      { args: ['kw'], expected: true },
-      { args: ['lt'], expected: true },
-      { args: ['lv'], expected: true },
-      { args: ['mk'], expected: true },
-      { args: ['mnk'], expected: true },
-      { args: ['mt'], expected: true },
-      { args: ['or'], expected: true },
-      { args: ['ro'], expected: true },
-      { args: ['sl'], expected: true },
-      { args: ['he'], expected: true },
-    ];
+    it('correctly returns needsPlural for locale with more than one plural form', () => {
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
+        .returns({
+          resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+        });
 
-    tests.forEach((test) => {
-      it('correctly returns needsPlural for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(pr.needsPlural.apply(pr, test.args)).to.eql(test.expected);
-      });
+      const locale = 'en';
+
+      expect(pr.needsPlural(locale)).to.be.true;
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
+
+      pluralRulesStub.restore();
+    });
+
+    it('correctly returns needsPlural for locale with just one plural form', () => {
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
+        .returns({
+          resolvedOptions: () => ({ pluralCategories: ['other'] }),
+        });
+
+      const locale = 'ja';
+
+      expect(pr.needsPlural(locale)).to.be.false;
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
+
+      pluralRulesStub.restore();
     });
   });
 
   describe('getSuffix()', () => {
-    var cu, pr;
+    let pr;
 
     before(() => {
-      cu = new LanguageUtils({ fallbackCode: 'en' });
-      pr = new PluralResolver(cu, { simplifyPluralSuffix: true });
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, { prepend: '_' });
     });
 
-    var tests = [
-      { args: ['en', 0], expected: 'plural' },
-      { args: ['en', 1], expected: '' },
-      { args: ['en', 10], expected: 'plural' },
-      { args: ['en', 10.5], expected: 'plural' },
+    it('correctly returns suffix for a supported locale', () => {
+      const locale = 'en';
+      const count = 10.5;
+      const expected = 'other';
 
-      { args: ['fr', 0], expected: '' },
-      { args: ['fr', 1], expected: '' },
-      { args: ['fr', 10], expected: 'plural' },
-      { args: ['fr', 10.5], expected: 'plural' },
+      const selectStub = sinon.stub().returns(expected);
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
+        .returns({
+          select: selectStub,
+        });
 
-      { args: ['pt', 0], expected: '' },
-      { args: ['pt', 1], expected: '' },
-      { args: ['pt', 10], expected: 'plural' },
-      { args: ['pt', 10.5], expected: 'plural' },
+      expect(pr.getSuffix(locale, count)).to.equal(`_${expected}`);
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
+      expect(selectStub.calledOnceWith(count)).to.be.true;
 
-      { args: ['pt-PT', 0], expected: 'plural' },
-      { args: ['pt-PT', 1], expected: '' },
-      { args: ['pt-PT', 10], expected: 'plural' },
-      { args: ['pt-PT', 10.5], expected: 'plural' },
+      pluralRulesStub.restore();
+    });
 
-      { args: ['pt-BR', 0], expected: '' },
-      { args: ['pt-BR', 1], expected: '' },
-      { args: ['pt-BR', 10], expected: 'plural' },
-      { args: ['pt-BR', 10.5], expected: 'plural' },
+    it('correctly returns suffix for an unsupported locale', () => {
+      const locale = 'non-existent';
 
-      { args: ['ach', 0], expected: '' },
-      { args: ['ach', 1], expected: '' },
-      { args: ['ach', 10], expected: 'plural' },
-      { args: ['ach', 10.5], expected: 'plural' },
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').throws();
 
-      // only singular
-      { args: ['su', 0], expected: '0' },
-      { args: ['su', 1], expected: '0' },
-      { args: ['su', 10], expected: '0' },
+      expect(pr.getSuffix(locale, 10.5)).to.equal('');
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
 
-      // ar
-      { args: ['ar', 0], expected: '0' },
-      { args: ['ar', 1], expected: '1' },
-      { args: ['ar', 2], expected: '2' },
-      { args: ['ar', 3], expected: '3' },
-      { args: ['ar', 4], expected: '3' },
-      { args: ['ar', 104], expected: '3' },
-      { args: ['ar', 11], expected: '4' },
-      { args: ['ar', 99], expected: '4' },
-      { args: ['ar', 199], expected: '4' },
-      { args: ['ar', 100], expected: '5' },
-
-      // be
-      { args: ['be', 0], expected: '2' },
-      { args: ['be', 1], expected: '0' },
-      { args: ['be', 5], expected: '2' },
-
-      // sk
-      { args: ['sk', 0], expected: '2' },
-      { args: ['sk', 1], expected: '0' },
-      { args: ['sk', 5], expected: '2' },
-
-      // pl
-      { args: ['pl', 0], expected: '2' },
-      { args: ['pl', 1], expected: '0' },
-      { args: ['pl', 5], expected: '2' },
-
-      // cy
-      { args: ['cy', 0], expected: '2' },
-      { args: ['cy', 1], expected: '0' },
-      { args: ['cy', 3], expected: '2' },
-      { args: ['cy', 8], expected: '3' },
-
-      // ga
-      { args: ['ga', 1], expected: '0' },
-      { args: ['ga', 2], expected: '1' },
-      { args: ['ga', 3], expected: '2' },
-      { args: ['ga', 7], expected: '3' },
-      { args: ['ga', 11], expected: '4' },
-
-      // gd
-      { args: ['gd', 1], expected: '0' },
-      { args: ['gd', 2], expected: '1' },
-      { args: ['gd', 3], expected: '2' },
-      { args: ['gd', 20], expected: '3' },
-
-      // is
-      { args: ['is', 1], expected: '' },
-      { args: ['is', 2], expected: 'plural' },
-
-      // jv
-      { args: ['jv', 0], expected: '0' },
-      { args: ['jv', 1], expected: '1' },
-
-      // kw
-      { args: ['kw', 1], expected: '0' },
-      { args: ['kw', 2], expected: '1' },
-      { args: ['kw', 3], expected: '2' },
-      { args: ['kw', 4], expected: '3' },
-
-      // lt
-      { args: ['lt', 1], expected: '0' },
-      { args: ['lt', 2], expected: '1' },
-      { args: ['lt', 10], expected: '2' },
-
-      // lv
-      { args: ['lv', 1], expected: '0' },
-      { args: ['lv', 2], expected: '1' },
-      { args: ['lv', 0], expected: '2' },
-
-      // mk
-      { args: ['mk', 1], expected: '' },
-      { args: ['mk', 2], expected: 'plural' },
-      { args: ['mk', 0], expected: 'plural' },
-      { args: ['mk', 11], expected: 'plural' },
-      { args: ['mk', 21], expected: '' },
-      { args: ['mk', 31], expected: '' },
-      { args: ['mk', 311], expected: 'plural' },
-
-      // mnk
-      { args: ['mnk', 0], expected: '0' },
-      { args: ['mnk', 1], expected: '1' },
-      { args: ['mnk', 2], expected: '2' },
-
-      // mt
-      { args: ['mt', 1], expected: '0' },
-      { args: ['mt', 2], expected: '1' },
-      { args: ['mt', 11], expected: '2' },
-      { args: ['mt', 20], expected: '3' },
-
-      // or
-      { args: ['or', 2], expected: '1' },
-      { args: ['or', 1], expected: '0' },
-
-      // ro
-      { args: ['ro', 0], expected: '1' },
-      { args: ['ro', 1], expected: '0' },
-      { args: ['ro', 20], expected: '2' },
-
-      // sl
-      { args: ['sl', 5], expected: '0' },
-      { args: ['sl', 1], expected: '1' },
-      { args: ['sl', 2], expected: '2' },
-      { args: ['sl', 3], expected: '3' },
-
-      // he
-      { args: ['he', 0], expected: '3' },
-      { args: ['he', 0.5], expected: '3' },
-      { args: ['he', 1], expected: '0' },
-      { args: ['he', 2], expected: '1' },
-      { args: ['he', 3], expected: '3' },
-      { args: ['he', 20], expected: '2' },
-      { args: ['he', 21], expected: '3' },
-      { args: ['he', 30], expected: '2' },
-      { args: ['he', 100], expected: '2' },
-      { args: ['he', 101], expected: '3' },
-    ];
-
-    tests.forEach((test) => {
-      it('correctly returns suffix for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(pr.getSuffix.apply(pr, test.args)).to.eql(test.expected);
-      });
+      pluralRulesStub.restore();
     });
   });
 
@@ -221,45 +117,22 @@ describe('PluralResolver', () => {
     let pr;
 
     before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { simplifyPluralSuffix: true, prepend: '_' });
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, { prepend: '_' });
     });
 
-    var tests = [
-      { args: ['en', 'key'], expected: ['key', 'key_plural'] },
-      { args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5'] },
-    ];
+    it('correctly returns plural forms for a given key', () => {
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
+        .returns({
+          resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+        });
 
-    tests.forEach((test) => {
-      it(
-        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
-        () => {
-          expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
-        },
-      );
-    });
-  });
+      const locale = 'en';
 
-  describe('getPluralFormsOfKey() with nonSimplifiedPluralSuffix', () => {
-    let pr;
+      expect(pr.getPluralFormsOfKey(locale, 'key')).to.deep.equal(['key_one', 'key_other']);
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
 
-    before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { simplifyPluralSuffix: false, prepend: '_' });
-    });
-
-    var tests = [
-      { args: ['en', 'key'], expected: ['key_0', 'key_1'] },
-      { args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5'] },
-    ];
-
-    tests.forEach((test) => {
-      it(
-        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
-        () => {
-          expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
-        },
-      );
+      pluralRulesStub.restore();
     });
   });
 
@@ -267,23 +140,46 @@ describe('PluralResolver', () => {
     let pr;
 
     before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { simplifyPluralSuffix: true, prepend: '_' });
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
+      pr = new PluralResolver(lu, { prepend: '_' });
     });
 
-    var tests = [
-      { args: [], expected: [] },
-      { args: ['en'], expected: ['', '_plural'] },
-      { args: ['ar'], expected: ['_0', '_1', '_2', '_3', '_4', '_5'] },
+    it('correctly returns plural suffixes for a given key', () => {
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
+        .returns({
+          resolvedOptions: () => ({ pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'] }),
+        });
+
+      const locale = 'en';
+
+      expect(pr.getSuffixes(locale)).to.deep.equal(['_zero', '_one', '_two', '_few', '_many', '_other']);
+      expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
+
+      pluralRulesStub.restore();
+    });
+  });
+
+  describe('shouldUseIntlApi()', () => {
+    let lu;
+
+    before(() => {
+      lu = new LanguageUtils({ fallbackLng: 'en' });
+    });
+
+    const tests = [
+      { compatibilityJSON: 'v1', expected: false },
+      { compatibilityJSON: 'v2', expected: false },
+      { compatibilityJSON: 'v3', expected: false },
+      { compatibilityJSON: 'v4', expected: true },
+      { expected: true },
     ];
 
-    tests.forEach((test) => {
-      it(
-        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
-        () => {
-          expect(pr.getSuffixes.apply(pr, test.args)).to.eql(test.expected);
-        },
-      );
+    tests.forEach(({ compatibilityJSON, expected }) => {
+      it(`correctly returns shouldUseIntlApi for compatibilityJSON set to ${compatibilityJSON}`, () => {
+        const pr = new PluralResolver(lu, { compatibilityJSON });
+
+        expect(pr.shouldUseIntlApi()).to.equal(expected);
+      });
     });
   });
 });
