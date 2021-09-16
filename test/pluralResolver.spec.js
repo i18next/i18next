@@ -15,8 +15,7 @@ describe('PluralResolver', () => {
         resolvedOptions: () => {},
         select: () => {},
       };
-      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
-        .returns(expected);
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').returns(expected);
 
       const locale = 'en';
 
@@ -47,10 +46,9 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns needsPlural for locale with more than one plural form', () => {
-      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
-        .returns({
-          resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
-        });
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').returns({
+        resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+      });
 
       const locale = 'en';
 
@@ -61,10 +59,9 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns needsPlural for locale with just one plural form', () => {
-      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
-        .returns({
-          resolvedOptions: () => ({ pluralCategories: ['other'] }),
-        });
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').returns({
+        resolvedOptions: () => ({ pluralCategories: ['other'] }),
+      });
 
       const locale = 'ja';
 
@@ -89,10 +86,9 @@ describe('PluralResolver', () => {
       const expected = 'other';
 
       const selectStub = sinon.stub().returns(expected);
-      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
-        .returns({
-          select: selectStub,
-        });
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').returns({
+        select: selectStub,
+      });
 
       expect(pr.getSuffix(locale, count)).to.equal(`_${expected}`);
       expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
@@ -122,10 +118,9 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns plural forms for a given key', () => {
-      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
-        .returns({
-          resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
-        });
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').returns({
+        resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+      });
 
       const locale = 'en';
 
@@ -145,14 +140,22 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns plural suffixes for a given key', () => {
-      const pluralRulesStub = sinon.stub(Intl, 'PluralRules')
-        .returns({
-          resolvedOptions: () => ({ pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'] }),
-        });
+      const pluralRulesStub = sinon.stub(Intl, 'PluralRules').returns({
+        resolvedOptions: () => ({
+          pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'],
+        }),
+      });
 
       const locale = 'en';
 
-      expect(pr.getSuffixes(locale)).to.deep.equal(['_zero', '_one', '_two', '_few', '_many', '_other']);
+      expect(pr.getSuffixes(locale)).to.deep.equal([
+        '_zero',
+        '_one',
+        '_two',
+        '_few',
+        '_many',
+        '_other',
+      ]);
       expect(pluralRulesStub.calledOnceWith(locale)).to.be.true;
 
       pluralRulesStub.restore();
