@@ -2,13 +2,13 @@ import i18next from '../src/i18next.js';
 
 const instance = i18next.createInstance();
 
-describe('i18next.interpolation.nesting', () => {
+describe('i18next.interpolation.nesting (skipOnVariables: false)', () => {
   before(done => {
     instance.init(
       {
         lng: 'en',
         interpolation: {
-          skipOnVariables: true,
+          skipOnVariables: false,
         },
         resources: {
           en: {
@@ -50,29 +50,29 @@ describe('i18next.interpolation.nesting', () => {
       },
       {
         args: ['keyWithNestAndVar', { a: '$t(nested)' }],
-        expected: '$t(nested2) value $t(nested)',
+        expected: 'HI value nested stuff',
       },
       {
         args: ['key', { a: '{{nested}}' }],
-        expected: 'value {{nested}}',
+        expected: 'value ',
       },
       {
         args: ['key2', { a: '{{nested}}', b: 'something' }],
-        expected: 'value {{nested}} something',
+        expected: 'value  something',
       },
       {
         args: [
           '{{a}} {{w}} {{a}} {{other}}',
           { a: '{{b}}', b: 'c', w: 'normal', other: 'whatever' },
         ],
-        expected: '{{b}} normal {{b}} whatever',
+        expected: 'c normal c whatever',
       },
       {
         args: [
           '{{a}} {{w}} {{a}} {{other}}',
           { a: '     {{b}}', b: 'c', w: 'normal', other: 'whatever' },
         ],
-        expected: '     {{b}} normal      {{b}} whatever',
+        expected: '     c normal      c whatever',
       },
     ];
 

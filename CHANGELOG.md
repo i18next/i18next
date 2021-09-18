@@ -1,3 +1,10 @@
+### 21.0.0 (unreleased)
+
+**This is a major breaking release:**
+
+- introduce new v4 json format (intl plural forms)
+- `skipOnVariables` by default now is true
+
 ### 20.6.1
 
 - fix deepFind if looking for nesting array item

@@ -73,7 +73,7 @@ export function get() {
       // nestingSuffixEscaped: ')',
       // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
       maxReplaces: 1000, // max replaces to prevent endless loop
-      skipOnVariables: false,
+      skipOnVariables: true,
     },
   };
 }

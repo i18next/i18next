@@ -121,7 +121,7 @@ export interface InterpolationOptions {
    * If true, it will skip to interpolate the variables
    * @default false
    */
-  skipOnVariables?: boolean;
+  skipOnVariables?: true;
 }
 
 export interface ReactOptions {
