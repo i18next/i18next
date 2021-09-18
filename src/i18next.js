@@ -51,6 +51,9 @@ class I18n extends EventEmitter {
     }
     // end temporal backwards compatibility WHITELIST REMOVAL
 
+    if (typeof options.ns === 'string' && !options.defaultNS) {
+      options.defaultNS = options.ns;
+    }
 
     this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
 
