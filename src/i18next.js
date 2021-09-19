@@ -42,8 +42,12 @@ class I18n extends EventEmitter {
       options = {};
     }
 
-    if (typeof options.ns === 'string' && !options.defaultNS) {
-      options.defaultNS = options.ns;
+    if (!options.defaultNS && options.ns) {
+      if (typeof options.ns === 'string') {
+        options.defaultNS = options.ns;
+      } else {
+        options.defaultNS = options.ns[0];
+      }
     }
 
     this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
