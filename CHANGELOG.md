@@ -2,8 +2,9 @@
 
 **This is a major breaking release:**
 
-- introduce new v4 json format (intl plural forms)
+- introduce new v4 json format (intl plural forms), simplifyPluralSuffix not used anymore
 - `skipOnVariables` by default now is true
+- automatically detect natural language keys (no need to set nsSeparator or keySeparator to false)
 
 ### 20.6.1
 

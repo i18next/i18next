@@ -139,3 +139,15 @@ export const isIE10 =
   window.navigator &&
   window.navigator.userAgent &&
   window.navigator.userAgent.indexOf('MSIE') > -1;
+
+const chars = [' ', ',', '?', '!', ';'];
+export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
+  nsSeparator = nsSeparator || '';
+  keySeparator = keySeparator || '';
+  const possibleChars = chars.filter(
+    c => nsSeparator.indexOf(c) < 0 || keySeparator.indexOf(c) < 0,
+  );
+  if (possibleChars.length === 0) return true;
+  const r = new RegExp(`(${possibleChars.map(c => (c === '?' ? '\\?' : c)).join('|')})`);
+  return !r.test(key);
+}
