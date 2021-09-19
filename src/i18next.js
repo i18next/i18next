@@ -256,10 +256,25 @@ class I18n extends EventEmitter {
     const deferred = defer();
     this.emit('languageChanging', lng);
 
+    const setLngProps = (l) => {
+      this.language = l;
+      this.languages = this.services.languageUtils.toResolveHierarchy(l);
+      // find the first language resolved languaged
+      this.resolvedLanguage = undefined;
+      if (['cimode', 'dev'].indexOf(l) > -1) return;
+      for (let li = 0; li < this.languages.length; li++) {
+        const lngInLngs = this.languages[li];
+        if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+        if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+          this.resolvedLanguage = lngInLngs;
+          break;
+        }
+      }
+    };
+
     const done = (err, l) => {
       if (l) {
-        this.language = l;
-        this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        setLngProps(l);
         this.translator.changeLanguage(l);
         this.isLanguageChangingTo = undefined;
         this.emit('languageChanged', l);
@@ -280,8 +295,7 @@ class I18n extends EventEmitter {
 
       if (l) {
         if (!this.language) {
-          this.language = l;
-          this.languages = this.services.languageUtils.toResolveHierarchy(l);
+          setLngProps(l);
         }
         if (!this.translator.language) this.translator.changeLanguage(l);
 
@@ -353,7 +367,7 @@ class I18n extends EventEmitter {
       return false;
     }
 
-    const lng = this.languages[0];
+    const lng = this.resolvedLanguage || this.languages[0];
     const fallbackLng = this.options ? this.options.fallbackLng : false;
     const lastLng = this.languages[this.languages.length - 1];
 
@@ -427,7 +441,7 @@ class I18n extends EventEmitter {
   }
 
   dir(lng) {
-    if (!lng) lng = this.languages && this.languages.length > 0 ? this.languages[0] : this.language;
+    if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
     if (!lng) return 'rtl';
 
     const rtlLngs = [
@@ -507,7 +521,7 @@ class I18n extends EventEmitter {
   cloneInstance(options = {}, callback = noop) {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
-    const membersToCopy = ['store', 'services', 'language'];
+    const membersToCopy = ['store', 'services', 'language', 'resolvedLanguage'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];
     });
@@ -533,7 +547,8 @@ class I18n extends EventEmitter {
       options: this.options,
       store: this.store,
       language: this.language,
-      languages: this.languages
+      languages: this.languages,
+      resolvedLanguage: this.resolvedLanguage
     };
   }
 }

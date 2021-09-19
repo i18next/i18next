@@ -6,6 +6,7 @@
 - `skipOnVariables` by default now is true
 - automatically detect natural language keys (no need to set nsSeparator or keySeparator to false)
 - remove deprecated whitelist features
+- introduce new i18next.resolvedLanguage property
 
 ### 20.6.1
 

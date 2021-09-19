@@ -177,9 +177,88 @@ describe('i18next', () => {
             },
             language: 'en',
             languages: ['en', 'dev'],
+            resolvedLanguage: 'en',
           }),
         );
         done();
+      });
+    });
+  });
+
+  describe('language properties', () => {
+    let newInstance;
+    before(done => {
+      newInstance = i18next.createInstance({
+        fallbackLng: 'en',
+        resources: {
+          en: {
+            translation: {
+              key: 'value in en',
+            },
+          },
+          de: {
+            translation: {
+              key: 'value in de',
+            },
+          },
+          fr: {
+            translation: {},
+          },
+        },
+      });
+      newInstance.init({}, done);
+    });
+
+    describe('after init', () => {
+      it('it should have the appropriate language properties', () => {
+        expect(newInstance).to.have.property('language', 'en');
+        expect(newInstance).to.have.property('languages');
+        expect(newInstance.languages).to.have.lengthOf(1);
+        expect(newInstance.languages[0]).to.equal('en');
+        expect(newInstance).to.have.property('resolvedLanguage', 'en');
+      });
+    });
+
+    describe('after changeLanguage with a non available language', () => {
+      before(() => {
+        newInstance.changeLanguage('it');
+      });
+      it('it should have the appropriate language properties', () => {
+        expect(newInstance).to.have.property('language', 'it');
+        expect(newInstance).to.have.property('languages');
+        expect(newInstance.languages).to.have.lengthOf(2);
+        expect(newInstance.languages[0]).to.equal('it');
+        expect(newInstance.languages[1]).to.equal('en');
+        expect(newInstance).to.have.property('resolvedLanguage', 'en');
+      });
+    });
+
+    describe('after changeLanguage with a region specific language', () => {
+      before(() => {
+        newInstance.changeLanguage('de-CH');
+      });
+      it('it should have the appropriate language properties', () => {
+        expect(newInstance).to.have.property('language', 'de-CH');
+        expect(newInstance).to.have.property('languages');
+        expect(newInstance.languages).to.have.lengthOf(3);
+        expect(newInstance.languages[0]).to.equal('de-CH');
+        expect(newInstance.languages[1]).to.equal('de');
+        expect(newInstance.languages[2]).to.equal('en');
+        expect(newInstance).to.have.property('resolvedLanguage', 'de');
+      });
+    });
+
+    describe('after changeLanguage with an empty loaded language', () => {
+      before(() => {
+        newInstance.changeLanguage('fr');
+      });
+      it('it should have the appropriate language properties', () => {
+        expect(newInstance).to.have.property('language', 'fr');
+        expect(newInstance).to.have.property('languages');
+        expect(newInstance.languages).to.have.lengthOf(2);
+        expect(newInstance.languages[0]).to.equal('fr');
+        expect(newInstance.languages[1]).to.equal('en');
+        expect(newInstance).to.have.property('resolvedLanguage', 'en');
       });
     });
   });
