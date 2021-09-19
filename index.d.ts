@@ -249,18 +249,6 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
   fallbackLng?: false | FallbackLng;
 
   /**
-   * DEPRECATED use supportedLngs
-   * @default false
-   */
-  whitelist?: false | readonly string[];
-
-  /**
-   * DEPRECTADED use nonExplicitSupportedLngs
-   * @default false
-   */
-  nonExplicitWhitelist?: boolean;
-
-  /**
    * Array of allowed languages
    * @default false
    */

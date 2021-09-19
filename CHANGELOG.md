@@ -5,6 +5,7 @@
 - introduce new v4 json format (intl plural forms), simplifyPluralSuffix not used anymore
 - `skipOnVariables` by default now is true
 - automatically detect natural language keys (no need to set nsSeparator or keySeparator to false)
+- remove deprecated whitelist features
 
 ### 20.6.1
 

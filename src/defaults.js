@@ -8,11 +8,6 @@ export function get() {
     fallbackLng: ['dev'],
     fallbackNS: false, // string or array of namespaces
 
-    // temporal backwards compatibility WHITELIST REMOVAL
-    whitelist: false, // array with supported languages
-    nonExplicitWhitelist: false,
-    // end temporal backwards compatibility WHITELIST REMOVAL
-
     supportedLngs: false, // array with supported languages
     nonExplicitSupportedLngs: false,
     load: 'all', // | currentOnly | languageOnly
@@ -84,20 +79,6 @@ export function transformOptions(options) {
   if (typeof options.ns === 'string') options.ns = [options.ns];
   if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
   if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
-
-  // temporal backwards compatibility WHITELIST REMOVAL
-  if (options.whitelist) {
-    if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-      options.whitelist = options.whitelist.concat(['cimode']);
-    }
-
-    options.supportedLngs = options.whitelist;
-  }
-
-  if (options.nonExplicitWhitelist) {
-    options.nonExplicitSupportedLngs = options.nonExplicitWhitelist;
-  }
-  // end temporal backwards compatibility WHITELIST REMOVAL
 
   // extend supportedLngs with cimode
   if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
