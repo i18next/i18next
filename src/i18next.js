@@ -521,7 +521,7 @@ class I18n extends EventEmitter {
   cloneInstance(options = {}, callback = noop) {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
-    const membersToCopy = ['store', 'services', 'language', 'resolvedLanguage'];
+    const membersToCopy = ['store', 'services', 'language'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];
     });
