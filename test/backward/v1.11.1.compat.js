@@ -4,7 +4,7 @@
 // https://www.i18next.com
 // import i18n from '../../i18next.js';
 import i18n from '../../src/i18next.js';
-import XHR from 'i18next-xhr-backend';
+import HttpApi from 'i18next-http-backend';
 import Cache from 'i18next-localstorage-cache';
 import sprintf from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -30,12 +30,12 @@ i18n.functions = {
   extend: extend,
 };
 
-let xhr = new XHR();
+let httpApi = new HttpApi();
 
 let cache = new Cache();
 cache.debouncedStore = cache.store; // store without debounce
 
-i18n.use(xhr).use(cache).use(new LanguageDetector()).use(sprintf);
+i18n.use(httpApi).use(cache).use(new LanguageDetector()).use(sprintf);
 
 compat.appendBackwardsAPI(i18n);
 
@@ -443,7 +443,7 @@ describe('i18next', function () {
           var spy;
 
           beforeEach(function (done) {
-            spy = sinon.spy(xhr, 'read');
+            spy = sinon.spy(httpApi, 'read');
             i18n.init(
               i18n.functions.extend(opts, {
                 load: 'current',
@@ -473,7 +473,7 @@ describe('i18next', function () {
           var spy;
 
           beforeEach(function (done) {
-            spy = sinon.spy(xhr, 'read');
+            spy = sinon.spy(httpApi, 'read');
             i18n.init(
               i18n.functions.extend(opts, {
                 load: 'unspecific',
@@ -508,7 +508,7 @@ describe('i18next', function () {
         var spy;
 
         beforeEach(function (done) {
-          spy = sinon.spy(xhr, 'read');
+          spy = sinon.spy(httpApi, 'read');
           i18n.init(
             i18n.functions.extend(opts, {
               fallbackLng: false,
@@ -538,7 +538,7 @@ describe('i18next', function () {
         var spy;
 
         beforeEach(function (done) {
-          spy = sinon.spy(xhr, 'read');
+          spy = sinon.spy(httpApi, 'read');
           i18n.init(
             i18n.functions.extend(opts, {
               preload: ['fr', 'de-DE'],
@@ -751,7 +751,7 @@ describe('i18next', function () {
                     },
                   }),
                   function (err, t) {
-                    spy = sinon.spy(xhr, 'create');
+                    spy = sinon.spy(httpApi, 'create');
                     t('ns.common:notExisting');
                     done();
                   },
@@ -843,7 +843,7 @@ describe('i18next', function () {
           //     });
           //
           //     beforeEach(function(done) {
-          //       spy = sinon.spy(xhr, 'read');
+          //       spy = sinon.spy(httpApi, 'read');
           //       i18n.init(i18n.functions.extend(opts, {
           //         useLocalStorage: true
           //       }), function(t) {
@@ -895,7 +895,7 @@ describe('i18next', function () {
       //   });
       //
       //   beforeEach(function(done) {
-      //     spy = sinon.spy(xhr, 'read');
+      //     spy = sinon.spy(httpApi, 'read');
       //     i18n.init(i18n.functions.extend(opts, {
       //       useLocalStorage: true
       //     }), function(t) { done(); });
@@ -1129,7 +1129,7 @@ describe('i18next', function () {
       var spy;
 
       beforeEach(function (done) {
-        spy = sinon.spy(xhr, 'read');
+        spy = sinon.spy(httpApi, 'read');
         i18n.init(opts, function (t) {
           done();
         });
@@ -1232,7 +1232,7 @@ describe('i18next', function () {
 
         beforeEach(function (done) {
           server = sinon.fakeServer.create();
-          spy = sinon.spy(xhr, 'create');
+          spy = sinon.spy(httpApi, 'create');
           //spy = sinon.spy(i18n.services.backendConnector, 'saveMissing');
 
           server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
@@ -1324,7 +1324,7 @@ describe('i18next', function () {
 
         beforeEach(function (done) {
           server = sinon.fakeServer.create();
-          spy = sinon.stub(xhr, 'create');
+          spy = sinon.stub(httpApi, 'create');
 
           server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
 
@@ -1370,7 +1370,7 @@ describe('i18next', function () {
 
         beforeEach(function (done) {
           server = sinon.fakeServer.create();
-          spy = sinon.spy(xhr, 'create');
+          spy = sinon.spy(httpApi, 'create');
 
           server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
 

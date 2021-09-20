@@ -121,7 +121,7 @@ export interface InterpolationOptions {
    * If true, it will skip to interpolate the variables
    * @default false
    */
-  skipOnVariables?: boolean;
+  skipOnVariables?: true;
 }
 
 export interface ReactOptions {
@@ -247,18 +247,6 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * @default 'dev'
    */
   fallbackLng?: false | FallbackLng;
-
-  /**
-   * DEPRECATED use supportedLngs
-   * @default false
-   */
-  whitelist?: false | readonly string[];
-
-  /**
-   * DEPRECTADED use nonExplicitSupportedLngs
-   * @default false
-   */
-  nonExplicitWhitelist?: boolean;
 
   /**
    * Array of allowed languages
@@ -973,6 +961,12 @@ export interface i18n {
    * Is set to an array of language-codes that will be used it order to lookup the translation value.
    */
   languages: readonly string[];
+
+  /**
+   * Is set to the current resolved language.
+   * It can be used as primary used language, for example in a language switcher.
+   */
+  resolvedLanguage: string;
 
   /**
    * Loads additional namespaces not defined in init options.
