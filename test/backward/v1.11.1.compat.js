@@ -4,7 +4,7 @@
 // https://www.i18next.com
 // import i18n from '../../i18next.js';
 import i18n from '../../src/i18next.js';
-import XHR from 'i18next-xhr-backend';
+import HttpApi from 'i18next-http-backend';
 import Cache from 'i18next-localstorage-cache';
 import sprintf from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -30,13 +30,13 @@ i18n.functions = {
   extend: extend,
 };
 
-let xhr = new XHR();
+let httpApi = new HttpApi();
 
 let cache = new Cache();
 cache.debouncedStore = cache.store; // store without debounce
 
 i18n
-  .use(xhr)
+  .use(httpApi)
   .use(cache)
   .use(new LanguageDetector())
   .use(sprintf);
@@ -135,9 +135,9 @@ describe('i18next', function() {
       });
 
       it('it should provide passed in resources for translation', function() {
-        expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-        expect(i18n.t('simple_en')).to.be('ok_from_en');
-        expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+        expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+        expect(i18n.t('simple_en')).to.equal('ok_from_en');
+        expect(i18n.t('simple_dev')).to.equal('ok_from_dev');
       });
     });
 
@@ -150,13 +150,13 @@ describe('i18next', function() {
         });
 
         it('it should provide loaded resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
-          expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+          expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.equal('ok_from_en');
+          expect(i18n.t('simple_dev')).to.equal('ok_from_dev');
 
-          expect(i18n.t('xhr_simple_en-US')).to.be('xhr_ok_from_en-US');
-          expect(i18n.t('xhr_simple_en')).to.be('xhr_ok_from_en');
-          expect(i18n.t('xhr_simple_dev')).to.be('xhr_ok_from_dev');
+          expect(i18n.t('xhr_simple_en-US')).to.equal('xhr_ok_from_en-US');
+          expect(i18n.t('xhr_simple_en')).to.equal('xhr_ok_from_en');
+          expect(i18n.t('xhr_simple_dev')).to.equal('xhr_ok_from_dev');
         });
       });
     });
@@ -179,9 +179,9 @@ describe('i18next', function() {
         });
 
         it('it should provide passed in resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
-          expect(i18n.t('simple_dev1')).to.be('ok_from_dev1');
+          expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.equal('ok_from_en');
+          expect(i18n.t('simple_dev1')).to.equal('ok_from_dev1');
         });
       });
 
@@ -203,13 +203,13 @@ describe('i18next', function() {
         });
 
         it('it should provide passed in resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
+          expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.equal('ok_from_en');
           // in one
-          expect(i18n.t('simple_dev1')).to.be('ok_from_dev1');
-          expect(i18n.t('simple_dev2')).to.be('ok_from_dev2');
+          expect(i18n.t('simple_dev1')).to.equal('ok_from_dev1');
+          expect(i18n.t('simple_dev2')).to.equal('ok_from_dev2');
           // in both
-          expect(i18n.t('simple_dev')).to.be('ok_from_dev1');
+          expect(i18n.t('simple_dev')).to.equal('ok_from_dev1');
         });
       });
 
@@ -229,7 +229,7 @@ describe('i18next', function() {
           });
 
           it('it should provide passed in resources for translation', function() {
-            expect(i18n.t('some.deep.thing')).to.be('ok_from_en-US');
+            expect(i18n.t('some.deep.thing')).to.equal('ok_from_en-US');
           });
 
           describe('multiple resources', function() {
@@ -244,8 +244,8 @@ describe('i18next', function() {
             });
 
             it('it should add the new namespace to the namespace array', function() {
-              expect(i18n.t('some.other.deep.thing')).to.be('ok_from_en-US_1');
-              expect(i18n.t('some.other.deep.deeper.thing')).to.be('ok_from_en-US_2');
+              expect(i18n.t('some.other.deep.thing')).to.equal('ok_from_en-US_1');
+              expect(i18n.t('some.other.deep.deeper.thing')).to.equal('ok_from_en-US_2');
             });
           });
         });
@@ -259,9 +259,9 @@ describe('i18next', function() {
           });
 
           it('it should provide passed in resources for translation', function() {
-            expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-            expect(i18n.t('simple_en')).to.be('ok_from_en');
-            expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+            expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+            expect(i18n.t('simple_en')).to.equal('ok_from_en');
+            expect(i18n.t('simple_dev')).to.equal('ok_from_dev');
           });
 
           describe('with a additional namespace', function() {
@@ -308,12 +308,12 @@ describe('i18next', function() {
             });
 
             it('it should add the new namespace to the namespace array', function() {
-              expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
-              expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+              expect(i18n.t('deep.simple_en-US_1')).to.equal('ok_from_en-US_1');
+              expect(i18n.t('deep.simple_en-US_2')).to.equal('ok_from_en-US_2');
             });
 
             it('it should not overwrite any existing entries if the overwrite switch is off', function() {
-              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3');
+              expect(i18n.t('deep.simple_en-US_3')).to.equal('ok_from_en-US_3');
             });
           });
 
@@ -347,12 +347,12 @@ describe('i18next', function() {
             });
 
             it('it should add the new namespace to the namespace array', function() {
-              expect(i18n.t('deep.simple_en-US_1')).to.be('ok_from_en-US_1');
-              expect(i18n.t('deep.simple_en-US_2')).to.be('ok_from_en-US_2');
+              expect(i18n.t('deep.simple_en-US_1')).to.equal('ok_from_en-US_1');
+              expect(i18n.t('deep.simple_en-US_2')).to.equal('ok_from_en-US_2');
             });
 
             it('it should overwrite any existing entries if the overwrite switch is on', function() {
-              expect(i18n.t('deep.simple_en-US_3')).to.be('ok_from_en-US_3-overwrite');
+              expect(i18n.t('deep.simple_en-US_3')).to.equal('ok_from_en-US_3-overwrite');
             });
           });
 
@@ -373,11 +373,11 @@ describe('i18next', function() {
             });
 
             it('it should return true for existing bundle', function() {
-              expect(i18n.hasResourceBundle('en-US', 'translation')).to.be.ok();
+              expect(i18n.hasResourceBundle('en-US', 'translation')).to.be.true;
             });
 
             it('it should return false for non-existing bundle', function() {
-              expect(i18n.hasResourceBundle('de-CH', 'translation')).to.not.be.ok();
+              expect(i18n.hasResourceBundle('de-CH', 'translation')).to.not.be.true;
             });
           });
         });
@@ -400,26 +400,26 @@ describe('i18next', function() {
           var devTranslation = i18n.getResourceBundle('dev', 'translation');
           var enTranslation = i18n.getResourceBundle('en', 'translation');
           var enUSTranslation = i18n.getResourceBundle('en-US', 'translation');
-          expect(devTranslation.test).to.be('ok_from_dev');
-          expect(enTranslation.test).to.be('ok_from_en');
-          expect(enUSTranslation.test).to.be('ok_from_en-US');
+          expect(devTranslation.test).to.equal('ok_from_dev');
+          expect(enTranslation.test).to.equal('ok_from_en');
+          expect(enUSTranslation.test).to.equal('ok_from_en-US');
         });
 
         it('it should return empty object for non-existing bundle', function() {
           var nonExisting = i18n.getResourceBundle('en-GB', 'translation');
-          expect(Object.keys(nonExisting).length).to.be(0);
+          expect(Object.keys(nonExisting).length).to.equal(0);
         });
 
         it('it should use default namespace when namespace argument is left out', function() {
           var enTranslation = i18n.getResourceBundle('en');
-          expect(enTranslation.test).to.be('ok_from_en');
+          expect(enTranslation.test).to.equal('ok_from_en');
         });
 
         it('it should return a clone of the resources', function() {
           var enTranslation = i18n.getResourceBundle('en');
           enTranslation.test = 'ok_from_en_changed';
-          expect(enTranslation.test).to.be('ok_from_en_changed');
-          expect(resStore.en.translation.test).to.be('ok_from_en');
+          expect(enTranslation.test).to.equal('ok_from_en_changed');
+          expect(resStore.en.translation.test).to.equal('ok_from_en');
         });
       });
 
@@ -438,7 +438,7 @@ describe('i18next', function() {
         });
 
         it('it should remove resources', function() {
-          expect(i18n.t('test')).to.be('ok_from_en');
+          expect(i18n.t('test')).to.equal('ok_from_en');
         });
       });
 
@@ -447,7 +447,7 @@ describe('i18next', function() {
           var spy;
 
           beforeEach(function(done) {
-            spy = sinon.spy(xhr, 'read');
+            spy = sinon.spy(httpApi, 'read');
             i18n.init(
               i18n.functions.extend(opts, {
                 load: 'current',
@@ -463,13 +463,13 @@ describe('i18next', function() {
           });
 
           it('it should load only current and fallback language', function() {
-            expect(spy.callCount).to.be(2); // en-US, en
+            expect(spy.callCount).to.equal(2); // en-US, en
           });
 
           it('it should provide loaded resources for translation', function() {
-            expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-            expect(i18n.t('simple_en')).not.to.be('ok_from_en');
-            expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+            expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+            expect(i18n.t('simple_en')).not.to.equal('ok_from_en');
+            expect(i18n.t('simple_dev')).to.equal('ok_from_dev');
           });
         });
 
@@ -477,7 +477,7 @@ describe('i18next', function() {
           var spy;
 
           beforeEach(function(done) {
-            spy = sinon.spy(xhr, 'read');
+            spy = sinon.spy(httpApi, 'read');
             i18n.init(
               i18n.functions.extend(opts, {
                 load: 'unspecific',
@@ -493,17 +493,17 @@ describe('i18next', function() {
           });
 
           it('it should load only unspecific and fallback language', function() {
-            expect(spy.callCount).to.be(2); // en-US, en
+            expect(spy.callCount).to.equal(2); // en-US, en
           });
 
           it('it should provide loaded resources for translation', function() {
-            expect(i18n.t('simple_en-US')).not.to.be('ok_from_en-US');
-            expect(i18n.t('simple_en')).to.be('ok_from_en');
-            expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+            expect(i18n.t('simple_en-US')).not.to.equal('ok_from_en-US');
+            expect(i18n.t('simple_en')).to.equal('ok_from_en');
+            expect(i18n.t('simple_dev')).to.equal('ok_from_dev');
           });
 
           it('it should return unspecific language', function() {
-            expect(i18n.lng()).to.be('en');
+            expect(i18n.lng()).to.equal('en');
           });
         });
       });
@@ -512,7 +512,7 @@ describe('i18next', function() {
         var spy;
 
         beforeEach(function(done) {
-          spy = sinon.spy(xhr, 'read');
+          spy = sinon.spy(httpApi, 'read');
           i18n.init(
             i18n.functions.extend(opts, {
               fallbackLng: false,
@@ -528,13 +528,13 @@ describe('i18next', function() {
         });
 
         it('it should load only specific and unspecific languages', function() {
-          expect(spy.callCount).to.be(2); // en-US, en
+          expect(spy.callCount).to.equal(2); // en-US, en
         });
 
         it('it should provide loaded resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
-          expect(i18n.t('simple_dev')).not.to.be('ok_from_dev');
+          expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.equal('ok_from_en');
+          expect(i18n.t('simple_dev')).not.to.equal('ok_from_dev');
         });
       });
 
@@ -542,7 +542,7 @@ describe('i18next', function() {
         var spy;
 
         beforeEach(function(done) {
-          spy = sinon.spy(xhr, 'read');
+          spy = sinon.spy(httpApi, 'read');
           i18n.init(
             i18n.functions.extend(opts, {
               preload: ['fr', 'de-DE'],
@@ -558,7 +558,7 @@ describe('i18next', function() {
         });
 
         it('it should load additional languages', function() {
-          expect(spy.callCount).to.be(6); // en-US, en, de-DE, de, fr, dev
+          expect(spy.callCount).to.equal(6); // en-US, en, de-DE, de, fr, dev
         });
 
         describe('changing the language', function() {
@@ -571,7 +571,7 @@ describe('i18next', function() {
           });
 
           it('it should not reload the preloaded languages', function() {
-            expect(spy.callCount).to.be(0); // de-DE the missing one
+            expect(spy.callCount).to.equal(0); // de-DE the missing one
           });
         });
       });
@@ -582,9 +582,9 @@ describe('i18next', function() {
         });
 
         it('it should provide loaded resources for translation', function() {
-          expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
-          expect(i18n.t('simple_en')).to.be('ok_from_en');
-          expect(i18n.t('simple_dev')).to.be('ok_from_dev');
+          expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
+          expect(i18n.t('simple_en')).to.equal('ok_from_en');
+          expect(i18n.t('simple_dev')).to.equal('ok_from_dev');
         });
       });
 
@@ -597,9 +597,9 @@ describe('i18next', function() {
           });
 
           it('it should provide loaded resources for translation', function() {
-            expect(i18n.t('simple_en-US')).to.be('ok_from_special_en-US');
-            expect(i18n.t('simple_en')).to.be('ok_from_special_en');
-            expect(i18n.t('simple_dev')).to.be('ok_from_special_dev');
+            expect(i18n.t('simple_en-US')).to.equal('ok_from_special_en-US');
+            expect(i18n.t('simple_en')).to.equal('ok_from_special_en');
+            expect(i18n.t('simple_dev')).to.equal('ok_from_special_dev');
           });
         });
 
@@ -617,19 +617,19 @@ describe('i18next', function() {
 
           it('it should provide loaded resources for translation', function() {
             // default ns
-            expect(i18n.t('simple_en-US')).to.be('ok_from_special_en-US');
-            expect(i18n.t('simple_en')).to.be('ok_from_special_en');
-            expect(i18n.t('simple_dev')).to.be('ok_from_special_dev');
+            expect(i18n.t('simple_en-US')).to.equal('ok_from_special_en-US');
+            expect(i18n.t('simple_en')).to.equal('ok_from_special_en');
+            expect(i18n.t('simple_dev')).to.equal('ok_from_special_dev');
 
             // ns prefix
-            expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_common_en-US');
-            expect(i18n.t('ns.common:simple_en')).to.be('ok_from_common_en');
-            expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_common_dev');
+            expect(i18n.t('ns.common:simple_en-US')).to.equal('ok_from_common_en-US');
+            expect(i18n.t('ns.common:simple_en')).to.equal('ok_from_common_en');
+            expect(i18n.t('ns.common:simple_dev')).to.equal('ok_from_common_dev');
 
             // ns in options
-            expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_common_en-US');
-            expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_common_en');
-            expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_common_dev');
+            expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.equal('ok_from_common_en-US');
+            expect(i18n.t('simple_en', { ns: 'ns.common' })).to.equal('ok_from_common_en');
+            expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.equal('ok_from_common_dev');
           });
 
           describe('and fallbacking to default namespace', function() {
@@ -654,14 +654,14 @@ describe('i18next', function() {
 
             it('it should fallback to default ns', function() {
               // default ns fallback lookup
-              expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_en-US');
-              expect(i18n.t('ns.common:simple_en')).to.be('ok_from_en');
-              expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_dev');
+              expect(i18n.t('ns.common:simple_en-US')).to.equal('ok_from_en-US');
+              expect(i18n.t('ns.common:simple_en')).to.equal('ok_from_en');
+              expect(i18n.t('ns.common:simple_dev')).to.equal('ok_from_dev');
 
               // ns in options
-              expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_en-US');
-              expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_en');
-              expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_dev');
+              expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.equal('ok_from_en-US');
+              expect(i18n.t('simple_en', { ns: 'ns.common' })).to.equal('ok_from_en');
+              expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.equal('ok_from_dev');
             });
           });
 
@@ -692,7 +692,7 @@ describe('i18next', function() {
             });
 
             it('it should fallback to set fallback namespace', function() {
-              expect(i18n.t('ns.common:simple_fallback')).to.be('ok_from_fallback');
+              expect(i18n.t('ns.common:simple_fallback')).to.equal('ok_from_fallback');
             });
           });
 
@@ -733,11 +733,11 @@ describe('i18next', function() {
             });
 
             it('it should fallback to set fallback namespace', function() {
-              expect(i18n.t('ns.common:simple_fallback')).to.be(
+              expect(i18n.t('ns.common:simple_fallback')).to.equal(
                 'ok_from_fallback1',
               ); /* first wins */
-              expect(i18n.t('ns.common:simple_fallback1')).to.be('ok_from_fallback1');
-              expect(i18n.t('ns.common:simple_fallback2')).to.be('ok_from_fallback2');
+              expect(i18n.t('ns.common:simple_fallback1')).to.equal('ok_from_fallback1');
+              expect(i18n.t('ns.common:simple_fallback2')).to.equal('ok_from_fallback2');
             });
 
             describe('and post missing', function() {
@@ -755,7 +755,7 @@ describe('i18next', function() {
                     },
                   }),
                   function(err, t) {
-                    spy = sinon.spy(xhr, 'create');
+                    spy = sinon.spy(httpApi, 'create');
                     t('ns.common:notExisting');
                     done();
                   },
@@ -767,11 +767,11 @@ describe('i18next', function() {
               });
 
               it('it should post only to origin namespace', function() {
-                expect(spy.callCount).to.be(1);
-                expect(spy.args[0][0][0]).to.be('en-US');
-                expect(spy.args[0][1]).to.be('ns.common');
-                expect(spy.args[0][2]).to.be('notExisting');
-                expect(spy.args[0][3]).to.be('notExisting');
+                expect(spy.callCount).to.equal(1);
+                expect(spy.args[0][0][0]).to.equal('en-US');
+                expect(spy.args[0][1]).to.equal('ns.common');
+                expect(spy.args[0][2]).to.equal('notExisting');
+                expect(spy.args[0][3]).to.equal('notExisting');
               });
             });
           });
@@ -788,19 +788,19 @@ describe('i18next', function() {
 
             it('it should provide loaded resources for translation', function() {
               // default ns
-              expect(i18n.t('simple_en-US')).to.be('ok_from_special_en-US');
-              expect(i18n.t('simple_en')).to.be('ok_from_special_en');
-              expect(i18n.t('simple_dev')).to.be('ok_from_special_dev');
+              expect(i18n.t('simple_en-US')).to.equal('ok_from_special_en-US');
+              expect(i18n.t('simple_en')).to.equal('ok_from_special_en');
+              expect(i18n.t('simple_dev')).to.equal('ok_from_special_dev');
 
               // ns prefix
-              expect(i18n.t('ns.common:simple_en-US')).to.be('ok_from_common_en-US');
-              expect(i18n.t('ns.common:simple_en')).to.be('ok_from_common_en');
-              expect(i18n.t('ns.common:simple_dev')).to.be('ok_from_common_dev');
+              expect(i18n.t('ns.common:simple_en-US')).to.equal('ok_from_common_en-US');
+              expect(i18n.t('ns.common:simple_en')).to.equal('ok_from_common_en');
+              expect(i18n.t('ns.common:simple_dev')).to.equal('ok_from_common_dev');
 
               // ns in options
-              expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.be('ok_from_common_en-US');
-              expect(i18n.t('simple_en', { ns: 'ns.common' })).to.be('ok_from_common_en');
-              expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.be('ok_from_common_dev');
+              expect(i18n.t('simple_en-US', { ns: 'ns.common' })).to.equal('ok_from_common_en-US');
+              expect(i18n.t('simple_en', { ns: 'ns.common' })).to.equal('ok_from_common_en');
+              expect(i18n.t('simple_dev', { ns: 'ns.common' })).to.equal('ok_from_common_dev');
             });
 
             it('it should add the new namespaces to the namespace array', function() {
@@ -822,8 +822,8 @@ describe('i18next', function() {
               });
 
               it('it should fallback to default namespace', function() {
-                expect(i18n.t('ns.special:test.fallback_en')).to.be('ok_from_common_en-fallback');
-                expect(i18n.t('ns.special:test.fallback_dev')).to.be('ok_from_common_dev-fallback');
+                expect(i18n.t('ns.special:test.fallback_en')).to.equal('ok_from_common_en-fallback');
+                expect(i18n.t('ns.special:test.fallback_dev')).to.equal('ok_from_common_dev-fallback');
               });
             });
           });
@@ -843,7 +843,7 @@ describe('i18next', function() {
           //     });
           //
           //     beforeEach(function(done) {
-          //       spy = sinon.spy(xhr, 'read');
+          //       spy = sinon.spy(httpApi, 'read');
           //       i18n.init(i18n.functions.extend(opts, {
           //         useLocalStorage: true
           //       }), function(t) {
@@ -857,7 +857,7 @@ describe('i18next', function() {
           //     });
           //
           //     it('it should load language', function() {
-          //       expect(spy.callCount).to.be(9); // en-US, en, de-DE, de, fr, dev * 3 namespaces (translate, common, special)
+          //       expect(spy.callCount).to.equal(9); // en-US, en, de-DE, de, fr, dev * 3 namespaces (translate, common, special)
           //     });
           //
           //     describe('on later reload of namespaces', function() {
@@ -874,7 +874,7 @@ describe('i18next', function() {
           //       });
           //
           //       it('it should not reload language', function() {
-          //         expect(spy.callCount).to.be(0);
+          //         expect(spy.callCount).to.equal(0);
           //       });
           //
           //     });
@@ -895,7 +895,7 @@ describe('i18next', function() {
       //   });
       //
       //   beforeEach(function(done) {
-      //     spy = sinon.spy(xhr, 'read');
+      //     spy = sinon.spy(httpApi, 'read');
       //     i18n.init(i18n.functions.extend(opts, {
       //       useLocalStorage: true
       //     }), function(t) { done(); });
@@ -906,7 +906,7 @@ describe('i18next', function() {
       //   });
       //
       //   it('it should load language', function() {
-      //     expect(spy.callCount).to.be(3); // en-US, en, de-DE, de, fr, dev
+      //     expect(spy.callCount).to.equal(3); // en-US, en, de-DE, de, fr, dev
       //   });
       //
       //   describe('on later init', function() {
@@ -917,7 +917,7 @@ describe('i18next', function() {
       //     });
       //
       //     it('it should not reload language', function() {
-      //       expect(spy.callCount).to.be(0); // de-DE, de, fr, dev
+      //       expect(spy.callCount).to.equal(0); // de-DE, de, fr, dev
       //     });
       //
       //     describe('on later init - after caching duration', function() {
@@ -935,7 +935,7 @@ describe('i18next', function() {
       //       });
       //
       //       it('it should reload language', function() {
-      //         expect(spy.callCount).to.be(1); // de-DE, de, fr, dev
+      //         expect(spy.callCount).to.equal(1); // de-DE, de, fr, dev
       //       });
       //
       //     });
@@ -961,9 +961,9 @@ describe('i18next', function() {
         });
 
         it('it should provide loaded resources for translation', function() {
-          expect(cbT('simple_en-US')).to.be('ok_from_en-US');
-          expect(cbT('simple_en')).to.be('ok_from_en');
-          expect(cbT('simple_dev')).to.be('ok_from_dev');
+          expect(cbT('simple_en-US')).to.equal('ok_from_en-US');
+          expect(cbT('simple_en')).to.equal('ok_from_en');
+          expect(cbT('simple_dev')).to.equal('ok_from_dev');
         });
       });
 
@@ -984,11 +984,11 @@ describe('i18next', function() {
           });
 
           it('it should translate the uppercased lng value', function() {
-            expect(i18n.t('simple_en-US')).to.be('ok_from_en-US');
+            expect(i18n.t('simple_en-US')).to.equal('ok_from_en-US');
           });
 
           it('it should get uppercased set language', function() {
-            expect(i18n.lng()).to.be('en-US');
+            expect(i18n.lng()).to.equal('en-US');
           });
         });
 
@@ -1009,11 +1009,11 @@ describe('i18next', function() {
           });
 
           it('it should translate the lowercase lng value', function() {
-            expect(i18n.t('simple_en-us')).to.be('ok_from_en-us');
+            expect(i18n.t('simple_en-us')).to.equal('ok_from_en-us');
           });
 
           it('it should get lowercased set language', function() {
-            expect(i18n.lng()).to.be('en-us');
+            expect(i18n.lng()).to.equal('en-us');
           });
         });
       });
@@ -1034,8 +1034,8 @@ describe('i18next', function() {
               lng: 'en-US',
             }),
             function() {
-              expect(i18n.lng()).to.be('en');
-              expect(i18n.t('string_one')).to.be('good_en');
+              expect(i18n.lng()).to.equal('en');
+              expect(i18n.t('string_one')).to.equal('good_en');
               done();
             },
           );
@@ -1049,8 +1049,8 @@ describe('i18next', function() {
               lng: 'zh-CN',
             }),
             function() {
-              expect(i18n.lng()).to.be('zh-CN');
-              expect(i18n.t('string_one')).to.be('good_zh-CN');
+              expect(i18n.lng()).to.equal('zh-CN');
+              expect(i18n.t('string_one')).to.equal('good_zh-CN');
               done();
             },
           );
@@ -1075,10 +1075,10 @@ describe('i18next', function() {
       });
 
       it('it should provide resources for set language', function(done) {
-        expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
+        expect(i18n.t('simpleTest')).to.equal('ok_from_en-US');
 
         i18n.setLng('CIMode', function(err, t) {
-          expect(t('simpleTest')).to.be('simpleTest');
+          expect(t('simpleTest')).to.equal('simpleTest');
           done();
         });
       });
@@ -1100,24 +1100,24 @@ describe('i18next', function() {
       });
 
       it('it should provide resources for set language', function(done) {
-        expect(i18n.t('simpleTest')).to.be('ok_from_en-US');
+        expect(i18n.t('simpleTest')).to.equal('ok_from_en-US');
 
         i18n.setLng('de-DE', function(err, t) {
-          expect(t('simpleTest')).to.be('ok_from_de-DE');
+          expect(t('simpleTest')).to.equal('ok_from_de-DE');
           done();
         });
       });
 
       it('should be possible to call setLng multiple times to get specialized callbacks', function(done) {
         i18n.setLng('de-DE', { fixLng: true }, function(err, deDE) {
-          expect(deDE.lng).to.be('de-DE');
+          expect(deDE.lng).to.equal('de-DE');
 
           i18n.setLng('en-US', { fixLng: true }, function(err, enUS) {
-            expect(deDE.lng).to.be('de-DE');
-            expect(enUS.lng).to.be('en-US');
+            expect(deDE.lng).to.equal('de-DE');
+            expect(enUS.lng).to.equal('en-US');
 
-            expect(deDE('simpleTest')).to.be('ok_from_de-DE');
-            expect(enUS('simpleTest')).to.be('ok_from_en-US');
+            expect(deDE('simpleTest')).to.equal('ok_from_de-DE');
+            expect(enUS('simpleTest')).to.equal('ok_from_en-US');
 
             done();
           });
@@ -1129,7 +1129,7 @@ describe('i18next', function() {
       var spy;
 
       beforeEach(function(done) {
-        spy = sinon.spy(xhr, 'read');
+        spy = sinon.spy(httpApi, 'read');
         i18n.init(opts, function(t) {
           done();
         });
@@ -1143,7 +1143,7 @@ describe('i18next', function() {
         spy.resetHistory();
         //if (i18n.sync.resStore) i18n.sync.resStore = {}; // to reset for test on server!
         i18n.preload('de-DE', function(t) {
-          expect(spy.callCount).to.be(2); // de-DE, de
+          expect(spy.callCount).to.equal(2); // de-DE, de
           done();
         });
       });
@@ -1175,7 +1175,7 @@ describe('i18next', function() {
         });
 
         it('it should postprocess the translation by passing in postProcess name to t function', function() {
-          expect(i18n.t('simpleTest', { postProcess: 'myProcessor' })).to.be(
+          expect(i18n.t('simpleTest', { postProcess: 'myProcessor' })).to.equal(
             'ok_from_postprocessor',
           );
         });
@@ -1183,21 +1183,21 @@ describe('i18next', function() {
         it('it should postprocess on default value', function() {
           expect(
             i18n.t('notFound1', { defaultValue: 'defaultValue', postProcess: 'myProcessor2' }),
-          ).to.be('defaultValue ok');
+          ).to.equal('defaultValue ok');
         });
 
         it('it should postprocess on missing value', function() {
-          expect(i18n.t('notFound2', { postProcess: 'myProcessor2' })).to.be('notFound2 ok');
+          expect(i18n.t('notFound2', { postProcess: 'myProcessor2' })).to.equal('notFound2 ok');
         });
 
         it('it should postprocess with multiple post processors', function() {
-          expect(i18n.t('simpleTest', { postProcess: ['myProcessor', 'myProcessor2'] })).to.be(
+          expect(i18n.t('simpleTest', { postProcess: ['myProcessor', 'myProcessor2'] })).to.equal(
             'ok_from_postprocessor ok',
           );
         });
 
         it('it should postprocess on missing value with multiple post processes', function() {
-          expect(i18n.t('notFound2', { postProcess: ['myProcessor', 'myProcessor2'] })).to.be(
+          expect(i18n.t('notFound2', { postProcess: ['myProcessor', 'myProcessor2'] })).to.equal(
             'ok_from_postprocessor ok',
           );
         });
@@ -1220,7 +1220,7 @@ describe('i18next', function() {
           });
 
           it('it should postprocess the translation by default', function() {
-            expect(i18n.t('simpleTest')).to.be('ok_from_postprocessor');
+            expect(i18n.t('simpleTest')).to.equal('ok_from_postprocessor');
           });
         });
       });
@@ -1232,7 +1232,7 @@ describe('i18next', function() {
 
         beforeEach(function(done) {
           server = sinon.fakeServer.create();
-          spy = sinon.spy(xhr, 'create');
+          spy = sinon.spy(httpApi, 'create');
           //spy = sinon.spy(i18n.services.backendConnector, 'saveMissing');
 
           server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
@@ -1261,21 +1261,21 @@ describe('i18next', function() {
         it('it should post missing resource to server', function() {
           i18n.t('missing');
           server.respond();
-          expect(spy.calledOnce).to.be(true);
+          expect(spy.calledOnce).to.equal(true);
         });
 
         it('it should post missing resource to server when language is passed in', function() {
           i18n.t('missing_en', { lng: 'en' });
           server.respond();
-          expect(spy.calledOnce).to.be(true);
+          expect(spy.calledOnce).to.equal(true);
         });
 
         it('it should call with right arguments', function() {
           i18n.t('missing');
-          expect(spy.args[0][0][0]).to.be('en-US');
-          expect(spy.args[0][1]).to.be('translation');
-          expect(spy.args[0][2]).to.be('missing');
-          expect(spy.args[0][3]).to.be('missing');
+          expect(spy.args[0][0][0]).to.equal('en-US');
+          expect(spy.args[0][1]).to.equal('translation');
+          expect(spy.args[0][2]).to.equal('missing');
+          expect(spy.args[0][3]).to.equal('missing');
         });
 
         describe('with fallbackLng set to false', function() {
@@ -1301,20 +1301,20 @@ describe('i18next', function() {
           it('it should post missing resource to server', function() {
             i18n.t('missing');
             server.respond();
-            expect(spy.calledOnce).to.be(true);
+            expect(spy.calledOnce).to.equal(true);
           });
 
           it('it should call post missing with right arguments', function() {
             i18n.t('missing');
-            expect(spy.args[0][0][0]).to.be('de');
-            expect(spy.args[0][1]).to.be('translation');
-            expect(spy.args[0][2]).to.be('missing');
-            expect(spy.args[0][3]).to.be('missing');
+            expect(spy.args[0][0][0]).to.equal('de');
+            expect(spy.args[0][1]).to.equal('translation');
+            expect(spy.args[0][2]).to.equal('missing');
+            expect(spy.args[0][3]).to.equal('missing');
           });
 
           it.skip('[NOT EXPOSED] it should call ajax with right arguments', function() {
             i18n.t('missing');
-            expect(stub.args[0][0].url).to.be('locales/add/de/translation');
+            expect(stub.args[0][0].url).to.equal('locales/add/de/translation');
           });
         });
       });
@@ -1324,7 +1324,7 @@ describe('i18next', function() {
 
         beforeEach(function(done) {
           server = sinon.fakeServer.create();
-          spy = sinon.stub(xhr, 'create');
+          spy = sinon.stub(httpApi, 'create');
 
           server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
 
@@ -1353,15 +1353,15 @@ describe('i18next', function() {
         it('it should post missing resource for all lng to server', function() {
           i18n.t('missing');
           server.respond();
-          expect(spy.calledOnce).to.be(true);
+          expect(spy.calledOnce).to.equal(true);
         });
 
         it('it should call post missing with right arguments', function() {
           i18n.t('missing2');
-          expect(spy.args[0][0][0]).to.be('en-US');
-          expect(spy.args[0][1]).to.be('translation');
-          expect(spy.args[0][2]).to.be('missing2');
-          expect(spy.args[0][3]).to.be('missing2');
+          expect(spy.args[0][0][0]).to.equal('en-US');
+          expect(spy.args[0][1]).to.equal('translation');
+          expect(spy.args[0][2]).to.equal('missing2');
+          expect(spy.args[0][3]).to.equal('missing2');
         });
       });
 
@@ -1370,7 +1370,7 @@ describe('i18next', function() {
 
         beforeEach(function(done) {
           server = sinon.fakeServer.create();
-          spy = sinon.spy(xhr, 'create');
+          spy = sinon.spy(httpApi, 'create');
 
           server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
 
@@ -1398,15 +1398,15 @@ describe('i18next', function() {
         it('it should post missing resource for all lng to server', function() {
           i18n.t('missing');
           server.respond();
-          expect(spy.calledOnce).to.be(true);
+          expect(spy.calledOnce).to.equal(true);
         });
 
         it('it should call post missing with right arguments', function() {
           i18n.t('missing2');
           expect(spy.args[0][0]).to.eql(['en-US', 'en', 'dev']);
-          expect(spy.args[0][1]).to.be('translation');
-          expect(spy.args[0][2]).to.be('missing2');
-          expect(spy.args[0][3]).to.be('missing2');
+          expect(spy.args[0][1]).to.equal('translation');
+          expect(spy.args[0][2]).to.equal('missing2');
+          expect(spy.args[0][3]).to.equal('missing2');
         });
       });
     });
@@ -1430,7 +1430,7 @@ describe('i18next', function() {
       });
 
       it('it should apply objectTreeKeyHandler', function() {
-        expect(i18n.t('simpleTest')).to.be('a value');
+        expect(i18n.t('simpleTest')).to.equal('a value');
       });
     });
 
@@ -1441,7 +1441,7 @@ describe('i18next', function() {
         function() {
           window.i18n.noConflict();
 
-          expect(window.i18n.isFakeConflictingLib).to.be(true);
+          expect(window.i18n.isFakeConflictingLib).to.equal(true);
           expect(window.i18next).to.be.an(Object);
           expect(window.i18next.t).to.be.a(Function);
         },
@@ -1467,16 +1467,16 @@ describe('i18next', function() {
       });
 
       it('it should not break on null key', function() {
-        expect(i18n.t(null)).to.be('');
+        expect(i18n.t(null)).to.equal('');
       });
 
       it('it should not break on undefined key', function() {
-        expect(i18n.t(undefined)).to.be('');
+        expect(i18n.t(undefined)).to.equal('');
       });
 
       it('it should stringify first on number key', function() {
-        expect(i18n.t(1)).to.be(i18n.t('1'));
-        expect(i18n.t(1.1)).to.be(i18n.t('1.1'));
+        expect(i18n.t(1)).to.equal(i18n.t('1'));
+        expect(i18n.t(1.1)).to.equal(i18n.t('1.1'));
       });
     });
 
@@ -1494,20 +1494,20 @@ describe('i18next', function() {
       });
 
       it('it should return key', function() {
-        expect(i18n.t('missing')).to.be('translation:missing');
+        expect(i18n.t('missing')).to.equal('translation:missing');
       });
 
       it('it should return default value if set', function() {
-        expect(i18n.t('missing', { defaultValue: 'defaultOfMissing' })).to.be('defaultOfMissing');
+        expect(i18n.t('missing', { defaultValue: 'defaultOfMissing' })).to.equal('defaultOfMissing');
       });
 
       describe('with namespaces', function() {
         it('it should return key', function() {
-          expect(i18n.t('translate:missing')).to.be('translate:missing');
+          expect(i18n.t('translate:missing')).to.equal('translate:missing');
         });
 
         it('it should return default value if set', function() {
-          expect(i18n.t('translate:missing', { defaultValue: 'defaultOfMissing' })).to.be(
+          expect(i18n.t('translate:missing', { defaultValue: 'defaultOfMissing' })).to.equal(
             'defaultOfMissing',
           );
         });
@@ -1537,12 +1537,12 @@ describe('i18next', function() {
           });
 
           it('it should parse key', function() {
-            expect(i18n.t('translate:missing')).to.be('missing');
-            expect(i18n.t('translate:somenesting.missing')).to.be('missing');
+            expect(i18n.t('translate:missing')).to.equal('missing');
+            expect(i18n.t('translate:somenesting.missing')).to.equal('missing');
           });
 
           it('it should return default value if set', function() {
-            expect(i18n.t('translate:missing', { defaultValue: 'defaultOfMissing' })).to.be(
+            expect(i18n.t('translate:missing', { defaultValue: 'defaultOfMissing' })).to.equal(
               'defaultOfMissing',
             );
           });
@@ -1564,11 +1564,11 @@ describe('i18next', function() {
       });
 
       it('it should exist', function() {
-        expect(i18n.exists('iExist')).to.be(true);
+        expect(i18n.exists('iExist')).to.equal(true);
       });
 
       it('it should not exist', function() {
-        expect(i18n.exists('iDontExist')).to.be(false);
+        expect(i18n.exists('iDontExist')).to.equal(false);
       });
 
       describe('missing on unspecific', function() {
@@ -1585,11 +1585,11 @@ describe('i18next', function() {
         });
 
         it('it should exist', function() {
-          expect(i18n.exists('iExist')).to.be(true);
+          expect(i18n.exists('iExist')).to.equal(true);
         });
 
         it('it should not exist', function() {
-          expect(i18n.exists('iDontExist')).to.be(false);
+          expect(i18n.exists('iDontExist')).to.equal(false);
         });
       });
     });
@@ -1615,7 +1615,7 @@ describe('i18next', function() {
       });
 
       it('it should translate value', function() {
-        expect(i18n.t('key1')).to.be(null);
+        expect(i18n.t('key1')).to.equal(null);
         expect(i18n.t('key2')).to.eql({ key3: null });
       });
 
@@ -1636,7 +1636,7 @@ describe('i18next', function() {
         });
 
         it('it should translate to fallback value', function() {
-          expect(i18n.t('key1')).to.be('fallbackKey1');
+          expect(i18n.t('key1')).to.equal('fallbackKey1');
           expect(i18n.t('key2.key3')).to.eql('fallbackKey3');
         });
       });
@@ -1656,7 +1656,7 @@ describe('i18next', function() {
       });
 
       it('it should translate correctly', function() {
-        expect(i18n.t('empty')).to.be('');
+        expect(i18n.t('empty')).to.equal('');
       });
 
       describe('missing on unspecific', function() {
@@ -1673,7 +1673,7 @@ describe('i18next', function() {
         });
 
         it('it should translate correctly', function() {
-          expect(i18n.t('empty')).to.be('text');
+          expect(i18n.t('empty')).to.equal('text');
         });
       });
 
@@ -1691,7 +1691,7 @@ describe('i18next', function() {
         });
 
         it('it should translate correctly', function() {
-          expect(i18n.t('empty')).to.be('');
+          expect(i18n.t('empty')).to.equal('');
         });
       });
     });
@@ -1713,7 +1713,7 @@ describe('i18next', function() {
       });
 
       it('it should translate correctly', function() {
-        expect(i18n.t('empty')).to.be('translation:empty');
+        expect(i18n.t('empty')).to.equal('translation:empty');
       });
 
       describe('missing on unspecific', function() {
@@ -1733,7 +1733,7 @@ describe('i18next', function() {
         });
 
         it('it should translate correctly', function() {
-          expect(i18n.t('empty')).to.be('text');
+          expect(i18n.t('empty')).to.equal('text');
         });
       });
 
@@ -1754,7 +1754,7 @@ describe('i18next', function() {
         });
 
         it('it should translate correctly', function() {
-          expect(i18n.t('empty')).to.be('text');
+          expect(i18n.t('empty')).to.equal('text');
         });
       });
     });
@@ -1811,7 +1811,7 @@ describe('i18next', function() {
       });
 
       it('it should translate nested value', function() {
-        expect(i18n.t('testarray')).to.be('title\ntext');
+        expect(i18n.t('testarray')).to.equal('title\ntext');
       });
     });
 
@@ -1838,11 +1838,11 @@ describe('i18next', function() {
       });
 
       it('it should return nested string as usual', function() {
-        expect(i18n.t('test.simple_en-US')).to.be('ok_from_en-US');
+        expect(i18n.t('test.simple_en-US')).to.equal('ok_from_en-US');
       });
 
       it('it should not fail silently on accessing an objectTree', function() {
-        expect(i18n.t('test')).to.be("key 'test (en-US)' returned an object instead of string.");
+        expect(i18n.t('test')).to.equal("key 'test (en-US)' returned an object instead of string.");
       });
 
       describe('optional return an objectTree for UI components,...', function() {
@@ -1947,11 +1947,11 @@ describe('i18next', function() {
       });
 
       it('it should translate nested value', function() {
-        expect(i18n.t('nesting1')).to.be('1 2 3');
+        expect(i18n.t('nesting1')).to.equal('1 2 3');
       });
 
       it('it should apply nested value on defaultValue', function() {
-        expect(i18n.t('nesting_default', { defaultValue: '0 $t(nesting1)' })).to.be('0 1 2 3');
+        expect(i18n.t('nesting_default', { defaultValue: '0 $t(nesting1)' })).to.equal('0 1 2 3');
       });
 
       describe('resource nesting syntax error', function() {
@@ -1968,7 +1968,7 @@ describe('i18next', function() {
         });
 
         it.skip('[WONT FIX - FIX YOUR APPLICATION]it should translate nested value', function() {
-          expect(i18n.t('nesting1')).to.be('');
+          expect(i18n.t('nesting1')).to.equal('');
         });
       });
 
@@ -1995,8 +1995,8 @@ describe('i18next', function() {
         });
 
         it('it should translate nested value and set new options', function() {
-          expect(i18n.t('nesting1', { count: 2, girls: 3 })).to.be('3 girls and 2 boys');
-          expect(i18n.t('nesting1', { count: 1, girls: 3 })).to.be('3 girls and 1 boy');
+          expect(i18n.t('nesting1', { count: 2, girls: 3 })).to.equal('3 girls and 2 boys');
+          expect(i18n.t('nesting1', { count: 1, girls: 3 })).to.equal('3 girls and 1 boy');
         });
       });
     });
@@ -2022,7 +2022,7 @@ describe('i18next', function() {
       });
 
       it('it should translate nested value', function() {
-        expect(i18n.t('translation1:nesting1')).to.be('1 2 3');
+        expect(i18n.t('translation1:nesting1')).to.equal('1 2 3');
       });
     });
 
@@ -2048,47 +2048,47 @@ describe('i18next', function() {
         });
 
         it('it should replace passed in key/values', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: 'something' })).to.be('added something');
-          expect(i18n.t('interpolationTest1', { toAdd: null })).to.be('added ');
-          expect(i18n.t('interpolationTest1', {})).to.be('added ');
-          expect(i18n.t('interpolationTest2', { toAdd: 'something' })).to.be(
+          expect(i18n.t('interpolationTest1', { toAdd: 'something' })).to.equal('added something');
+          expect(i18n.t('interpolationTest1', { toAdd: null })).to.equal('added ');
+          expect(i18n.t('interpolationTest1', {})).to.equal('added ');
+          expect(i18n.t('interpolationTest2', { toAdd: 'something' })).to.equal(
             'added something something twice',
           );
-          expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2' } })).to.be(
+          expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2' } })).to.equal(
             'added 1 2',
           );
-          expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3' } } })).to.be(
+          expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3' } } })).to.equal(
             'added 3',
           );
         });
 
         it('it should replace passed in key/values in replace member', function() {
-          expect(i18n.t('interpolationTest1', { replace: { toAdd: 'something' } })).to.be(
+          expect(i18n.t('interpolationTest1', { replace: { toAdd: 'something' } })).to.equal(
             'added something',
           );
-          expect(i18n.t('interpolationTest2', { replace: { toAdd: 'something' } })).to.be(
+          expect(i18n.t('interpolationTest2', { replace: { toAdd: 'something' } })).to.equal(
             'added something something twice',
           );
           expect(
             i18n.t('interpolationTest3', { replace: { child: { one: '1', two: '2' } } }),
-          ).to.be('added 1 2');
+          ).to.equal('added 1 2');
           expect(
             i18n.t('interpolationTest4', { replace: { child: { grandChild: { three: '3' } } } }),
-          ).to.be('added 3');
+          ).to.equal('added 3');
         });
 
         it('it should not escape HTML', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: '<html>' })).to.be('added <html>');
+          expect(i18n.t('interpolationTest1', { toAdd: '<html>' })).to.equal('added <html>');
         });
 
         it('it should replace passed in key/values on defaultValue', function() {
           expect(
             i18n.t('interpolationTest5', { defaultValue: 'added __toAdd__', toAdd: 'something' }),
-          ).to.be('added something');
+          ).to.equal('added something');
         });
 
         it('it should escape dollar signs in replacement values', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: '$&' })).to.be('added $&');
+          expect(i18n.t('interpolationTest1', { toAdd: '$&' })).to.equal('added $&');
         });
       });
 
@@ -2120,14 +2120,14 @@ describe('i18next', function() {
         });
 
         it('it should replace passed in key/values', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: 'something' })).to.be('added something');
-          expect(i18n.t('interpolationTest2', { toAdd: 'something' })).to.be(
+          expect(i18n.t('interpolationTest1', { toAdd: 'something' })).to.equal('added something');
+          expect(i18n.t('interpolationTest2', { toAdd: 'something' })).to.equal(
             'added something something twice',
           );
-          expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2' } })).to.be(
+          expect(i18n.t('interpolationTest3', { child: { one: '1', two: '2' } })).to.equal(
             'added 1 2',
           );
-          expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3' } } })).to.be(
+          expect(i18n.t('interpolationTest4', { child: { grandChild: { three: '3' } } })).to.equal(
             'added 3',
           );
         });
@@ -2135,7 +2135,7 @@ describe('i18next', function() {
         it('it should replace passed in key/values on defaultValue', function() {
           expect(
             i18n.t('interpolationTest5', { defaultValue: 'added *toAdd*', toAdd: 'something' }),
-          ).to.be('added something');
+          ).to.equal('added something');
         });
       });
 
@@ -2173,35 +2173,35 @@ describe('i18next', function() {
               interpolationPrefix: '*',
               interpolationSuffix: '*',
             }),
-          ).to.be('added something');
+          ).to.equal('added something');
           expect(
             i18n.t('interpolationTest2', {
               toAdd: 'something',
               interpolationPrefix: '*',
               interpolationSuffix: '*',
             }),
-          ).to.be('added something something twice');
+          ).to.equal('added something something twice');
           expect(
             i18n.t('interpolationTest3', {
               child: { one: '1', two: '2' },
               interpolationPrefix: '*',
               interpolationSuffix: '*',
             }),
-          ).to.be('added 1 2');
+          ).to.equal('added 1 2');
           expect(
             i18n.t('interpolationTest4', {
               child: { grandChild: { three: '3' } },
               interpolationPrefix: '*',
               interpolationSuffix: '*',
             }),
-          ).to.be('added 3');
+          ).to.equal('added 3');
           expect(
             i18n.t('interpolationTest5', {
               count: 3,
               interpolationPrefix: '*',
               interpolationSuffix: '*',
             }),
-          ).to.be('added 3');
+          ).to.equal('added 3');
         });
 
         it('it should replace passed in key/values on defaultValue', function() {
@@ -2212,7 +2212,7 @@ describe('i18next', function() {
               interpolationPrefix: '*',
               interpolationSuffix: '*',
             }),
-          ).to.be('added something');
+          ).to.equal('added something');
         });
       });
 
@@ -2244,28 +2244,28 @@ describe('i18next', function() {
         });
 
         it('it should escape HTML', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: '<html>' })).to.be('added &lt;html&gt;');
+          expect(i18n.t('interpolationTest1', { toAdd: '<html>' })).to.equal('added &lt;html&gt;');
         });
 
         it('it should not escape when HTML is suffixed', function() {
-          expect(i18n.t('interpolationTest5', { toAdd: '<html>' })).to.be('added <html>');
-          expect(i18n.t('interpolationTest6', { child: { one: '<1>' } })).to.be('added <1>');
+          expect(i18n.t('interpolationTest5', { toAdd: '<html>' })).to.equal('added <html>');
+          expect(i18n.t('interpolationTest6', { child: { one: '<1>' } })).to.equal('added <1>');
         });
 
         it('it should support both escaping and not escaping HTML', function() {
           expect(
             i18n.t('interpolationTest7', { toAdd: '<html>', escapeInterpolation: true }),
-          ).to.be('added <html> &lt;html&gt;');
+          ).to.equal('added <html> &lt;html&gt;');
         });
 
         it('should not accept interpolations from inside interpolations', function() {
           expect(
             i18n.t('interpolationTest8', { toAdd1: '__toAdd2HTML__', toAdd2: '<html>' }),
-          ).to.be('added  &lt;html&gt;');
+          ).to.equal('added  &lt;html&gt;');
         });
 
         it('it should escape dollar signs in replacement values', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: '$&' })).to.be('added $&amp;');
+          expect(i18n.t('interpolationTest1', { toAdd: '$&' })).to.equal('added $&amp;');
         });
       });
 
@@ -2297,26 +2297,26 @@ describe('i18next', function() {
         it('it should escape HTML', function() {
           expect(
             i18n.t('interpolationTest1', { toAdd: '<html>', escapeInterpolation: true }),
-          ).to.be('added &lt;html&gt;');
+          ).to.equal('added &lt;html&gt;');
         });
 
         it('it should not escape when HTML is suffixed', function() {
           expect(
             i18n.t('interpolationTest5', { toAdd: '<html>', escapeInterpolation: true }),
-          ).to.be('added <html>');
+          ).to.equal('added <html>');
           expect(
             i18n.t('interpolationTest6', { child: { one: '<1>', escapeInterpolation: true } }),
-          ).to.be('added <1>');
+          ).to.equal('added <1>');
         });
 
         it('it should support both escaping and not escaping HTML', function() {
           expect(
             i18n.t('interpolationTest7', { toAdd: '<html>', escapeInterpolation: true }),
-          ).to.be('added <html> &lt;html&gt;');
+          ).to.equal('added <html> &lt;html&gt;');
         });
 
         it('it should escape dollar signs in replacement values', function() {
-          expect(i18n.t('interpolationTest1', { toAdd: '$&', escapeInterpolation: true })).to.be(
+          expect(i18n.t('interpolationTest1', { toAdd: '$&', escapeInterpolation: true })).to.equal(
             'added $&amp;',
           );
         });
@@ -2347,23 +2347,23 @@ describe('i18next', function() {
         it('it should replace passed in key/values', function() {
           expect(
             i18n.t('interpolationTest1', { postProcess: 'sprintf', sprintf: ['a', 'b', 'c', 'd'] }),
-          ).to.be('The first 4 letters of the english alphabet are: a, b, c and d');
+          ).to.equal('The first 4 letters of the english alphabet are: a, b, c and d');
           expect(
             i18n.t('interpolationTest2', {
               postProcess: 'sprintf',
               sprintf: { users: [{ name: 'Dolly' }, { name: 'Molly' }, { name: 'Polly' }] },
             }),
-          ).to.be('Hello Dolly, Molly and Polly');
+          ).to.equal('Hello Dolly, Molly and Polly');
         });
 
         it('it should recognize the sprintf syntax and automatically add the sprintf processor', function() {
-          expect(i18n.t('interpolationTest1', 'a', 'b', 'c', 'd')).to.be(
+          expect(i18n.t('interpolationTest1', 'a', 'b', 'c', 'd')).to.equal(
             'The first 4 letters of the english alphabet are: a, b, c and d',
           );
-          expect(i18n.t('interpolationTest3', 'z')).to.be(
+          expect(i18n.t('interpolationTest3', 'z')).to.equal(
             'The last letter of the english alphabet is z',
           );
-          expect(i18n.t('interpolationTest4', 0)).to.be('Water freezes at 0 degrees');
+          expect(i18n.t('interpolationTest4', 0)).to.equal('Water freezes at 0 degrees');
         });
       });
 
@@ -2381,11 +2381,11 @@ describe('i18next', function() {
         });
 
         it('it should use default variable', function() {
-          expect(i18n.t('Hello __name__')).to.be('Hello John');
+          expect(i18n.t('Hello __name__')).to.equal('Hello John');
         });
 
         it('it should replace default variable', function() {
-          expect(i18n.t('Hello __name__', { name: 'Ben' })).to.be('Hello Ben');
+          expect(i18n.t('Hello __name__', { name: 'Ben' })).to.equal('Hello Ben');
         });
       });
     });
@@ -2425,28 +2425,28 @@ describe('i18next', function() {
         });
 
         it('it should provide correct plural or singular form', function() {
-          expect(i18n.t('pluralTest', { count: 0 })).to.be('plural');
-          expect(i18n.t('pluralTest', { count: 1 })).to.be('singular');
-          expect(i18n.t('pluralTest', { count: 2 })).to.be('plural');
-          expect(i18n.t('pluralTest', { count: 7 })).to.be('plural');
+          expect(i18n.t('pluralTest', { count: 0 })).to.equal('plural');
+          expect(i18n.t('pluralTest', { count: 1 })).to.equal('singular');
+          expect(i18n.t('pluralTest', { count: 2 })).to.equal('plural');
+          expect(i18n.t('pluralTest', { count: 7 })).to.equal('plural');
         });
 
         it('it should provide correct plural or singular form with interpolation', function() {
-          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.be('0 items');
-          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.be('1 item');
-          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.be('7 items');
+          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.equal('0 items');
+          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.equal('1 item');
+          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.equal('7 items');
         });
 
         it('it should provide correct plural or singular form for second namespace', function() {
-          expect(i18n.t('ns.2:pluralTest', { count: 0 })).to.be('plural from ns.2');
-          expect(i18n.t('ns.2:pluralTest', { count: 1 })).to.be('singular from ns.2');
-          expect(i18n.t('ns.2:pluralTest', { count: 2 })).to.be('plural from ns.2');
-          expect(i18n.t('ns.2:pluralTest', { count: 7 })).to.be('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', { count: 0 })).to.equal('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', { count: 1 })).to.equal('singular from ns.2');
+          expect(i18n.t('ns.2:pluralTest', { count: 2 })).to.equal('plural from ns.2');
+          expect(i18n.t('ns.2:pluralTest', { count: 7 })).to.equal('plural from ns.2');
         });
 
         it('it should provide correct plural or singular form for second namespace with interpolation', function() {
-          expect(i18n.t('ns.2:pluralTestWithCount', { count: 1 })).to.be('1 item from ns.2');
-          expect(i18n.t('ns.2:pluralTestWithCount', { count: 7 })).to.be('7 items from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', { count: 1 })).to.equal('1 item from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', { count: 7 })).to.equal('7 items from ns.2');
         });
       });
 
@@ -2478,14 +2478,14 @@ describe('i18next', function() {
         });
 
         it('it should provide correct singular form', function() {
-          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.be('0 item');
-          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.be('1 item');
-          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.be('7 item');
+          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.equal('0 item');
+          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.equal('1 item');
+          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.equal('7 item');
         });
 
         it('it should provide correct singular form for second namespace', function() {
-          expect(i18n.t('ns.2:pluralTestWithCount', { count: 1 })).to.be('1 item from ns.2');
-          expect(i18n.t('ns.2:pluralTestWithCount', { count: 7 })).to.be('7 item from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', { count: 1 })).to.equal('1 item from ns.2');
+          expect(i18n.t('ns.2:pluralTestWithCount', { count: 7 })).to.equal('7 item from ns.2');
         });
       });
 
@@ -2559,16 +2559,16 @@ describe('i18next', function() {
         });
 
         it('it should provide correct plural or singular form', function() {
-          expect(i18n.t('pluralTest', { count: 0 })).to.be('plural');
-          expect(i18n.t('pluralTest', { count: 1 })).to.be('singular');
-          expect(i18n.t('pluralTest', { count: 2 })).to.be('plural');
-          expect(i18n.t('pluralTest', { count: 7 })).to.be('plural');
+          expect(i18n.t('pluralTest', { count: 0 })).to.equal('plural');
+          expect(i18n.t('pluralTest', { count: 1 })).to.equal('singular');
+          expect(i18n.t('pluralTest', { count: 2 })).to.equal('plural');
+          expect(i18n.t('pluralTest', { count: 7 })).to.equal('plural');
         });
 
         it('it should provide correct plural or singular form with count', function() {
-          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.be('0 items');
-          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.be('1 item');
-          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.be('7 items');
+          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.equal('0 items');
+          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.equal('1 item');
+          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.equal('7 items');
         });
       });
 
@@ -2607,16 +2607,16 @@ describe('i18next', function() {
         });
 
         it('it should provide correct plural or singular form', function() {
-          expect(i18n.t('pluralTest', { count: 0 })).to.be('singular');
-          expect(i18n.t('pluralTest', { count: 1 })).to.be('singular');
-          expect(i18n.t('pluralTest', { count: 2 })).to.be('plural');
-          expect(i18n.t('pluralTest', { count: 7 })).to.be('plural');
+          expect(i18n.t('pluralTest', { count: 0 })).to.equal('singular');
+          expect(i18n.t('pluralTest', { count: 1 })).to.equal('singular');
+          expect(i18n.t('pluralTest', { count: 2 })).to.equal('plural');
+          expect(i18n.t('pluralTest', { count: 7 })).to.equal('plural');
         });
 
         it('it should provide correct plural or singular form with count', function() {
-          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.be('0 item');
-          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.be('1 item');
-          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.be('7 items');
+          expect(i18n.t('pluralTestWithCount', { count: 0 })).to.equal('0 item');
+          expect(i18n.t('pluralTestWithCount', { count: 1 })).to.equal('1 item');
+          expect(i18n.t('pluralTestWithCount', { count: 7 })).to.equal('7 items');
         });
       });
 
@@ -2643,16 +2643,16 @@ describe('i18next', function() {
         });
 
         it('it should provide correct plural forms', function() {
-          expect(i18n.t('key', { count: 0 })).to.be('zero');
-          expect(i18n.t('key', { count: 1 })).to.be('singular');
-          expect(i18n.t('key', { count: 2 })).to.be('two');
-          expect(i18n.t('key', { count: 3 })).to.be('few');
-          expect(i18n.t('key', { count: 4 })).to.be('few');
-          expect(i18n.t('key', { count: 104 })).to.be('few');
-          expect(i18n.t('key', { count: 11 })).to.be('many');
-          expect(i18n.t('key', { count: 99 })).to.be('many');
-          expect(i18n.t('key', { count: 199 })).to.be('many');
-          expect(i18n.t('key', { count: 100 })).to.be('plural');
+          expect(i18n.t('key', { count: 0 })).to.equal('zero');
+          expect(i18n.t('key', { count: 1 })).to.equal('singular');
+          expect(i18n.t('key', { count: 2 })).to.equal('two');
+          expect(i18n.t('key', { count: 3 })).to.equal('few');
+          expect(i18n.t('key', { count: 4 })).to.equal('few');
+          expect(i18n.t('key', { count: 104 })).to.equal('few');
+          expect(i18n.t('key', { count: 11 })).to.equal('many');
+          expect(i18n.t('key', { count: 99 })).to.equal('many');
+          expect(i18n.t('key', { count: 199 })).to.equal('many');
+          expect(i18n.t('key', { count: 100 })).to.equal('plural');
         });
       });
 
@@ -2676,18 +2676,18 @@ describe('i18next', function() {
         });
 
         it('it should provide correct plural forms', function() {
-          expect(i18n.t('key', { count: 0 })).to.be('0,5,6');
-          expect(i18n.t('key', { count: 1 })).to.be('1,21,31');
-          expect(i18n.t('key', { count: 2 })).to.be('2,3,4');
-          expect(i18n.t('key', { count: 3 })).to.be('2,3,4');
-          expect(i18n.t('key', { count: 4 })).to.be('2,3,4');
-          expect(i18n.t('key', { count: 104 })).to.be('2,3,4');
-          expect(i18n.t('key', { count: 11 })).to.be('0,5,6');
-          expect(i18n.t('key', { count: 24 })).to.be('2,3,4');
-          expect(i18n.t('key', { count: 25 })).to.be('0,5,6');
-          expect(i18n.t('key', { count: 99 })).to.be('0,5,6');
-          expect(i18n.t('key', { count: 199 })).to.be('0,5,6');
-          expect(i18n.t('key', { count: 100 })).to.be('0,5,6');
+          expect(i18n.t('key', { count: 0 })).to.equal('0,5,6');
+          expect(i18n.t('key', { count: 1 })).to.equal('1,21,31');
+          expect(i18n.t('key', { count: 2 })).to.equal('2,3,4');
+          expect(i18n.t('key', { count: 3 })).to.equal('2,3,4');
+          expect(i18n.t('key', { count: 4 })).to.equal('2,3,4');
+          expect(i18n.t('key', { count: 104 })).to.equal('2,3,4');
+          expect(i18n.t('key', { count: 11 })).to.equal('0,5,6');
+          expect(i18n.t('key', { count: 24 })).to.equal('2,3,4');
+          expect(i18n.t('key', { count: 25 })).to.equal('0,5,6');
+          expect(i18n.t('key', { count: 99 })).to.equal('0,5,6');
+          expect(i18n.t('key', { count: 199 })).to.equal('0,5,6');
+          expect(i18n.t('key', { count: 100 })).to.equal('0,5,6');
         });
       });
 
@@ -2713,11 +2713,11 @@ describe('i18next', function() {
         });
 
         it('it should provide translation for passed in language with 1 item', function() {
-          expect(i18n.t('key', { lng: 'en', count: 1 })).to.be('singular_en');
+          expect(i18n.t('key', { lng: 'en', count: 1 })).to.equal('singular_en');
         });
 
         it('it should provide translation for passed in language with 2 items', function() {
-          expect(i18n.t('key', { lng: 'en', count: 2 })).to.be('plural_en');
+          expect(i18n.t('key', { lng: 'en', count: 2 })).to.equal('plural_en');
         });
       });
     });
@@ -2761,29 +2761,29 @@ describe('i18next', function() {
         });
 
         it('it should provide the indefinite article when requested for singular forms', function() {
-          expect(i18n.t('thing')).to.be('__count__ thing');
-          expect(i18n.t('thing', { indefinite_article: true })).to.be('A thing');
-          expect(i18n.t('thing', { count: 1 })).to.be('1 thing');
-          expect(i18n.t('thing', { count: 5 })).to.be('5 things');
-          expect(i18n.t('thing', { count: 1, indefinite_article: true })).to.be('A thing');
-          expect(i18n.t('thing', { count: 5, indefinite_article: true })).to.be('5 things');
+          expect(i18n.t('thing')).to.equal('__count__ thing');
+          expect(i18n.t('thing', { indefinite_article: true })).to.equal('A thing');
+          expect(i18n.t('thing', { count: 1 })).to.equal('1 thing');
+          expect(i18n.t('thing', { count: 5 })).to.equal('5 things');
+          expect(i18n.t('thing', { count: 1, indefinite_article: true })).to.equal('A thing');
+          expect(i18n.t('thing', { count: 5, indefinite_article: true })).to.equal('5 things');
         });
 
         it('it should provide the indefinite article when requested for singular forms for second namespace', function() {
-          expect(i18n.t('ns.2:thing', { count: 1 })).to.be('1 thing from ns.2');
-          expect(i18n.t('ns.2:thing', { count: 5 })).to.be('5 things from ns.2');
-          expect(i18n.t('ns.2:thing', { count: 1, indefinite_article: true })).to.be(
+          expect(i18n.t('ns.2:thing', { count: 1 })).to.equal('1 thing from ns.2');
+          expect(i18n.t('ns.2:thing', { count: 5 })).to.equal('5 things from ns.2');
+          expect(i18n.t('ns.2:thing', { count: 1, indefinite_article: true })).to.equal(
             'A thing from ns.2',
           );
-          expect(i18n.t('ns.2:thing', { count: 5, indefinite_article: true })).to.be(
+          expect(i18n.t('ns.2:thing', { count: 5, indefinite_article: true })).to.equal(
             'Some things from ns.2',
           );
         });
 
         it('it should provide the right indefinite translations from the third namespace', function() {
-          expect(i18n.t('ns.3:thing', { count: 5 })).to.be('5 things');
-          expect(i18n.t('ns.3:thing', { count: 1, indefinite_article: true })).to.be('A thing');
-          expect(i18n.t('ns.3:thing', { count: 5, indefinite_article: true })).to.be('Some things');
+          expect(i18n.t('ns.3:thing', { count: 5 })).to.equal('5 things');
+          expect(i18n.t('ns.3:thing', { count: 1, indefinite_article: true })).to.equal('A thing');
+          expect(i18n.t('ns.3:thing', { count: 5, indefinite_article: true })).to.equal('Some things');
         });
       });
 
@@ -2813,10 +2813,10 @@ describe('i18next', function() {
         });
 
         it('it should provide the correct indefinite articles', function() {
-          expect(i18n.t('key', { count: 1 })).to.be('1 thing');
-          expect(i18n.t('key', { count: 5 })).to.be('5 thing');
-          expect(i18n.t('key', { count: 1, indefinite_article: true })).to.be('a thing');
-          expect(i18n.t('key', { count: 5, indefinite_article: true })).to.be('a thing');
+          expect(i18n.t('key', { count: 1 })).to.equal('1 thing');
+          expect(i18n.t('key', { count: 5 })).to.equal('5 thing');
+          expect(i18n.t('key', { count: 1, indefinite_article: true })).to.equal('a thing');
+          expect(i18n.t('key', { count: 5, indefinite_article: true })).to.equal('a thing');
         });
       });
     });
@@ -2854,17 +2854,17 @@ describe('i18next', function() {
         });
 
         it('it should provide correct context form', function() {
-          expect(i18n.t('friend_context')).to.be('A friend');
-          expect(i18n.t('friend_context', { context: '' })).to.be('A friend');
-          expect(i18n.t('friend_context', { context: 'male' })).to.be('A boyfriend');
-          expect(i18n.t('friend_context', { context: 'female' })).to.be('A girlfriend');
+          expect(i18n.t('friend_context')).to.equal('A friend');
+          expect(i18n.t('friend_context', { context: '' })).to.equal('A friend');
+          expect(i18n.t('friend_context', { context: 'male' })).to.equal('A boyfriend');
+          expect(i18n.t('friend_context', { context: 'female' })).to.equal('A girlfriend');
         });
 
         it('it should provide correct context form for second namespace', function() {
-          expect(i18n.t('ns.2:friend_context')).to.be('A friend from ns2');
-          expect(i18n.t('ns.2:friend_context', { context: '' })).to.be('A friend from ns2');
-          expect(i18n.t('ns.2:friend_context', { context: 'male' })).to.be('A boyfriend from ns2');
-          expect(i18n.t('ns.2:friend_context', { context: 'female' })).to.be(
+          expect(i18n.t('ns.2:friend_context')).to.equal('A friend from ns2');
+          expect(i18n.t('ns.2:friend_context', { context: '' })).to.equal('A friend from ns2');
+          expect(i18n.t('ns.2:friend_context', { context: 'male' })).to.equal('A boyfriend from ns2');
+          expect(i18n.t('ns.2:friend_context', { context: 'female' })).to.equal(
             'A girlfriend from ns2',
           );
         });
@@ -2893,15 +2893,15 @@ describe('i18next', function() {
         });
 
         it('it should provide correct context with plural forms', function() {
-          expect(i18n.t('friend_context', { count: 1 })).to.be('1 friend');
-          expect(i18n.t('friend_context', { context: '', count: 1 })).to.be('1 friend');
-          expect(i18n.t('friend_context', { context: 'male', count: 1 })).to.be('1 boyfriend');
-          expect(i18n.t('friend_context', { context: 'female', count: 1 })).to.be('1 girlfriend');
+          expect(i18n.t('friend_context', { count: 1 })).to.equal('1 friend');
+          expect(i18n.t('friend_context', { context: '', count: 1 })).to.equal('1 friend');
+          expect(i18n.t('friend_context', { context: 'male', count: 1 })).to.equal('1 boyfriend');
+          expect(i18n.t('friend_context', { context: 'female', count: 1 })).to.equal('1 girlfriend');
 
-          expect(i18n.t('friend_context', { count: 10 })).to.be('10 friends');
-          expect(i18n.t('friend_context', { context: '', count: 10 })).to.be('10 friends');
-          expect(i18n.t('friend_context', { context: 'male', count: 10 })).to.be('10 boyfriends');
-          expect(i18n.t('friend_context', { context: 'female', count: 10 })).to.be(
+          expect(i18n.t('friend_context', { count: 10 })).to.equal('10 friends');
+          expect(i18n.t('friend_context', { context: '', count: 10 })).to.equal('10 friends');
+          expect(i18n.t('friend_context', { context: 'male', count: 10 })).to.equal('10 boyfriends');
+          expect(i18n.t('friend_context', { context: 'female', count: 10 })).to.equal(
             '10 girlfriends',
           );
         });
@@ -2921,13 +2921,13 @@ describe('i18next', function() {
       });
 
       it('it should provide translation for passed in language', function() {
-        expect(i18n.t('simple_de', { lng: 'de-DE' })).to.be('ok_from_de');
+        expect(i18n.t('simple_de', { lng: 'de-DE' })).to.equal('ok_from_de');
       });
 
       describe.skip('[WONT FIX - HARD DEPRECATION OF SYNC LOADING]with language not preloaded', function() {
         it('it should provide translation for passed in language after loading file sync', function() {
           var expectedValue = i18n.clientVersion ? 'simple_fr' : 'ok_from_fr';
-          expect(i18n.t('simple_fr', { lng: 'fr' })).to.be(expectedValue);
+          expect(i18n.t('simple_fr', { lng: 'fr' })).to.equal(expectedValue);
         });
       });
     });
@@ -2953,7 +2953,7 @@ describe('i18next', function() {
       });
 
       it('it should recognize the defaultValue syntax set as shortcutFunction', function() {
-        expect(i18n.t('notFound', 'second param defaultValue')).to.be('second param defaultValue');
+        expect(i18n.t('notFound', 'second param defaultValue')).to.equal('second param defaultValue');
       });
     });
   });
