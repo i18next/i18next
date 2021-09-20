@@ -64,6 +64,16 @@ let _rulesPluralsTypes = {
 };
 /* eslint-enable */
 
+const deprecatedJsonVersions = ['v1', 'v2', 'v3'];
+const suffixesOrder = {
+  zero: 0,
+  one: 1,
+  two: 2,
+  few: 3,
+  many: 4,
+  other: 5,
+};
+
 function createRules() {
   const rules = {};
   sets.forEach((set) => {
@@ -92,17 +102,29 @@ class PluralResolver {
   }
 
   getRule(code) {
+    if (this.shouldUseIntlApi()) {
+      try {
+        return new Intl.PluralRules(code);
+      } catch {
+        return;
+      }
+    }
+
     return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
   }
 
   needsPlural(code) {
     const rule = this.getRule(code);
 
+    if (this.shouldUseIntlApi()) {
+      return rule && rule.resolvedOptions().pluralCategories.length > 1;
+    }
+
     return rule && rule.numbers.length > 1;
   }
 
   getPluralFormsOfKey(code, key) {
-    return this.getSuffixes(code).map((suffix) => key + suffix)
+    return this.getSuffixes(code).map((suffix) => `${key}${suffix}`);
   }
 
   getSuffixes(code) {
@@ -112,47 +134,63 @@ class PluralResolver {
       return [];
     }
 
-    return rule.numbers.map((number) => this.getSuffix(code, number))
+    if (this.shouldUseIntlApi()) {
+      return rule.resolvedOptions().pluralCategories
+        .sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2])
+        .map(pluralCategory => `${this.options.prepend}${pluralCategory}`);
+    }
+
+    return rule.numbers.map((number) => this.getSuffix(code, number));
   }
 
   getSuffix(code, count) {
     const rule = this.getRule(code);
 
     if (rule) {
-      // if (rule.numbers.length === 1) return ''; // only singular
-
-      const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-      let suffix = rule.numbers[idx];
-
-      // special treatment for lngs only having singular and plural
-      if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-        if (suffix === 2) {
-          suffix = 'plural';
-        } else if (suffix === 1) {
-          suffix = '';
-        }
+      if (this.shouldUseIntlApi()) {
+        return `${this.options.prepend}${rule.select(count)}`;
       }
 
-      const returnSuffix = () => (
-        this.options.prepend && suffix.toString() ? this.options.prepend + suffix.toString() : suffix.toString()
-      );
-
-      // COMPATIBILITY JSON
-      // v1
-      if (this.options.compatibilityJSON === 'v1') {
-        if (suffix === 1) return '';
-        if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
-        return returnSuffix();
-      } else if (/* v2 */ this.options.compatibilityJSON === 'v2') {
-        return returnSuffix();
-      } else if (/* v3 - gettext index */ this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-        return returnSuffix();
-      }
-      return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
+      return this.getSuffixRetroCompatible(rule, count);
     }
 
     this.logger.warn(`no plural rule found for: ${code}`);
     return '';
+  }
+
+  getSuffixRetroCompatible(rule, count) {
+    const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
+    let suffix = rule.numbers[idx];
+
+    // special treatment for lngs only having singular and plural
+    if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      if (suffix === 2) {
+        suffix = 'plural';
+      } else if (suffix === 1) {
+        suffix = '';
+      }
+    }
+
+    const returnSuffix = () => (
+      this.options.prepend && suffix.toString() ? this.options.prepend + suffix.toString() : suffix.toString()
+    );
+
+    // COMPATIBILITY JSON
+    // v1
+    if (this.options.compatibilityJSON === 'v1') {
+      if (suffix === 1) return '';
+      if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
+      return returnSuffix();
+    } else if (/* v2 */ this.options.compatibilityJSON === 'v2') {
+      return returnSuffix();
+    } else if (/* v3 - gettext index */ this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
+      return returnSuffix();
+    }
+    return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
+  }
+
+  shouldUseIntlApi() {
+    return !deprecatedJsonVersions.includes(this.options.compatibilityJSON);
   }
 }
 

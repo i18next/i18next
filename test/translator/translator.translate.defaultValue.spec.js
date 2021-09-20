@@ -41,7 +41,7 @@ describe('Translator', () => {
       {
         args: [
           'translation:test',
-          { defaultValue_plural: 'test_en_plural', defaultValue: 'test_en', count: 10 },
+          { defaultValue_other: 'test_en_plural', defaultValue_one: 'test_en', count: 10 },
         ],
         expected: 'test_en_plural',
       },
