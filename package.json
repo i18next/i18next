@@ -70,7 +70,7 @@
     "lint-staged": "^11.1.2",
     "mocha": "9.1.1",
     "nyc": "^15.1.0",
-    "prettier": "^1.15.3",
+    "prettier": "^2.4.1",
     "rimraf": "2.5.4",
     "rollup": "^2.34.1",
     "rollup-plugin-terser": "^4.0.4",

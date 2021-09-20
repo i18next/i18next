@@ -119,7 +119,7 @@ export function appendBackwardsAPI(i18n) {
     return i18n.services.languageUtils.toResolveHierarchy(i18n.language)[0];
   };
 
-  i18n.hasLoadedNamespace = function() {
+  i18n.hasLoadedNamespace = function () {
     return true;
   };
 

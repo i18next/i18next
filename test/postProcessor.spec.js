@@ -13,7 +13,7 @@ describe('postProcessor', () => {
 
     var tests = [{ args: [['dummy'], 'test', 'key', {}, () => {}], expected: 'TEST' }];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly process for ' + JSON.stringify(test.args) + ' args', () => {
         expect(postProcessor.handle.apply(postProcessor, test.args)).to.eql(test.expected);
       });

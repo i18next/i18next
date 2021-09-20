@@ -26,7 +26,10 @@ describe('Translator', () => {
               foo: 'bar',
               nest: '$t(nestedArray)',
             },
-            nestedArray: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' }],
+            nestedArray: [
+              { a: 'b', c: 'd' },
+              { a: 'b', c: 'd' },
+            ],
           },
         },
       });
@@ -63,7 +66,16 @@ describe('Translator', () => {
       { args: ['test', { context: 'unknown', count: 2 }], expected: 'tests_en' },
       { args: ['test', { context: 'male', count: 1 }], expected: 'test_male_en' },
       { args: ['test', { context: 'male', count: 2 }], expected: 'tests_male_en' },
-      { args: ['nest'], expected: { foo: 'bar', nest: [{ a: 'b', c: 'd' }, { a: 'b', c: 'd' }] } },
+      {
+        args: ['nest'],
+        expected: {
+          foo: 'bar',
+          nest: [
+            { a: 'b', c: 'd' },
+            { a: 'b', c: 'd' },
+          ],
+        },
+      },
 
       // interpolation and nesting on defaultValue
       {
@@ -72,7 +84,7 @@ describe('Translator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });

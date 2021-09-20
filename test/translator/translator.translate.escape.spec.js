@@ -50,14 +50,14 @@ describe('Translator', () => {
           'translation:test',
           {
             var: ['a', 'b'],
-            interpolation: { useRawValueToEscape: true, escape: value => value.join('-') },
+            interpolation: { useRawValueToEscape: true, escape: (value) => value.join('-') },
           },
         ],
         expected: 'text a-b',
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });

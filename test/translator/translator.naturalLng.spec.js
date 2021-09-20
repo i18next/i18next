@@ -4,7 +4,7 @@ const instance = i18next.createInstance();
 
 describe('Translator', () => {
   describe('translate() with natural language', () => {
-    before(done => {
+    before((done) => {
       instance.init(
         {
           lng: 'en',
@@ -44,7 +44,7 @@ describe('Translator', () => {
       { args: ['test:anotherKey', { lng: 'en' }], expected: 'from other ns' },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly formats translations for ' + JSON.stringify(test.args), () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });

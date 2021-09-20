@@ -9,17 +9,17 @@ const Logger = {
     error: [],
   },
 
-  log: function(args) {
+  log: function (args) {
     this.entries.log.push(args[0]);
   },
-  warn: function(args) {
+  warn: function (args) {
     this.entries.warn.push(args[0]);
   },
-  error: function(args) {
+  error: function (args) {
     this.entries.error.push(args[0]);
   },
 
-  reset: function() {
+  reset: function () {
     this.entries = {
       log: [],
       warn: [],
@@ -66,7 +66,7 @@ describe('i18next', () => {
     });
 
     describe('called init() not detecting lng', () => {
-      it('it should ok - but warn about issue', done => {
+      it('it should ok - but warn about issue', (done) => {
         i18n.init({ debug: true, saveMissing: true }, (err, t) => {
           expect(i18n.isInitialized).to.be.ok;
 
@@ -85,7 +85,7 @@ describe('i18next', () => {
     });
 
     describe('called init() properly', () => {
-      before(done => {
+      before((done) => {
         i18n = i18n.cloneInstance({ debug: true, saveMissing: true, lng: 'en-US' }, () => {
           done();
         });
@@ -141,7 +141,7 @@ describe('i18next', () => {
     });
 
     describe('for a namespace failed loading', () => {
-      before(done => {
+      before((done) => {
         i18n.loadNamespaces('fail-ns', () => {
           done();
         });
@@ -154,7 +154,7 @@ describe('i18next', () => {
   });
 
   describe('for lng = cimode', () => {
-    before(done => {
+    before((done) => {
       i18n.changeLanguage('cimode', () => {
         done();
       });
@@ -172,7 +172,7 @@ describe('i18next', () => {
   describe('not having a backend', () => {
     const i18n2 = i18next.createInstance();
     i18n2.use(Logger);
-    before(done => {
+    before((done) => {
       i18n2.init(
         {
           debug: true,

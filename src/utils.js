@@ -21,7 +21,7 @@ export function makeString(object) {
 }
 
 export function copy(a, s, t) {
-  a.forEach(m => {
+  a.forEach((m) => {
     if (s[m]) t[m] = s[m];
   });
 }
@@ -128,7 +128,7 @@ var _entityMap = {
 
 export function escape(data) {
   if (typeof data === 'string') {
-    return data.replace(/[&<>"'\/]/g, s => _entityMap[s]);
+    return data.replace(/[&<>"'\/]/g, (s) => _entityMap[s]);
   }
 
   return data;
@@ -145,9 +145,9 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
   nsSeparator = nsSeparator || '';
   keySeparator = keySeparator || '';
   const possibleChars = chars.filter(
-    c => nsSeparator.indexOf(c) < 0 || keySeparator.indexOf(c) < 0,
+    (c) => nsSeparator.indexOf(c) < 0 || keySeparator.indexOf(c) < 0,
   );
   if (possibleChars.length === 0) return true;
-  const r = new RegExp(`(${possibleChars.map(c => (c === '?' ? '\\?' : c)).join('|')})`);
+  const r = new RegExp(`(${possibleChars.map((c) => (c === '?' ? '\\?' : c)).join('|')})`);
   return !r.test(key);
 }

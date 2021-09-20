@@ -3,7 +3,7 @@ import i18next from '../src/i18next.js';
 const instance = i18next.createInstance();
 
 describe('i18next.translation.formatting', () => {
-  before(done => {
+  before((done) => {
     instance.init(
       {
         lng: 'en',
@@ -33,7 +33,7 @@ describe('i18next.translation.formatting', () => {
           },
         },
         interpolation: {
-          format: function(value, format, lng, options) {
+          format: function (value, format, lng, options) {
             if (format === 'uppercase') return value.toUpperCase();
             if (format === 'lowercase') return value.toLowerCase();
             if (format === 'underscore') return value.replace(/\s+/g, '_');
@@ -113,7 +113,7 @@ describe('i18next.translation.formatting', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly formats translations for ' + JSON.stringify(test.args), () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
