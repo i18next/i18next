@@ -101,10 +101,10 @@ class PluralResolver {
     this.rules[lng] = obj;
   }
 
-  getRule(code) {
+  getRule(code, options = {}) {
     if (this.shouldUseIntlApi()) {
       try {
-        return new Intl.PluralRules(code);
+        return new Intl.PluralRules(code, { type: options.ordinal ? 'ordinal' : 'cardinal' });
       } catch {
         return;
       }
@@ -113,8 +113,8 @@ class PluralResolver {
     return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
   }
 
-  needsPlural(code) {
-    const rule = this.getRule(code);
+  needsPlural(code, options = {}) {
+    const rule = this.getRule(code, options);
 
     if (this.shouldUseIntlApi()) {
       return rule && rule.resolvedOptions().pluralCategories.length > 1;
@@ -123,12 +123,12 @@ class PluralResolver {
     return rule && rule.numbers.length > 1;
   }
 
-  getPluralFormsOfKey(code, key) {
-    return this.getSuffixes(code).map((suffix) => `${key}${suffix}`);
+  getPluralFormsOfKey(code, key, options = {}) {
+    return this.getSuffixes(code, options).map((suffix) => `${key}${suffix}`);
   }
 
-  getSuffixes(code) {
-    const rule = this.getRule(code);
+  getSuffixes(code, options = {}) {
+    const rule = this.getRule(code, options);
 
     if (!rule) {
       return [];
@@ -140,11 +140,11 @@ class PluralResolver {
         .map(pluralCategory => `${this.options.prepend}${pluralCategory}`);
     }
 
-    return rule.numbers.map((number) => this.getSuffix(code, number));
+    return rule.numbers.map((number) => this.getSuffix(code, number, options));
   }
 
-  getSuffix(code, count) {
-    const rule = this.getRule(code);
+  getSuffix(code, count, options = {}) {
+    const rule = this.getRule(code, options);
 
     if (rule) {
       if (this.shouldUseIntlApi()) {

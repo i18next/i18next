@@ -181,7 +181,7 @@ class Translator extends EventEmitter {
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const hasDefaultValue = Translator.hasDefaultValue(options);
       const defaultValueSuffix = needsPluralHandling
-        ? this.pluralResolver.getSuffix(lng, options.count)
+        ? this.pluralResolver.getSuffix(lng, options.count, options)
         : '';
       const defaultValue = options[`defaultValue${defaultValueSuffix}`] || options.defaultValue;
 
@@ -426,7 +426,7 @@ class Translator extends EventEmitter {
           } else {
             let pluralSuffix;
             if (needsPluralHandling)
-              pluralSuffix = this.pluralResolver.getSuffix(code, options.count);
+              pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
 
             // fallback for plural if context not found
             if (needsPluralHandling && needsContextHandling)
