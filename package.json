@@ -51,6 +51,7 @@
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-jsx-a11y": "4.0.0",
     "eslint-plugin-react": "6.9.0",
+    "gh-release": "6.0.1",
     "husky": "^7.0.2",
     "i18next-browser-languagedetector": "6.1.2",
     "i18next-http-backend": "^1.3.1",
@@ -90,9 +91,10 @@
     "tdd:compat": "karma start karma.backward.conf.js",
     "build": "rimraf dist && rollup -c && cpy \"./dist/umd/*.js\" ./",
     "preversion": "npm run test && npm run build && git push",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push && git push --tags && npm run release",
     "prettier": "prettier --write \"{,**/}*.{ts,tsx,js,json,md}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "gh-release"
   },
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT",
