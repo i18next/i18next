@@ -1,3 +1,7 @@
+### 21.0.1
+
+- fix typescript typo for skipOnVariables
+
 ### 21.0.0
 
 **This is a major breaking release:**
