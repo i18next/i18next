@@ -12,6 +12,8 @@
 - remove deprecated whitelist features
 - introduce new i18next.resolvedLanguage property
 
+➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v-20-x-x-to-v-21-0-0)
+
 ## 20.6.1
 
 - fix deepFind if looking for nesting array item
