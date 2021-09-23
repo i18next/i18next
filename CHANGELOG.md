@@ -1,3 +1,7 @@
+## 21.0.2
+
+- fix defaultNS regression if translation namespace is defined in ns option, fixes #1658
+
 ## 21.0.1
 
 - fix typescript typo for skipOnVariables

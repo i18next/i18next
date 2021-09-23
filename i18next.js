@@ -2078,7 +2078,7 @@
         if (!options.defaultNS && options.ns) {
           if (typeof options.ns === 'string') {
             options.defaultNS = options.ns;
-          } else {
+          } else if (options.ns.indexOf('translation') < 0) {
             options.defaultNS = options.ns[0];
           }
         }
