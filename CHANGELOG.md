@@ -1,3 +1,7 @@
+## 21.1.0
+
+- A new RTL support added for `ckb` language code
+
 ## 21.0.2
 
 - fix defaultNS regression if translation namespace is defined in ns option, fixes #1658

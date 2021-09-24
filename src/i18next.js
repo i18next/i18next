@@ -510,6 +510,7 @@ class I18n extends EventEmitter {
       'prs',
       'dv',
       'sam',
+      'ckb'
     ];
 
     return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0
