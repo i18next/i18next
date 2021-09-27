@@ -13,6 +13,10 @@ describe('Translator', () => {
             en: {
               translation: {
                 'test: with a sentence. or more text': 'test_en',
+                errorCodes: {
+                  UNAUTHORIZED: 'Unauthorized',
+                  'BAD REQUEST': 'Bad request',
+                },
               },
               test: {
                 anotherKey: 'from other ns',
@@ -42,6 +46,10 @@ describe('Translator', () => {
       { args: ['test: with a sentence. or more text', { lng: 'fr' }], expected: 'test_en' },
       { args: ['test: with a sentence. or more text', { lng: 'en-US' }], expected: 'test_en' },
       { args: ['test:anotherKey', { lng: 'en' }], expected: 'from other ns' },
+      { args: ['errorCodes.UNAUTHORIZED', { lng: 'en' }], expected: 'Unauthorized' },
+      { args: ['errorCodes.BAD REQUEST', { lng: 'en' }], expected: 'Bad request' },
+      { args: ['translation:errorCodes.UNAUTHORIZED', { lng: 'en' }], expected: 'Unauthorized' },
+      { args: ['translation:errorCodes.BAD REQUEST', { lng: 'en' }], expected: 'Bad request' },
     ];
 
     tests.forEach((test) => {

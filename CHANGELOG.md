@@ -1,3 +1,7 @@
+## 21.1.1
+
+- optimize natural language detection [1661](https://github.com/i18next/i18next/issues/1661)
+
 ## 21.1.0
 
 - A new RTL support added for `ckb` language code

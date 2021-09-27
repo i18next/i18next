@@ -145,9 +145,16 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
   nsSeparator = nsSeparator || '';
   keySeparator = keySeparator || '';
   const possibleChars = chars.filter(
-    (c) => nsSeparator.indexOf(c) < 0 || keySeparator.indexOf(c) < 0,
+    (c) => nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0,
   );
   if (possibleChars.length === 0) return true;
   const r = new RegExp(`(${possibleChars.map((c) => (c === '?' ? '\\?' : c)).join('|')})`);
-  return !r.test(key);
+  let matched = !r.test(key);
+  if (!matched) {
+    const ki = key.indexOf(keySeparator);
+    if (ki > 0 && !r.test(key.substring(0, ki))) {
+      matched = true;
+    }
+  }
+  return matched;
 }
