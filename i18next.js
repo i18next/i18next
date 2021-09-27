@@ -406,13 +406,23 @@
     nsSeparator = nsSeparator || '';
     keySeparator = keySeparator || '';
     var possibleChars = chars.filter(function (c) {
-      return nsSeparator.indexOf(c) < 0 || keySeparator.indexOf(c) < 0;
+      return nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0;
     });
     if (possibleChars.length === 0) return true;
     var r = new RegExp("(".concat(possibleChars.map(function (c) {
       return c === '?' ? '\\?' : c;
     }).join('|'), ")"));
-    return !r.test(key);
+    var matched = !r.test(key);
+
+    if (!matched) {
+      var ki = key.indexOf(keySeparator);
+
+      if (ki > 0 && !r.test(key.substring(0, ki))) {
+        matched = true;
+      }
+    }
+
+    return matched;
   }
 
   function deepFind(obj, path) {
