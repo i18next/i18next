@@ -1,3 +1,7 @@
+## 21.2.0
+
+- provide bundled esm distributable [1667](https://github.com/i18next/i18next/issues/1667)
+
 ## 21.1.1
 
 - optimize natural language detection [1661](https://github.com/i18next/i18next/issues/1661)

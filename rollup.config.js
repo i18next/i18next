@@ -32,6 +32,19 @@ export default [
 
   {
     input,
+    output: { format: 'esm', file: './dist/esm/i18next.bundled.js' },
+    external,
+    plugins: [
+      babel({
+        exclude: /node_modules/,
+        babelHelpers: 'bundled',
+        comments: false,
+      }),
+    ],
+  },
+
+  {
+    input,
     output: { format: 'umd', name, file: `dist/umd/${name}.js` },
     plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve()],
   },
