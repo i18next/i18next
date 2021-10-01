@@ -57,7 +57,10 @@ class Translator extends EventEmitter {
 
     let namespaces = options.ns || this.options.defaultNS;
     const wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
-    const seemsNaturalLanguage = !utils.looksLikeObjectPath(key, nsSeparator, keySeparator);
+    const seemsNaturalLanguage =
+      !this.options.userDefinedKeySeparator &&
+      !options.keySeparator &&
+      !utils.looksLikeObjectPath(key, nsSeparator, keySeparator);
     if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
       const m = key.match(this.interpolator.nestingRegexp);
       if (m && m.length > 0) {

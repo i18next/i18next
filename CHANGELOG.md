@@ -1,3 +1,7 @@
+## 21.2.1
+
+- do skip natural language detection, if user provided keySeparator option is passed [1670](https://github.com/i18next/i18next/issues/1670)
+
 ## 21.2.0
 
 - provide bundled esm distributable [1667](https://github.com/i18next/i18next/issues/1667)

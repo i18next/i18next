@@ -711,7 +711,7 @@
         var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
         var namespaces = options.ns || this.options.defaultNS;
         var wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
-        var seemsNaturalLanguage = !looksLikeObjectPath(key, nsSeparator, keySeparator);
+        var seemsNaturalLanguage = !this.options.userDefinedKeySeparator && !options.keySeparator && !looksLikeObjectPath(key, nsSeparator, keySeparator);
 
         if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
           var m = key.match(this.interpolator.nestingRegexp);
@@ -2094,6 +2094,11 @@
         }
 
         this.options = _objectSpread({}, get(), this.options, transformOptions(options));
+
+        if (options.keySeparator !== undefined) {
+          this.options.userDefinedKeySeparator = options.keySeparator;
+        }
+
         this.format = this.options.interpolation.format;
         if (!callback) callback = noop;
 
