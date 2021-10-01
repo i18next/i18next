@@ -1,3 +1,7 @@
+## 21.2.3
+
+- fix Intl.PluralRules fallback
+
 ## 21.2.2
 
 - log error if Intl.PluralRules API is not available
