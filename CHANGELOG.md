@@ -1,3 +1,7 @@
+## 21.2.4
+
+- optimize Intl api check
+
 ## 21.2.3
 
 - fix Intl.PluralRules fallback
