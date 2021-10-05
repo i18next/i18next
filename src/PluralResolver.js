@@ -96,7 +96,7 @@ class PluralResolver {
 
     if ((!this.options.compatibilityJSON || this.options.compatibilityJSON === 'v4') && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
       this.options.compatibilityJSON = 'v3';
-      this.logger.error('Your environment seems not to be Inlt API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
+      this.logger.error('Your environment seems not to be Intl API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
     }
 
     this.rules = createRules();
