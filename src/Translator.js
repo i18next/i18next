@@ -59,8 +59,9 @@ class Translator extends EventEmitter {
     const wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
     const seemsNaturalLanguage =
       !this.options.userDefinedKeySeparator &&
-      !this.options.userDefinedNsSeparator &&
       !options.keySeparator &&
+      !this.options.userDefinedNsSeparator &&
+      !options.nsSeparator &&
       !utils.looksLikeObjectPath(key, nsSeparator, keySeparator);
     if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
       const m = key.match(this.interpolator.nestingRegexp);
