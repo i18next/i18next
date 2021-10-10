@@ -1,3 +1,7 @@
+## 21.2.5
+
+- do skip natural language detection also if user provided nsSeparator option is passed [1665](https://github.com/i18next/i18next/issues/1665)
+
 ## 21.2.4
 
 - optimize Intl api check

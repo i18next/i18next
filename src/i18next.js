@@ -54,6 +54,9 @@ class I18n extends EventEmitter {
     if (options.keySeparator !== undefined) {
       this.options.userDefinedKeySeparator = options.keySeparator;
     }
+    if (options.nsSeparator !== undefined) {
+      this.options.userDefinedNsSeparator = options.nsSeparator;
+    }
 
     this.format = this.options.interpolation.format;
     if (!callback) callback = noop;
