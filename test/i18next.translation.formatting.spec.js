@@ -27,33 +27,43 @@ describe('i18next.translation.formatting', () => {
               key8: '10000',
               withSpace: ' there',
               keyWithNesting: 'hi$t(withSpace)',
-              twoInterpolationsWithUniqueFormatOptions:
+              intlNumber: 'Some {{val, number}}',
+              intlNumberWithOptions: 'Some {{val, number(minimumFractionDigits: 2)}}',
+              intlCurrencyWithOptions: 'The value is {{val, currency(currency: USD)}}',
+              intlCurrencyWithOptionsSimplified: 'The value is {{val, currency(USD)}}',
+              twoIntlCurrencyWithUniqueFormatOptions:
                 'The value is {{localValue, currency}} or {{altValue, currency}}',
+              intlDateTime: 'On the {{val, datetime}}',
+              intlRelativeTime: 'Lorem {{val, relativetime}}',
+              intlRelativeTimeWithOptions: 'Lorem {{val, relativetime(quarter)}}',
+              intlRelativeTimeWithOptionsExplicit:
+                'Lorem {{val, relativetime(range: quarter; style: narrow;)}}',
+              intlList: 'A list of {{val, list}}',
             },
-          },
-        },
-        interpolation: {
-          format: function (value, format, lng, options) {
-            if (format === 'uppercase') return value.toUpperCase();
-            if (format === 'lowercase') return value.toLowerCase();
-            if (format === 'underscore') return value.replace(/\s+/g, '_');
-            if (format === 'encodeuricomponent') return encodeURIComponent(value);
-            if (format === 'currency')
-              return Intl.NumberFormat(options.parmOptions[options.interpolationkey].locale, {
-                style: 'currency',
-                currency: options.parmOptions[options.interpolationkey].currency,
-              }).format(value);
-            return value;
           },
         },
       },
       () => {
+        // add some custom formats used by legacy
+        instance.services.formatter.add('uppercase', (value, lng, options) => {
+          return value.toUpperCase();
+        });
+        instance.services.formatter.add('lowercase', (value, lng, options) => {
+          return value.toLowerCase();
+        });
+        instance.services.formatter.add('underscore', (value, lng, options) => {
+          return value.replace(/\s+/g, '_');
+        });
+        instance.services.formatter.add('encodeuricomponent', (value, lng, options) => {
+          return encodeURIComponent(value);
+        });
         done();
       },
     );
   });
 
   describe('formatting', () => {
+    // some legacy tests
     var tests = [
       {
         args: ['oneFormatterTest'],
@@ -86,13 +96,52 @@ describe('i18next.translation.formatting', () => {
         args: ['keyWithNesting'],
         expected: 'hi there',
       },
+    ];
+
+    // number formatting
+    tests = tests.concat([
+      {
+        args: ['intlNumber', { val: 1000 }],
+        expected: 'Some 1,000',
+      },
+      {
+        args: ['intlNumber', { val: 1000.1, minimumFractionDigits: 3 }],
+        expected: 'Some 1,000.100',
+      },
+      {
+        args: ['intlNumberWithOptions', { val: 2000 }],
+        expected: 'Some 2,000.00',
+      },
+      {
+        args: ['intlNumberWithOptions', { val: 2000, minimumFractionDigits: 3 }],
+        expected: 'Some 2,000.000',
+      },
       {
         args: [
-          'twoInterpolationsWithUniqueFormatOptions',
+          'intlNumberWithOptions',
+          { val: 2000, formatParams: { val: { minimumFractionDigits: 3 } } },
+        ],
+        expected: 'Some 2,000.000',
+      },
+    ]);
+
+    // currency
+    tests = tests.concat([
+      {
+        args: ['intlCurrencyWithOptions', { val: 2000 }],
+        expected: 'The value is $2,000.00',
+      },
+      {
+        args: ['intlCurrencyWithOptionsSimplified', { val: 2000 }],
+        expected: 'The value is $2,000.00',
+      },
+      {
+        args: [
+          'twoIntlCurrencyWithUniqueFormatOptions',
           {
             localValue: 12345.67,
             altValue: 16543.21,
-            parmOptions: {
+            formatParams: {
               localValue: { currency: 'USD', locale: 'en-US' },
               altValue: { currency: 'CAD', locale: 'fr-CA' },
             },
@@ -100,18 +149,59 @@ describe('i18next.translation.formatting', () => {
         ],
         expected: 'The value is $12,345.67 or 16 543,21 $ CA',
       },
+    ]);
+
+    // datetime
+    tests = tests.concat([
+      {
+        args: ['intlDateTime', { val: new Date(Date.UTC(2012, 11, 20, 3, 0, 0)) }],
+        expected: 'On the 12&#x2F;20&#x2F;2012', // &#x2F; = /
+      },
       {
         args: [
-          'oneFormatterUsingCurrencyTest',
+          'intlDateTime',
           {
-            parmOptions: {
-              key8: { currency: 'USD', locale: 'en-US' },
+            val: new Date(Date.UTC(2012, 11, 20, 3, 0, 0)),
+            formatParams: {
+              val: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
             },
           },
         ],
-        expected: 'The following text is an amount: $10,000.00',
+        expected: 'On the Thursday, December 20, 2012',
       },
-    ];
+    ]);
+
+    // relativetime
+    tests = tests.concat([
+      {
+        args: ['intlRelativeTime', { val: 3 }],
+        expected: 'Lorem in 3 days',
+      },
+      {
+        args: ['intlRelativeTime', { val: -3 }],
+        expected: 'Lorem 3 days ago',
+      },
+      {
+        args: ['intlRelativeTimeWithOptions', { val: -3 }],
+        expected: 'Lorem 3 quarters ago',
+      },
+      {
+        args: ['intlRelativeTimeWithOptionsExplicit', { val: -3 }],
+        expected: 'Lorem 3 qtrs. ago',
+      },
+      {
+        args: ['intlRelativeTimeWithOptionsExplicit', { val: -3, style: 'long' }],
+        expected: 'Lorem 3 quarters ago',
+      },
+    ]);
+
+    // list
+    tests = tests.concat([
+      {
+        args: ['intlList', { val: ['locize', 'i18next', 'awesome'] }],
+        expected: 'A list of locize, i18next, and awesome',
+      },
+    ]);
 
     tests.forEach((test) => {
       it('correctly formats translations for ' + JSON.stringify(test.args), () => {

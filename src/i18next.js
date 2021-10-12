@@ -5,6 +5,7 @@ import Translator from './Translator.js';
 import LanguageUtils from './LanguageUtils.js';
 import PluralResolver from './PluralResolver.js';
 import Interpolator from './Interpolator.js';
+import Formatter from './Formatter.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
@@ -58,9 +59,6 @@ class I18n extends EventEmitter {
       this.options.userDefinedNsSeparator = options.nsSeparator;
     }
 
-    this.format = this.options.interpolation.format;
-    if (!callback) callback = noop;
-
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return null;
       if (typeof ClassOrObject === 'function') return new ClassOrObject();
@@ -75,6 +73,14 @@ class I18n extends EventEmitter {
         baseLogger.init(null, this.options);
       }
 
+      let formatter;
+      if (this.modules.formatter) {
+        formatter = this.modules.formatter;
+      } else if (typeof Intl !== 'undefined') {
+        formatter = Formatter;
+      }
+  
+
       const lu = new LanguageUtils(this.options);
       this.store = new ResourceStore(this.options.resources, this.options);
 
@@ -87,6 +93,14 @@ class I18n extends EventEmitter {
         compatibilityJSON: this.options.compatibilityJSON,
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
+
+      if (formatter && this.options.interpolation.format && this.options.interpolation.format.isDummy) {
+        s.formatter = createClassOnDemand(formatter);
+        s.formatter.init(s, this.options);
+
+        this.options.interpolation.format = s.formatter.format.bind(s.formatter);
+      }
+
       s.interpolator = new Interpolator(this.options);
       s.utils = {
         hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
@@ -123,6 +137,9 @@ class I18n extends EventEmitter {
         if (m.init) m.init(this);
       });
     }
+
+    this.format = this.options.interpolation.format;
+    if (!callback) callback = noop;
 
     if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
       const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng)
@@ -252,6 +269,10 @@ class I18n extends EventEmitter {
 
     if (module.type === 'postProcessor') {
       postProcessor.addPostProcessor(module);
+    }
+
+    if (module.type === 'formatter') {
+      this.modules.formatter = module;
     }
 
     if (module.type === '3rdParty') {

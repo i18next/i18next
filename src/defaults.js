@@ -1,3 +1,8 @@
+function format(value, format, lng, options) {
+  return value;
+}
+format.isDummy = true;
+
 export function get() {
   return {
     debug: false,
@@ -52,7 +57,7 @@ export function get() {
     },
     interpolation: {
       escapeValue: true,
-      format: (value, format, lng, options) => value,
+      format: format,
       prefix: '{{',
       suffix: '}}',
       formatSeparator: ',',
