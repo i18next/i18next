@@ -1,3 +1,7 @@
+## 21.3.0
+
+- adds support for formats provided by Intl API (number, currency, datetime, relativedate, list)
+
 ## 21.2.6
 
 - optimize do skip natural language detection also if user provided nsSeparator option is passed via direct options

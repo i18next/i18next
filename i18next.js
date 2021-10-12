@@ -1730,6 +1730,182 @@
     return Interpolator;
   }();
 
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  function _iterableToArrayLimit(arr, i) {
+    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+
+  function parseFormatStr(formatStr) {
+    var formatName = formatStr.toLowerCase();
+    var formatOptions = {};
+
+    if (formatStr.indexOf('(') > -1) {
+      var p = formatStr.split('(');
+      formatName = p[0].toLowerCase();
+      var optStr = p[1].substring(0, p[1].length - 1);
+
+      if (formatName === 'currency' && optStr.indexOf(':') < 0) {
+        if (!formatOptions.currency) formatOptions.currency = optStr.trim();
+      } else if (formatName === 'relativetime' && optStr.indexOf(':') < 0) {
+        if (!formatOptions.range) formatOptions.range = optStr.trim();
+      } else {
+        var opts = optStr.split(';');
+        opts.forEach(function (opt) {
+          if (!opt) return;
+
+          var _opt$split = opt.split(':'),
+              _opt$split2 = _slicedToArray(_opt$split, 2),
+              key = _opt$split2[0],
+              val = _opt$split2[1];
+
+          if (val.trim() === 'false') formatOptions[key.trim()] = false;
+          if (val.trim() === 'true') formatOptions[key.trim()] = true;
+          if (!isNaN(val.trim())) formatOptions[key.trim()] = parseInt(val.trim(), 10);
+          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val.trim();
+        });
+      }
+    }
+
+    return {
+      formatName: formatName,
+      formatOptions: formatOptions
+    };
+  }
+
+  var Formatter = function () {
+    function Formatter() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      _classCallCheck(this, Formatter);
+
+      this.logger = baseLogger.create('formatter');
+      this.options = options;
+      this.formats = {
+        number: function number(val, lng, options) {
+          return new Intl.NumberFormat(lng, options).format(val);
+        },
+        currency: function currency(val, lng, options) {
+          return new Intl.NumberFormat(lng, _objectSpread({}, options, {
+            style: 'currency'
+          })).format(val);
+        },
+        datetime: function datetime(val, lng, options) {
+          return new Intl.DateTimeFormat(lng, _objectSpread({}, options)).format(val);
+        },
+        relativetime: function relativetime(val, lng, options) {
+          return new Intl.RelativeTimeFormat(lng, _objectSpread({}, options)).format(val, options.range || 'day');
+        },
+        list: function list(val, lng, options) {
+          return new Intl.ListFormat(lng, _objectSpread({}, options)).format(val);
+        }
+      };
+      this.init(options);
+    }
+
+    _createClass(Formatter, [{
+      key: "init",
+      value: function init(services) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+          interpolation: {}
+        };
+        var iOpts = options.interpolation;
+        this.formatSeparator = iOpts.formatSeparator ? iOpts.formatSeparator : iOpts.formatSeparator || ',';
+      }
+    }, {
+      key: "add",
+      value: function add(name, fc) {
+        this.formats[name] = fc;
+      }
+    }, {
+      key: "format",
+      value: function format(value, _format, lng, options) {
+        var _this = this;
+
+        var formats = _format.split(this.formatSeparator);
+
+        var result = formats.reduce(function (mem, f) {
+          var _parseFormatStr = parseFormatStr(f),
+              formatName = _parseFormatStr.formatName,
+              formatOptions = _parseFormatStr.formatOptions;
+
+          if (_this.formats[formatName]) {
+            var formatted = mem;
+
+            try {
+              var valOptions = options && options.formatParams && options.formatParams[options.interpolationkey] || {};
+              var l = valOptions.locale || valOptions.lng || options.locale || options.lng || lng;
+              formatted = _this.formats[formatName](mem, l, _objectSpread({}, formatOptions, options, valOptions));
+            } catch (error) {
+              _this.logger.warn(error);
+            }
+
+            return formatted;
+          } else {
+            _this.logger.warn("there was no format function for ".concat(formatName));
+          }
+
+          return mem;
+        }, value);
+        return result;
+      }
+    }]);
+
+    return Formatter;
+  }();
+
   function remove(arr, what) {
     var found = arr.indexOf(what);
 
@@ -1959,6 +2135,11 @@
     return Connector;
   }(EventEmitter);
 
+  function format(value, format, lng, options) {
+    return value;
+  }
+
+  format.isDummy = true;
   function get() {
     return {
       debug: false,
@@ -2010,9 +2191,7 @@
       },
       interpolation: {
         escapeValue: true,
-        format: function format(value, _format, lng, options) {
-          return value;
-        },
+        format: format,
         prefix: '{{',
         suffix: '}}',
         formatSeparator: ',',
@@ -2109,9 +2288,6 @@
           this.options.userDefinedNsSeparator = options.nsSeparator;
         }
 
-        this.format = this.options.interpolation.format;
-        if (!callback) callback = noop;
-
         function createClassOnDemand(ClassOrObject) {
           if (!ClassOrObject) return null;
           if (typeof ClassOrObject === 'function') return new ClassOrObject();
@@ -2125,6 +2301,14 @@
             baseLogger.init(null, this.options);
           }
 
+          var formatter;
+
+          if (this.modules.formatter) {
+            formatter = this.modules.formatter;
+          } else if (typeof Intl !== 'undefined') {
+            formatter = Formatter;
+          }
+
           var lu = new LanguageUtil(this.options);
           this.store = new ResourceStore(this.options.resources, this.options);
           var s = this.services;
@@ -2136,6 +2320,13 @@
             compatibilityJSON: this.options.compatibilityJSON,
             simplifyPluralSuffix: this.options.simplifyPluralSuffix
           });
+
+          if (formatter && this.options.interpolation.format && this.options.interpolation.format.isDummy) {
+            s.formatter = createClassOnDemand(formatter);
+            s.formatter.init(s, this.options);
+            this.options.interpolation.format = s.formatter.format.bind(s.formatter);
+          }
+
           s.interpolator = new Interpolator(this.options);
           s.utils = {
             hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
@@ -2171,6 +2362,9 @@
             if (m.init) m.init(_this2);
           });
         }
+
+        this.format = this.options.interpolation.format;
+        if (!callback) callback = noop;
 
         if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
           var codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
@@ -2307,6 +2501,10 @@
 
         if (module.type === 'postProcessor') {
           postProcessor.addPostProcessor(module);
+        }
+
+        if (module.type === 'formatter') {
+          this.modules.formatter = module;
         }
 
         if (module.type === '3rdParty') {
