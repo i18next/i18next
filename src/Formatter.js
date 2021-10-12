@@ -78,6 +78,7 @@ class Formatter {
 
     const result = formats.reduce((mem, f) => {
       const { formatName, formatOptions } = parseFormatStr(f);
+
       if (this.formats[formatName]) {
         let formatted = mem;
         try {
@@ -98,6 +99,8 @@ class Formatter {
           this.logger.warn(error);
         }
         return formatted;
+      } else {
+        this.logger.warn(`there was no format function for ${formatName}`);
       }
       return mem;
     }, value);
