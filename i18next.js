@@ -2135,11 +2135,6 @@
     return Connector;
   }(EventEmitter);
 
-  function format(value, format, lng, options) {
-    return value;
-  }
-
-  format.isDummy = true;
   function get() {
     return {
       debug: false,
@@ -2191,7 +2186,9 @@
       },
       interpolation: {
         escapeValue: true,
-        format: format,
+        format: function format(value, _format, lng, options) {
+          return value;
+        },
         prefix: '{{',
         suffix: '}}',
         formatSeparator: ',',
@@ -2278,7 +2275,8 @@
           }
         }
 
-        this.options = _objectSpread({}, get(), this.options, transformOptions(options));
+        var defOpts = get();
+        this.options = _objectSpread({}, defOpts, this.options, transformOptions(options));
 
         if (options.keySeparator !== undefined) {
           this.options.userDefinedKeySeparator = options.keySeparator;
@@ -2321,7 +2319,7 @@
             simplifyPluralSuffix: this.options.simplifyPluralSuffix
           });
 
-          if (formatter && this.options.interpolation.format && this.options.interpolation.format.isDummy) {
+          if (formatter && this.options.interpolation.format === defOpts.interpolation.format) {
             s.formatter = createClassOnDemand(formatter);
             s.formatter.init(s, this.options);
             this.options.interpolation.format = s.formatter.format.bind(s.formatter);

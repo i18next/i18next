@@ -51,7 +51,8 @@ class I18n extends EventEmitter {
       }
     }
 
-    this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
+    const defOpts = getDefaults();
+    this.options = { ...defOpts, ...this.options, ...transformOptions(options) };
     if (options.keySeparator !== undefined) {
       this.options.userDefinedKeySeparator = options.keySeparator;
     }
@@ -94,7 +95,7 @@ class I18n extends EventEmitter {
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
 
-      if (formatter && this.options.interpolation.format && this.options.interpolation.format.isDummy) {
+      if (formatter && this.options.interpolation.format === defOpts.interpolation.format) {
         s.formatter = createClassOnDemand(formatter);
         s.formatter.init(s, this.options);
 

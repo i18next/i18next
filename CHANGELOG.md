@@ -1,3 +1,7 @@
+## 21.3.1
+
+- get rid of internal isDummy check to prevent react-native issue [1675](https://github.com/i18next/i18next/issues/1675)
+
 ## 21.3.0
 
 - adds support for formats provided by Intl API (number, currency, datetime, relativedate, list)
