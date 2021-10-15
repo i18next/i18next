@@ -1,7 +1,7 @@
 /** Exercise exposed types/imports for different tsconfig esmoduleinterop settings */
 
 /* esModuleInterop: true, allowSyntheticDefaultImports: true */
-import i18next, { Interpolator, Modules, WithT, ResourceStore } from 'i18next';
+import i18next, { Interpolator, Modules, WithT, ResourceStore, Formatter } from 'i18next';
 
 i18next.init();
 
@@ -18,3 +18,6 @@ resourceStore.on('added', console.log);
 resourceStore.off('added', console.log);
 resourceStore.off('added');
 resourceStore.data['en'];
+
+const formatter: Formatter | undefined = i18next.services.formatter;
+formatter!.add('test', (value: any, lng: string | undefined, options: any) => 'formatted');
