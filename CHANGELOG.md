@@ -1,3 +1,7 @@
+## 21.3.2
+
+- formatter typescript declarations [1679](https://github.com/i18next/i18next/pull/1679)
+
 ## 21.3.1
 
 - get rid of internal isDummy check to prevent react-native issue [1675](https://github.com/i18next/i18next/issues/1675)
