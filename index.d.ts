@@ -750,6 +750,12 @@ export class ResourceStore {
   off(event: 'added' | 'removed', callback?: (lng: string, ns: string) => void): void;
 }
 
+export interface Formatter {
+  init(services: Services, i18nextOptions: InitOptions): void;
+  add(name: string, fc: (value: any, lng: string | undefined, options: any) => string): void;
+  format: FormatFunction;
+}
+
 export interface Services {
   backendConnector: any;
   i18nFormat: any;
@@ -759,6 +765,7 @@ export interface Services {
   logger: any;
   pluralResolver: any;
   resourceStore: ResourceStore;
+  formatter?: Formatter;
 }
 
 export type ModuleType =
@@ -767,6 +774,7 @@ export type ModuleType =
   | 'languageDetector'
   | 'postProcessor'
   | 'i18nFormat'
+  | 'formatter'
   | '3rdParty';
 
 export interface Module {
@@ -860,6 +868,10 @@ export interface I18nFormatModule extends Module {
   type: 'i18nFormat';
 }
 
+export interface FormatterModule extends Module, Formatter {
+  type: 'formatter';
+}
+
 export interface ThirdPartyModule extends Module {
   type: '3rdParty';
   init(i18next: i18n): void;
@@ -870,6 +882,7 @@ export interface Modules {
   logger?: LoggerModule;
   languageDetector?: LanguageDetectorModule | LanguageDetectorAsyncModule;
   i18nFormat?: I18nFormatModule;
+  formatter?: FormatterModule;
   external: ThirdPartyModule[];
 }
 
