@@ -95,7 +95,7 @@ class I18n extends EventEmitter {
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
 
-      if (formatter && this.options.interpolation.format === defOpts.interpolation.format) {
+      if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
         s.formatter = createClassOnDemand(formatter);
         s.formatter.init(s, this.options);
 

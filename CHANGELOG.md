@@ -1,3 +1,7 @@
+## 21.3.3
+
+- apply default interpolation formatter when interpolation options don't specify one [1680](https://github.com/i18next/i18next/issues/1680)
+
 ## 21.3.2
 
 - formatter typescript declarations [1679](https://github.com/i18next/i18next/pull/1679)

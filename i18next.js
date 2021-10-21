@@ -2319,7 +2319,7 @@
             simplifyPluralSuffix: this.options.simplifyPluralSuffix
           });
 
-          if (formatter && this.options.interpolation.format === defOpts.interpolation.format) {
+          if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
             s.formatter = createClassOnDemand(formatter);
             s.formatter.init(s, this.options);
             this.options.interpolation.format = s.formatter.format.bind(s.formatter);
