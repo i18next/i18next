@@ -18,13 +18,13 @@ const external = (id) => !id.startsWith('.') && !id.startsWith('/') && !id.inclu
 export default [
   {
     input,
-    output: { format: 'cjs', file: pkg.main },
+    output: { format: 'cjs', file: pkg.main, exports: 'default' },
     external,
     plugins: [babel(getBabelOptions({ useESModules: false }))],
   },
 
   {
-    input,
+    input: './src/index.esm.js',
     output: { format: 'esm', file: pkg.module },
     external,
     plugins: [babel(getBabelOptions({ useESModules: true }))],

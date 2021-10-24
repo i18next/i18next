@@ -18,6 +18,8 @@ node_modules
 node_modules/**/*
 coverage/**/*
 dist/**/*
+!dist/esm
+!dist/esm/package.json
 
 # Ignore IntelliJ based IDEs project files
 .idea
