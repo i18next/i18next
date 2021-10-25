@@ -25,6 +25,9 @@ class I18n extends EventEmitter {
     this.logger = baseLogger;
     this.modules = { external: [] };
 
+    // Allow using t via destructuring or callback
+    this.t = this.t.bind(this);
+
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
       if (!this.options.initImmediate) {

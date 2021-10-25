@@ -75,6 +75,13 @@ describe('i18next', () => {
   });
 
   describe('i18next - functions', () => {
+    describe('t', () => {
+      it('is usable as a free function', () => {
+        const { t } = i18next;
+        expect(t('key')).to.equal('key');
+      });
+    });
+
     describe('getFixedT', () => {
       it('it should have lng, ns on t', () => {
         const t = i18next.getFixedT('de', 'common');
