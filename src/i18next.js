@@ -561,6 +561,10 @@ class I18n extends EventEmitter {
 
   static createInstance = (options = {}, callback) => new I18n(options, callback)
 
+  createInstance(options = {}, callback) {
+    return I18n.createInstance(options, callback);
+  }
+
   cloneInstance(options = {}, callback = noop) {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
