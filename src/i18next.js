@@ -561,6 +561,7 @@ class I18n extends EventEmitter {
 
   static createInstance = (options = {}, callback) => new I18n(options, callback)
 
+  /* eslint class-methods-use-this: 0 */
   createInstance(options = {}, callback) {
     return I18n.createInstance(options, callback);
   }
