@@ -561,11 +561,6 @@ class I18n extends EventEmitter {
 
   static createInstance = (options = {}, callback) => new I18n(options, callback)
 
-  /* eslint class-methods-use-this: 0 */
-  createInstance(options = {}, callback) {
-    return I18n.createInstance(options, callback);
-  }
-
   cloneInstance(options = {}, callback = noop) {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
@@ -601,4 +596,7 @@ class I18n extends EventEmitter {
   }
 }
 
-export default new I18n();
+const instance = I18n.createInstance();
+instance.createInstance = I18n.createInstance;
+
+export default instance;
