@@ -1,3 +1,7 @@
+## 21.4.0
+
+- bind all i18next functions to this, this way you can for example just use t() instead of i18n.t() [1682](https://github.com/i18next/i18next/issues/1682)
+
 ## 21.3.3
 
 - apply default interpolation formatter when interpolation options don't specify one [1680](https://github.com/i18next/i18next/issues/1680)
