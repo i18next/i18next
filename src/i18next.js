@@ -13,6 +13,17 @@ import { defer, isIE10 } from './utils.js';
 
 function noop() { }
 
+// Binds the member functions of the given class instance so that they can be
+// destructured or used as callbacks.
+function bindMemberFunctions(inst) {
+  const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst))
+  mems.forEach((mem) => {
+    if (typeof inst[mem] === 'function') {
+      inst[mem] = inst[mem].bind(inst)
+    }
+  })
+}
+
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
@@ -25,8 +36,7 @@ class I18n extends EventEmitter {
     this.logger = baseLogger;
     this.modules = { external: [] };
 
-    // Allow using t via destructuring or callback
-    this.t = this.t.bind(this);
+    bindMemberFunctions(this);
 
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
