@@ -17,7 +17,7 @@ describe('i18next', () => {
         newInstance = i18next.createInstance({ bar: 'foo' });
       });
 
-      it('it should not inherit options from inital i18next', () => {
+      it('it should not inherit options from initial i18next', () => {
         expect(newInstance.options.foo).to.not.be.ok;
         expect(newInstance.options.bar).to.equal('foo');
       });
@@ -33,7 +33,7 @@ describe('i18next', () => {
         newInstance = i18next.cloneInstance({ bar: 'foo' });
       });
 
-      it('it should inherit options from inital i18next', () => {
+      it('it should inherit options from initial i18next', () => {
         expect(newInstance.options.foo).to.equal('bar');
         expect(newInstance.options.bar).to.equal('foo');
       });
@@ -75,6 +75,13 @@ describe('i18next', () => {
   });
 
   describe('i18next - functions', () => {
+    describe('t', () => {
+      it('is usable as a free function', () => {
+        const { t } = i18next;
+        expect(t('key')).to.equal('key');
+      });
+    });
+
     describe('getFixedT', () => {
       it('it should have lng, ns on t', () => {
         const t = i18next.getFixedT('de', 'common');
@@ -99,7 +106,7 @@ describe('i18next', () => {
 
   describe('chained resource manipulation', () => {
     describe('can add resources', () => {
-      it('it adds resouces by addResource', () => {
+      it('it adds resources by addResource', () => {
         i18next
           .addResource('de', 'translation', 'test', 'test')
           .addResource('de', 'translation', 'nest.test', 'test_nest');
@@ -107,7 +114,7 @@ describe('i18next', () => {
         expect(i18next.getResource('de', 'translation', 'nest.test')).to.equal('test_nest');
       });
 
-      it('it adds resouces by addResources', () => {
+      it('it adds resources by addResources', () => {
         i18next
           .addResources('fr', 'translation', {
             hi: 'salut',
@@ -120,7 +127,7 @@ describe('i18next', () => {
         expect(i18next.getResource('fr', 'translation', 'hello')).to.equal('bonjour');
       });
 
-      it('it adds resouces by addResourceBundle', () => {
+      it('it adds resources by addResourceBundle', () => {
         i18next
           .addResourceBundle('en.translation', { something1: 'deeper1' })
           .addResourceBundle('en.translation', { something2: 'deeper2' });
@@ -131,7 +138,7 @@ describe('i18next', () => {
       });
 
       describe('can remove resources bundle', () => {
-        it('it removes resouces by removeResourceBundle', () => {
+        it('it removes resources by removeResourceBundle', () => {
           i18next.removeResourceBundle('en', 'translation');
           expect(i18next.getResourceBundle('en', 'translation')).to.be.not.ok;
         });

@@ -1,6 +1,10 @@
 //const istanbul = require( 'browserify-istanbul' );
 
 module.exports = function (karma) {
+  // Ensure consistent conversion of timestamps to date strings (has no effect
+  // on Windows)
+  process.env.TZ = 'UTC';
+
   karma.set({
     frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
 
