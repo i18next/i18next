@@ -1789,12 +1789,12 @@
   }
 
   function parseFormatStr(formatStr) {
-    var formatName = formatStr.toLowerCase();
+    var formatName = formatStr.toLowerCase().trim();
     var formatOptions = {};
 
     if (formatStr.indexOf('(') > -1) {
       var p = formatStr.split('(');
-      formatName = p[0].toLowerCase();
+      formatName = p[0].toLowerCase().trim();
       var optStr = p[1].substring(0, p[1].length - 1);
 
       if (formatName === 'currency' && optStr.indexOf(':') < 0) {

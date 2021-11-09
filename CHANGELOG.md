@@ -1,3 +1,7 @@
+## 21.4.2
+
+- trim multiple formatters, fixes [1689](https://github.com/i18next/i18next/issues/1689)
+
 ## 21.4.1
 
 - rtl fix for -arab language codes
