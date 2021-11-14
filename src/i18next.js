@@ -36,8 +36,6 @@ class I18n extends EventEmitter {
     this.logger = baseLogger;
     this.modules = { external: [] };
 
-    bindMemberFunctions(this);
-
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
       if (!this.options.initImmediate) {
@@ -598,5 +596,6 @@ class I18n extends EventEmitter {
 
 const instance = I18n.createInstance();
 instance.createInstance = I18n.createInstance;
+bindMemberFunctions(instance);
 
 export default instance;

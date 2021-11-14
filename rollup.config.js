@@ -25,7 +25,10 @@ export default [
 
   {
     input: './src/index.esm.js',
-    output: { format: 'esm', file: pkg.module },
+    output: [
+      { format: 'esm', file: pkg.module },
+      { format: 'esm', file: pkg.exports['.'].import },
+    ],
     external,
     plugins: [babel(getBabelOptions({ useESModules: true }))],
   },
