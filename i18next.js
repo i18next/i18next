@@ -1801,12 +1801,12 @@
   function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function parseFormatStr(formatStr) {
-    var formatName = formatStr.toLowerCase();
+    var formatName = formatStr.toLowerCase().trim();
     var formatOptions = {};
 
     if (formatStr.indexOf('(') > -1) {
       var p = formatStr.split('(');
-      formatName = p[0].toLowerCase();
+      formatName = p[0].toLowerCase().trim();
       var optStr = p[1].substring(0, p[1].length - 1);
 
       if (formatName === 'currency' && optStr.indexOf(':') < 0) {
@@ -2773,7 +2773,7 @@
         if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
         if (!lng) return 'rtl';
         var rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam', 'ckb'];
-        return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0 ? 'rtl' : 'ltr';
+        return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
       }
     }, {
       key: "cloneInstance",
@@ -2833,8 +2833,9 @@
     return new I18n(options, callback);
   });
 
-  var i18next = new I18n();
+  var instance = I18n.createInstance();
+  instance.createInstance = I18n.createInstance;
 
-  return i18next;
+  return instance;
 
 })));

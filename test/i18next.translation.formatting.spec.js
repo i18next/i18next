@@ -18,6 +18,8 @@ describe('i18next.translation.formatting', () => {
                 'The following text is uppercased, underscored, then uri component encoded: $t(key7, uppercase, underscore, encodeuricomponent)',
               oneFormatterUsingAnotherFormatterTest:
                 'The following text is lowercased: $t(twoFormattersTogetherTest, lowercase)',
+              twoFormattersTogetherInterpolationTest:
+                'pre format {{value, uppercase, underscore}} after format',
               oneFormatterUsingCurrencyTest: 'The following text is an amount: $t(key8, currency)',
               missingTranslationTest:
                 'No text will be shown when the translation key is missing: $t(, uppercase)',
@@ -87,6 +89,10 @@ describe('i18next.translation.formatting', () => {
         args: ['oneFormatterUsingAnotherFormatterTest'],
         expected:
           'The following text is lowercased: the following text is uppercased, underscored, then uri component encoded: here_is_some%3a_text%3f_with%2c_(punctuation)',
+      },
+      {
+        args: ['twoFormattersTogetherInterpolationTest', { value: 'my interpolated value' }],
+        expected: 'pre format MY_INTERPOLATED_VALUE after format',
       },
       {
         args: ['missingTranslationTest'],

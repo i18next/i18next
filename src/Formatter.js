@@ -1,11 +1,11 @@
 import baseLogger from './logger.js';
 
 function parseFormatStr(formatStr) {
-  let formatName = formatStr.toLowerCase();
+  let formatName = formatStr.toLowerCase().trim();
   let formatOptions = {};
   if (formatStr.indexOf('(') > -1) {
     const p = formatStr.split('(');
-    formatName = p[0].toLowerCase();
+    formatName = p[0].toLowerCase().trim();
 
     const optStr = p[1].substring(0, p[1].length - 1);
 

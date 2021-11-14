@@ -1,3 +1,11 @@
+## 21.4.2
+
+- trim multiple formatters, fixes [1689](https://github.com/i18next/i18next/issues/1689)
+
+## 21.4.1
+
+- rtl fix for -arab language codes
+
 ## 21.4.0
 
 - bind all i18next functions to this, this way you can for example just use t() instead of i18n.t() [1682](https://github.com/i18next/i18next/issues/1682)
