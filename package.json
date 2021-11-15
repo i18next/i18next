@@ -95,7 +95,7 @@
     "test:typescript:noninterop": "tslint --project tsconfig.nonEsModuleInterop.json",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
-    "build": "rimraf dist && rollup -c && cpy \"./dist/umd/*.js\" ./",
+    "build": "rimraf dist && rollup -c && echo '{\"type\":\"module\"}' > dist/esm/package.json && cpy \"./dist/umd/*.js\" ./",
     "preversion": "npm run test && npm run build && git push",
     "postversion": "git push && git push --tags && npm run release",
     "prettier": "prettier --write \"{,**/}*.{ts,tsx,js,json,md}\"",
