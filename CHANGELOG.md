@@ -1,3 +1,7 @@
+## 21.5.0
+
+- named exports for esm usage [1681](https://github.com/i18next/i18next/pull/1681)
+
 ## 21.4.2
 
 - trim multiple formatters, fixes [1689](https://github.com/i18next/i18next/issues/1689)

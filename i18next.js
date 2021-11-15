@@ -2279,6 +2279,7 @@
       _this.modules = {
         external: []
       };
+      bindMemberFunctions(_assertThisInitialized(_this));
 
       if (callback && !_this.isInitialized && !options.isClone) {
         if (!_this.options.initImmediate) {
@@ -2834,7 +2835,6 @@
 
   var instance = I18n.createInstance();
   instance.createInstance = I18n.createInstance;
-  bindMemberFunctions(instance);
 
   return instance;
 
