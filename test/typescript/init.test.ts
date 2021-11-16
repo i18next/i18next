@@ -1,4 +1,4 @@
-import i18next, { TFunction } from 'i18next';
+import i18next, { TFunction, createInstance } from 'i18next';
 
 // i18next.js export default as esm module because the build is apart from commonjs.
 i18next.init(
@@ -474,4 +474,9 @@ i18next.init({
   react: {
     bindI18n: 'languageChanged editorSaved',
   },
+});
+
+createInstance({
+  lng: 'en',
+  fallbackLng: 'en',
 });

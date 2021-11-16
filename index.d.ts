@@ -1007,6 +1007,11 @@ export interface i18n {
   setDefaultNamespace(ns: string): void;
 
   /**
+   * Changes the default namespace.
+   */
+  hasLoadedNamespace(ns: string, options?: Pick<InitOptions, 'fallbackLng'>): void;
+
+  /**
    * Returns rtl or ltr depending on languages read direction.
    */
   dir(lng?: string): 'ltr' | 'rtl';
@@ -1146,3 +1151,18 @@ export interface i18n {
 
 declare const i18next: i18n;
 export default i18next;
+
+export const createInstance: i18n['createInstance'];
+
+export const init: i18n['init'];
+export const loadResources: i18n['loadResources'];
+export const reloadResources: i18n['reloadResources'];
+export const use: i18n['use'];
+export const changeLanguage: i18n['changeLanguage'];
+export const getFixedT: i18n['getFixedT'];
+export const t: i18n['t'];
+export const exists: i18n['exists'];
+export const setDefaultNamespace: i18n['setDefaultNamespace'];
+export const hasLoadedNamespace: i18n['hasLoadedNamespace'];
+export const loadNamespaces: i18n['loadNamespaces'];
+export const loadLanguages: i18n['loadLanguages'];

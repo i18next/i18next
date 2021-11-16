@@ -1,3 +1,7 @@
+## 21.5.2
+
+- missing named exports for TypeScript usage [1692](https://github.com/i18next/i18next/issues/1692)
+
 ## 21.5.1
 
 - add package.json to exports subpath
