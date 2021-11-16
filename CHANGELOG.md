@@ -1,3 +1,7 @@
+## 21.5.1
+
+- add package.json to exports subpath
+
 ## 21.5.0
 
 - named exports for esm usage [1681](https://github.com/i18next/i18next/pull/1681)
