@@ -2319,6 +2319,7 @@
 
         var defOpts = get();
         this.options = _objectSpread$6(_objectSpread$6(_objectSpread$6({}, defOpts), this.options), transformOptions(options));
+        this.options.interpolation = _objectSpread$6({}, this.options.interpolation);
 
         if (options.keySeparator !== undefined) {
           this.options.userDefinedKeySeparator = options.keySeparator;

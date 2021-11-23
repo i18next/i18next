@@ -66,6 +66,7 @@ class I18n extends EventEmitter {
 
     const defOpts = getDefaults();
     this.options = { ...defOpts, ...this.options, ...transformOptions(options) };
+    this.options.interpolation = { ...this.options.interpolation }; // do not use reference
     if (options.keySeparator !== undefined) {
       this.options.userDefinedKeySeparator = options.keySeparator;
     }

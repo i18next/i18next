@@ -1,3 +1,7 @@
+## 21.5.3
+
+- do not use options.interpolation reference
+
 ## 21.5.2
 
 - missing named exports for TypeScript usage [1692](https://github.com/i18next/i18next/issues/1692)
