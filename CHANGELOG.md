@@ -1,3 +1,7 @@
+## 21.5.4
+
+- include version info in generated package.json of esm dist
+
 ## 21.5.3
 
 - do not use options.interpolation reference
