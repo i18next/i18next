@@ -1,3 +1,7 @@
+## 21.5.5
+
+- fix: prevent TypeError when using `returnObjects: true` with non string values [1702](https://github.com/i18next/i18next/issues/1702)
+
 ## 21.5.4
 
 - include version info in generated package.json of esm dist

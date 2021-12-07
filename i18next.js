@@ -899,7 +899,7 @@
           if (options.interpolation) this.interpolator.init(_objectSpread$2(_objectSpread$2({}, options), {
             interpolation: _objectSpread$2(_objectSpread$2({}, this.options.interpolation), options.interpolation)
           }));
-          var skipOnVariables = options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+          var skipOnVariables = typeof res === 'string' && (options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables);
           var nestBef;
 
           if (skipOnVariables) {

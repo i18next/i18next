@@ -307,8 +307,9 @@ class Translator extends EventEmitter {
           ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } },
         });
       const skipOnVariables =
-        (options.interpolation && options.interpolation.skipOnVariables) ||
-        this.options.interpolation.skipOnVariables;
+        typeof res === 'string' &&
+        ((options.interpolation && options.interpolation.skipOnVariables) ||
+          this.options.interpolation.skipOnVariables);
       let nestBef;
       if (skipOnVariables) {
         const nb = res.match(this.interpolator.nestingRegexp);
