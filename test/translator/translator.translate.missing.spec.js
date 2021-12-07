@@ -115,7 +115,7 @@ describe('Translator', () => {
       t.translate('translation:test.missing', {
         count: 0,
         defaultValue_zero: 'default0',
-        defaultValue_one: 'default1', // ignored
+        defaultValue_one: 'default1',
       });
     });
 
@@ -123,7 +123,7 @@ describe('Translator', () => {
       expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ARABIC);
       expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_zero', 'default0'))
         .to.be.true;
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_one', 'default0')).to
+      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_one', 'default1')).to
         .be.true;
       expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_two', 'default0')).to
         .be.true;

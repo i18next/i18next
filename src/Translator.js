@@ -237,13 +237,15 @@ class Translator extends EventEmitter {
           lngs.push(options.lng || this.language);
         }
 
-        const send = (l, k, fallbackValue) => {
+        const send = (l, k, specificDefaultValue) => {
+          const defaultForMissing =
+            hasDefaultValue && specificDefaultValue !== res ? specificDefaultValue : resForMissing;
           if (this.options.missingKeyHandler) {
             this.options.missingKeyHandler(
               l,
               namespace,
               k,
-              updateMissing ? fallbackValue : resForMissing,
+              defaultForMissing,
               updateMissing,
               options,
             );
@@ -252,7 +254,7 @@ class Translator extends EventEmitter {
               l,
               namespace,
               k,
-              updateMissing ? fallbackValue : resForMissing,
+              defaultForMissing,
               updateMissing,
               options,
             );
