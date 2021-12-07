@@ -1,3 +1,7 @@
+## 21.5.6
+
+- fix: correct defaults for plural forms (if supplied) [1703](https://github.com/i18next/i18next/issues/1703)
+
 ## 21.5.5
 
 - fix: prevent TypeError when using `returnObjects: true` with non string values [1702](https://github.com/i18next/i18next/issues/1702)
