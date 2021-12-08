@@ -1,3 +1,7 @@
+## 21.6.0
+
+- add \_zero suffix lookup if count === 0 [1705](https://github.com/i18next/i18next/pull/1705)
+
 ## 21.5.6
 
 - fix: correct defaults for plural forms (if supplied) [1703](https://github.com/i18next/i18next/issues/1703)
