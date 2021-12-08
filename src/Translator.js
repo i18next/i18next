@@ -394,6 +394,11 @@ class Translator extends EventEmitter {
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+      const needsZeroSuffixLookup =
+        needsPluralHandling &&
+        !options.ordinal &&
+        options.count === 0 &&
+        this.pluralResolver.shouldUseIntlApi();
       const needsContextHandling =
         options.context !== undefined &&
         (typeof options.context === 'string' || typeof options.context === 'number') &&
@@ -426,8 +431,7 @@ class Translator extends EventEmitter {
           if (this.isValidLookup(found)) return;
           usedLng = code;
 
-          let finalKey = key;
-          const finalKeys = [finalKey];
+          const finalKeys = [key];
 
           if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
             this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
@@ -435,17 +439,29 @@ class Translator extends EventEmitter {
             let pluralSuffix;
             if (needsPluralHandling)
               pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
-
-            // fallback for plural if context not found
-            if (needsPluralHandling && needsContextHandling)
-              finalKeys.push(finalKey + pluralSuffix);
-
-            // get key for context if needed
-            if (needsContextHandling)
-              finalKeys.push((finalKey += `${this.options.contextSeparator}${options.context}`));
+            const zeroSuffix = '_zero';
 
             // get key for plural if needed
-            if (needsPluralHandling) finalKeys.push((finalKey += pluralSuffix));
+            if (needsPluralHandling) {
+              finalKeys.push(key + pluralSuffix);
+              if (needsZeroSuffixLookup) {
+                finalKeys.push(key + zeroSuffix);
+              }
+            }
+
+            // get key for context if needed
+            if (needsContextHandling) {
+              const contextKey = `${key}${this.options.contextSeparator}${options.context}`;
+              finalKeys.push(contextKey);
+
+              // get key for context + plural if needed
+              if (needsPluralHandling) {
+                finalKeys.push(contextKey + pluralSuffix);
+                if (needsZeroSuffixLookup) {
+                  finalKeys.push(contextKey + zeroSuffix);
+                }
+              }
+            }
           }
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only

@@ -30,6 +30,15 @@ describe('Translator', () => {
               { a: 'b', c: 'd' },
               { a: 'b', c: 'd' },
             ],
+
+            friends:
+              '$t(friend, {"context": "male", "count": {{maleCount}} }) & $t(friend, {"context": "female", "count": {{femaleCount}} })',
+            friend_male_zero: 'No boyfriend',
+            friend_male_one: 'A boyfriend',
+            friend_male_other: '{{count}} boyfriends',
+            friend_female_zero: 'no girlfriend',
+            friend_female_one: 'a girlfriend',
+            friend_female_other: '{{count}} girlfriends',
           },
         },
       });
@@ -75,6 +84,26 @@ describe('Translator', () => {
             { a: 'b', c: 'd' },
           ],
         },
+      },
+      {
+        args: ['friends', { maleCount: 0, femaleCount: 0 }],
+        expected: 'No boyfriend & no girlfriend',
+      },
+      {
+        args: ['friends', { maleCount: 0, femaleCount: 5 }],
+        expected: 'No boyfriend & 5 girlfriends',
+      },
+      {
+        args: ['friends', { maleCount: 5, femaleCount: 0 }],
+        expected: '5 boyfriends & no girlfriend',
+      },
+      {
+        args: ['friends', { maleCount: 1, femaleCount: 2 }],
+        expected: 'A boyfriend & 2 girlfriends',
+      },
+      {
+        args: ['friends', { maleCount: 2, femaleCount: 1 }],
+        expected: '2 boyfriends & a girlfriend',
       },
 
       // interpolation and nesting on defaultValue
