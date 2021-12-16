@@ -55,7 +55,7 @@ class Translator extends EventEmitter {
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
-    let namespaces = options.ns || this.options.defaultNS;
+    let namespaces = options.ns || this.options.defaultNS || [];
     const wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
     const seemsNaturalLanguage =
       !this.options.userDefinedKeySeparator &&
@@ -392,6 +392,7 @@ class Translator extends EventEmitter {
       usedKey = key;
       let namespaces = extracted.namespaces;
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
+      console.log(namespaces);
 
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const needsZeroSuffixLookup =

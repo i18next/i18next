@@ -1,3 +1,7 @@
+## 21.6.1
+
+- fix when completely lazy loading namespaces [1709](https://github.com/i18next/i18next/issues/1709)
+
 ## 21.6.0
 
 - add \_zero suffix lookup if count === 0 [1705](https://github.com/i18next/i18next/pull/1705)
