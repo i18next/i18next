@@ -392,7 +392,6 @@ class Translator extends EventEmitter {
       usedKey = key;
       let namespaces = extracted.namespaces;
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
-      console.log(namespaces);
 
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const needsZeroSuffixLookup =

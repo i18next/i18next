@@ -967,7 +967,6 @@
           usedKey = key;
           var namespaces = extracted.namespaces;
           if (_this4.options.fallbackNS) namespaces = namespaces.concat(_this4.options.fallbackNS);
-          console.log(namespaces);
           var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
 
           var needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0 && _this4.pluralResolver.shouldUseIntlApi();

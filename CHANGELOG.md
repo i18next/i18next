@@ -1,3 +1,7 @@
+## 21.6.2
+
+- remove console.log statement
+
 ## 21.6.1
 
 - fix when completely lazy loading namespaces [1709](https://github.com/i18next/i18next/issues/1709)
