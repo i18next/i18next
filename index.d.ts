@@ -126,11 +126,6 @@ export interface InterpolationOptions {
 
 export interface ReactOptions {
   /**
-   * Set to true if you like to wait for loaded in every translated hoc
-   * @default false
-   */
-  wait?: boolean;
-  /**
    * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
    * @default 'default'
    */
