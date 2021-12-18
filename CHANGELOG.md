@@ -1,3 +1,7 @@
+## 21.6.3
+
+- types: wait option does not exist anymore for react-i18next
+
 ## 21.6.2
 
 - remove console.log statement
