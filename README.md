@@ -6,7 +6,6 @@
 [![Package Quality](https://packagequality.com/shield/i18next.svg)](https://packagequality.com/#?package=i18next)
 [![cdnjs version](https://img.shields.io/cdnjs/v/i18next.svg?style=flat-square)](https://cdnjs.com/libraries/i18next)
 [![npm version](https://img.shields.io/npm/v/i18next.svg?style=flat-square)](https://www.npmjs.com/package/i18next)
-[![David](https://img.shields.io/david/i18next/i18next.svg?style=flat-square)](https://david-dm.org/i18next/i18next)
 
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. Node.js, Deno).
 
@@ -30,6 +29,12 @@ For more information visit the website:
 - [API](https://www.i18next.com/overview/api)
 
 Our focus is providing the core to building a booming ecosystem. Independent of the building blocks you choose, be it react, angular or even good old jquery proper translation capabilities are just [one step away](https://www.i18next.com/overview/supported-frameworks).
+
+### Documentation
+
+The general i18next documentation is published on [www.i18next.com](https://www.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/i18next-gitbook).
+
+The react specific documentation is published on [react.i18next.com](https://react.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/react-i18next-gitbook).
 
 ---
 
