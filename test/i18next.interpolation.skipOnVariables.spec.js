@@ -8,7 +8,7 @@ describe('i18next.interpolation.nesting', () => {
       {
         lng: 'en',
         interpolation: {
-          skipOnVariables: true,
+          // skipOnVariables: true, // true by default
         },
         resources: {
           en: {

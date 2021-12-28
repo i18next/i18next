@@ -1,3 +1,7 @@
+## 21.6.4
+
+- fix: skipOnVariables (and all other interpolation options should respect defaults) [1711](https://github.com/i18next/i18next/issues/1711)
+
 ## 21.6.3
 
 - types: wait option does not exist anymore for react-i18next
