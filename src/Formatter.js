@@ -19,7 +19,8 @@ function parseFormatStr(formatStr) {
 
       opts.forEach((opt) => {
         if (!opt) return;
-        const [key, val] = opt.split(':');
+        const [key, ...rest] = opt.split(':');
+        const val = rest.join(':');
 
         if (val.trim() === 'false') formatOptions[key.trim()] = false;
         if (val.trim() === 'true') formatOptions[key.trim()] = true;

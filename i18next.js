@@ -1765,31 +1765,8 @@
     if (Array.isArray(arr)) return arr;
   }
 
-  function _iterableToArrayLimit(arr, i) {
-    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
-
-    try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"] != null) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-
-    return _arr;
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
   }
 
   function _arrayLikeToArray(arr, len) {
@@ -1815,8 +1792,8 @@
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
-  function _slicedToArray(arr, i) {
-    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  function _toArray(arr) {
+    return _arrayWithHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableRest();
   }
 
   function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
@@ -1842,10 +1819,11 @@
           if (!opt) return;
 
           var _opt$split = opt.split(':'),
-              _opt$split2 = _slicedToArray(_opt$split, 2),
+              _opt$split2 = _toArray(_opt$split),
               key = _opt$split2[0],
-              val = _opt$split2[1];
+              rest = _opt$split2.slice(1);
 
+          var val = rest.join(':');
           if (val.trim() === 'false') formatOptions[key.trim()] = false;
           if (val.trim() === 'true') formatOptions[key.trim()] = true;
           if (!isNaN(val.trim())) formatOptions[key.trim()] = parseInt(val.trim(), 10);

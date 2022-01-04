@@ -41,6 +41,8 @@ describe('i18next.translation.formatting', () => {
               intlRelativeTimeWithOptionsExplicit:
                 'Lorem {{val, relativetime(range: quarter; style: narrow;)}}',
               intlList: 'A list of {{val, list}}',
+              keyCustomFormatWithColon:
+                'Before {{date, customdate(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
             },
           },
         },
@@ -58,6 +60,9 @@ describe('i18next.translation.formatting', () => {
         });
         instance.services.formatter.add('encodeuricomponent', (value, lng, options) => {
           return encodeURIComponent(value);
+        });
+        instance.services.formatter.add('customdate', (value, lng, options) => {
+          return `customized date in format ${options.format} (and other param ${options.otherParam})`;
         });
         done();
       },
@@ -206,6 +211,14 @@ describe('i18next.translation.formatting', () => {
       {
         args: ['intlList', { val: ['locize', 'i18next', 'awesome'] }],
         expected: 'A list of locize, i18next, and awesome',
+      },
+    ]);
+
+    // custom
+    tests = tests.concat([
+      {
+        args: ['keyCustomFormatWithColon', { date: new Date(Date.UTC(2022, 0, 4, 14, 33, 10)) }],
+        expected: 'Before customized date in format EEEE d MMMM yyyy HH:mm (and other param 0)',
       },
     ]);
 

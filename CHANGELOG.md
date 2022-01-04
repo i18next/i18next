@@ -1,3 +1,7 @@
+## 21.6.5
+
+- fix: passed format parameter value truncation in options argument for custom formatter [1715](https://github.com/i18next/i18next/issues/1715)
+
 ## 21.6.4
 
 - fix: skipOnVariables (and all other interpolation options should respect defaults) [1711](https://github.com/i18next/i18next/issues/1711)
