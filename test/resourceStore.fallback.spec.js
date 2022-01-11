@@ -34,6 +34,7 @@ describe('ResourceStore', () => {
               },
             },
             str: 'whatever',
+            'x.y': 'please no',
           },
         },
       };
@@ -71,6 +72,9 @@ describe('ResourceStore', () => {
       expect(ret).to.equal(undefined);
 
       ret = rs.getResource('en', 'translation', 'str.wrong');
+      expect(ret).to.equal(undefined);
+
+      ret = rs.getResource('en', 'translation', 'x.y.z');
       expect(ret).to.equal(undefined);
     });
   });

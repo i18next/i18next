@@ -1,3 +1,7 @@
+## 21.6.6
+
+- fix: deepFind fallback when accessing missing flat dotted key [1719](https://github.com/i18next/i18next/issues/1719)
+
 ## 21.6.5
 
 - fix: passed format parameter value truncation in options argument for custom formatter [1715](https://github.com/i18next/i18next/issues/1715)
