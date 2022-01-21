@@ -71,7 +71,7 @@ class Formatter {
   }
 
   add(name, fc) {
-    this.formats[name.toLowerCase()] = fc;
+    this.formats[name.toLowerCase().trim()] = fc;
   }
 
   format(value, format, lng, options) {
