@@ -1884,7 +1884,7 @@
     }, {
       key: "add",
       value: function add(name, fc) {
-        this.formats[name] = fc;
+        this.formats[name.toLowerCase()] = fc;
       }
     }, {
       key: "format",

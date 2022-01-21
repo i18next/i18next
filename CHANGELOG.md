@@ -1,3 +1,7 @@
+## 21.6.7
+
+- fix: consistently lowercase new formatter names internally
+
 ## 21.6.6
 
 - fix: deepFind fallback when accessing missing flat dotted key [1719](https://github.com/i18next/i18next/issues/1719)

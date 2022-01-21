@@ -42,7 +42,7 @@ describe('i18next.translation.formatting', () => {
                 'Lorem {{val, relativetime(range: quarter; style: narrow;)}}',
               intlList: 'A list of {{val, list}}',
               keyCustomFormatWithColon:
-                'Before {{date, customdate(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
+                'Before {{date, customDate(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
             },
           },
         },
@@ -61,7 +61,7 @@ describe('i18next.translation.formatting', () => {
         instance.services.formatter.add('encodeuricomponent', (value, lng, options) => {
           return encodeURIComponent(value);
         });
-        instance.services.formatter.add('customdate', (value, lng, options) => {
+        instance.services.formatter.add('customDate', (value, lng, options) => {
           return `customized date in format ${options.format} (and other param ${options.otherParam})`;
         });
         done();
