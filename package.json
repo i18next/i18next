@@ -29,6 +29,20 @@
     "type": "git",
     "url": "https://github.com/i18next/i18next.git"
   },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://locize.com"
+    },
+    {
+      "type": "individual",
+      "url": "https://locize.com/i18next.html"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.i18next.com/how-to/faq#i18next-is-awesome.-how-can-i-support-the-project"
+    }
+  ],
   "dependencies": {
     "@babel/runtime": "^7.12.0"
   },
