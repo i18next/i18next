@@ -104,8 +104,9 @@ class Interpolator {
       (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
 
     const skipOnVariables =
-      (options && options.interpolation && options.interpolation.skipOnVariables) ||
-      this.options.interpolation.skipOnVariables;
+      options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+        ? options.interpolation.skipOnVariables
+        : this.options.interpolation.skipOnVariables;
 
     const todos = [
       {
@@ -123,16 +124,19 @@ class Interpolator {
       replaces = 0;
       /* eslint no-cond-assign: 0 */
       while ((match = todo.regex.exec(str))) {
-        value = handleFormat(match[1].trim());
+        const matchedVar = match[1].trim();
+        value = handleFormat(matchedVar);
         if (value === undefined) {
           if (typeof missingInterpolationHandler === 'function') {
             const temp = missingInterpolationHandler(str, match, options);
             value = typeof temp === 'string' ? temp : '';
+          } else if (options && options.hasOwnProperty(matchedVar)) {
+            value = ''; // undefined becomes empty string
           } else if (skipOnVariables) {
             value = match[0];
             continue; // this makes sure it continues to detect others
           } else {
-            this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
+            this.logger.warn(`missed to pass in variable ${matchedVar} for interpolating ${str}`);
             value = '';
           }
         } else if (typeof value !== 'string' && !this.useRawValueToEscape) {

@@ -1,3 +1,7 @@
+## 21.6.8
+
+- fix: respect skipOnVariables option passed in t function
+
 ## 21.6.7
 
 - fix: consistently lowercase new formatter names internally

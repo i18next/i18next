@@ -1636,7 +1636,7 @@
 
         this.resetRegExp();
         var missingInterpolationHandler = options && options.missingInterpolationHandler || this.options.missingInterpolationHandler;
-        var skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+        var skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
         var todos = [{
           regex: this.regexpUnescape,
           safeValue: function safeValue(val) {
@@ -1652,17 +1652,20 @@
           replaces = 0;
 
           while (match = todo.regex.exec(str)) {
-            value = handleFormat(match[1].trim());
+            var matchedVar = match[1].trim();
+            value = handleFormat(matchedVar);
 
             if (value === undefined) {
               if (typeof missingInterpolationHandler === 'function') {
                 var temp = missingInterpolationHandler(str, match, options);
                 value = typeof temp === 'string' ? temp : '';
+              } else if (options && options.hasOwnProperty(matchedVar)) {
+                value = '';
               } else if (skipOnVariables) {
                 value = match[0];
                 continue;
               } else {
-                _this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
+                _this.logger.warn("missed to pass in variable ".concat(matchedVar, " for interpolating ").concat(str));
 
                 value = '';
               }
