@@ -1,3 +1,7 @@
+## 21.6.9
+
+- fix: respect skipOnVariables option passed in t function also for $t() usage
+
 ## 21.6.8
 
 - fix: respect skipOnVariables option passed in t function

@@ -310,8 +310,9 @@ class Translator extends EventEmitter {
         });
       const skipOnVariables =
         typeof res === 'string' &&
-        ((options.interpolation && options.interpolation.skipOnVariables) ||
-          this.options.interpolation.skipOnVariables);
+        (options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+          ? options.interpolation.skipOnVariables
+          : this.options.interpolation.skipOnVariables);
       let nestBef;
       if (skipOnVariables) {
         const nb = res.match(this.interpolator.nestingRegexp);
