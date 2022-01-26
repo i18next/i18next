@@ -1,3 +1,7 @@
+## 21.6.10
+
+- fix: types for hasLoadedNamespace [1724](https://github.com/i18next/i18next/pull/1724)
+
 ## 21.6.9
 
 - fix: respect skipOnVariables option passed in t function also for $t() usage
