@@ -1002,9 +1002,9 @@ export interface i18n {
   setDefaultNamespace(ns: string): void;
 
   /**
-   * Changes the default namespace.
+   * Checks if a namespace has been loaded.
    */
-  hasLoadedNamespace(ns: string, options?: Pick<InitOptions, 'fallbackLng'>): void;
+  hasLoadedNamespace(ns: string, options?: Pick<InitOptions, 'fallbackLng'>): boolean;
 
   /**
    * Returns rtl or ltr depending on languages read direction.
