@@ -1,29 +1,235 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="keywords" content="i18n, internationalization, translation, javascript, nodejs, js"><title>i18next - with jquery</title><link href="../public/css/index.css" rel="stylesheet"><script src="../public/js/jquery-1.7.2.min.js"></script><script src="../public/js/bootstrap-2.0.2.min.js"></script><!-- HTML5 shim, for IE6-8 support of HTML5 elements--><!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!--[if lt IE 8]><link href="../public/css/font-awesome-ie7-2.0.css" rel="stylesheet" type="text/css"><![endif]--><title>i18next Documentation: JQuery Integration</title></head><body><header class="header"><div class="header-inner"><div class="navbar navbar-fixed-top"><div class="navbar-inner"><div class="container"><!--.btn-navbar is used as the toggle for collapsed navbar content--><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><!-- Be sure to leave the brand out there if you want it shown--><a href="../" class="brand">i18next</a><!-- Everything you want hidden at 940px or less, place within here--><div class="nav-collapse"><ul class="nav"><li><a href="../index.html">Home</a></li><li><a href="../pages/doc_features.html">Documentation</a></li><li><a href="../pages/sample.html">Sample</a></li><li><a href="../pages/ext_webtranslate.html">i18next-WebTranslate</a></li><li><a href="../pages/ext_i18next-conv.html">gettext</a></li><li><a href="https://www.locize.com">Translation Management</a></li></ul><ul class="nav pull-right"><li><a href="../pages/releasenotes.html"><i class="icon-file"></i> releasenotes</a></li><li><a href="../pages/test.html"><i class="icon-check"></i> tests</a></li><li><a href="https://github.com/jamuhl/i18next"><i class="icon-github"></i> fork me</a></li></ul></div></div></div></div></div></header><div class="main"><div class="main-inner"><div class="container"><div class="content-container"> <div class="documentation"><div class="hero-unit"><h2><i class="icon-book"></i> Documentation: </h2><div class="row-fluid doc-links"><div class="span3"><div class="doc-link"><a href="../pages/doc_init.html" class="first">Initialization Options</a></div></div><div class="span3"><div class="doc-link"><a href="../pages/doc_features.html">Features</a></div></div><div class="span3"><div class="doc-link"><a href="../pages/doc_jquery.html">JQuery Integration</a></div></div><div class="span3"><div class="doc-link"><a href="../pages/doc_templates.html" class="last">Template & Helpers</a></div></div></div></div><h2>Using with JQuery</h2><div class="alert alert-info"><p>There is no hard dependency on JQuery. If not used i18next will use drop in functions for ajax,...</p><p>But if JQuery is loaded before i18next it can be optionally extended:</p></div><p> </p>By default i18next will extend jquery by appending i18n to $ and providing a 
-$.fn to translate dom elements marked with the data-i18n attribute.<pre><code><span class="com">// with options</span><span class="pln"><br />$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">({</span><span class="pln"> lng</span><span class="pun">:</span><span class="pln"> </span><span class="str">"en-US"</span><span class="pln"> </span><span class="pun">});</span><span class="pln"><br /></span><span class="com">// "later"</span><span class="pln"><br /></span><span class="kwd">var</span><span class="pln"> x </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">"key"</span><span class="pun">);</span></code></pre><h3>JQuery deferred instead of callback</h3><div class="row-fluid"><div class="span4"><h4 class="feature-title">Use deferred:</h4></div><div class="span8"><div class="feature"><pre><code><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">(</span><span class="pln">opts</span><span class="pun">).</span><span class="kwd">done</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; </span><span class="kwd">var</span><span class="pln"> x </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">"key"</span><span class="pun">);</span><span class="pln"><br /></span><span class="pun">})</span></code></pre></div></div></div><a name="jqueryfc"></a><h3>Using the selector function</h3><div class="row-fluid"><div class="span4"><h4 class="feature-title">Usage:</h4><pre><code><span class="pln">$</span><span class="pun">(</span><span class="pln">mySelector</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">(</span><span class="pln">options</span><span class="pun">);</span></code></pre><p><span class="badge badge-info">Hint:</span> You can deactivate this features by setting options on init:<ul><li>setJqueryExt = false</li><li>(will deactivate $.t too!)</li></ul></p></div><div class="span8"><div class="feature"><h4>Replace text of one element:</h4>
-
-<pre><code><span class="tag">&lt;a</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"btn1"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"key.to.set.text"</span><span class="tag">&gt;&lt;/a&gt;</span><span class="pln"><br /></span></code></pre><pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">"#btn1"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre><div class="feature-description"><p>The button will get it's text attribute set depending on it's key.</p><p>Like in the translation function '$.t(key)' you can prepand namespace with 'myNamespace:'</p><p>You could change the dataAttributes name to something else if needed, just set 'selectorAttr' on init (default is 'data-i18n').</p><p>i18next will grab a missing value from content and post it if postMissing feature is activated. You can 
-turn this off by setting option ''defaultValueFromContent' to false on init.</p></div><div class="feature-description"><h4>empty data-i18n attribute:</h4><p>the key will be taken from the elements text or value, eg: <code>&lt;a id="btn1" href="#" data-i18n&gt;key.to.set.text&lt;/a&gt;</code></p></div><div class="feature-description"><h4>Using Options:</h4><p> 
-You can pass in same options as in the translation function. For 
-more information about the options go to the <a href="../pages/doc_features">features page.</a></p><p>Alternatively, by setting init option or translation option `{useDataAttrOptions: true}`
-the Options for translation will be read and cached in the element's jQuery data under
-the "i18n-options" key. The next time `.i18n()` is called on the element, the previous
-options will be used. This makes it possible to retranslate the element without supplying
-the original arguments.</p></div></div><div class="feature"><h4>Replace on elements children:</h4>
-
-<pre><code><span class="tag">&lt;ul</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"nav"</span><span class="tag">&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;li&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"nav.home"</span><span class="tag">&gt;&lt;/a&gt;&lt;/li&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;li&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"nav.page1"</span><span class="tag">&gt;&lt;/a&gt;&lt;/li&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;li&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"nav.page2"</span><span class="tag">&gt;&lt;/a&gt;&lt;/li&gt;</span><span class="pln"><br /></span><span class="tag">&lt;/ul&gt;</span><span class="pln"><br /></span></code></pre><pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">".nav"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre><div class="feature-description"><p>Every li element will get it's text attribute set depending on it's key.</p></div></div><div class="feature"><h4>Replace on inner element:</h4>
-
-<pre><code><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"outer"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"ns:key"</span><span class="pln"> </span><span class="atn">data-i18n-target</span><span class="pun">=</span><span class="atv">".inner"</span><span class="tag">&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"inner"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="tag">&gt;&lt;/input&gt;</span><span class="pln"><br /></span><span class="tag">&lt;/div&gt;</span><span class="pln"><br /></span></code></pre><pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">".outer"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre><div class="feature-description"><p>As the target attribute is set the input tag with class 'inner' will get his value set.</p></div></div></div></div><div class="row-fluid"><div class="span4"><h4 class="feature-title">setting html, prepend, append content:</h4></div><div class="span8"><div class="feature"><h4>Replace other attributes or innerHtml:</h4>
-
-<pre><code><span class="tag">&lt;a</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"btn1"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"[title]key.for.title;key.for.text"</span><span class="tag">&gt;&lt;/a&gt;</span><span class="pln"><br /></span></code></pre><pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">"#btn1"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre><div class="feature-description"><p>Just provide the attribute to set in '[]' and seperate multiple attributes via ';'.</p><p>You can even set the innerHtml by prepending '[html]' or prepend by '[prepend]' or append by '[append]'.</p></div></div></div></div><div class="row-fluid"><div class="span4"><h4 class="feature-title">setting data:</h4></div><div class="span8"><div class="feature"><h4>set data:</h4>
-
-<pre><code><span class="tag">&lt;a</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"btn1"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"[data-someDataAttribute]key.for.text"</span><span class="tag">&gt;&lt;/a&gt;</span><span class="pln"><br /></span></code></pre><pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">"#btn1"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre><div class="feature-description"><p>The element will have 'data-someDataAttribute' attribute and data could be read by <code>$("#btn1").data('someDataAttribute');</code></p></div></div></div></div></div></div></div></div></div><div class="extra"><div class="extra-inner"><div class="container"><div class="row"><div class="span4"><h4>about me</h4><ul><li><a href="https://github.com/jamuhl"><i class="icon-github"></i> github</a></li><li><a href="https://twitter.com/jamuhl"><i class="icon-twitter"></i> twitter</a></li></ul></div><div class="span4"><h4>help</h4><ul><li><a href="https://github.com/jamuhl/i18next/issues"> 
-issues (<i class="icon-github"></i>)</a></li></ul></div><div class="span4"><h4>legal</h4><ul><li><a href="https://github.com/jamuhl/i18next/blob/master/license">license</a></li></ul></div></div></div></div></div><footer class="footer"><div class="footer-inner"><div class="container"><div class="row"><div class="span12">i18next is freely distributable under the terms of the MIT license.</div></div></div></div></footer><script type="text/javascript">var _gaq = window._gaq || [];
-_gaq.push(['_setAccount', 'UA-33181917-2']);
-_gaq.push(['_setDomainName', 'none']); // track localhost
-_gaq.push(['_trackPageview']);
-
-(function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="keywords" content="i18n, internationalization, translation, javascript, nodejs, js">
+    <title>i18next - with jquery</title>
+    <link href="../public/css/index.css" rel="stylesheet">
+    <script src="../public/js/jquery-1.7.2.min.js"></script><script src="../public/js/bootstrap-2.0.2.min.js"></script><!-- HTML5 shim, for IE6-8 support of HTML5 elements--><!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!--[if lt IE 8]>
+    <link href="../public/css/font-awesome-ie7-2.0.css" rel="stylesheet" type="text/css">
+    <![endif]-->
+    <title>i18next Documentation: JQuery Integration</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+              <!--.btn-navbar is used as the toggle for collapsed navbar content--><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><!-- Be sure to leave the brand out there if you want it shown--><a href="../" class="brand">i18next</a><!-- Everything you want hidden at 940px or less, place within here-->
+              <div class="nav-collapse">
+                <ul class="nav">
+                  <li><a href="../index.html">Home</a></li>
+                  <li><a href="../pages/doc_features.html">Documentation</a></li>
+                  <li><a href="../pages/sample.html">Sample</a></li>
+                  <li><a href="../pages/ext_webtranslate.html">i18next-WebTranslate</a></li>
+                  <li><a href="../pages/ext_i18next-conv.html">gettext</a></li>
+                  <li><a href="https://www.locize.com">Translation Management</a></li>
+                </ul>
+                <ul class="nav pull-right">
+                  <li><a href="../pages/releasenotes.html"><i class="icon-file"></i> releasenotes</a></li>
+                  <li><a href="../pages/test.html"><i class="icon-check"></i> tests</a></li>
+                  <li><a href="https://github.com/jamuhl/i18next"><i class="icon-github"></i> fork me</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="main">
+      <div class="main-inner">
+        <div class="container">
+          <div class="content-container">
+            <div class="documentation">
+              <div class="hero-unit">
+                <h2><i class="icon-book"></i> Documentation: </h2>
+                <div class="alert alert-info">
+                  <p>There is a nice tutorial in <b><a href="https://dev.to/adrai/the-progressive-guide-to-jquery-internationalization-i18n-using-i18next-3dc3">this blog post</a></b>. Check it out!</p>
+                </div>
+                <div class="row-fluid doc-links">
+                  <div class="span3">
+                    <div class="doc-link"><a href="../pages/doc_init.html" class="first">Initialization Options</a></div>
+                  </div>
+                  <div class="span3">
+                    <div class="doc-link"><a href="../pages/doc_features.html">Features</a></div>
+                  </div>
+                  <div class="span3">
+                    <div class="doc-link"><a href="../pages/doc_jquery.html">JQuery Integration</a></div>
+                  </div>
+                  <div class="span3">
+                    <div class="doc-link"><a href="../pages/doc_templates.html" class="last">Template & Helpers</a></div>
+                  </div>
+                </div>
+              </div>
+              <h2>Using with JQuery</h2>
+              <div class="alert alert-info">
+                <p>There is no hard dependency on JQuery. If not used i18next will use drop in functions for ajax,...</p>
+                <p>But if JQuery is loaded before i18next it can be optionally extended:</p>
+              </div>
+              <p> </p>
+              By default i18next will extend jquery by appending i18n to $ and providing a 
+              $.fn to translate dom elements marked with the data-i18n attribute.
+              <pre><code><span class="com">// with options</span><span class="pln"><br />$</span><span class="pun">.</span><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">({</span><span class="pln"> lng</span><span class="pun">:</span><span class="pln"> </span><span class="str">"en-US"</span><span class="pln"> </span><span class="pun">});</span><span class="pln"><br /></span><span class="com">// "later"</span><span class="pln"><br /></span><span class="kwd">var</span><span class="pln"> x </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">"key"</span><span class="pun">);</span></code></pre>
+              <h3>JQuery deferred instead of callback</h3>
+              <div class="row-fluid">
+                <div class="span4">
+                  <h4 class="feature-title">Use deferred:</h4>
+                </div>
+                <div class="span8">
+                  <div class="feature">
+                    <pre><code><span class="pln">i18n</span><span class="pun">.</span><span class="pln">init</span><span class="pun">(</span><span class="pln">opts</span><span class="pun">).</span><span class="kwd">done</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br />&nbsp; </span><span class="kwd">var</span><span class="pln"> x </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">t</span><span class="pun">(</span><span class="str">"key"</span><span class="pun">);</span><span class="pln"><br /></span><span class="pun">})</span></code></pre>
+                  </div>
+                </div>
+              </div>
+              <a name="jqueryfc"></a>
+              <h3>Using the selector function</h3>
+              <div class="row-fluid">
+                <div class="span4">
+                  <h4 class="feature-title">Usage:</h4>
+                  <pre><code><span class="pln">$</span><span class="pun">(</span><span class="pln">mySelector</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">(</span><span class="pln">options</span><span class="pun">);</span></code></pre>
+                  <p><span class="badge badge-info">Hint:</span> You can deactivate this features by setting options on init:
+                  <ul>
+                    <li>setJqueryExt = false</li>
+                    <li>(will deactivate $.t too!)</li>
+                  </ul>
+                  </p>
+                </div>
+                <div class="span8">
+                  <div class="feature">
+                    <h4>Replace text of one element:</h4>
+                    <pre><code><span class="tag">&lt;a</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"btn1"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"key.to.set.text"</span><span class="tag">&gt;&lt;/a&gt;</span><span class="pln"><br /></span></code></pre>
+                    <pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">"#btn1"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre>
+                    <div class="feature-description">
+                      <p>The button will get it's text attribute set depending on it's key.</p>
+                      <p>Like in the translation function '$.t(key)' you can prepand namespace with 'myNamespace:'</p>
+                      <p>You could change the dataAttributes name to something else if needed, just set 'selectorAttr' on init (default is 'data-i18n').</p>
+                      <p>i18next will grab a missing value from content and post it if postMissing feature is activated. You can 
+                        turn this off by setting option ''defaultValueFromContent' to false on init.
+                      </p>
+                    </div>
+                    <div class="feature-description">
+                      <h4>empty data-i18n attribute:</h4>
+                      <p>the key will be taken from the elements text or value, eg: <code>&lt;a id="btn1" href="#" data-i18n&gt;key.to.set.text&lt;/a&gt;</code></p>
+                    </div>
+                    <div class="feature-description">
+                      <h4>Using Options:</h4>
+                      <p> 
+                        You can pass in same options as in the translation function. For 
+                        more information about the options go to the <a href="../pages/doc_features">features page.</a>
+                      </p>
+                      <p>Alternatively, by setting init option or translation option `{useDataAttrOptions: true}`
+                        the Options for translation will be read and cached in the element's jQuery data under
+                        the "i18n-options" key. The next time `.i18n()` is called on the element, the previous
+                        options will be used. This makes it possible to retranslate the element without supplying
+                        the original arguments.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="feature">
+                    <h4>Replace on elements children:</h4>
+                    <pre><code><span class="tag">&lt;ul</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"nav"</span><span class="tag">&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;li&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"nav.home"</span><span class="tag">&gt;&lt;/a&gt;&lt;/li&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;li&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"nav.page1"</span><span class="tag">&gt;&lt;/a&gt;&lt;/li&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;li&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"nav.page2"</span><span class="tag">&gt;&lt;/a&gt;&lt;/li&gt;</span><span class="pln"><br /></span><span class="tag">&lt;/ul&gt;</span><span class="pln"><br /></span></code></pre>
+                    <pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">".nav"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre>
+                    <div class="feature-description">
+                      <p>Every li element will get it's text attribute set depending on it's key.</p>
+                    </div>
+                  </div>
+                  <div class="feature">
+                    <h4>Replace on inner element:</h4>
+                    <pre><code><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"outer"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"ns:key"</span><span class="pln"> </span><span class="atn">data-i18n-target</span><span class="pun">=</span><span class="atv">".inner"</span><span class="tag">&gt;</span><span class="pln"><br />&nbsp; </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"inner"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="tag">&gt;&lt;/input&gt;</span><span class="pln"><br /></span><span class="tag">&lt;/div&gt;</span><span class="pln"><br /></span></code></pre>
+                    <pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">".outer"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre>
+                    <div class="feature-description">
+                      <p>As the target attribute is set the input tag with class 'inner' will get his value set.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row-fluid">
+                <div class="span4">
+                  <h4 class="feature-title">setting html, prepend, append content:</h4>
+                </div>
+                <div class="span8">
+                  <div class="feature">
+                    <h4>Replace other attributes or innerHtml:</h4>
+                    <pre><code><span class="tag">&lt;a</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"btn1"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"[title]key.for.title;key.for.text"</span><span class="tag">&gt;&lt;/a&gt;</span><span class="pln"><br /></span></code></pre>
+                    <pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">"#btn1"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre>
+                    <div class="feature-description">
+                      <p>Just provide the attribute to set in '[]' and seperate multiple attributes via ';'.</p>
+                      <p>You can even set the innerHtml by prepending '[html]' or prepend by '[prepend]' or append by '[append]'.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row-fluid">
+                <div class="span4">
+                  <h4 class="feature-title">setting data:</h4>
+                </div>
+                <div class="span8">
+                  <div class="feature">
+                    <h4>set data:</h4>
+                    <pre><code><span class="tag">&lt;a</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"btn1"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">data-i18n</span><span class="pun">=</span><span class="atv">"[data-someDataAttribute]key.for.text"</span><span class="tag">&gt;&lt;/a&gt;</span><span class="pln"><br /></span></code></pre>
+                    <pre><code><span class="pln">$</span><span class="pun">(</span><span class="str">"#btn1"</span><span class="pun">).</span><span class="pln">i18n</span><span class="pun">();</span></code></pre>
+                    <div class="feature-description">
+                      <p>The element will have 'data-someDataAttribute' attribute and data could be read by <code>$("#btn1").data('someDataAttribute');</code></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="extra">
+      <div class="extra-inner">
+        <div class="container">
+          <div class="row">
+            <div class="span4">
+              <h4>about me</h4>
+              <ul>
+                <li><a href="https://github.com/jamuhl"><i class="icon-github"></i> github</a></li>
+                <li><a href="https://twitter.com/jamuhl"><i class="icon-twitter"></i> twitter</a></li>
+              </ul>
+            </div>
+            <div class="span4">
+              <h4>help</h4>
+              <ul>
+                <li><a href="https://github.com/jamuhl/i18next/issues"> 
+                  issues (<i class="icon-github"></i>)</a>
+                </li>
+              </ul>
+            </div>
+            <div class="span4">
+              <h4>legal</h4>
+              <ul>
+                <li><a href="https://github.com/jamuhl/i18next/blob/master/license">license</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="container">
+          <div class="row">
+            <div class="span12">i18next is freely distributable under the terms of the MIT license.</div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script type="text/javascript">var _gaq = window._gaq || [];
+      _gaq.push(['_setAccount', 'UA-33181917-2']);
+      _gaq.push(['_setDomainName', 'none']); // track localhost
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
