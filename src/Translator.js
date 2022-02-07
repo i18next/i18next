@@ -283,8 +283,13 @@ class Translator extends EventEmitter {
         res = `${namespace}:${key}`;
 
       // parseMissingKeyHandler
-      if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler)
-        res = this.options.parseMissingKeyHandler(res);
+      if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
+        if (this.options.compatibilityAPI !== 'v1') {
+          res = this.options.parseMissingKeyHandler(key, usedDefault ? res : undefined);
+        } else {
+          res = this.options.parseMissingKeyHandler(res);
+        }
+      }
     }
 
     // return
