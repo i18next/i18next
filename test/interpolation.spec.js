@@ -200,11 +200,11 @@ describe('Interpolator', () => {
             altValue: 16543.21,
             parmOptions: {
               localValue: { currency: 'USD', locale: 'en-US' },
-              altValue: { currency: 'CAD', locale: 'fr-CA' },
+              altValue: { currency: 'EUR', locale: 'fr-FR' },
             },
           },
         ],
-        expected: 'test $12,345.67 16 543,21 $ CA',
+        expected: 'test $12,345.67 16 543,21 €',
       },
     ];
 

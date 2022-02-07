@@ -94,11 +94,11 @@ describe('i18next.translation.formatting.legacyFunction', () => {
             altValue: 16543.21,
             parmOptions: {
               localValue: { currency: 'USD', locale: 'en-US' },
-              altValue: { currency: 'CAD', locale: 'fr-CA' },
+              altValue: { currency: 'CHF', locale: 'de-CH' },
             },
           },
         ],
-        expected: 'The value is $12,345.67 or 16 543,21 $ CA',
+        expected: 'The value is $12,345.67 or CHF 16’543.21',
       },
       {
         args: [
