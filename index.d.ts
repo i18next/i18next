@@ -735,25 +735,26 @@ export class ResourceStore {
   public options: InitOptions;
 
   /**
-   * Gets fired when resources got added or removed
+   * Gets fired when resources got added
    */
-  on(event: 'added' | 'removed', callback: (lng: string, ns: string, resources: any) => void): void;
-  on(
-    event: 'added' | 'removed',
-    callback: (lng: string, ns: string, key: string, value: string) => void,
-  ): void;
+  on(event: 'added', callback: (lng: string, ns: string, resources: any) => void): void;
+  on(event: 'added', callback: (lng: string, ns: string, key: string, value: string) => void): void;
+
+  /**
+   * Gets fired when resources got removed
+   */
+  on(event: 'removed', callback: (lng: string, ns: string) => void): void;
+
   /**
    * Remove event listener
    * removes all callback when callback not specified
    */
+  off(event: 'added', callback?: (lng: string, ns: string, resources: any) => void): void;
   off(
-    event: 'added' | 'removed',
-    callback?: (lng: string, ns: string, resources: any) => void,
-  ): void;
-  off(
-    event: 'added' | 'removed',
+    event: 'added',
     callback?: (lng: string, ns: string, key: string, value: string) => void,
   ): void;
+  off(event: 'removed', callback?: (lng: string, ns: string, resources: any) => void): void;
 }
 
 export interface Formatter {
