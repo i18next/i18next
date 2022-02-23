@@ -6,6 +6,8 @@ import Translator from '../../src/Translator';
 
 const NB_PLURALS_ARABIC = 6;
 
+const NB_PLURALS_ENGLISH_ORDINAL = 4;
+
 describe('Translator', () => {
   let t;
   let tServices;
@@ -127,6 +129,82 @@ describe('Translator', () => {
         .be.true;
       expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_two', 'default0')).to
         .be.true;
+    });
+  });
+
+  describe('translate() saveMissing with saveMissingPlurals options (ordinal)', () => {
+    beforeEach(() => {
+      t = new Translator(tServices, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        saveMissingPlurals: true,
+        missingKeyHandler,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true,
+        },
+      });
+      t.changeLanguage('en');
+    });
+
+    [
+      {
+        args: ['translation:test.missing', { count: 3, ordinal: true }],
+        expected: NB_PLURALS_ENGLISH_ORDINAL,
+      },
+      {
+        args: ['translation:test.missing', { count: 0, ordinal: true }],
+        expected: NB_PLURALS_ENGLISH_ORDINAL,
+      },
+    ].forEach((test) => {
+      it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
+        t.translate.apply(t, test.args);
+        expect(missingKeyHandler.callCount).to.eql(test.expected);
+        expect(
+          missingKeyHandler
+            .getCall(0)
+            .calledWith(['en'], 'translation', 'test.missing_one', 'test.missing'),
+        ).to.be.true;
+      });
+    });
+  });
+
+  describe('translate() saveMissing with saveMissingPlurals and defaults (ordinal)', () => {
+    beforeEach(() => {
+      t = new Translator(tServices, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        saveMissingPlurals: true,
+        missingKeyHandler,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true,
+        },
+      });
+      t.changeLanguage('en');
+
+      t.translate('translation:test.missing', {
+        count: 0,
+        ordinal: true,
+        defaultValue_one: 'default1',
+        defaultValue_other: 'defaultOther',
+      });
+    });
+
+    it('correctly sends missing resolved value', () => {
+      expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ENGLISH_ORDINAL);
+      expect(
+        missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_other', 'defaultOther'),
+      ).to.be.true;
+      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_one', 'default1')).to
+        .be.true;
+      expect(
+        missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_two', 'defaultOther'),
+      ).to.be.true;
     });
   });
 });
