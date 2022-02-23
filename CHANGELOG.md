@@ -1,3 +1,7 @@
+## 21.6.12
+
+- fix ordinal-suffixes for saveMissingWithPlurals [1734](https://github.com/i18next/i18next/pull/1734)
+
 ## 21.6.11
 
 - make sure key and additionally optional defaultValue are passed to parseMissingKeyHandler function [1445](https://github.com/i18next/react-i18next/issues/1445)
