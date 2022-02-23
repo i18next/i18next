@@ -265,7 +265,7 @@ class Translator extends EventEmitter {
         if (this.options.saveMissing) {
           if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach((language) => {
-              this.pluralResolver.getSuffixes(language).forEach((suffix) => {
+              this.pluralResolver.getSuffixes(language, options).forEach((suffix) => {
                 send([language], key + suffix, options[`defaultValue${suffix}`] || defaultValue);
               });
             });
