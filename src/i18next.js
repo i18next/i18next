@@ -246,7 +246,10 @@ class I18n extends EventEmitter {
         this.options.preload.forEach(l => append(l));
       }
 
-      this.services.backendConnector.load(toLoad, this.options.ns, usedCallback);
+      this.services.backendConnector.load(toLoad, this.options.ns, (e) => {
+        if (!e && !this.resolvedLanguage && this.language) this.setResolvedLanguage(this.language);
+        usedCallback(e);
+      });
     } else {
       usedCallback(null);
     }
@@ -299,6 +302,19 @@ class I18n extends EventEmitter {
     return this;
   }
 
+  setResolvedLanguage(l) {
+    if (!l || !this.languages) return;
+    if (['cimode', 'dev'].indexOf(l) > -1) return;
+    for (let li = 0; li < this.languages.length; li++) {
+      const lngInLngs = this.languages[li];
+      if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+      if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+        this.resolvedLanguage = lngInLngs;
+        break;
+      }
+    }
+  }
+
   changeLanguage(lng, callback) {
     this.isLanguageChangingTo = lng;
     const deferred = defer();
@@ -309,15 +325,7 @@ class I18n extends EventEmitter {
       this.languages = this.services.languageUtils.toResolveHierarchy(l);
       // find the first language resolved languaged
       this.resolvedLanguage = undefined;
-      if (['cimode', 'dev'].indexOf(l) > -1) return;
-      for (let li = 0; li < this.languages.length; li++) {
-        const lngInLngs = this.languages[li];
-        if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
-        if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
-          this.resolvedLanguage = lngInLngs;
-          break;
-        }
-      }
+      this.setResolvedLanguage(l);
     };
 
     const done = (err, l) => {

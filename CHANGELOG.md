@@ -1,3 +1,7 @@
+## 21.6.13
+
+- make sure resolvedLanguage is set if lazy loading resources
+
 ## 21.6.12
 
 - fix ordinal-suffixes for saveMissingWithPlurals [1734](https://github.com/i18next/i18next/pull/1734)

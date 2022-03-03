@@ -2518,7 +2518,10 @@
             });
           }
 
-          this.services.backendConnector.load(toLoad, this.options.ns, usedCallback);
+          this.services.backendConnector.load(toLoad, this.options.ns, function (e) {
+            if (!e && !_this3.resolvedLanguage && _this3.language) _this3.setResolvedLanguage(_this3.language);
+            usedCallback(e);
+          });
         } else {
           usedCallback(null);
         }
@@ -2573,6 +2576,22 @@
         return this;
       }
     }, {
+      key: "setResolvedLanguage",
+      value: function setResolvedLanguage(l) {
+        if (!l || !this.languages) return;
+        if (['cimode', 'dev'].indexOf(l) > -1) return;
+
+        for (var li = 0; li < this.languages.length; li++) {
+          var lngInLngs = this.languages[li];
+          if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+
+          if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+            this.resolvedLanguage = lngInLngs;
+            break;
+          }
+        }
+      }
+    }, {
       key: "changeLanguage",
       value: function changeLanguage(lng, callback) {
         var _this4 = this;
@@ -2585,17 +2604,8 @@
           _this4.language = l;
           _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
           _this4.resolvedLanguage = undefined;
-          if (['cimode', 'dev'].indexOf(l) > -1) return;
 
-          for (var li = 0; li < _this4.languages.length; li++) {
-            var lngInLngs = _this4.languages[li];
-            if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
-
-            if (_this4.store.hasLanguageSomeTranslations(lngInLngs)) {
-              _this4.resolvedLanguage = lngInLngs;
-              break;
-            }
-          }
+          _this4.setResolvedLanguage(l);
         };
 
         var done = function done(err, l) {
