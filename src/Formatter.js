@@ -22,10 +22,11 @@ function parseFormatStr(formatStr) {
         const [key, ...rest] = opt.split(':');
         const val = rest.join(':');
 
+        if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val.trim();
         if (val.trim() === 'false') formatOptions[key.trim()] = false;
         if (val.trim() === 'true') formatOptions[key.trim()] = true;
         if (!isNaN(val.trim())) formatOptions[key.trim()] = parseInt(val.trim(), 10);
-        if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val.trim();
+        console.log(formatOptions);
       });
     }
   }

@@ -1,3 +1,7 @@
+## 21.6.14
+
+- fix formatter for false inline options
+
 ## 21.6.13
 
 - make sure resolvedLanguage is set if lazy loading resources

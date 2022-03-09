@@ -31,6 +31,7 @@ describe('i18next.translation.formatting', () => {
               keyWithNesting: 'hi$t(withSpace)',
               intlNumber: 'Some {{val, number}}',
               intlNumberWithOptions: 'Some {{val, number(minimumFractionDigits: 2)}}',
+              intlNumberWithOptions2: '{{val,number(useGrouping:false)}}',
               intlCurrencyWithOptions: 'The value is {{val, currency(currency: USD)}}',
               intlCurrencyWithOptionsSimplified: 'The value is {{val, currency(USD)}}',
               twoIntlCurrencyWithUniqueFormatOptions:
@@ -133,6 +134,10 @@ describe('i18next.translation.formatting', () => {
           { val: 2000, formatParams: { val: { minimumFractionDigits: 3 } } },
         ],
         expected: 'Some 2,000.000',
+      },
+      {
+        args: ['intlNumberWithOptions2', { val: 123456 }],
+        expected: '123456',
       },
     ]);
 
