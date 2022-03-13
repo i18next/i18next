@@ -13,12 +13,18 @@ describe('Translator', () => {
         en: {
           translation: {
             test: ['test_en_1', 'test_en_2', '{{myVar}}'],
-            flagList: [['basic1', 'Basic1'], ['simple1', 'Simple1']],
+            flagList: [
+              ['basic1', 'Basic1'],
+              ['simple1', 'Simple1'],
+            ],
             search: {
-              flagList: [['basic', 'Basic'], ['simple', 'Simple']],
+              flagList: [
+                ['basic', 'Basic'],
+                ['simple', 'Simple'],
+              ],
             },
-            keyArray: ['hello world {{count}}', 'hey {{count}}'],
-            keyArray_plural: ['hello world plural {{count}}', 'hey plural {{count}}'],
+            keyArray_one: ['hello world {{count}}', 'hey {{count}}'],
+            keyArray_other: ['hello world plural {{count}}', 'hey plural {{count}}'],
           },
         },
       });
@@ -58,7 +64,10 @@ describe('Translator', () => {
       },
       {
         args: [['search.flagList', 'flagList'], {}],
-        expected: [['basic', 'Basic'], ['simple', 'Simple']],
+        expected: [
+          ['basic', 'Basic'],
+          ['simple', 'Simple'],
+        ],
       },
       {
         args: ['keyArray', { count: 1 }],
@@ -70,7 +79,7 @@ describe('Translator', () => {
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });

@@ -8,10 +8,6 @@ class LanguageUtil {
   constructor(options) {
     this.options = options;
 
-    // temporal backwards compatibility WHITELIST REMOVAL
-    this.whitelist = this.options.supportedLngs || false;
-    // end temporal backwards compatibility WHITELIST REMOVAL
-
     this.supportedLngs = this.options.supportedLngs || false;
     this.logger = baseLogger.create('languageUtils');
   }
@@ -40,7 +36,7 @@ class LanguageUtil {
       let p = code.split('-');
 
       if (this.options.lowerCaseLng) {
-        p = p.map(part => part.toLowerCase());
+        p = p.map((part) => part.toLowerCase());
       } else if (p.length === 2) {
         p[0] = p[0].toLowerCase();
         p[1] = p[1].toUpperCase();
@@ -63,17 +59,6 @@ class LanguageUtil {
     return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
   }
 
-  // temporal backwards compatibility WHITELIST REMOVAL
-  isWhitelisted(code) {
-    this.logger.deprecate(
-      'languageUtils.isWhitelisted',
-      'function "isWhitelisted" will be renamed to "isSupportedCode" in the next major - please make sure to rename it\'s usage asap.',
-    );
-
-    return this.isSupportedCode(code);
-  }
-  // end temporal backwards compatibility WHITELIST REMOVAL
-
   isSupportedCode(code) {
     if (this.options.load === 'languageOnly' || this.options.nonExplicitSupportedLngs) {
       code = this.getLanguagePartFromCode(code);
@@ -89,7 +74,7 @@ class LanguageUtil {
     let found;
 
     // pick first supported code or if no restriction pick the first one (highest prio)
-    codes.forEach(code => {
+    codes.forEach((code) => {
       if (found) return;
       let cleanedLng = this.formatLanguageCode(code);
       if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
@@ -99,13 +84,13 @@ class LanguageUtil {
     // first  de-CH --> de
     // second de-CH --> de-DE
     if (!found && this.options.supportedLngs) {
-      codes.forEach(code => {
+      codes.forEach((code) => {
         if (found) return;
 
         let lngOnly = this.getLanguagePartFromCode(code);
         if (this.isSupportedCode(lngOnly)) return (found = lngOnly);
 
-        found = this.options.supportedLngs.find(supportedLng => {
+        found = this.options.supportedLngs.find((supportedLng) => {
           if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
         });
       });
@@ -142,7 +127,7 @@ class LanguageUtil {
     );
 
     const codes = [];
-    const addCode = c => {
+    const addCode = (c) => {
       if (!c) return;
       if (this.isSupportedCode(c)) {
         codes.push(c);
@@ -160,7 +145,7 @@ class LanguageUtil {
       addCode(this.formatLanguageCode(code));
     }
 
-    fallbackCodes.forEach(fc => {
+    fallbackCodes.forEach((fc) => {
       if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
     });
 

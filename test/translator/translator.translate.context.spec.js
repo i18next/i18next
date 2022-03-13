@@ -15,6 +15,7 @@ describe('Translator', () => {
             test: 'test_en',
             test_male: 'test_male_en',
             test_female: 'test_female_en',
+            test_1: 'test_one_en',
           },
         },
         de: {
@@ -22,6 +23,7 @@ describe('Translator', () => {
             test: 'test_de',
             test_male: 'test_male_de',
             test_female: 'test_female_de',
+            test_1: 'test_one_de',
           },
         },
       });
@@ -71,9 +73,25 @@ describe('Translator', () => {
         args: ['translation:test', { context: 'female', lng: 'en-US' }],
         expected: 'test_female_en',
       },
+      {
+        args: ['translation:test', { context: '1', lng: 'en-US' }],
+        expected: 'test_one_en',
+      },
+      {
+        args: ['translation:test', { context: '1', lng: 'de' }],
+        expected: 'test_one_de',
+      },
+      {
+        args: ['translation:test', { context: 1, lng: 'en-US' }],
+        expected: 'test_one_en',
+      },
+      {
+        args: ['translation:test', { context: 1, lng: 'de' }],
+        expected: 'test_one_de',
+      },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });

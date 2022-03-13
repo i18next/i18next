@@ -7,51 +7,11 @@
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function _typeof(obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function _typeof(obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  function _objectSpread(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? Object(arguments[i]) : {};
-      var ownKeys = Object.keys(source);
-
-      if (typeof Object.getOwnPropertySymbols === 'function') {
-        ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
-          return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-        }));
-      }
-
-      ownKeys.forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    }
-
-    return target;
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    }, _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
@@ -73,6 +33,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -82,21 +45,6 @@
     }
 
     return self;
-  }
-
-  function _possibleConstructorReturn(self, call) {
-    if (call && (_typeof(call) === "object" || typeof call === "function")) {
-      return call;
-    }
-
-    return _assertThisInitialized(self);
-  }
-
-  function _getPrototypeOf(o) {
-    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-      return o.__proto__ || Object.getPrototypeOf(o);
-    };
-    return _getPrototypeOf(o);
   }
 
   function _setPrototypeOf(o, p) {
@@ -120,8 +68,47 @@
         configurable: true
       }
     });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
+    });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
+
+  function _possibleConstructorReturn(self, call) {
+    if (call && (_typeof(call) === "object" || typeof call === "function")) {
+      return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
+    }
+
+    return _assertThisInitialized(self);
+  }
+
+  function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var consoleLogger = {
     type: 'logger',
@@ -208,9 +195,9 @@
     }, {
       key: "create",
       value: function create(moduleName) {
-        return new Logger(this.logger, _objectSpread({}, {
+        return new Logger(this.logger, _objectSpread(_objectSpread({}, {
           prefix: "".concat(this.prefix, ":").concat(moduleName, ":")
-        }, this.options));
+        }), this.options));
       }
     }]);
 
@@ -401,6 +388,37 @@
     return data;
   }
   var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
+  var chars = [' ', ',', '?', '!', ';'];
+  function looksLikeObjectPath(key, nsSeparator, keySeparator) {
+    nsSeparator = nsSeparator || '';
+    keySeparator = keySeparator || '';
+    var possibleChars = chars.filter(function (c) {
+      return nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0;
+    });
+    if (possibleChars.length === 0) return true;
+    var r = new RegExp("(".concat(possibleChars.map(function (c) {
+      return c === '?' ? '\\?' : c;
+    }).join('|'), ")"));
+    var matched = !r.test(key);
+
+    if (!matched) {
+      var ki = key.indexOf(keySeparator);
+
+      if (ki > 0 && !r.test(key.substring(0, ki))) {
+        matched = true;
+      }
+    }
+
+    return matched;
+  }
+
+  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
   function deepFind(obj, path) {
     var keySeparator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '.';
@@ -410,6 +428,8 @@
     var current = obj;
 
     for (var i = 0; i < paths.length; ++i) {
+      if (!current) return undefined;
+
       if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
         return undefined;
       }
@@ -426,8 +446,12 @@
         }
 
         if (mix === undefined) return undefined;
-        if (typeof mix === 'string') return mix;
-        if (p && typeof mix[p] === 'string') return mix[p];
+
+        if (path.endsWith(p)) {
+          if (typeof mix === 'string') return mix;
+          if (p && typeof mix[p] === 'string') return mix[p];
+        }
+
         var joinedPath = paths.slice(i + j).join(keySeparator);
         if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
         return undefined;
@@ -442,6 +466,8 @@
   var ResourceStore = function (_EventEmitter) {
     _inherits(ResourceStore, _EventEmitter);
 
+    var _super = _createSuper(ResourceStore);
+
     function ResourceStore(data) {
       var _this;
 
@@ -452,7 +478,7 @@
 
       _classCallCheck(this, ResourceStore);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(ResourceStore).call(this));
+      _this = _super.call(this);
 
       if (isIE10) {
         EventEmitter.call(_assertThisInitialized(_this));
@@ -563,7 +589,7 @@
         if (deep) {
           deepExtend(pack, resources, overwrite);
         } else {
-          pack = _objectSpread({}, pack, resources);
+          pack = _objectSpread$1(_objectSpread$1({}, pack), resources);
         }
 
         setPath(this.data, path, pack);
@@ -588,13 +614,22 @@
       key: "getResourceBundle",
       value: function getResourceBundle(lng, ns) {
         if (!ns) ns = this.options.defaultNS;
-        if (this.options.compatibilityAPI === 'v1') return _objectSpread({}, {}, this.getResource(lng, ns));
+        if (this.options.compatibilityAPI === 'v1') return _objectSpread$1(_objectSpread$1({}, {}), this.getResource(lng, ns));
         return this.getResource(lng, ns);
       }
     }, {
       key: "getDataByLanguage",
       value: function getDataByLanguage(lng) {
         return this.data[lng];
+      }
+    }, {
+      key: "hasLanguageSomeTranslations",
+      value: function hasLanguageSomeTranslations(lng) {
+        var data = this.getDataByLanguage(lng);
+        var n = data && Object.keys(data) || [];
+        return !!n.find(function (v) {
+          return data[v] && Object.keys(data[v]).length > 0;
+        });
       }
     }, {
       key: "toJSON",
@@ -621,10 +656,19 @@
     }
   };
 
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function _createSuper$1(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$1(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$1() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
   var checkedLoadedFor = {};
 
   var Translator = function (_EventEmitter) {
     _inherits(Translator, _EventEmitter);
+
+    var _super = _createSuper$1(Translator);
 
     function Translator(services) {
       var _this;
@@ -633,7 +677,7 @@
 
       _classCallCheck(this, Translator);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Translator).call(this));
+      _this = _super.call(this);
 
       if (isIE10) {
         EventEmitter.call(_assertThisInitialized(_this));
@@ -661,6 +705,11 @@
         var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
           interpolation: {}
         };
+
+        if (key === undefined || key === null) {
+          return false;
+        }
+
         var resolved = this.resolve(key, options);
         return resolved && resolved.res !== undefined;
       }
@@ -670,9 +719,11 @@
         var nsSeparator = options.nsSeparator !== undefined ? options.nsSeparator : this.options.nsSeparator;
         if (nsSeparator === undefined) nsSeparator = ':';
         var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
-        var namespaces = options.ns || this.options.defaultNS;
+        var namespaces = options.ns || this.options.defaultNS || [];
+        var wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
+        var seemsNaturalLanguage = !this.options.userDefinedKeySeparator && !options.keySeparator && !this.options.userDefinedNsSeparator && !options.nsSeparator && !looksLikeObjectPath(key, nsSeparator, keySeparator);
 
-        if (nsSeparator && key.indexOf(nsSeparator) > -1) {
+        if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
           var m = key.match(this.interpolator.nestingRegexp);
 
           if (m && m.length > 0) {
@@ -736,8 +787,13 @@
 
         if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(typeof joinArrays === 'string' && resType === '[object Array]')) {
           if (!options.returnObjects && !this.options.returnObjects) {
-            this.logger.warn('accessing an object - but returnObjects options is not enabled!');
-            return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : "key '".concat(key, " (").concat(this.language, ")' returned an object instead of string.");
+            if (!this.options.returnedObjectHandler) {
+              this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+            }
+
+            return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, _objectSpread$2(_objectSpread$2({}, options), {}, {
+              ns: namespaces
+            })) : "key '".concat(key, " (").concat(this.language, ")' returned an object instead of string.");
           }
 
           if (keySeparator) {
@@ -748,7 +804,7 @@
             for (var m in res) {
               if (Object.prototype.hasOwnProperty.call(res, m)) {
                 var deepKey = "".concat(newKeyToUse).concat(keySeparator).concat(m);
-                copy[m] = this.translate(deepKey, _objectSpread({}, options, {
+                copy[m] = this.translate(deepKey, _objectSpread$2(_objectSpread$2({}, options), {
                   joinArrays: false,
                   ns: namespaces
                 }));
@@ -766,7 +822,7 @@
           var usedKey = false;
           var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
           var hasDefaultValue = Translator.hasDefaultValue(options);
-          var defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count) : '';
+          var defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, options) : '';
           var defaultValue = options["defaultValue".concat(defaultValueSuffix)] || options.defaultValue;
 
           if (!this.isValidLookup(res) && hasDefaultValue) {
@@ -779,13 +835,15 @@
             res = key;
           }
 
+          var missingKeyNoValueFallbackToKey = options.missingKeyNoValueFallbackToKey || this.options.missingKeyNoValueFallbackToKey;
+          var resForMissing = missingKeyNoValueFallbackToKey && usedKey ? undefined : res;
           var updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
 
           if (usedKey || usedDefault || updateMissing) {
             this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? defaultValue : res);
 
             if (keySeparator) {
-              var fk = this.resolve(key, _objectSpread({}, options, {
+              var fk = this.resolve(key, _objectSpread$2(_objectSpread$2({}, options), {}, {
                 keySeparator: false
               }));
               if (fk && fk.res) this.logger.warn('Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.');
@@ -804,11 +862,13 @@
               lngs.push(options.lng || this.language);
             }
 
-            var send = function send(l, k, fallbackValue) {
+            var send = function send(l, k, specificDefaultValue) {
+              var defaultForMissing = hasDefaultValue && specificDefaultValue !== res ? specificDefaultValue : resForMissing;
+
               if (_this2.options.missingKeyHandler) {
-                _this2.options.missingKeyHandler(l, namespace, k, updateMissing ? fallbackValue : res, updateMissing, options);
+                _this2.options.missingKeyHandler(l, namespace, k, defaultForMissing, updateMissing, options);
               } else if (_this2.backendConnector && _this2.backendConnector.saveMissing) {
-                _this2.backendConnector.saveMissing(l, namespace, k, updateMissing ? fallbackValue : res, updateMissing, options);
+                _this2.backendConnector.saveMissing(l, namespace, k, defaultForMissing, updateMissing, options);
               }
 
               _this2.emit('missingKey', l, namespace, k, res);
@@ -817,7 +877,7 @@
             if (this.options.saveMissing) {
               if (this.options.saveMissingPlurals && needsPluralHandling) {
                 lngs.forEach(function (language) {
-                  _this2.pluralResolver.getSuffixes(language).forEach(function (suffix) {
+                  _this2.pluralResolver.getSuffixes(language, options).forEach(function (suffix) {
                     send([language], key + suffix, options["defaultValue".concat(suffix)] || defaultValue);
                   });
                 });
@@ -829,7 +889,14 @@
 
           res = this.extendTranslation(res, keys, options, resolved, lastKey);
           if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = "".concat(namespace, ":").concat(key);
-          if (usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
+
+          if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
+            if (this.options.compatibilityAPI !== 'v1') {
+              res = this.options.parseMissingKeyHandler(key, usedDefault ? res : undefined);
+            } else {
+              res = this.options.parseMissingKeyHandler(res);
+            }
+          }
         }
 
         return res;
@@ -844,10 +911,10 @@
             resolved: resolved
           });
         } else if (!options.skipInterpolation) {
-          if (options.interpolation) this.interpolator.init(_objectSpread({}, options, {
-            interpolation: _objectSpread({}, this.options.interpolation, options.interpolation)
+          if (options.interpolation) this.interpolator.init(_objectSpread$2(_objectSpread$2({}, options), {
+            interpolation: _objectSpread$2(_objectSpread$2({}, this.options.interpolation), options.interpolation)
           }));
-          var skipOnVariables = options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+          var skipOnVariables = typeof res === 'string' && (options && options.interpolation && options.interpolation.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables);
           var nestBef;
 
           if (skipOnVariables) {
@@ -856,7 +923,7 @@
           }
 
           var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-          if (this.options.interpolation.defaultVariables) data = _objectSpread({}, this.options.interpolation.defaultVariables, data);
+          if (this.options.interpolation.defaultVariables) data = _objectSpread$2(_objectSpread$2({}, this.options.interpolation.defaultVariables), data);
           res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
 
           if (skipOnVariables) {
@@ -885,7 +952,7 @@
         var postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
         if (res !== undefined && res !== null && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) {
-          res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? _objectSpread({
+          res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? _objectSpread$2({
             i18nResolved: resolved
           }, options) : options, this);
         }
@@ -914,7 +981,10 @@
           var namespaces = extracted.namespaces;
           if (_this4.options.fallbackNS) namespaces = namespaces.concat(_this4.options.fallbackNS);
           var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
-          var needsContextHandling = options.context !== undefined && typeof options.context === 'string' && options.context !== '';
+
+          var needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0 && _this4.pluralResolver.shouldUseIntlApi();
+
+          var needsContextHandling = options.context !== undefined && (typeof options.context === 'string' || typeof options.context === 'number') && options.context !== '';
           var codes = options.lngs ? options.lngs : _this4.languageUtils.toResolveHierarchy(options.lng || _this4.language, options.fallbackLng);
           namespaces.forEach(function (ns) {
             if (_this4.isValidLookup(found)) return;
@@ -929,17 +999,35 @@
             codes.forEach(function (code) {
               if (_this4.isValidLookup(found)) return;
               usedLng = code;
-              var finalKey = key;
-              var finalKeys = [finalKey];
+              var finalKeys = [key];
 
               if (_this4.i18nFormat && _this4.i18nFormat.addLookupKeys) {
                 _this4.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
               } else {
                 var pluralSuffix;
-                if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count);
-                if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
-                if (needsContextHandling) finalKeys.push(finalKey += "".concat(_this4.options.contextSeparator).concat(options.context));
-                if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+                if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count, options);
+                var zeroSuffix = '_zero';
+
+                if (needsPluralHandling) {
+                  finalKeys.push(key + pluralSuffix);
+
+                  if (needsZeroSuffixLookup) {
+                    finalKeys.push(key + zeroSuffix);
+                  }
+                }
+
+                if (needsContextHandling) {
+                  var contextKey = "".concat(key).concat(_this4.options.contextSeparator).concat(options.context);
+                  finalKeys.push(contextKey);
+
+                  if (needsPluralHandling) {
+                    finalKeys.push(contextKey + pluralSuffix);
+
+                    if (needsZeroSuffixLookup) {
+                      finalKeys.push(contextKey + zeroSuffix);
+                    }
+                  }
+                }
               }
 
               var possibleKey;
@@ -1000,7 +1088,6 @@
       _classCallCheck(this, LanguageUtil);
 
       this.options = options;
-      this.whitelist = this.options.supportedLngs || false;
       this.supportedLngs = this.options.supportedLngs || false;
       this.logger = baseLogger.create('languageUtils');
     }
@@ -1049,12 +1136,6 @@
         }
 
         return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
-      }
-    }, {
-      key: "isWhitelisted",
-      value: function isWhitelisted(code) {
-        this.logger.deprecate('languageUtils.isWhitelisted', 'function "isWhitelisted" will be renamed to "isSupportedCode" in the next major - please make sure to rename it\'s usage asap.');
-        return this.isSupportedCode(code);
       }
     }, {
       key: "isSupportedCode",
@@ -1152,11 +1233,11 @@
     nr: [1, 2],
     fc: 1
   }, {
-    lngs: ['af', 'an', 'ast', 'az', 'bg', 'bn', 'ca', 'da', 'de', 'dev', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fi', 'fo', 'fur', 'fy', 'gl', 'gu', 'ha', 'hi', 'hu', 'hy', 'ia', 'it', 'kn', 'ku', 'lb', 'mai', 'ml', 'mn', 'mr', 'nah', 'nap', 'nb', 'ne', 'nl', 'nn', 'no', 'nso', 'pa', 'pap', 'pms', 'ps', 'pt-PT', 'rm', 'sco', 'se', 'si', 'so', 'son', 'sq', 'sv', 'sw', 'ta', 'te', 'tk', 'ur', 'yo'],
+    lngs: ['af', 'an', 'ast', 'az', 'bg', 'bn', 'ca', 'da', 'de', 'dev', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fi', 'fo', 'fur', 'fy', 'gl', 'gu', 'ha', 'hi', 'hu', 'hy', 'ia', 'it', 'kk', 'kn', 'ku', 'lb', 'mai', 'ml', 'mn', 'mr', 'nah', 'nap', 'nb', 'ne', 'nl', 'nn', 'no', 'nso', 'pa', 'pap', 'pms', 'ps', 'pt-PT', 'rm', 'sco', 'se', 'si', 'so', 'son', 'sq', 'sv', 'sw', 'ta', 'te', 'tk', 'ur', 'yo'],
     nr: [1, 2],
     fc: 2
   }, {
-    lngs: ['ay', 'bo', 'cgg', 'fa', 'ht', 'id', 'ja', 'jbo', 'ka', 'kk', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'],
+    lngs: ['ay', 'bo', 'cgg', 'fa', 'ht', 'id', 'ja', 'jbo', 'ka', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'],
     nr: [1],
     fc: 3
   }, {
@@ -1308,6 +1389,15 @@
       return Number(n == 1 ? 0 : n == 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3);
     }
   };
+  var deprecatedJsonVersions = ['v1', 'v2', 'v3'];
+  var suffixesOrder = {
+    zero: 0,
+    one: 1,
+    two: 2,
+    few: 3,
+    many: 4,
+    other: 5
+  };
 
   function createRules() {
     var rules = {};
@@ -1331,6 +1421,12 @@
       this.languageUtils = languageUtils;
       this.options = options;
       this.logger = baseLogger.create('pluralResolver');
+
+      if ((!this.options.compatibilityJSON || this.options.compatibilityJSON === 'v4') && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
+        this.options.compatibilityJSON = 'v3';
+        this.logger.error('Your environment seems not to be Intl API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
+      }
+
       this.rules = createRules();
     }
 
@@ -1342,19 +1438,38 @@
     }, {
       key: "getRule",
       value: function getRule(code) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        if (this.shouldUseIntlApi()) {
+          try {
+            return new Intl.PluralRules(code, {
+              type: options.ordinal ? 'ordinal' : 'cardinal'
+            });
+          } catch (_unused) {
+            return;
+          }
+        }
+
         return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
       }
     }, {
       key: "needsPlural",
       value: function needsPlural(code) {
-        var rule = this.getRule(code);
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var rule = this.getRule(code, options);
+
+        if (this.shouldUseIntlApi()) {
+          return rule && rule.resolvedOptions().pluralCategories.length > 1;
+        }
+
         return rule && rule.numbers.length > 1;
       }
     }, {
       key: "getPluralFormsOfKey",
       value: function getPluralFormsOfKey(code, key) {
-        return this.getSuffixes(code).map(function (suffix) {
-          return key + suffix;
+        var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        return this.getSuffixes(code, options).map(function (suffix) {
+          return "".concat(key).concat(suffix);
         });
       }
     }, {
@@ -1362,59 +1477,87 @@
       value: function getSuffixes(code) {
         var _this = this;
 
-        var rule = this.getRule(code);
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var rule = this.getRule(code, options);
 
         if (!rule) {
           return [];
         }
 
+        if (this.shouldUseIntlApi()) {
+          return rule.resolvedOptions().pluralCategories.sort(function (pluralCategory1, pluralCategory2) {
+            return suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2];
+          }).map(function (pluralCategory) {
+            return "".concat(_this.options.prepend).concat(pluralCategory);
+          });
+        }
+
         return rule.numbers.map(function (number) {
-          return _this.getSuffix(code, number);
+          return _this.getSuffix(code, number, options);
         });
       }
     }, {
       key: "getSuffix",
       value: function getSuffix(code, count) {
-        var _this2 = this;
-
-        var rule = this.getRule(code);
+        var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        var rule = this.getRule(code, options);
 
         if (rule) {
-          var idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-          var suffix = rule.numbers[idx];
-
-          if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-            if (suffix === 2) {
-              suffix = 'plural';
-            } else if (suffix === 1) {
-              suffix = '';
-            }
+          if (this.shouldUseIntlApi()) {
+            return "".concat(this.options.prepend).concat(rule.select(count));
           }
 
-          var returnSuffix = function returnSuffix() {
-            return _this2.options.prepend && suffix.toString() ? _this2.options.prepend + suffix.toString() : suffix.toString();
-          };
-
-          if (this.options.compatibilityJSON === 'v1') {
-            if (suffix === 1) return '';
-            if (typeof suffix === 'number') return "_plural_".concat(suffix.toString());
-            return returnSuffix();
-          } else if (this.options.compatibilityJSON === 'v2') {
-            return returnSuffix();
-          } else if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-            return returnSuffix();
-          }
-
-          return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
+          return this.getSuffixRetroCompatible(rule, count);
         }
 
         this.logger.warn("no plural rule found for: ".concat(code));
         return '';
       }
+    }, {
+      key: "getSuffixRetroCompatible",
+      value: function getSuffixRetroCompatible(rule, count) {
+        var _this2 = this;
+
+        var idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
+        var suffix = rule.numbers[idx];
+
+        if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
+          if (suffix === 2) {
+            suffix = 'plural';
+          } else if (suffix === 1) {
+            suffix = '';
+          }
+        }
+
+        var returnSuffix = function returnSuffix() {
+          return _this2.options.prepend && suffix.toString() ? _this2.options.prepend + suffix.toString() : suffix.toString();
+        };
+
+        if (this.options.compatibilityJSON === 'v1') {
+          if (suffix === 1) return '';
+          if (typeof suffix === 'number') return "_plural_".concat(suffix.toString());
+          return returnSuffix();
+        } else if (this.options.compatibilityJSON === 'v2') {
+          return returnSuffix();
+        } else if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
+          return returnSuffix();
+        }
+
+        return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
+      }
+    }, {
+      key: "shouldUseIntlApi",
+      value: function shouldUseIntlApi() {
+        return !deprecatedJsonVersions.includes(this.options.compatibilityJSON);
+      }
     }]);
 
     return PluralResolver;
   }();
+
+  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var Interpolator = function () {
     function Interpolator() {
@@ -1487,7 +1630,7 @@
         var handleFormat = function handleFormat(key) {
           if (key.indexOf(_this.formatSeparator) < 0) {
             var path = getPathWithDefaults(data, defaultData, key);
-            return _this.alwaysFormat ? _this.format(path, undefined, lng, _objectSpread({}, options, data, {
+            return _this.alwaysFormat ? _this.format(path, undefined, lng, _objectSpread$3(_objectSpread$3(_objectSpread$3({}, options), data), {}, {
               interpolationkey: key
             })) : path;
           }
@@ -1495,14 +1638,14 @@
           var p = key.split(_this.formatSeparator);
           var k = p.shift().trim();
           var f = p.join(_this.formatSeparator).trim();
-          return _this.format(getPathWithDefaults(data, defaultData, k), f, lng, _objectSpread({}, options, data, {
+          return _this.format(getPathWithDefaults(data, defaultData, k), f, lng, _objectSpread$3(_objectSpread$3(_objectSpread$3({}, options), data), {}, {
             interpolationkey: k
           }));
         };
 
         this.resetRegExp();
         var missingInterpolationHandler = options && options.missingInterpolationHandler || this.options.missingInterpolationHandler;
-        var skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+        var skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
         var todos = [{
           regex: this.regexpUnescape,
           safeValue: function safeValue(val) {
@@ -1518,17 +1661,20 @@
           replaces = 0;
 
           while (match = todo.regex.exec(str)) {
-            value = handleFormat(match[1].trim());
+            var matchedVar = match[1].trim();
+            value = handleFormat(matchedVar);
 
             if (value === undefined) {
               if (typeof missingInterpolationHandler === 'function') {
                 var temp = missingInterpolationHandler(str, match, options);
                 value = typeof temp === 'string' ? temp : '';
+              } else if (options && options.hasOwnProperty(matchedVar)) {
+                value = '';
               } else if (skipOnVariables) {
                 value = match[0];
                 continue;
               } else {
-                _this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
+                _this.logger.warn("missed to pass in variable ".concat(matchedVar, " for interpolating ").concat(str));
 
                 value = '';
               }
@@ -1536,8 +1682,16 @@
               value = makeString(value);
             }
 
-            str = str.replace(match[0], todo.safeValue(value));
-            todo.regex.lastIndex = 0;
+            var safeValue = todo.safeValue(value);
+            str = str.replace(match[0], safeValue);
+
+            if (skipOnVariables) {
+              todo.regex.lastIndex += safeValue.length;
+              todo.regex.lastIndex -= match[0].length;
+            } else {
+              todo.regex.lastIndex = 0;
+            }
+
             replaces++;
 
             if (replaces >= _this.maxReplaces) {
@@ -1556,7 +1710,7 @@
         var match;
         var value;
 
-        var clonedOptions = _objectSpread({}, options);
+        var clonedOptions = _objectSpread$3({}, options);
 
         clonedOptions.applyPostProcessor = false;
         delete clonedOptions.defaultValue;
@@ -1572,7 +1726,7 @@
 
           try {
             clonedOptions = JSON.parse(optionsString);
-            if (inheritedOptions) clonedOptions = _objectSpread({}, inheritedOptions, clonedOptions);
+            if (inheritedOptions) clonedOptions = _objectSpread$3(_objectSpread$3({}, inheritedOptions), clonedOptions);
           } catch (e) {
             this.logger.warn("failed parsing options string in nesting for key ".concat(key), e);
             return "".concat(key).concat(sep).concat(optionsString);
@@ -1586,7 +1740,7 @@
           var formatters = [];
           var doReduce = false;
 
-          if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
+          if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
             var r = match[1].split(this.formatSeparator).map(function (elem) {
               return elem.trim();
             });
@@ -1606,7 +1760,7 @@
 
           if (doReduce) {
             value = formatters.reduce(function (v, f) {
-              return _this2.format(v, f, options.lng, _objectSpread({}, options, {
+              return _this2.format(v, f, options.lng, _objectSpread$3(_objectSpread$3({}, options), {}, {
                 interpolationkey: match[1].trim()
               }));
             }, value.trim());
@@ -1623,6 +1777,172 @@
     return Interpolator;
   }();
 
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _toArray(arr) {
+    return _arrayWithHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableRest();
+  }
+
+  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function parseFormatStr(formatStr) {
+    var formatName = formatStr.toLowerCase().trim();
+    var formatOptions = {};
+
+    if (formatStr.indexOf('(') > -1) {
+      var p = formatStr.split('(');
+      formatName = p[0].toLowerCase().trim();
+      var optStr = p[1].substring(0, p[1].length - 1);
+
+      if (formatName === 'currency' && optStr.indexOf(':') < 0) {
+        if (!formatOptions.currency) formatOptions.currency = optStr.trim();
+      } else if (formatName === 'relativetime' && optStr.indexOf(':') < 0) {
+        if (!formatOptions.range) formatOptions.range = optStr.trim();
+      } else {
+        var opts = optStr.split(';');
+        opts.forEach(function (opt) {
+          if (!opt) return;
+
+          var _opt$split = opt.split(':'),
+              _opt$split2 = _toArray(_opt$split),
+              key = _opt$split2[0],
+              rest = _opt$split2.slice(1);
+
+          var val = rest.join(':');
+          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val.trim();
+          if (val.trim() === 'false') formatOptions[key.trim()] = false;
+          if (val.trim() === 'true') formatOptions[key.trim()] = true;
+          if (!isNaN(val.trim())) formatOptions[key.trim()] = parseInt(val.trim(), 10);
+        });
+      }
+    }
+
+    return {
+      formatName: formatName,
+      formatOptions: formatOptions
+    };
+  }
+
+  var Formatter = function () {
+    function Formatter() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      _classCallCheck(this, Formatter);
+
+      this.logger = baseLogger.create('formatter');
+      this.options = options;
+      this.formats = {
+        number: function number(val, lng, options) {
+          return new Intl.NumberFormat(lng, options).format(val);
+        },
+        currency: function currency(val, lng, options) {
+          return new Intl.NumberFormat(lng, _objectSpread$4(_objectSpread$4({}, options), {}, {
+            style: 'currency'
+          })).format(val);
+        },
+        datetime: function datetime(val, lng, options) {
+          return new Intl.DateTimeFormat(lng, _objectSpread$4({}, options)).format(val);
+        },
+        relativetime: function relativetime(val, lng, options) {
+          return new Intl.RelativeTimeFormat(lng, _objectSpread$4({}, options)).format(val, options.range || 'day');
+        },
+        list: function list(val, lng, options) {
+          return new Intl.ListFormat(lng, _objectSpread$4({}, options)).format(val);
+        }
+      };
+      this.init(options);
+    }
+
+    _createClass(Formatter, [{
+      key: "init",
+      value: function init(services) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+          interpolation: {}
+        };
+        var iOpts = options.interpolation;
+        this.formatSeparator = iOpts.formatSeparator ? iOpts.formatSeparator : iOpts.formatSeparator || ',';
+      }
+    }, {
+      key: "add",
+      value: function add(name, fc) {
+        this.formats[name.toLowerCase().trim()] = fc;
+      }
+    }, {
+      key: "format",
+      value: function format(value, _format, lng, options) {
+        var _this = this;
+
+        var formats = _format.split(this.formatSeparator);
+
+        var result = formats.reduce(function (mem, f) {
+          var _parseFormatStr = parseFormatStr(f),
+              formatName = _parseFormatStr.formatName,
+              formatOptions = _parseFormatStr.formatOptions;
+
+          if (_this.formats[formatName]) {
+            var formatted = mem;
+
+            try {
+              var valOptions = options && options.formatParams && options.formatParams[options.interpolationkey] || {};
+              var l = valOptions.locale || valOptions.lng || options.locale || options.lng || lng;
+              formatted = _this.formats[formatName](mem, l, _objectSpread$4(_objectSpread$4(_objectSpread$4({}, formatOptions), options), valOptions));
+            } catch (error) {
+              _this.logger.warn(error);
+            }
+
+            return formatted;
+          } else {
+            _this.logger.warn("there was no format function for ".concat(formatName));
+          }
+
+          return mem;
+        }, value);
+        return result;
+      }
+    }]);
+
+    return Formatter;
+  }();
+
+  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function _createSuper$2(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$2(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
   function remove(arr, what) {
     var found = arr.indexOf(what);
 
@@ -1635,6 +1955,8 @@
   var Connector = function (_EventEmitter) {
     _inherits(Connector, _EventEmitter);
 
+    var _super = _createSuper$2(Connector);
+
     function Connector(backend, store, services) {
       var _this;
 
@@ -1642,7 +1964,7 @@
 
       _classCallCheck(this, Connector);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(Connector).call(this));
+      _this = _super.call(this);
 
       if (isIE10) {
         EventEmitter.call(_assertThisInitialized(_this));
@@ -1839,7 +2161,7 @@
         if (key === undefined || key === null || key === '') return;
 
         if (this.backend && this.backend.create) {
-          this.backend.create(languages, namespace, key, fallbackValue, null, _objectSpread({}, options, {
+          this.backend.create(languages, namespace, key, fallbackValue, null, _objectSpread$5(_objectSpread$5({}, options), {}, {
             isUpdate: isUpdate
           }));
         }
@@ -1860,8 +2182,6 @@
       defaultNS: ['translation'],
       fallbackLng: ['dev'],
       fallbackNS: false,
-      whitelist: false,
-      nonExplicitWhitelist: false,
       supportedLngs: false,
       nonExplicitSupportedLngs: false,
       load: 'all',
@@ -1916,7 +2236,7 @@
         nestingSuffix: ')',
         nestingOptionsSeparator: ',',
         maxReplaces: 1000,
-        skipOnVariables: false
+        skipOnVariables: true
       }
     };
   }
@@ -1925,18 +2245,6 @@
     if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
     if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
 
-    if (options.whitelist) {
-      if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-        options.whitelist = options.whitelist.concat(['cimode']);
-      }
-
-      options.supportedLngs = options.whitelist;
-    }
-
-    if (options.nonExplicitWhitelist) {
-      options.nonExplicitSupportedLngs = options.nonExplicitWhitelist;
-    }
-
     if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
       options.supportedLngs = options.supportedLngs.concat(['cimode']);
     }
@@ -1944,10 +2252,29 @@
     return options;
   }
 
+  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function _createSuper$3(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$3(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+  function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
   function noop() {}
+
+  function bindMemberFunctions(inst) {
+    var mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst));
+    mems.forEach(function (mem) {
+      if (typeof inst[mem] === 'function') {
+        inst[mem] = inst[mem].bind(inst);
+      }
+    });
+  }
 
   var I18n = function (_EventEmitter) {
     _inherits(I18n, _EventEmitter);
+
+    var _super = _createSuper$3(I18n);
 
     function I18n() {
       var _this;
@@ -1957,7 +2284,7 @@
 
       _classCallCheck(this, I18n);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(I18n).call(this));
+      _this = _super.call(this);
 
       if (isIE10) {
         EventEmitter.call(_assertThisInitialized(_this));
@@ -1969,6 +2296,7 @@
       _this.modules = {
         external: []
       };
+      bindMemberFunctions(_assertThisInitialized(_this));
 
       if (callback && !_this.isInitialized && !options.isClone) {
         if (!_this.options.initImmediate) {
@@ -1998,17 +2326,28 @@
           options = {};
         }
 
-        if (options.whitelist && !options.supportedLngs) {
-          this.logger.deprecate('whitelist', 'option "whitelist" will be renamed to "supportedLngs" in the next major - please make sure to rename this option asap.');
+        if (!options.defaultNS && options.ns) {
+          if (typeof options.ns === 'string') {
+            options.defaultNS = options.ns;
+          } else if (options.ns.indexOf('translation') < 0) {
+            options.defaultNS = options.ns[0];
+          }
         }
 
-        if (options.nonExplicitWhitelist && !options.nonExplicitSupportedLngs) {
-          this.logger.deprecate('whitelist', 'options "nonExplicitWhitelist" will be renamed to "nonExplicitSupportedLngs" in the next major - please make sure to rename this option asap.');
+        var defOpts = get();
+        this.options = _objectSpread$6(_objectSpread$6(_objectSpread$6({}, defOpts), this.options), transformOptions(options));
+
+        if (this.options.compatibilityAPI !== 'v1') {
+          this.options.interpolation = _objectSpread$6(_objectSpread$6({}, defOpts.interpolation), this.options.interpolation);
         }
 
-        this.options = _objectSpread({}, get(), this.options, transformOptions(options));
-        this.format = this.options.interpolation.format;
-        if (!callback) callback = noop;
+        if (options.keySeparator !== undefined) {
+          this.options.userDefinedKeySeparator = options.keySeparator;
+        }
+
+        if (options.nsSeparator !== undefined) {
+          this.options.userDefinedNsSeparator = options.nsSeparator;
+        }
 
         function createClassOnDemand(ClassOrObject) {
           if (!ClassOrObject) return null;
@@ -2023,6 +2362,14 @@
             baseLogger.init(null, this.options);
           }
 
+          var formatter;
+
+          if (this.modules.formatter) {
+            formatter = this.modules.formatter;
+          } else if (typeof Intl !== 'undefined') {
+            formatter = Formatter;
+          }
+
           var lu = new LanguageUtil(this.options);
           this.store = new ResourceStore(this.options.resources, this.options);
           var s = this.services;
@@ -2034,6 +2381,13 @@
             compatibilityJSON: this.options.compatibilityJSON,
             simplifyPluralSuffix: this.options.simplifyPluralSuffix
           });
+
+          if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
+            s.formatter = createClassOnDemand(formatter);
+            s.formatter.init(s, this.options);
+            this.options.interpolation.format = s.formatter.format.bind(s.formatter);
+          }
+
           s.interpolator = new Interpolator(this.options);
           s.utils = {
             hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
@@ -2070,6 +2424,9 @@
           });
         }
 
+        this.format = this.options.interpolation.format;
+        if (!callback) callback = noop;
+
         if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
           var codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
           if (codes.length > 0 && codes[0] !== 'dev') this.options.lng = codes[0];
@@ -2101,7 +2458,7 @@
 
         var load = function load() {
           var finish = function finish(err, t) {
-            if (_this2.isInitialized) _this2.logger.warn('init: i18next is already initialized. You should call init just once!');
+            if (_this2.isInitialized && !_this2.initializedStoreOnce) _this2.logger.warn('init: i18next is already initialized. You should call init just once!');
             _this2.isInitialized = true;
             if (!_this2.options.isClone) _this2.logger.log('initialized', _this2.options);
 
@@ -2163,7 +2520,10 @@
             });
           }
 
-          this.services.backendConnector.load(toLoad, this.options.ns, usedCallback);
+          this.services.backendConnector.load(toLoad, this.options.ns, function (e) {
+            if (!e && !_this3.resolvedLanguage && _this3.language) _this3.setResolvedLanguage(_this3.language);
+            usedCallback(e);
+          });
         } else {
           usedCallback(null);
         }
@@ -2207,11 +2567,31 @@
           postProcessor.addPostProcessor(module);
         }
 
+        if (module.type === 'formatter') {
+          this.modules.formatter = module;
+        }
+
         if (module.type === '3rdParty') {
           this.modules.external.push(module);
         }
 
         return this;
+      }
+    }, {
+      key: "setResolvedLanguage",
+      value: function setResolvedLanguage(l) {
+        if (!l || !this.languages) return;
+        if (['cimode', 'dev'].indexOf(l) > -1) return;
+
+        for (var li = 0; li < this.languages.length; li++) {
+          var lngInLngs = this.languages[li];
+          if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+
+          if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+            this.resolvedLanguage = lngInLngs;
+            break;
+          }
+        }
       }
     }, {
       key: "changeLanguage",
@@ -2222,10 +2602,17 @@
         var deferred = defer();
         this.emit('languageChanging', lng);
 
+        var setLngProps = function setLngProps(l) {
+          _this4.language = l;
+          _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
+          _this4.resolvedLanguage = undefined;
+
+          _this4.setResolvedLanguage(l);
+        };
+
         var done = function done(err, l) {
           if (l) {
-            _this4.language = l;
-            _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
+            setLngProps(l);
 
             _this4.translator.changeLanguage(l);
 
@@ -2247,12 +2634,12 @@
         };
 
         var setLng = function setLng(lngs) {
+          if (!lng && !lngs && _this4.services.languageDetector) lngs = [];
           var l = typeof lngs === 'string' ? lngs : _this4.services.languageUtils.getBestMatchFromCodes(lngs);
 
           if (l) {
             if (!_this4.language) {
-              _this4.language = l;
-              _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
+              setLngProps(l);
             }
 
             if (!_this4.translator.language) _this4.translator.changeLanguage(l);
@@ -2276,7 +2663,7 @@
       }
     }, {
       key: "getFixedT",
-      value: function getFixedT(lng, ns) {
+      value: function getFixedT(lng, ns, keyPrefix) {
         var _this5 = this;
 
         var fixedT = function fixedT(key, opts) {
@@ -2289,13 +2676,15 @@
 
             options = _this5.options.overloadTranslationOptionHandler([key, opts].concat(rest));
           } else {
-            options = _objectSpread({}, opts);
+            options = _objectSpread$6({}, opts);
           }
 
           options.lng = options.lng || fixedT.lng;
           options.lngs = options.lngs || fixedT.lngs;
           options.ns = options.ns || fixedT.ns;
-          return _this5.t(key, options);
+          var keySeparator = _this5.options.keySeparator || '.';
+          var resultKey = keyPrefix ? "".concat(keyPrefix).concat(keySeparator).concat(key) : key;
+          return _this5.t(resultKey, options);
         };
 
         if (typeof lng === 'string') {
@@ -2305,6 +2694,7 @@
         }
 
         fixedT.ns = ns;
+        fixedT.keyPrefix = keyPrefix;
         return fixedT;
       }
     }, {
@@ -2343,7 +2733,7 @@
           return false;
         }
 
-        var lng = this.languages[0];
+        var lng = this.resolvedLanguage || this.languages[0];
         var fallbackLng = this.options ? this.options.fallbackLng : false;
         var lastLng = this.languages[this.languages.length - 1];
         if (lng.toLowerCase() === 'cimode') return true;
@@ -2411,17 +2801,10 @@
     }, {
       key: "dir",
       value: function dir(lng) {
-        if (!lng) lng = this.languages && this.languages.length > 0 ? this.languages[0] : this.language;
+        if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
         if (!lng) return 'rtl';
-        var rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam'];
-        return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0 ? 'rtl' : 'ltr';
-      }
-    }, {
-      key: "createInstance",
-      value: function createInstance() {
-        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var callback = arguments.length > 1 ? arguments[1] : undefined;
-        return new I18n(options, callback);
+        var rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam', 'ckb'];
+        return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
       }
     }, {
       key: "cloneInstance",
@@ -2431,7 +2814,7 @@
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
 
-        var mergedOptions = _objectSpread({}, this.options, options, {
+        var mergedOptions = _objectSpread$6(_objectSpread$6(_objectSpread$6({}, this.options), options), {
           isClone: true
         });
 
@@ -2440,7 +2823,7 @@
         membersToCopy.forEach(function (m) {
           clone[m] = _this8[m];
         });
-        clone.services = _objectSpread({}, this.services);
+        clone.services = _objectSpread$6({}, this.services);
         clone.services.utils = {
           hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
         };
@@ -2459,13 +2842,31 @@
         };
         return clone;
       }
+    }, {
+      key: "toJSON",
+      value: function toJSON() {
+        return {
+          options: this.options,
+          store: this.store,
+          language: this.language,
+          languages: this.languages,
+          resolvedLanguage: this.resolvedLanguage
+        };
+      }
     }]);
 
     return I18n;
   }(EventEmitter);
 
-  var i18next = new I18n();
+  _defineProperty(I18n, "createInstance", function () {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var callback = arguments.length > 1 ? arguments[1] : undefined;
+    return new I18n(options, callback);
+  });
 
-  return i18next;
+  var instance = I18n.createInstance();
+  instance.createInstance = I18n.createInstance;
+
+  return instance;
 
 })));

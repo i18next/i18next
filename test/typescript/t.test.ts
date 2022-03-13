@@ -25,8 +25,8 @@ function defautValue(t: TFunction) {
   t('translation:test', { defaultValue: 'test_en' });
   t('translation:test', { defaultValue: 'test_en', count: 1 });
   t('translation:test', {
-    defaultValue_plural: 'test_en_plural',
-    defaultValue: 'test_en',
+    defaultValue_other: 'test_en_plural',
+    defaultValue_one: 'test_en',
     count: 10,
   });
 

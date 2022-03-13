@@ -1,4 +1,4 @@
-import i18next, { TFunction } from 'i18next';
+import i18next, { TFunction, createInstance } from 'i18next';
 
 // i18next.js export default as esm module because the build is apart from commonjs.
 i18next.init(
@@ -50,7 +50,7 @@ i18next.init(
 
 i18next.init(
   {
-    ns: ['common', 'moduleA', 'moduleB'],
+    ns: ['common', 'moduleA', 'moduleB'] as const,
     defaultNS: 'moduleA',
   },
   (err, t) => {
@@ -243,7 +243,7 @@ i18next.loadLanguages(['de', 'fr'], (err, t) => {
 i18next.reloadResources();
 
 // reload languages
-i18next.reloadResources(['de', 'fr']);
+i18next.reloadResources(['de', 'fr'] as const);
 
 // reload namespaces for all languages
 i18next.reloadResources(null, ['ns1', 'ns2']);
@@ -261,7 +261,7 @@ i18next.dir('ar'); // -> "rtl";
 const newInstance = i18next.createInstance(
   {
     fallbackLng: 'en',
-    ns: ['file1', 'file2'],
+    ns: ['file1', 'file2'] as const,
     defaultNS: 'file1',
     debug: true,
   },
@@ -325,8 +325,8 @@ newInstance.init(
   },
 );
 
-i18next.on('initialized', options => {});
-i18next.on('loaded', loaded => {});
+i18next.on('initialized', (options) => {});
+i18next.on('loaded', (loaded) => {});
 i18next.on('failedLoading', (lng: string, ns: string, msg: string) => {});
 i18next.on('missingKey', (lngs: string[], namespace: string, key: string, res: string) => {});
 i18next.on('added', (lng: string, ns: string) => {});
@@ -434,7 +434,7 @@ i18next.init({
 
 i18next.init({
   react: {
-    hashTransKey: defaultValue => {
+    hashTransKey: (defaultValue) => {
       if (typeof defaultValue === 'string') {
         return defaultValue.replace(/\s+/g, '_');
       }
@@ -474,4 +474,9 @@ i18next.init({
   react: {
     bindI18n: 'languageChanged editorSaved',
   },
+});
+
+createInstance({
+  lng: 'en',
+  fallbackLng: 'en',
 });

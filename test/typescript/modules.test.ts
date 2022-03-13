@@ -5,6 +5,7 @@ import i18next, {
   LoggerModule,
   I18nFormatModule,
   ThirdPartyModule,
+  FormatterModule,
 } from 'i18next';
 
 // declare modules in a way that the `type` is not widened
@@ -49,6 +50,13 @@ const i18nFormatModule: I18nFormatModule = {
   type: 'i18nFormat',
 };
 
+const formatterModule: FormatterModule = {
+  type: 'formatter',
+  init: () => null,
+  add: () => null,
+  format: () => '',
+};
+
 const thirdPartyModule: ThirdPartyModule = {
   type: '3rdParty',
   init: () => null,
@@ -61,6 +69,7 @@ const modules: Modules = {
   languageDetector: languageDetectorModule,
   i18nFormat: i18nFormatModule,
   logger: loggerModule,
+  formatter: formatterModule,
   external: externalModules,
 };
 
@@ -68,10 +77,13 @@ i18next.use(backendModule);
 i18next.use(languageDetectorModule);
 i18next.use(loggerModule);
 i18next.use(i18nFormatModule);
-i18next.use(externalModules);
+i18next.use(formatterModule);
+i18next.use(thirdPartyModule);
 
 // exercise class usage
+// Need both static and member definitions of type to satisfy use() signature, see #1442
 class MyLoggerModule implements LoggerModule {
+  static type: 'logger' = 'logger';
   type: 'logger' = 'logger';
   log = () => null;
   warn = () => null;

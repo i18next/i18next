@@ -7,6 +7,7 @@ function deepFind(obj, path, keySeparator = '.') {
   const paths = path.split(keySeparator);
   let current = obj;
   for (let i = 0; i < paths.length; ++i) {
+    if (!current) return undefined;
     if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
       return undefined;
     }
@@ -20,8 +21,10 @@ function deepFind(obj, path, keySeparator = '.') {
         mix = current[p];
       }
       if (mix === undefined) return undefined;
-      if (typeof mix === 'string') return mix;
-      if (p && typeof mix[p] === 'string') return mix[p];
+      if (path.endsWith(p)) {
+        if (typeof mix === 'string') return mix;
+        if (p && typeof mix[p] === 'string') return mix[p];
+      }
       const joinedPath = paths.slice(i + j).join(keySeparator);
       if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
       return undefined;
@@ -165,6 +168,12 @@ class ResourceStore extends EventEmitter {
 
   getDataByLanguage(lng) {
     return this.data[lng];
+  }
+
+  hasLanguageSomeTranslations(lng) {
+    const data = this.getDataByLanguage(lng);
+    const n = (data && Object.keys(data)) || [];
+    return !!n.find((v) => data[v] && Object.keys(data[v]).length > 0);
   }
 
   toJSON() {

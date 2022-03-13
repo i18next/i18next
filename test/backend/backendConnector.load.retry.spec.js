@@ -20,8 +20,8 @@ describe('BackendConnector load retry', () => {
   });
 
   describe('#load', () => {
-    it('should load data', done => {
-      connector.load(['en'], ['retry'], function(err) {
+    it('should load data', (done) => {
+      connector.load(['en'], ['retry'], function (err) {
         expect(err).to.be.not.ok;
         expect(connector.store.getResourceBundle('en', 'retry')).to.eql({
           status: 'nok',

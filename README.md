@@ -3,12 +3,11 @@
 [![CircleCI](https://circleci.com/gh/i18next/i18next.svg?style=svg)](https://circleci.com/gh/i18next/i18next)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/i18next/i18next)
 [![Coveralls](https://img.shields.io/coveralls/i18next/i18next/master.svg?style=flat-square)](https://coveralls.io/github/i18next/i18next)
-[![Package Quality](http://npm.packagequality.com/shield/i18next.svg)](http://packagequality.com/#?package=i18next)
+[![Package Quality](https://packagequality.com/shield/i18next.svg)](https://packagequality.com/#?package=i18next)
 [![cdnjs version](https://img.shields.io/cdnjs/v/i18next.svg?style=flat-square)](https://cdnjs.com/libraries/i18next)
 [![npm version](https://img.shields.io/npm/v/i18next.svg?style=flat-square)](https://www.npmjs.com/package/i18next)
-[![David](https://img.shields.io/david/i18next/i18next.svg?style=flat-square)](https://david-dm.org/i18next/i18next)
 
-i18next is a very popular internationalization framework for browser or any other javascript environment (eg. node.js).
+i18next is a very popular internationalization framework for browser or any other javascript environment (eg. Node.js, Deno).
 
 ![ecosystem](https://raw.githubusercontent.com/i18next/i18next/master/assets/i18next-ecosystem.jpg)
 
@@ -31,6 +30,12 @@ For more information visit the website:
 
 Our focus is providing the core to building a booming ecosystem. Independent of the building blocks you choose, be it react, angular or even good old jquery proper translation capabilities are just [one step away](https://www.i18next.com/overview/supported-frameworks).
 
+### Documentation
+
+The general i18next documentation is published on [www.i18next.com](https://www.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/i18next-gitbook).
+
+The react specific documentation is published on [react.i18next.com](https://react.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/react-i18next-gitbook).
+
 ---
 
 <h3 align="center">Gold Sponsors</h3>
@@ -49,6 +54,6 @@ A translation management system built around the i18next ecosystem - [locize.com
 
 ![locize](https://locize.com/img/ads/github_locize.png)
 
-With using [locize](http://locize.com/?utm_source=i18next_readme&utm_medium=github) you directly support the future of i18next.
+With using [locize](https://locize.com/?utm_source=i18next_readme&utm_medium=github) you directly support the future of i18next.
 
 ---

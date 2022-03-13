@@ -41,13 +41,13 @@ describe('Translator', () => {
       {
         args: [
           'translation:test',
-          { defaultValue_plural: 'test_en_plural', defaultValue: 'test_en', count: 10 },
+          { defaultValue_other: 'test_en_plural', defaultValue_one: 'test_en', count: 10 },
         ],
         expected: 'test_en_plural',
       },
     ];
 
-    tests.forEach(test => {
+    tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });

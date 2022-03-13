@@ -39,6 +39,10 @@ class Translator extends EventEmitter {
   }
 
   exists(key, options = { interpolation: {} }) {
+    if (key === undefined || key === null) {
+      return false;
+    }
+
     const resolved = this.resolve(key, options);
     return resolved && resolved.res !== undefined;
   }
@@ -51,8 +55,15 @@ class Translator extends EventEmitter {
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
-    let namespaces = options.ns || this.options.defaultNS;
-    if (nsSeparator && key.indexOf(nsSeparator) > -1) {
+    let namespaces = options.ns || this.options.defaultNS || [];
+    const wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
+    const seemsNaturalLanguage =
+      !this.options.userDefinedKeySeparator &&
+      !options.keySeparator &&
+      !this.options.userDefinedNsSeparator &&
+      !options.nsSeparator &&
+      !utils.looksLikeObjectPath(key, nsSeparator, keySeparator);
+    if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
       const m = key.match(this.interpolator.nestingRegexp);
       if (m && m.length > 0) {
         return {
@@ -131,9 +142,11 @@ class Translator extends EventEmitter {
       !(typeof joinArrays === 'string' && resType === '[object Array]')
     ) {
       if (!options.returnObjects && !this.options.returnObjects) {
-        this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+        if (!this.options.returnedObjectHandler) {
+          this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+        }
         return this.options.returnedObjectHandler
-          ? this.options.returnedObjectHandler(resUsedKey, res, options)
+          ? this.options.returnedObjectHandler(resUsedKey, res, { ...options, ns: namespaces })
           : `key '${key} (${this.language})' returned an object instead of string.`;
       }
 
@@ -173,7 +186,7 @@ class Translator extends EventEmitter {
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
       const hasDefaultValue = Translator.hasDefaultValue(options);
       const defaultValueSuffix = needsPluralHandling
-        ? this.pluralResolver.getSuffix(lng, options.count)
+        ? this.pluralResolver.getSuffix(lng, options.count, options)
         : '';
       const defaultValue = options[`defaultValue${defaultValueSuffix}`] || options.defaultValue;
 
@@ -186,6 +199,10 @@ class Translator extends EventEmitter {
         usedKey = true;
         res = key;
       }
+
+      const missingKeyNoValueFallbackToKey =
+        options.missingKeyNoValueFallbackToKey || this.options.missingKeyNoValueFallbackToKey;
+      const resForMissing = missingKeyNoValueFallbackToKey && usedKey ? undefined : res;
 
       // save missing
       const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
@@ -220,13 +237,15 @@ class Translator extends EventEmitter {
           lngs.push(options.lng || this.language);
         }
 
-        const send = (l, k, fallbackValue) => {
+        const send = (l, k, specificDefaultValue) => {
+          const defaultForMissing =
+            hasDefaultValue && specificDefaultValue !== res ? specificDefaultValue : resForMissing;
           if (this.options.missingKeyHandler) {
             this.options.missingKeyHandler(
               l,
               namespace,
               k,
-              updateMissing ? fallbackValue : res,
+              defaultForMissing,
               updateMissing,
               options,
             );
@@ -235,7 +254,7 @@ class Translator extends EventEmitter {
               l,
               namespace,
               k,
-              updateMissing ? fallbackValue : res,
+              defaultForMissing,
               updateMissing,
               options,
             );
@@ -245,8 +264,8 @@ class Translator extends EventEmitter {
 
         if (this.options.saveMissing) {
           if (this.options.saveMissingPlurals && needsPluralHandling) {
-            lngs.forEach(language => {
-              this.pluralResolver.getSuffixes(language).forEach(suffix => {
+            lngs.forEach((language) => {
+              this.pluralResolver.getSuffixes(language, options).forEach((suffix) => {
                 send([language], key + suffix, options[`defaultValue${suffix}`] || defaultValue);
               });
             });
@@ -264,8 +283,13 @@ class Translator extends EventEmitter {
         res = `${namespace}:${key}`;
 
       // parseMissingKeyHandler
-      if (usedKey && this.options.parseMissingKeyHandler)
-        res = this.options.parseMissingKeyHandler(res);
+      if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
+        if (this.options.compatibilityAPI !== 'v1') {
+          res = this.options.parseMissingKeyHandler(key, usedDefault ? res : undefined);
+        } else {
+          res = this.options.parseMissingKeyHandler(res);
+        }
+      }
     }
 
     // return
@@ -290,8 +314,10 @@ class Translator extends EventEmitter {
           ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } },
         });
       const skipOnVariables =
-        (options.interpolation && options.interpolation.skipOnVariables) ||
-        this.options.interpolation.skipOnVariables;
+        typeof res === 'string' &&
+        (options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+          ? options.interpolation.skipOnVariables
+          : this.options.interpolation.skipOnVariables);
       let nestBef;
       if (skipOnVariables) {
         const nb = res.match(this.interpolator.nestingRegexp);
@@ -365,7 +391,7 @@ class Translator extends EventEmitter {
     if (typeof keys === 'string') keys = [keys];
 
     // forEach possible key
-    keys.forEach(k => {
+    keys.forEach((k) => {
       if (this.isValidLookup(found)) return;
       const extracted = this.extractFromKey(k, options);
       const key = extracted.key;
@@ -374,16 +400,21 @@ class Translator extends EventEmitter {
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
       const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+      const needsZeroSuffixLookup =
+        needsPluralHandling &&
+        !options.ordinal &&
+        options.count === 0 &&
+        this.pluralResolver.shouldUseIntlApi();
       const needsContextHandling =
         options.context !== undefined &&
-        typeof options.context === 'string' &&
+        (typeof options.context === 'string' || typeof options.context === 'number') &&
         options.context !== '';
 
       const codes = options.lngs
         ? options.lngs
         : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
 
-      namespaces.forEach(ns => {
+      namespaces.forEach((ns) => {
         if (this.isValidLookup(found)) return;
         usedNS = ns;
 
@@ -402,30 +433,41 @@ class Translator extends EventEmitter {
           );
         }
 
-        codes.forEach(code => {
+        codes.forEach((code) => {
           if (this.isValidLookup(found)) return;
           usedLng = code;
 
-          let finalKey = key;
-          const finalKeys = [finalKey];
+          const finalKeys = [key];
 
           if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
             this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
           } else {
             let pluralSuffix;
             if (needsPluralHandling)
-              pluralSuffix = this.pluralResolver.getSuffix(code, options.count);
-
-            // fallback for plural if context not found
-            if (needsPluralHandling && needsContextHandling)
-              finalKeys.push(finalKey + pluralSuffix);
-
-            // get key for context if needed
-            if (needsContextHandling)
-              finalKeys.push((finalKey += `${this.options.contextSeparator}${options.context}`));
+              pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
+            const zeroSuffix = '_zero';
 
             // get key for plural if needed
-            if (needsPluralHandling) finalKeys.push((finalKey += pluralSuffix));
+            if (needsPluralHandling) {
+              finalKeys.push(key + pluralSuffix);
+              if (needsZeroSuffixLookup) {
+                finalKeys.push(key + zeroSuffix);
+              }
+            }
+
+            // get key for context if needed
+            if (needsContextHandling) {
+              const contextKey = `${key}${this.options.contextSeparator}${options.context}`;
+              finalKeys.push(contextKey);
+
+              // get key for context + plural if needed
+              if (needsPluralHandling) {
+                finalKeys.push(contextKey + pluralSuffix);
+                if (needsZeroSuffixLookup) {
+                  finalKeys.push(contextKey + zeroSuffix);
+                }
+              }
+            }
           }
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only

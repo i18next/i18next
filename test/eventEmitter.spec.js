@@ -7,15 +7,15 @@ describe('i18next', () => {
       emitter = new EventEmitter();
     });
 
-    it('it should emit', done => {
+    it('it should emit', (done) => {
       // test on
-      emitter.on('ok', payload => {
+      emitter.on('ok', (payload) => {
         expect(payload).to.equal('data ok');
         done();
       });
 
       // test off
-      const nok = payload => {
+      const nok = (payload) => {
         expect(payload).to.equal('not called as off');
         done();
       };
@@ -26,7 +26,7 @@ describe('i18next', () => {
       emitter.emit('ok', 'data ok');
     });
 
-    it('it should emit wildcard', done => {
+    it('it should emit wildcard', (done) => {
       // test on
       emitter.on('*', (name, payload) => {
         expect(name).to.equal('ok');
@@ -37,7 +37,7 @@ describe('i18next', () => {
       emitter.emit('ok', 'data ok');
     });
 
-    it('it should emit with array params', done => {
+    it('it should emit with array params', (done) => {
       // test on
       emitter.on('array-event', (array, data) => {
         expect(array).to.eql(['array ok 1', 'array ok 2']);
@@ -48,7 +48,7 @@ describe('i18next', () => {
       emitter.emit('array-event', ['array ok 1', 'array ok 2'], 'data ok');
     });
 
-    it('it should emit wildcard with array params', done => {
+    it('it should emit wildcard with array params', (done) => {
       // test on
       emitter.on('*', (ev, array, data) => {
         expect(ev).to.equal('array-event');
@@ -69,17 +69,17 @@ describe('i18next', () => {
 
     it('it should correctly unbind observers', () => {
       const calls1 = [];
-      const listener1 = payload => {
+      const listener1 = (payload) => {
         calls1.push(payload);
       };
 
       const calls2 = [];
-      const listener2 = payload => {
+      const listener2 = (payload) => {
         calls2.push(payload);
       };
 
       const calls3 = [];
-      const listener3 = payload => {
+      const listener3 = (payload) => {
         calls3.push(payload);
       };
 

@@ -5,12 +5,24 @@ import Translator from './Translator.js';
 import LanguageUtils from './LanguageUtils.js';
 import PluralResolver from './PluralResolver.js';
 import Interpolator from './Interpolator.js';
+import Formatter from './Formatter.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
 import { defer, isIE10 } from './utils.js';
 
 function noop() { }
+
+// Binds the member functions of the given class instance so that they can be
+// destructured or used as callbacks.
+function bindMemberFunctions(inst) {
+  const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst))
+  mems.forEach((mem) => {
+    if (typeof inst[mem] === 'function') {
+      inst[mem] = inst[mem].bind(inst)
+    }
+  })
+}
 
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
@@ -23,6 +35,8 @@ class I18n extends EventEmitter {
     this.services = {};
     this.logger = baseLogger;
     this.modules = { external: [] };
+
+    bindMemberFunctions(this);
 
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
@@ -42,20 +56,25 @@ class I18n extends EventEmitter {
       options = {};
     }
 
-    // temporal backwards compatibility WHITELIST REMOVAL
-    if (options.whitelist && !options.supportedLngs) {
-      this.logger.deprecate('whitelist', 'option "whitelist" will be renamed to "supportedLngs" in the next major - please make sure to rename this option asap.');
+    if (!options.defaultNS && options.ns) {
+      if (typeof options.ns === 'string') {
+        options.defaultNS = options.ns;
+      } else if (options.ns.indexOf('translation') < 0) {
+        options.defaultNS = options.ns[0];
+      }
     }
-    if (options.nonExplicitWhitelist && !options.nonExplicitSupportedLngs) {
-      this.logger.deprecate('whitelist', 'options "nonExplicitWhitelist" will be renamed to "nonExplicitSupportedLngs" in the next major - please make sure to rename this option asap.');
+
+    const defOpts = getDefaults();
+    this.options = { ...defOpts, ...this.options, ...transformOptions(options) };
+    if (this.options.compatibilityAPI !== 'v1') {
+      this.options.interpolation = { ...defOpts.interpolation, ...this.options.interpolation }; // do not use reference
     }
-    // end temporal backwards compatibility WHITELIST REMOVAL
-
-
-    this.options = { ...getDefaults(), ...this.options, ...transformOptions(options) };
-
-    this.format = this.options.interpolation.format;
-    if (!callback) callback = noop;
+    if (options.keySeparator !== undefined) {
+      this.options.userDefinedKeySeparator = options.keySeparator;
+    }
+    if (options.nsSeparator !== undefined) {
+      this.options.userDefinedNsSeparator = options.nsSeparator;
+    }
 
     function createClassOnDemand(ClassOrObject) {
       if (!ClassOrObject) return null;
@@ -71,6 +90,14 @@ class I18n extends EventEmitter {
         baseLogger.init(null, this.options);
       }
 
+      let formatter;
+      if (this.modules.formatter) {
+        formatter = this.modules.formatter;
+      } else if (typeof Intl !== 'undefined') {
+        formatter = Formatter;
+      }
+  
+
       const lu = new LanguageUtils(this.options);
       this.store = new ResourceStore(this.options.resources, this.options);
 
@@ -83,6 +110,14 @@ class I18n extends EventEmitter {
         compatibilityJSON: this.options.compatibilityJSON,
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
+
+      if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
+        s.formatter = createClassOnDemand(formatter);
+        s.formatter.init(s, this.options);
+
+        this.options.interpolation.format = s.formatter.format.bind(s.formatter);
+      }
+
       s.interpolator = new Interpolator(this.options);
       s.utils = {
         hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
@@ -120,6 +155,9 @@ class I18n extends EventEmitter {
       });
     }
 
+    this.format = this.options.interpolation.format;
+    if (!callback) callback = noop;
+
     if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
       const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng)
       if (codes.length > 0 && codes[0] !== 'dev') this.options.lng = codes[0]
@@ -155,7 +193,7 @@ class I18n extends EventEmitter {
 
     const load = () => {
       const finish = (err, t) => {
-        if (this.isInitialized) this.logger.warn('init: i18next is already initialized. You should call init just once!');
+        if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn('init: i18next is already initialized. You should call init just once!');
         this.isInitialized = true;
         if (!this.options.isClone) this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
@@ -208,7 +246,10 @@ class I18n extends EventEmitter {
         this.options.preload.forEach(l => append(l));
       }
 
-      this.services.backendConnector.load(toLoad, this.options.ns, usedCallback);
+      this.services.backendConnector.load(toLoad, this.options.ns, (e) => {
+        if (!e && !this.resolvedLanguage && this.language) this.setResolvedLanguage(this.language);
+        usedCallback(e);
+      });
     } else {
       usedCallback(null);
     }
@@ -250,6 +291,10 @@ class I18n extends EventEmitter {
       postProcessor.addPostProcessor(module);
     }
 
+    if (module.type === 'formatter') {
+      this.modules.formatter = module;
+    }
+
     if (module.type === '3rdParty') {
       this.modules.external.push(module);
     }
@@ -257,15 +302,35 @@ class I18n extends EventEmitter {
     return this;
   }
 
+  setResolvedLanguage(l) {
+    if (!l || !this.languages) return;
+    if (['cimode', 'dev'].indexOf(l) > -1) return;
+    for (let li = 0; li < this.languages.length; li++) {
+      const lngInLngs = this.languages[li];
+      if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+      if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
+        this.resolvedLanguage = lngInLngs;
+        break;
+      }
+    }
+  }
+
   changeLanguage(lng, callback) {
     this.isLanguageChangingTo = lng;
     const deferred = defer();
     this.emit('languageChanging', lng);
 
+    const setLngProps = (l) => {
+      this.language = l;
+      this.languages = this.services.languageUtils.toResolveHierarchy(l);
+      // find the first language resolved languaged
+      this.resolvedLanguage = undefined;
+      this.setResolvedLanguage(l);
+    };
+
     const done = (err, l) => {
       if (l) {
-        this.language = l;
-        this.languages = this.services.languageUtils.toResolveHierarchy(l);
+        setLngProps(l);
         this.translator.changeLanguage(l);
         this.isLanguageChangingTo = undefined;
         this.emit('languageChanged', l);
@@ -279,13 +344,14 @@ class I18n extends EventEmitter {
     };
 
     const setLng = lngs => {
+      // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
+      if (!lng && !lngs && this.services.languageDetector) lngs = [];
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
       const l = typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
 
       if (l) {
         if (!this.language) {
-          this.language = l;
-          this.languages = this.services.languageUtils.toResolveHierarchy(l);
+          setLngProps(l);
         }
         if (!this.translator.language) this.translator.changeLanguage(l);
 
@@ -308,7 +374,7 @@ class I18n extends EventEmitter {
     return deferred;
   }
 
-  getFixedT(lng, ns) {
+  getFixedT(lng, ns, keyPrefix) {
     const fixedT = (key, opts, ...rest) => {
       let options;
       if (typeof opts !== 'object') {
@@ -320,7 +386,10 @@ class I18n extends EventEmitter {
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;
-      return this.t(key, options);
+
+      const keySeparator = this.options.keySeparator || '.';
+      const resultKey = keyPrefix ? `${keyPrefix}${keySeparator}${key}` : key;
+      return this.t(resultKey, options);
     };
     if (typeof lng === 'string') {
       fixedT.lng = lng;
@@ -328,6 +397,7 @@ class I18n extends EventEmitter {
       fixedT.lngs = lng;
     }
     fixedT.ns = ns;
+    fixedT.keyPrefix = keyPrefix;
     return fixedT;
   }
 
@@ -353,7 +423,7 @@ class I18n extends EventEmitter {
       return false;
     }
 
-    const lng = this.languages[0];
+    const lng = this.resolvedLanguage || this.languages[0];
     const fallbackLng = this.options ? this.options.fallbackLng : false;
     const lastLng = this.languages[this.languages.length - 1];
 
@@ -427,7 +497,7 @@ class I18n extends EventEmitter {
   }
 
   dir(lng) {
-    if (!lng) lng = this.languages && this.languages.length > 0 ? this.languages[0] : this.language;
+    if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
     if (!lng) return 'rtl';
 
     const rtlLngs = [
@@ -492,17 +562,15 @@ class I18n extends EventEmitter {
       'prs',
       'dv',
       'sam',
+      'ckb'
     ];
 
-    return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0
+    return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'
       : 'ltr';
   }
 
-  /* eslint class-methods-use-this: 0 */
-  createInstance(options = {}, callback) {
-    return new I18n(options, callback);
-  }
+  static createInstance = (options = {}, callback) => new I18n(options, callback)
 
   cloneInstance(options = {}, callback = noop) {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
@@ -527,6 +595,19 @@ class I18n extends EventEmitter {
 
     return clone;
   }
+
+  toJSON() {
+    return {
+      options: this.options,
+      store: this.store,
+      language: this.language,
+      languages: this.languages,
+      resolvedLanguage: this.resolvedLanguage
+    };
+  }
 }
 
-export default new I18n();
+const instance = I18n.createInstance();
+instance.createInstance = I18n.createInstance;
+
+export default instance;

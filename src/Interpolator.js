@@ -6,7 +6,7 @@ class Interpolator {
     this.logger = baseLogger.create('interpolator');
 
     this.options = options;
-    this.format = (options.interpolation && options.interpolation.format) || (value => value);
+    this.format = (options.interpolation && options.interpolation.format) || ((value) => value);
     this.init(options);
   }
 
@@ -79,7 +79,7 @@ class Interpolator {
       return val.replace(/\$/g, '$$$$');
     }
 
-    const handleFormat = key => {
+    const handleFormat = (key) => {
       if (key.indexOf(this.formatSeparator) < 0) {
         const path = utils.getPathWithDefaults(data, defaultData, key);
         return this.alwaysFormat
@@ -104,42 +104,52 @@ class Interpolator {
       (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
 
     const skipOnVariables =
-      (options && options.interpolation && options.interpolation.skipOnVariables) ||
-      this.options.interpolation.skipOnVariables;
+      options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+        ? options.interpolation.skipOnVariables
+        : this.options.interpolation.skipOnVariables;
 
     const todos = [
       {
         // unescape if has unescapePrefix/Suffix
         regex: this.regexpUnescape,
-        safeValue: val => regexSafe(val),
+        safeValue: (val) => regexSafe(val),
       },
       {
         // regular escape on demand
         regex: this.regexp,
-        safeValue: val => (this.escapeValue ? regexSafe(this.escape(val)) : regexSafe(val)),
+        safeValue: (val) => (this.escapeValue ? regexSafe(this.escape(val)) : regexSafe(val)),
       },
     ];
-    todos.forEach(todo => {
+    todos.forEach((todo) => {
       replaces = 0;
       /* eslint no-cond-assign: 0 */
       while ((match = todo.regex.exec(str))) {
-        value = handleFormat(match[1].trim());
+        const matchedVar = match[1].trim();
+        value = handleFormat(matchedVar);
         if (value === undefined) {
           if (typeof missingInterpolationHandler === 'function') {
             const temp = missingInterpolationHandler(str, match, options);
             value = typeof temp === 'string' ? temp : '';
+          } else if (options && options.hasOwnProperty(matchedVar)) {
+            value = ''; // undefined becomes empty string
           } else if (skipOnVariables) {
             value = match[0];
             continue; // this makes sure it continues to detect others
           } else {
-            this.logger.warn(`missed to pass in variable ${match[1]} for interpolating ${str}`);
+            this.logger.warn(`missed to pass in variable ${matchedVar} for interpolating ${str}`);
             value = '';
           }
         } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
           value = utils.makeString(value);
         }
-        str = str.replace(match[0], todo.safeValue(value));
-        todo.regex.lastIndex = 0;
+        const safeValue = todo.safeValue(value);
+        str = str.replace(match[0], safeValue);
+        if (skipOnVariables) {
+          todo.regex.lastIndex += safeValue.length;
+          todo.regex.lastIndex -= match[0].length;
+        } else {
+          todo.regex.lastIndex = 0;
+        }
         replaces++;
         if (replaces >= this.maxReplaces) {
           break;
@@ -197,8 +207,8 @@ class Interpolator {
        *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
        */
       let doReduce = false;
-      if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
-        const r = match[1].split(this.formatSeparator).map(elem => elem.trim());
+      if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
+        const r = match[1].split(this.formatSeparator).map((elem) => elem.trim());
         match[1] = r.shift();
         formatters = r;
         doReduce = true;

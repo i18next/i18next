@@ -1,6 +1,6 @@
-module.exports = function(karma) {
+module.exports = function (karma) {
   karma.set({
-    frameworks: ['mocha', 'expect', 'sinon', 'browserify'],
+    frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
 
     files: [
       //'vendor/external.js',

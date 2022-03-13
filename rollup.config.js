@@ -11,13 +11,14 @@ const getBabelOptions = ({ useESModules }) => ({
 });
 
 const input = './src/index.js';
+const inputCjs = './src/index.cjs.js';
 const name = 'i18next';
 // check relative and absolute paths for windows and unix
-const external = id => !id.startsWith('.') && !id.startsWith('/') && !id.includes(':');
+const external = (id) => !id.startsWith('.') && !id.startsWith('/') && !id.includes(':');
 
 export default [
   {
-    input,
+    input: inputCjs,
     output: { format: 'cjs', file: pkg.main },
     external,
     plugins: [babel(getBabelOptions({ useESModules: false }))],
@@ -32,11 +33,24 @@ export default [
 
   {
     input,
+    output: { format: 'esm', file: './dist/esm/i18next.bundled.js' },
+    external,
+    plugins: [
+      babel({
+        exclude: /node_modules/,
+        babelHelpers: 'bundled',
+        comments: false,
+      }),
+    ],
+  },
+
+  {
+    input: inputCjs,
     output: { format: 'umd', name, file: `dist/umd/${name}.js` },
     plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve()],
   },
   {
-    input,
+    input: inputCjs,
     output: { format: 'umd', name, file: `dist/umd/${name}.min.js` },
     plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve(), terser()],
   },

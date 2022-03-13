@@ -8,11 +8,6 @@ export function get() {
     fallbackLng: ['dev'],
     fallbackNS: false, // string or array of namespaces
 
-    // temporal backwards compatibility WHITELIST REMOVAL
-    whitelist: false, // array with supported languages
-    nonExplicitWhitelist: false,
-    // end temporal backwards compatibility WHITELIST REMOVAL
-
     supportedLngs: false, // array with supported languages
     nonExplicitSupportedLngs: false,
     load: 'all', // | currentOnly | languageOnly
@@ -49,7 +44,7 @@ export function get() {
       if (typeof args[2] === 'string') ret.tDescription = args[2];
       if (typeof args[2] === 'object' || typeof args[3] === 'object') {
         var options = args[3] || args[2];
-        Object.keys(options).forEach(function(key) {
+        Object.keys(options).forEach(function (key) {
           ret[key] = options[key];
         });
       }
@@ -73,7 +68,7 @@ export function get() {
       // nestingSuffixEscaped: ')',
       // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
       maxReplaces: 1000, // max replaces to prevent endless loop
-      skipOnVariables: false,
+      skipOnVariables: true,
     },
   };
 }
@@ -84,20 +79,6 @@ export function transformOptions(options) {
   if (typeof options.ns === 'string') options.ns = [options.ns];
   if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
   if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
-
-  // temporal backwards compatibility WHITELIST REMOVAL
-  if (options.whitelist) {
-    if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-      options.whitelist = options.whitelist.concat(['cimode']);
-    }
-
-    options.supportedLngs = options.whitelist;
-  }
-
-  if (options.nonExplicitWhitelist) {
-    options.nonExplicitSupportedLngs = options.nonExplicitWhitelist;
-  }
-  // end temporal backwards compatibility WHITELIST REMOVAL
 
   // extend supportedLngs with cimode
   if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
