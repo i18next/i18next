@@ -1,3 +1,7 @@
+## 21.6.15
+
+- fix hasLoadedNamespace when providing inmemory resources and a backend but partialBundledLanguages is not set
+
 ## 21.6.14
 
 - fix formatter for false inline options

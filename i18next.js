@@ -2750,7 +2750,7 @@
         }
 
         if (this.hasResourceBundle(lng, ns)) return true;
-        if (!this.services.backendConnector.backend) return true;
+        if (!this.services.backendConnector.backend || this.options.resources && !this.options.partialBundledLanguages) return true;
         if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
         return false;
       }

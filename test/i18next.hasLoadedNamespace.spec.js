@@ -193,4 +193,30 @@ describe('i18next', () => {
       expect(i18n2.hasLoadedNamespace('ns1')).to.equal(true);
     });
   });
+
+  describe('having a backend and having resources but without partialBundledLanguages flag', () => {
+    const i18n2 = i18next.createInstance();
+    i18n2.use(Backend);
+    i18n2.use(Logger);
+    before((done) => {
+      i18n2.init(
+        {
+          debug: true,
+          lng: 'en-US',
+          resources: { 'en-US': { translation: {} }, dev: { translation: {} } },
+        },
+        () => {
+          done();
+        },
+      );
+    });
+
+    it('it should ok for passed in ns', () => {
+      expect(i18n2.hasLoadedNamespace('translation')).to.equal(true);
+    });
+
+    it('it should ok for not passed in ns - as there is no loading done', () => {
+      expect(i18n2.hasLoadedNamespace('notLoaded')).to.equal(true);
+    });
+  });
 });
