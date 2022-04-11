@@ -1,3 +1,7 @@
+## 21.6.16
+
+- fix: defaultVariables were not accessible inside plugin parse function [1751](https://github.com/i18next/i18next/pull/1751)
+
 ## 21.6.15
 
 - fix hasLoadedNamespace when providing inmemory resources and a backend but partialBundledLanguages is not set
