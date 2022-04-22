@@ -13,8 +13,8 @@ i18next is a very popular internationalization framework for browser or any othe
 
 i18next provides:
 
-- Flexible connection to [backend](https://www.i18next.com/plugins-and-utils.html#backends) (loading translations via xhr, ...)
-- Optional [caching](https://www.i18next.com/plugins-and-utils.html#caches), user [language detection](https://www.i18next.com/plugins-and-utils.html#language-detector), ...
+- Flexible connection to [backend](https://www.i18next.com/overview/plugins-and-utils#backends) (loading translations via xhr, ...)
+- Optional [caching](https://www.i18next.com/how-to/caching), user [language detection](https://www.i18next.com/overview/plugins-and-utils#language-detector), ...
 - Proper [pluralizations](https://www.i18next.com/translation-function/plurals)
 - Translation [context](https://www.i18next.com/translation-function/context)
 - [Nesting](https://www.i18next.com/translation-function/nesting), [Variable replacement](https://www.i18next.com/translation-function/interpolation)
