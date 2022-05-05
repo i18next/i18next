@@ -113,9 +113,17 @@ class Translator extends EventEmitter {
     if (lng && lng.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
+        if (options.returnResolved) {
+          resolved.res = namespace + nsSeparator + key;
+          return resolved;
+        }
         return namespace + nsSeparator + key;
       }
 
+      if (options.returnResolved) {
+        resolved.res = key;
+        return resolved;
+      }
       return key;
     }
 
@@ -145,9 +153,14 @@ class Translator extends EventEmitter {
         if (!this.options.returnedObjectHandler) {
           this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         }
-        return this.options.returnedObjectHandler
+        const r = this.options.returnedObjectHandler
           ? this.options.returnedObjectHandler(resUsedKey, res, { ...options, ns: namespaces })
           : `key '${key} (${this.language})' returned an object instead of string.`;
+        if (options.returnResolved) {
+          resolved.res = r;
+          return resolved;
+        }
+        return r;
       }
 
       // if we got a separator we loop over children - else we just return object as is
@@ -293,6 +306,10 @@ class Translator extends EventEmitter {
     }
 
     // return
+    if (options.returnResolved) {
+      resolved.res = res;
+      return resolved;
+    }
     return res;
   }
 

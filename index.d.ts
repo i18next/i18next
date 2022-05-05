@@ -652,6 +652,10 @@ export interface TOptionsBase {
    * Override interpolation options
    */
   interpolation?: InterpolationOptions;
+  /**
+   * Returning an object that includes information about the used language, namespace, key and value
+   */
+  returnResolved?: boolean;
 }
 
 /**
