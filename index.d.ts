@@ -689,9 +689,9 @@ export interface WithT {
 /**
  * Object returned from t() function when passed returnResolved: true option.
  */
-export type TFunctionResolvedResult = {
+export type TFunctionResolvedResult<T = string> = {
   usedKey: string;
-  res: TFunctionResult;
+  res: T;
   exactUsedKey: string;
   usedLng: string;
   usedNS: string;
@@ -712,6 +712,14 @@ export interface TFunction {
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
+  ): TResult;
+  <
+    TResult extends TFunctionResult = TFunctionResolvedResult<object>,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnResolved: true; returnObjects: true },
   ): TResult;
   <
     TResult extends TFunctionResult = TFunctionResolvedResult,

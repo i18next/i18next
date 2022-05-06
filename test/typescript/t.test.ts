@@ -134,6 +134,7 @@ function interpolation(t: TFunction) {
 
   const resolved = t('key', { returnResolved: true });
   resolved.res;
+  resolved.res.substring(2, 1);
   resolved.usedKey;
   resolved.exactUsedKey;
   resolved.usedNS;
