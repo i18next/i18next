@@ -397,11 +397,6 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
   returnObjects?: boolean;
 
   /**
-   * Returns an object that includes information about the used language, namespace, key and value
-   */
-  returnDetails?: boolean;
-
-  /**
    * Gets called if object was passed in as key but returnObjects was set to false
    * @default noop
    */
@@ -423,6 +418,12 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * @see https://www.i18next.com/interpolation.html
    */
   interpolation?: InterpolationOptions;
+  
+  /**
+   * Returning an object that includes information about the used language, namespace, key and value
+   * @default false
+   */
+  returnDetails?: boolean;
 
   /**
    * Options for react - check documentation of plugin
@@ -646,10 +647,6 @@ export interface TOptionsBase {
    */
   returnObjects?: boolean;
   /**
-   * Returns an object that includes information about the used language, namespace, key and value
-   */
-  returnDetails?: boolean;
-  /**
    * Char, eg. '\n' that arrays will be joined by (can be set globally too)
    */
   joinArrays?: string;
@@ -661,6 +658,10 @@ export interface TOptionsBase {
    * Override interpolation options
    */
   interpolation?: InterpolationOptions;
+  /**
+   * Returning an object that includes information about the used language, namespace, key and value
+   */
+  returnDetails?: boolean;
 }
 
 /**
