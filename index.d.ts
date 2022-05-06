@@ -722,6 +722,14 @@ export interface TFunction {
     options?: TOptions<TInterpolationMap> & { returnResolved: true },
   ): TResult;
   <
+    TResult extends TFunctionResult = object,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnObjects: true },
+  ): TResult;
+  <
     TResult extends TFunctionResult = string,
     TKeys extends TFunctionKeys = string,
     TInterpolationMap extends object = StringMap,
