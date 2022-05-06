@@ -756,6 +756,7 @@
         if (!options) options = {};
         if (keys === undefined || keys === null) return '';
         if (!Array.isArray(keys)) keys = [String(keys)];
+        var returnDetails = options.returnDetails !== undefined ? options.returnDetails : this.options.returnDetails;
         var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
         var _this$extractFromKey = this.extractFromKey(keys[keys.length - 1], options),
@@ -769,7 +770,18 @@
         if (lng && lng.toLowerCase() === 'cimode') {
           if (appendNamespaceToCIMode) {
             var nsSeparator = options.nsSeparator || this.options.nsSeparator;
-            return namespace + nsSeparator + key;
+
+            if (returnDetails) {
+              resolved.res = "".concat(namespace).concat(nsSeparator).concat(key);
+              return resolved;
+            }
+
+            return "".concat(namespace).concat(nsSeparator).concat(key);
+          }
+
+          if (returnDetails) {
+            resolved.res = key;
+            return resolved;
           }
 
           return key;
@@ -791,9 +803,16 @@
               this.logger.warn('accessing an object - but returnObjects options is not enabled!');
             }
 
-            return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, _objectSpread$2(_objectSpread$2({}, options), {}, {
+            var r = this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, _objectSpread$2(_objectSpread$2({}, options), {}, {
               ns: namespaces
             })) : "key '".concat(key, " (").concat(this.language, ")' returned an object instead of string.");
+
+            if (returnDetails) {
+              resolved.res = r;
+              return resolved;
+            }
+
+            return r;
           }
 
           if (keySeparator) {
@@ -897,6 +916,11 @@
               res = this.options.parseMissingKeyHandler(res);
             }
           }
+        }
+
+        if (returnDetails) {
+          resolved.res = res;
+          return resolved;
         }
 
         return res;

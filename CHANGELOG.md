@@ -1,3 +1,7 @@
+## 21.7.0
+
+- introduce returnDetails option [1764](https://github.com/i18next/i18next/pull/1764)
+
 ## 21.6.16
 
 - fix: defaultVariables were not accessible inside plugin parse function [1751](https://github.com/i18next/i18next/pull/1751)
