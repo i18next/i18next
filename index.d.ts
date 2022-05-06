@@ -652,6 +652,10 @@ export interface TOptionsBase {
    * Override interpolation options
    */
   interpolation?: InterpolationOptions;
+  /**
+   * Returning an object that includes information about the used language, namespace, key and value
+   */
+  returnDetails?: boolean;
 }
 
 /**
@@ -682,10 +686,72 @@ export interface WithT {
   t: TFunction;
 }
 
-export type TFunctionResult = string | object | Array<string | object> | undefined | null;
+/**
+ * Object returned from t() function when passed returnDetails: true option.
+ */
+export type TFunctionDetailedResult<T = string> = {
+  /**
+   * The plain used key
+   */
+  usedKey: string;
+  /**
+   * The translation result.
+   */
+  res: T;
+  /**
+   * The key with context / plural
+   */
+  exactUsedKey: string;
+  /**
+   * The used language for this translation.
+   */
+  usedLng: string;
+  /**
+   * The used namespace for this translation.
+   */
+  usedNS: string;
+};
+export type TFunctionResult =
+  | string
+  | object
+  | TFunctionDetailedResult
+  | Array<string | object>
+  | undefined
+  | null;
 export type TFunctionKeys = string | TemplateStringsArray;
 export interface TFunction {
   // basic usage
+  <
+    TResult extends TFunctionResult = string,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+  ): TResult;
+  <
+    TResult extends TFunctionResult = TFunctionDetailedResult<object>,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnDetails: true; returnObjects: true },
+  ): TResult;
+  <
+    TResult extends TFunctionResult = TFunctionDetailedResult,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnDetails: true },
+  ): TResult;
+  <
+    TResult extends TFunctionResult = object,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnObjects: true },
+  ): TResult;
   <
     TResult extends TFunctionResult = string,
     TKeys extends TFunctionKeys = string,
