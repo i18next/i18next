@@ -655,7 +655,7 @@ export interface TOptionsBase {
   /**
    * Returning an object that includes information about the used language, namespace, key and value
    */
-  // returnResolved?: boolean;
+  returnResolved?: boolean;
 }
 
 /**
