@@ -690,10 +690,25 @@ export interface WithT {
  * Object returned from t() function when passed returnDetails: true option.
  */
 export type TFunctionDetailedResult<T = string> = {
+  /**
+   * The plain used key
+   */
   usedKey: string;
+  /**
+   * The translation result.
+   */
   res: T;
+  /**
+   * The key with context / plural
+   */
   exactUsedKey: string;
+  /**
+   * The used language for this translation.
+   */
   usedLng: string;
+  /**
+   * The used namespace for this translation.
+   */
   usedNS: string;
 };
 export type TFunctionResult =
