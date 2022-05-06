@@ -1,3 +1,7 @@
+## 21.7.1
+
+- types: missing returnDetails option in init options [1765](https://github.com/i18next/i18next/issues/1765)
+
 ## 21.7.0
 
 - introduce returnDetails option [1764](https://github.com/i18next/i18next/pull/1764)
