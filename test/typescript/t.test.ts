@@ -132,7 +132,7 @@ function interpolation(t: TFunction) {
   t('arrayJoin', { joinArrays: '+' });
   // -> "line1+line2+line3"
 
-  const resolved = t<TFunctionResolvedResult>('key', { returnResolved: true });
+  const resolved = t('key', { returnResolved: true });
   resolved.res;
   resolved.usedKey;
   resolved.exactUsedKey;
@@ -143,6 +143,8 @@ function interpolation(t: TFunction) {
   r2.substring(0, 2); // make sure it is a string
   const r3 = t('keyThree');
   r3.substring(0, 2); // make sure it is a string
+  const r4 = t('keyTwo', { ns: 'whatever' });
+  r4.substring(0, 2); // make sure it is a string
 
   t('arrayJoinWithInterpolation', {
     myVar: 'interpolate',

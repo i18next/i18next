@@ -655,7 +655,7 @@ export interface TOptionsBase {
   /**
    * Returning an object that includes information about the used language, namespace, key and value
    */
-  returnResolved?: boolean;
+  // returnResolved?: boolean;
 }
 
 /**
@@ -706,6 +706,21 @@ export type TFunctionResult =
 export type TFunctionKeys = string | TemplateStringsArray;
 export interface TFunction {
   // basic usage
+  <
+    TResult extends TFunctionResult = string,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+  ): TResult;
+  <
+    TResult extends TFunctionResult = TFunctionResolvedResult,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnResolved: true },
+  ): TResult;
   <
     TResult extends TFunctionResult = string,
     TKeys extends TFunctionKeys = string,
