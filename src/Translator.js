@@ -98,8 +98,8 @@ class Translator extends EventEmitter {
     if (keys === undefined || keys === null /* || keys === ''*/) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
-    const returnResolved =
-      options.returnResolved !== undefined ? options.returnResolved : this.options.returnResolved;
+    const returnDetails =
+      options.returnDetails !== undefined ? options.returnDetails : this.options.returnDetails;
 
     // separators
     const keySeparator =
@@ -116,14 +116,14 @@ class Translator extends EventEmitter {
     if (lng && lng.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
-        if (returnResolved) {
+        if (returnDetails) {
           resolved.res = `${namespace}${nsSeparator}${key}`;
           return resolved;
         }
         return `${namespace}${nsSeparator}${key}`;
       }
 
-      if (returnResolved) {
+      if (returnDetails) {
         resolved.res = key;
         return resolved;
       }
@@ -159,7 +159,7 @@ class Translator extends EventEmitter {
         const r = this.options.returnedObjectHandler
           ? this.options.returnedObjectHandler(resUsedKey, res, { ...options, ns: namespaces })
           : `key '${key} (${this.language})' returned an object instead of string.`;
-        if (returnResolved) {
+        if (returnDetails) {
           resolved.res = r;
           return resolved;
         }
@@ -309,7 +309,7 @@ class Translator extends EventEmitter {
     }
 
     // return
-    if (returnResolved) {
+    if (returnDetails) {
       resolved.res = res;
       return resolved;
     }

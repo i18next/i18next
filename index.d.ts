@@ -655,7 +655,7 @@ export interface TOptionsBase {
   /**
    * Returning an object that includes information about the used language, namespace, key and value
    */
-  returnResolved?: boolean;
+  returnDetails?: boolean;
 }
 
 /**
@@ -687,7 +687,7 @@ export interface WithT {
 }
 
 /**
- * Object returned from t() function when passed returnResolved: true option.
+ * Object returned from t() function when passed returnDetails: true option.
  */
 export type TFunctionResolvedResult<T = string> = {
   usedKey: string;
@@ -719,7 +719,7 @@ export interface TFunction {
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
-    options?: TOptions<TInterpolationMap> & { returnResolved: true; returnObjects: true },
+    options?: TOptions<TInterpolationMap> & { returnDetails: true; returnObjects: true },
   ): TResult;
   <
     TResult extends TFunctionResult = TFunctionResolvedResult,
@@ -727,7 +727,7 @@ export interface TFunction {
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
-    options?: TOptions<TInterpolationMap> & { returnResolved: true },
+    options?: TOptions<TInterpolationMap> & { returnDetails: true },
   ): TResult;
   <
     TResult extends TFunctionResult = object,

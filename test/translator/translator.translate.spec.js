@@ -63,10 +63,10 @@ describe('Translator', () => {
       });
     });
 
-    describe('with returnResolved option', () => {
+    describe('with returnDetails option', () => {
       var tests = [
         {
-          args: ['translation:test', { returnResolved: true }],
+          args: ['translation:test', { returnDetails: true }],
           expected: {
             usedKey: 'test',
             res: 'test_en',
@@ -76,7 +76,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['test', { returnResolved: true }],
+          args: ['test', { returnDetails: true }],
           expected: {
             usedKey: 'test',
             res: 'test_en',
@@ -86,7 +86,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation:test', { returnResolved: true, lngs: ['en-US', 'en'] }],
+          args: ['translation:test', { returnDetails: true, lngs: ['en-US', 'en'] }],
           expected: {
             usedKey: 'test',
             res: 'test_en',
@@ -96,7 +96,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation:test', { returnResolved: true, lngs: ['de'] }],
+          args: ['translation:test', { returnDetails: true, lngs: ['de'] }],
           expected: {
             usedKey: 'test',
             res: 'test_de',
@@ -106,7 +106,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation:test', { returnResolved: true, lng: 'de' }],
+          args: ['translation:test', { returnDetails: true, lng: 'de' }],
           expected: {
             usedKey: 'test',
             res: 'test_de',
@@ -116,7 +116,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation:test', { returnResolved: true, lng: 'fr' }],
+          args: ['translation:test', { returnDetails: true, lng: 'fr' }],
           expected: {
             usedKey: 'test',
             res: 'test_en',
@@ -126,7 +126,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation:test', { returnResolved: true, lng: 'en-US' }],
+          args: ['translation:test', { returnDetails: true, lng: 'en-US' }],
           expected: {
             usedKey: 'test',
             res: 'test_en',
@@ -136,7 +136,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation.test', { returnResolved: true, lng: 'en-US', nsSeparator: '.' }],
+          args: ['translation.test', { returnDetails: true, lng: 'en-US', nsSeparator: '.' }],
           expected: {
             usedKey: 'test',
             res: 'test_en',
@@ -146,7 +146,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['translation.deep.test', { returnResolved: true, lng: 'en-US', nsSeparator: '.' }],
+          args: ['translation.deep.test', { returnDetails: true, lng: 'en-US', nsSeparator: '.' }],
           expected: {
             usedKey: 'deep.test',
             res: 'deep_en',
@@ -156,7 +156,7 @@ describe('Translator', () => {
           },
         },
         {
-          args: ['deep.test', { returnResolved: true, lng: 'en-US', nsSeparator: '.' }],
+          args: ['deep.test', { returnDetails: true, lng: 'en-US', nsSeparator: '.' }],
           expected: {
             usedKey: 'deep.test',
             res: 'deep_en',
