@@ -114,10 +114,10 @@ class Translator extends EventEmitter {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
         if (options.returnResolved) {
-          resolved.res = namespace + nsSeparator + key;
+          resolved.res = `${namespace}${nsSeparator}${key}`;
           return resolved;
         }
-        return namespace + nsSeparator + key;
+        return `${namespace}${nsSeparator}${key}`;
       }
 
       if (options.returnResolved) {
