@@ -1,4 +1,4 @@
-import i18next, { TFunction } from 'i18next';
+import i18next, { TFunction, TFunctionResolvedResult } from 'i18next';
 
 function basicUsage(t: TFunction) {
   t('friend');
@@ -131,6 +131,18 @@ function interpolation(t: TFunction) {
   // -> ['a', 'b', 'c']
   t('arrayJoin', { joinArrays: '+' });
   // -> "line1+line2+line3"
+
+  const resolved = t<TFunctionResolvedResult>('key', { returnResolved: true });
+  resolved.res;
+  resolved.usedKey;
+  resolved.exactUsedKey;
+  resolved.usedNS;
+  resolved.usedLng;
+
+  const r2 = t('keyTwo', { returnResolved: false });
+  r2.substring(0, 2); // make sure it is a string
+  const r3 = t('keyThree');
+  r3.substring(0, 2); // make sure it is a string
 
   t('arrayJoinWithInterpolation', {
     myVar: 'interpolate',

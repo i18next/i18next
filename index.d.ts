@@ -686,7 +686,23 @@ export interface WithT {
   t: TFunction;
 }
 
-export type TFunctionResult = string | object | Array<string | object> | undefined | null;
+/**
+ * Object returned from t() function when passed returnResolved: true option.
+ */
+export type TFunctionResolvedResult = {
+  usedKey: string;
+  res: TFunctionResult;
+  exactUsedKey: string;
+  usedLng: string;
+  usedNS: string;
+};
+export type TFunctionResult =
+  | string
+  | object
+  | TFunctionResolvedResult
+  | Array<string | object>
+  | undefined
+  | null;
 export type TFunctionKeys = string | TemplateStringsArray;
 export interface TFunction {
   // basic usage
