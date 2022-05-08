@@ -1,3 +1,8 @@
+## 21.8.0
+
+- add maxParallelReads option, default 10 [1771](https://github.com/i18next/i18next/pull/1771)
+- reduce CPU usage loading large numbers of items [1768](https://github.com/i18next/i18next/pull/1768)
+
 ## 21.7.1
 
 - types: missing returnDetails option in init options [1765](https://github.com/i18next/i18next/issues/1765)

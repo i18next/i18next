@@ -1,6 +1,6 @@
 import BackendConnector from '../../src/BackendConnector.js';
 import BackendMock from './backendMock.js';
-import Interpolator from '../../src/Interpolator';
+import Interpolator from '../../src/Interpolator.js';
 import ResourceStore from '../../src/ResourceStore.js';
 
 describe('BackendConnector load retry', () => {

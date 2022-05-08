@@ -598,6 +598,15 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * @default true
    */
   ignoreJSONStructure?: boolean;
+
+  /**
+   * Limit parallelism of calls to backend
+   * This is needed to prevent trying to open thousands of
+   * sockets or file descriptors, which can cause failures
+   * and actually make the entire process take longer.
+   * @default 10
+   */
+  maxParallelReads?: number;
 }
 
 export interface TOptionsBase {
