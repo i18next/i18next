@@ -21,6 +21,10 @@ class Connector extends EventEmitter {
     this.options = options;
     this.logger = baseLogger.create('backendConnector');
 
+    this.waitingReads = [];
+    this.maxParallelReads = options.maxParallelReads || 10;
+    this.readingCalls = 0;
+
     this.state = {};
     this.queue = [];
 
@@ -136,12 +140,27 @@ class Connector extends EventEmitter {
   read(lng, ns, fcName, tried = 0, wait = 350, callback) {
     if (!lng.length) return callback(null, {}); // noting to load
 
+    // Limit parallelism of calls to backend
+    // This is needed to prevent trying to open thousands of
+    // sockets or file descriptors, which can cause failures
+    // and actually make the entire process take longer.
+    if (this.readingCalls >= this.maxParallelReads) {
+      this.waitingReads.push({ lng, ns, fcName, tried, wait, callback });
+      return;
+    }
+    this.readingCalls++;
+
     return this.backend[fcName](lng, ns, (err, data) => {
       if (err && data /* = retryFlag */ && tried < 5) {
         setTimeout(() => {
           this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
         }, wait);
         return;
+      }
+      this.readingCalls--;
+      if (this.waitingReads.length > 0) {
+        const next = this.waitingReads.shift();
+        this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
       }
       callback(err, data);
     });
