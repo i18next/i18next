@@ -445,7 +445,7 @@ class I18n extends EventEmitter {
     if (this.hasResourceBundle(lng, ns)) return true;
 
     // were not loading at all -> SEMI SUCCESS
-    if (!this.services.backendConnector.backend) return true;
+    if (!this.services.backendConnector.backend || (this.options.resources && !this.options.partialBundledLanguages)) return true;
 
     // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
     if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;

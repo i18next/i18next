@@ -397,6 +397,11 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
   returnObjects?: boolean;
 
   /**
+   * Returns an object that includes information about the used language, namespace, key and value
+   */
+  returnDetails?: boolean;
+
+  /**
    * Gets called if object was passed in as key but returnObjects was set to false
    * @default noop
    */
@@ -593,6 +598,15 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * @default true
    */
   ignoreJSONStructure?: boolean;
+
+  /**
+   * Limit parallelism of calls to backend
+   * This is needed to prevent trying to open thousands of
+   * sockets or file descriptors, which can cause failures
+   * and actually make the entire process take longer.
+   * @default 10
+   */
+  maxParallelReads?: number;
 }
 
 export interface TOptionsBase {
@@ -641,6 +655,10 @@ export interface TOptionsBase {
    */
   returnObjects?: boolean;
   /**
+   * Returns an object that includes information about the used language, namespace, key and value
+   */
+  returnDetails?: boolean;
+  /**
    * Char, eg. '\n' that arrays will be joined by (can be set globally too)
    */
   joinArrays?: string;
@@ -682,10 +700,72 @@ export interface WithT {
   t: TFunction;
 }
 
-export type TFunctionResult = string | object | Array<string | object> | undefined | null;
+/**
+ * Object returned from t() function when passed returnDetails: true option.
+ */
+export type TFunctionDetailedResult<T = string> = {
+  /**
+   * The plain used key
+   */
+  usedKey: string;
+  /**
+   * The translation result.
+   */
+  res: T;
+  /**
+   * The key with context / plural
+   */
+  exactUsedKey: string;
+  /**
+   * The used language for this translation.
+   */
+  usedLng: string;
+  /**
+   * The used namespace for this translation.
+   */
+  usedNS: string;
+};
+export type TFunctionResult =
+  | string
+  | object
+  | TFunctionDetailedResult
+  | Array<string | object>
+  | undefined
+  | null;
 export type TFunctionKeys = string | TemplateStringsArray;
 export interface TFunction {
   // basic usage
+  <
+    TResult extends TFunctionResult = string,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+  ): TResult;
+  <
+    TResult extends TFunctionResult = TFunctionDetailedResult<object>,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnDetails: true; returnObjects: true },
+  ): TResult;
+  <
+    TResult extends TFunctionResult = TFunctionDetailedResult,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnDetails: true },
+  ): TResult;
+  <
+    TResult extends TFunctionResult = object,
+    TKeys extends TFunctionKeys = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap> & { returnObjects: true },
+  ): TResult;
   <
     TResult extends TFunctionResult = string,
     TKeys extends TFunctionKeys = string,

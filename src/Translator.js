@@ -98,6 +98,9 @@ class Translator extends EventEmitter {
     if (keys === undefined || keys === null /* || keys === ''*/) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
+    const returnDetails =
+      options.returnDetails !== undefined ? options.returnDetails : this.options.returnDetails;
+
     // separators
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
@@ -113,9 +116,17 @@ class Translator extends EventEmitter {
     if (lng && lng.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
-        return namespace + nsSeparator + key;
+        if (returnDetails) {
+          resolved.res = `${namespace}${nsSeparator}${key}`;
+          return resolved;
+        }
+        return `${namespace}${nsSeparator}${key}`;
       }
 
+      if (returnDetails) {
+        resolved.res = key;
+        return resolved;
+      }
       return key;
     }
 
@@ -145,9 +156,14 @@ class Translator extends EventEmitter {
         if (!this.options.returnedObjectHandler) {
           this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         }
-        return this.options.returnedObjectHandler
+        const r = this.options.returnedObjectHandler
           ? this.options.returnedObjectHandler(resUsedKey, res, { ...options, ns: namespaces })
           : `key '${key} (${this.language})' returned an object instead of string.`;
+        if (returnDetails) {
+          resolved.res = r;
+          return resolved;
+        }
+        return r;
       }
 
       // if we got a separator we loop over children - else we just return object as is
@@ -293,6 +309,10 @@ class Translator extends EventEmitter {
     }
 
     // return
+    if (returnDetails) {
+      resolved.res = res;
+      return resolved;
+    }
     return res;
   }
 
@@ -300,7 +320,7 @@ class Translator extends EventEmitter {
     if (this.i18nFormat && this.i18nFormat.parse) {
       res = this.i18nFormat.parse(
         res,
-        options,
+        { ...this.options.interpolation.defaultVariables, ...options },
         resolved.usedLng,
         resolved.usedNS,
         resolved.usedKey,

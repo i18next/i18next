@@ -62,5 +62,116 @@ describe('Translator', () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
+
+    describe('with returnDetails option', () => {
+      var tests = [
+        {
+          args: ['translation:test', { returnDetails: true }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['test', { returnDetails: true }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation:test', { returnDetails: true, lngs: ['en-US', 'en'] }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation:test', { returnDetails: true, lngs: ['de'] }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_de',
+            exactUsedKey: 'test',
+            usedLng: 'de',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation:test', { returnDetails: true, lng: 'de' }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_de',
+            exactUsedKey: 'test',
+            usedLng: 'de',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation:test', { returnDetails: true, lng: 'fr' }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation:test', { returnDetails: true, lng: 'en-US' }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation.test', { returnDetails: true, lng: 'en-US', nsSeparator: '.' }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['translation.deep.test', { returnDetails: true, lng: 'en-US', nsSeparator: '.' }],
+          expected: {
+            usedKey: 'deep.test',
+            res: 'deep_en',
+            exactUsedKey: 'deep.test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+        {
+          args: ['deep.test', { returnDetails: true, lng: 'en-US', nsSeparator: '.' }],
+          expected: {
+            usedKey: 'deep.test',
+            res: 'deep_en',
+            exactUsedKey: 'deep.test',
+            usedLng: 'en',
+            usedNS: 'translation',
+          },
+        },
+      ];
+
+      tests.forEach((test) => {
+        it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+          expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+        });
+      });
+    });
   });
 });

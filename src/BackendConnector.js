@@ -2,13 +2,9 @@ import * as utils from './utils.js';
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
-function remove(arr, what) {
-  let found = arr.indexOf(what);
-
-  while (found !== -1) {
-    arr.splice(found, 1);
-    found = arr.indexOf(what);
-  }
+function removePending(q, name) {
+  delete q.pending[name];
+  q.pendingCount--;
 }
 
 class Connector extends EventEmitter {
@@ -25,6 +21,10 @@ class Connector extends EventEmitter {
     this.options = options;
     this.logger = baseLogger.create('backendConnector');
 
+    this.waitingReads = [];
+    this.maxParallelReads = options.maxParallelReads || 10;
+    this.readingCalls = 0;
+
     this.state = {};
     this.queue = [];
 
@@ -35,10 +35,10 @@ class Connector extends EventEmitter {
 
   queueLoad(languages, namespaces, options, callback) {
     // find what needs to be loaded
-    const toLoad = [];
-    const pending = [];
-    const toLoadLanguages = [];
-    const toLoadNamespaces = [];
+    const toLoad = {};
+    const pending = {};
+    const toLoadLanguages = {};
+    const toLoadNamespaces = {};
 
     languages.forEach((lng) => {
       let hasAllNamespaces = true;
@@ -51,24 +51,25 @@ class Connector extends EventEmitter {
         } else if (this.state[name] < 0) {
           // nothing to do for err
         } else if (this.state[name] === 1) {
-          if (pending.indexOf(name) < 0) pending.push(name);
+          if (pending[name] !== undefined) pending[name] = true;
         } else {
           this.state[name] = 1; // pending
 
           hasAllNamespaces = false;
 
-          if (pending.indexOf(name) < 0) pending.push(name);
-          if (toLoad.indexOf(name) < 0) toLoad.push(name);
-          if (toLoadNamespaces.indexOf(ns) < 0) toLoadNamespaces.push(ns);
+          pending[name] = true;
+          toLoad[name] = true;
+          toLoadNamespaces[ns] = true;
         }
       });
 
-      if (!hasAllNamespaces) toLoadLanguages.push(lng);
+      if (!hasAllNamespaces) toLoadLanguages[lng] = true;
     });
 
-    if (toLoad.length || pending.length) {
+    if (Object.keys(toLoad).length || Object.keys(pending).length) {
       this.queue.push({
         pending,
+        pendingCount: Object.keys(pending).length,
         loaded: {},
         errors: [],
         callback,
@@ -76,10 +77,10 @@ class Connector extends EventEmitter {
     }
 
     return {
-      toLoad,
-      pending,
-      toLoadLanguages,
-      toLoadNamespaces,
+      toLoad: Object.keys(toLoad),
+      pending: Object.keys(pending),
+      toLoadLanguages: Object.keys(toLoadLanguages),
+      toLoadNamespaces: Object.keys(toLoadNamespaces),
     };
   }
 
@@ -103,17 +104,18 @@ class Connector extends EventEmitter {
     // callback if ready
     this.queue.forEach((q) => {
       utils.pushPath(q.loaded, [lng], ns);
-      remove(q.pending, name);
+      removePending(q, name);
 
       if (err) q.errors.push(err);
 
-      if (q.pending.length === 0 && !q.done) {
+      if (q.pendingCount === 0 && !q.done) {
         // only do once per loaded -> this.emit('loaded', q.loaded);
         Object.keys(q.loaded).forEach((l) => {
-          if (!loaded[l]) loaded[l] = [];
-          if (q.loaded[l].length) {
-            q.loaded[l].forEach((ns) => {
-              if (loaded[l].indexOf(ns) < 0) loaded[l].push(ns);
+          if (!loaded[l]) loaded[l] = {};
+          const loadedKeys = Object.keys(loaded[l]);
+          if (loadedKeys.length) {
+            loadedKeys.forEach((ns) => {
+              if (loadedKeys[ns] !== undefined) loaded[l][ns] = true;
             });
           }
         });
@@ -138,12 +140,27 @@ class Connector extends EventEmitter {
   read(lng, ns, fcName, tried = 0, wait = 350, callback) {
     if (!lng.length) return callback(null, {}); // noting to load
 
+    // Limit parallelism of calls to backend
+    // This is needed to prevent trying to open thousands of
+    // sockets or file descriptors, which can cause failures
+    // and actually make the entire process take longer.
+    if (this.readingCalls >= this.maxParallelReads) {
+      this.waitingReads.push({ lng, ns, fcName, tried, wait, callback });
+      return;
+    }
+    this.readingCalls++;
+
     return this.backend[fcName](lng, ns, (err, data) => {
       if (err && data /* = retryFlag */ && tried < 5) {
         setTimeout(() => {
           this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
         }, wait);
         return;
+      }
+      this.readingCalls--;
+      if (this.waitingReads.length > 0) {
+        const next = this.waitingReads.shift();
+        this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
       }
       callback(err, data);
     });

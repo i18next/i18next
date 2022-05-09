@@ -1,3 +1,24 @@
+## 21.8.0
+
+- add maxParallelReads option, default 10 [1771](https://github.com/i18next/i18next/pull/1771)
+- reduce CPU usage loading large numbers of items [1768](https://github.com/i18next/i18next/pull/1768)
+
+## 21.7.1
+
+- types: missing returnDetails option in init options [1765](https://github.com/i18next/i18next/issues/1765)
+
+## 21.7.0
+
+- introduce returnDetails option [1764](https://github.com/i18next/i18next/pull/1764)
+
+## 21.6.16
+
+- fix: defaultVariables were not accessible inside plugin parse function [1751](https://github.com/i18next/i18next/pull/1751)
+
+## 21.6.15
+
+- fix hasLoadedNamespace when providing inmemory resources and a backend but partialBundledLanguages is not set
+
 ## 21.6.14
 
 - fix formatter for false inline options
