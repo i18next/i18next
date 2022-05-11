@@ -51,15 +51,15 @@ class Connector extends EventEmitter {
         } else if (this.state[name] < 0) {
           // nothing to do for err
         } else if (this.state[name] === 1) {
-          if (pending[name] !== undefined) pending[name] = true;
+          if (pending[name] === undefined) pending[name] = true;
         } else {
           this.state[name] = 1; // pending
 
           hasAllNamespaces = false;
 
-          pending[name] = true;
-          toLoad[name] = true;
-          toLoadNamespaces[ns] = true;
+          if (pending[name] === undefined) pending[name] = true;
+          if (toLoad[name] === undefined) toLoad[name] = true;
+          if (toLoadNamespaces[ns] === undefined) toLoadNamespaces[ns] = true;
         }
       });
 

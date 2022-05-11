@@ -2026,13 +2026,13 @@
             if (!options.reload && _this2.store.hasResourceBundle(lng, ns)) {
               _this2.state[name] = 2;
             } else if (_this2.state[name] < 0) ; else if (_this2.state[name] === 1) {
-              if (pending[name] !== undefined) pending[name] = true;
+              if (pending[name] === undefined) pending[name] = true;
             } else {
               _this2.state[name] = 1;
               hasAllNamespaces = false;
-              pending[name] = true;
-              toLoad[name] = true;
-              toLoadNamespaces[ns] = true;
+              if (pending[name] === undefined) pending[name] = true;
+              if (toLoad[name] === undefined) toLoad[name] = true;
+              if (toLoadNamespaces[ns] === undefined) toLoadNamespaces[ns] = true;
             }
           });
           if (!hasAllNamespaces) toLoadLanguages[lng] = true;

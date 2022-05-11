@@ -1,3 +1,7 @@
+## 21.8.1
+
+- fix regression introduced with [1768](https://github.com/i18next/i18next/pull/1768)
+
 ## 21.8.0
 
 - add maxParallelReads option, default 10 [1771](https://github.com/i18next/i18next/pull/1771)

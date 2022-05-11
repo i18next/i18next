@@ -15,6 +15,11 @@ class Backend {
     if (namespace === 'retry' && this.retries[language] < 2) {
       this.retries[language]++;
       return callback('failed loading', true);
+    } else if (namespace.indexOf('concurrently') === 0) {
+      setTimeout(() => {
+        callback(null, { status: 'ok', namespace });
+      }, 200);
+      return;
     } else {
       callback(null, { status: 'nok', retries: this.retries[language] });
       delete this.retries[language];
@@ -40,5 +45,7 @@ class Backend {
     }
   }
 }
+
+Backend.type = 'backend';
 
 export default Backend;
