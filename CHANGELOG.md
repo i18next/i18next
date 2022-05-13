@@ -1,3 +1,7 @@
+## 21.8.2
+
+- types: add saveMissingPlurals option [1774](https://github.com/i18next/i18next/issues/1774)
+
 ## 21.8.1
 
 - fix regression introduced with [1768](https://github.com/i18next/i18next/pull/1768)
