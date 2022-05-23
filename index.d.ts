@@ -179,6 +179,11 @@ export interface ReactOptions {
    * @default ''
    */
   transWrapTextNodes?: string;
+  /**
+   * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
+   * @default undefined
+   */
+  keyPrefix?: string;
 }
 
 /**

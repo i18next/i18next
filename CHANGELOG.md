@@ -1,3 +1,7 @@
+## 21.8.4
+
+- types: keyPrefix in react options
+
 ## 21.8.3
 
 - prevent chrome warnings because of `window.navigator.userAgent` usage [1778](https://github.com/i18next/i18next/issues/1778)
