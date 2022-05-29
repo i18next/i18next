@@ -1,3 +1,7 @@
+## 21.8.5
+
+- fix: interpolation with $ in values resets nextIndex to wrong position with skipOnVariables [1782](https://github.com/i18next/i18next/issues/1782)
+
 ## 21.8.4
 
 - types: keyPrefix in react options

@@ -20,6 +20,7 @@ describe('i18next.interpolation.nesting', () => {
               keyWithNest: '$t(nested2) value',
               keyWithNestAndVar: '$t(nested2) value {{a}}',
               nested2: 'HI',
+              cur: 'Save {{CURRENCY}}{{AMOUNT}}',
             },
           },
         },
@@ -73,6 +74,10 @@ describe('i18next.interpolation.nesting', () => {
           { a: '     {{b}}', b: 'c', w: 'normal', other: 'whatever' },
         ],
         expected: '     {{b}} normal      {{b}} whatever',
+      },
+      {
+        args: ['cur', { CURRENCY: '$', AMOUNT: 23 }],
+        expected: 'Save $23',
       },
     ];
 

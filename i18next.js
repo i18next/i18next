@@ -1710,7 +1710,7 @@
             str = str.replace(match[0], safeValue);
 
             if (skipOnVariables) {
-              todo.regex.lastIndex += safeValue.length;
+              todo.regex.lastIndex += value.length;
               todo.regex.lastIndex -= match[0].length;
             } else {
               todo.regex.lastIndex = 0;
