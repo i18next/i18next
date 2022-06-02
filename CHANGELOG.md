@@ -1,3 +1,7 @@
+## 21.8.7
+
+- fix: allow formatters having '' for string options eg. `this is an {{val, array(join: ' | ’)}}`
+
 ## 21.8.6
 
 - fix: regression introduced in v21.6.11, respect `appendNamespaceToMissingKey` for `parseMissingKeyHandler` [1507](https://github.com/i18next/react-i18next/issues/1507)

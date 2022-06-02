@@ -1863,11 +1863,11 @@
               key = _opt$split2[0],
               rest = _opt$split2.slice(1);
 
-          var val = rest.join(':');
-          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val.trim();
-          if (val.trim() === 'false') formatOptions[key.trim()] = false;
-          if (val.trim() === 'true') formatOptions[key.trim()] = true;
-          if (!isNaN(val.trim())) formatOptions[key.trim()] = parseInt(val.trim(), 10);
+          var val = rest.join(':').trim().replace(/^'+|'+$/g, '');
+          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val;
+          if (val === 'false') formatOptions[key.trim()] = false;
+          if (val === 'true') formatOptions[key.trim()] = true;
+          if (!isNaN(val)) formatOptions[key.trim()] = parseInt(val, 10);
         });
       }
     }
