@@ -1,3 +1,7 @@
+## 21.8.6
+
+- fix: regression introduced in v21.6.11, respect `appendNamespaceToMissingKey` for `parseMissingKeyHandler` [1507](https://github.com/i18next/react-i18next/issues/1507)
+
 ## 21.8.5
 
 - fix: interpolation with $ in values resets nextIndex to wrong position with skipOnVariables [1782](https://github.com/i18next/i18next/issues/1782)
