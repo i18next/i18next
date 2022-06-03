@@ -15,6 +15,11 @@ class Backend {
     if (namespace === 'retry' && this.retries[language] < 2) {
       this.retries[language]++;
       return callback('failed loading', true);
+    } else if (namespace.indexOf('concurrentlyLonger') === 0) {
+      setTimeout(() => {
+        callback(null, { status: 'ok', namespace });
+      }, 400);
+      return;
     } else if (namespace.indexOf('concurrently') === 0) {
       setTimeout(() => {
         callback(null, { status: 'ok', namespace });

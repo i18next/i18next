@@ -3,8 +3,10 @@ import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
 function removePending(q, name) {
-  delete q.pending[name];
-  q.pendingCount--;
+  if (q.pending[name] !== undefined) {
+    delete q.pending[name];
+    q.pendingCount--;
+  }
 }
 
 class Connector extends EventEmitter {
@@ -112,10 +114,10 @@ class Connector extends EventEmitter {
         // only do once per loaded -> this.emit('loaded', q.loaded);
         Object.keys(q.loaded).forEach((l) => {
           if (!loaded[l]) loaded[l] = {};
-          const loadedKeys = Object.keys(loaded[l]);
+          const loadedKeys = q.loaded[l];
           if (loadedKeys.length) {
             loadedKeys.forEach((ns) => {
-              if (loadedKeys[ns] !== undefined) loaded[l][ns] = true;
+              if (loaded[l][ns] === undefined) loaded[l][ns] = true;
             });
           }
         });

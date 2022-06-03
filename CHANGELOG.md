@@ -1,3 +1,7 @@
+## 21.8.8
+
+- fix: loadNamespaces() doesn't keep resolving order when the second request completes before the first one [1785](https://github.com/i18next/react-i18next/issues/1785)
+
 ## 21.8.7
 
 - fix: allow formatters having '' for string options eg. `this is an {{val, array(join: ' | ’)}}`

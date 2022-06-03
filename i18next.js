@@ -1968,8 +1968,10 @@
   function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
   function removePending(q, name) {
-    delete q.pending[name];
-    q.pendingCount--;
+    if (q.pending[name] !== undefined) {
+      delete q.pending[name];
+      q.pendingCount--;
+    }
   }
 
   var Connector = function (_EventEmitter) {
@@ -2077,11 +2079,11 @@
           if (q.pendingCount === 0 && !q.done) {
             Object.keys(q.loaded).forEach(function (l) {
               if (!loaded[l]) loaded[l] = {};
-              var loadedKeys = Object.keys(loaded[l]);
+              var loadedKeys = q.loaded[l];
 
               if (loadedKeys.length) {
                 loadedKeys.forEach(function (ns) {
-                  if (loadedKeys[ns] !== undefined) loaded[l][ns] = true;
+                  if (loaded[l][ns] === undefined) loaded[l][ns] = true;
                 });
               }
             });
