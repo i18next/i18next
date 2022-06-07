@@ -446,6 +446,7 @@
         }
 
         if (mix === undefined) return undefined;
+        if (mix === null) return null;
 
         if (path.endsWith(p)) {
           if (typeof mix === 'string') return mix;

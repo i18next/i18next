@@ -1,3 +1,7 @@
+## 21.8.9
+
+- fix: deepFind for null values [1790](https://github.com/i18next/react-i18next/issues/1790)
+
 ## 21.8.8
 
 - fix: loadNamespaces() doesn't keep resolving order when the second request completes before the first one [1785](https://github.com/i18next/react-i18next/issues/1785)
