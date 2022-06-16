@@ -1,3 +1,7 @@
+## 21.8.10
+
+- types: fix loaded event result
+
 ## 21.8.9
 
 - fix: deepFind for null values [1790](https://github.com/i18next/react-i18next/issues/1790)
