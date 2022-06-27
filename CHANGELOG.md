@@ -1,3 +1,7 @@
+## 21.8.11
+
+- fix: types should always come first in exports [1796](https://github.com/i18next/react-i18next/pull/1796)
+
 ## 21.8.10
 
 - types: fix loaded event result
