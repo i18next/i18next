@@ -1,6 +1,6 @@
 ## 21.8.11
 
-- fix: types should always come first in exports [1796](https://github.com/i18next/react-i18next/pull/1796)
+- fix: types should always come first in exports [1796](https://github.com/i18next/i18next/pull/1796)
 
 ## 21.8.10
 
@@ -8,11 +8,11 @@
 
 ## 21.8.9
 
-- fix: deepFind for null values [1790](https://github.com/i18next/react-i18next/issues/1790)
+- fix: deepFind for null values [1790](https://github.com/i18next/i18next/issues/1790)
 
 ## 21.8.8
 
-- fix: loadNamespaces() doesn't keep resolving order when the second request completes before the first one [1785](https://github.com/i18next/react-i18next/issues/1785)
+- fix: loadNamespaces() doesn't keep resolving order when the second request completes before the first one [1785](https://github.com/i18next/i18next/issues/1785)
 
 ## 21.8.7
 
@@ -77,7 +77,7 @@
 
 ## 21.6.11
 
-- make sure key and additionally optional defaultValue are passed to parseMissingKeyHandler function [1445](https://github.com/i18next/react-i18next/issues/1445)
+- make sure key and additionally optional defaultValue are passed to parseMissingKeyHandler function [1445](https://github.com/i18next/i18next/issues/1445)
 
 ## 21.6.10
 
