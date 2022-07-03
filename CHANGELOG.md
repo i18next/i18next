@@ -77,7 +77,7 @@
 
 ## 21.6.11
 
-- make sure key and additionally optional defaultValue are passed to parseMissingKeyHandler function [1445](https://github.com/i18next/i18next/issues/1445)
+- make sure key and additionally optional defaultValue are passed to parseMissingKeyHandler function [1445](https://github.com/i18next/react-i18next/issues/1445)
 
 ## 21.6.10
 
