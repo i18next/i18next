@@ -1031,7 +1031,7 @@
               } else {
                 var pluralSuffix;
                 if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count, options);
-                var zeroSuffix = '_zero';
+                var zeroSuffix = "".concat(_this4.options.pluralSeparator, "zero");
 
                 if (needsPluralHandling) {
                   finalKeys.push(key + pluralSuffix);

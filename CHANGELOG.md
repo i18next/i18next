@@ -1,3 +1,7 @@
+## 21.8.12
+
+- fix: respect pluralSeparator for special \_zero handling
+
 ## 21.8.11
 
 - fix: types should always come first in exports [1796](https://github.com/i18next/i18next/pull/1796)

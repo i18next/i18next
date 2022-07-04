@@ -61,6 +61,7 @@ describe('Translator', () => {
           interpolator: new Interpolator(),
         },
         {
+          pluralSeparator: '_',
           interpolation: {
             interpolateResult: true,
             interpolateDefaultValue: true,

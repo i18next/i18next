@@ -468,7 +468,7 @@ class Translator extends EventEmitter {
             let pluralSuffix;
             if (needsPluralHandling)
               pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
-            const zeroSuffix = '_zero';
+            const zeroSuffix = `${this.options.pluralSeparator}zero`;
 
             // get key for plural if needed
             if (needsPluralHandling) {
