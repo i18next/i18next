@@ -1,3 +1,7 @@
+## 21.8.13
+
+- types: new optional unescape option for react-i18next
+
 ## 21.8.12
 
 - fix: respect pluralSeparator for special \_zero handling

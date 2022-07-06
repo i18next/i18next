@@ -184,6 +184,11 @@ export interface ReactOptions {
    * @default undefined
    */
   keyPrefix?: string;
+  /**
+   * Unescape function
+   * by default it unescapes some basic html entities
+   */
+  unescape?(str: string): string;
 }
 
 /**
