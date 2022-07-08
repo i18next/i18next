@@ -45,6 +45,9 @@ The react specific documentation is published on [react.i18next.com](https://rea
   <a href="https://locize.com/" target="_blank">
     <img src="https://raw.githubusercontent.com/i18next/i18next/master/assets/locize_sponsor_240.gif" width="240px">
   </a>
+  <a href="https://localistars.com/" target="_blank">
+    <img src="https://raw.githubusercontent.com/i18next/i18next/master/assets/localistars_sponsor_240.gif" width="240px">
+  </a>
 </p>
 
 ---
