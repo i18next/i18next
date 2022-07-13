@@ -1,3 +1,7 @@
+## 21.8.14
+
+- allow overriding keyPrefix option t function returned from getFixedT (does not work for normal t function)
+
 ## 21.8.13
 
 - types: new optional unescape option for react-i18next

@@ -386,9 +386,10 @@ class I18n extends EventEmitter {
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;
+      options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
 
       const keySeparator = this.options.keySeparator || '.';
-      const resultKey = keyPrefix ? `${keyPrefix}${keySeparator}${key}` : key;
+      const resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
       return this.t(resultKey, options);
     };
     if (typeof lng === 'string') {
