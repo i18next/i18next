@@ -1033,7 +1033,7 @@ export interface i18n {
   /**
    * Returns a resource data by language.
    */
-  getDataByLanguage(lng: string): { translation: { [key: string]: string } } | undefined;
+  getDataByLanguage(lng: string): { [key: string]: { [key: string]: string } } | undefined;
 
   /**
    * Returns a t function that defaults to given language or namespace.
