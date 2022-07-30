@@ -213,6 +213,9 @@ const data = i18next.getDataByLanguage('de');
 // verify the data.translation field exists
 console.log(data ? data.translation.myKey : 'data does not exist');
 
+// verify the field for a specific namespace exists
+console.log(data ? data.common.myKey : 'data does not exist');
+
 // or fix the namespace to anotherNamespace
 const anotherNamespace = i18next.getFixedT(null, 'anotherNamespace');
 const x: string = anotherNamespace('anotherNamespaceKey'); // no need to prefix ns i18n.t('anotherNamespace:anotherNamespaceKey');
