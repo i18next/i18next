@@ -1,3 +1,7 @@
+## 21.8.16
+
+- types: fix getDataByLanguage type [1810](https://github.com/i18next/i18next/pull/1810)
+
 ## 21.8.15
 
 - fix: make sure retry logic ends for failed backend reads
