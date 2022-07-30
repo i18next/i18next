@@ -153,16 +153,16 @@ class Connector extends EventEmitter {
     this.readingCalls++;
 
     return this.backend[fcName](lng, ns, (err, data) => {
+      this.readingCalls--;
+      if (this.waitingReads.length > 0) {
+        const next = this.waitingReads.shift();
+        this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
+      }
       if (err && data /* = retryFlag */ && tried < 5) {
         setTimeout(() => {
           this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
         }, wait);
         return;
-      }
-      this.readingCalls--;
-      if (this.waitingReads.length > 0) {
-        const next = this.waitingReads.shift();
-        this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
       }
       callback(err, data);
     });

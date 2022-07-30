@@ -1,3 +1,7 @@
+## 21.8.15
+
+- fix: make sure retry logic ends for failed backend reads
+
 ## 21.8.14
 
 - allow overriding keyPrefix option t function returned from getFixedT (does not work for normal t function)

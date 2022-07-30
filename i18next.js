@@ -2126,19 +2126,19 @@
 
         this.readingCalls++;
         return this.backend[fcName](lng, ns, function (err, data) {
-          if (err && data && tried < 5) {
-            setTimeout(function () {
-              _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
-            }, wait);
-            return;
-          }
-
           _this3.readingCalls--;
 
           if (_this3.waitingReads.length > 0) {
             var next = _this3.waitingReads.shift();
 
             _this3.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
+          }
+
+          if (err && data && tried < 5) {
+            setTimeout(function () {
+              _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
+            }, wait);
+            return;
           }
 
           callback(err, data);

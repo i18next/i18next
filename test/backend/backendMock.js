@@ -12,7 +12,9 @@ class Backend {
   read(language, namespace, callback) {
     if (!this.retries[language]) this.retries[language] = 0;
 
-    if (namespace === 'retry' && this.retries[language] < 2) {
+    if (namespace.indexOf('fail') === 0) {
+      return callback('failed loading', true);
+    } else if (namespace === 'retry' && this.retries[language] < 2) {
       this.retries[language]++;
       return callback('failed loading', true);
     } else if (namespace.indexOf('concurrentlyLonger') === 0) {
