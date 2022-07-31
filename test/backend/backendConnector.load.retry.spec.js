@@ -33,6 +33,101 @@ describe('BackendConnector load retry', () => {
   });
 });
 
+describe('BackendConnector load all fail', () => {
+  let connector;
+
+  before(() => {
+    connector = new BackendConnector(
+      new BackendMock(),
+      new ResourceStore(),
+      {
+        interpolator: new Interpolator(),
+      },
+      {
+        backend: { loadPath: 'http://localhost:9876/locales/{{lng}}/{{ns}}.json' },
+      },
+    );
+  });
+
+  describe('#load', () => {
+    it('should call callback on complete failure', (done) => {
+      connector.load(['en'], ['fail'], function (err) {
+        expect(err).to.eql(['failed loading']);
+        expect(connector.store.getResourceBundle('en', 'fail')).to.eql({});
+        done();
+      });
+    }).timeout(12000);
+  });
+});
+
+describe('BackendConnector load only one succeeds', () => {
+  let connector;
+
+  before(() => {
+    connector = new BackendConnector(
+      new BackendMock(),
+      new ResourceStore(),
+      {
+        interpolator: new Interpolator(),
+      },
+      {
+        backend: { loadPath: 'http://localhost:9876/locales/{{lng}}/{{ns}}.json' },
+      },
+    );
+  });
+
+  describe('#load', () => {
+    it('should call callback', (done) => {
+      connector.load(['en'], ['fail', 'fail2', 'concurrently'], function (err) {
+        expect(err).to.eql(['failed loading', 'failed loading']);
+        expect(connector.store.getResourceBundle('en', 'fail')).to.eql({});
+        expect(connector.store.getResourceBundle('en', 'fail2')).to.eql({});
+        expect(connector.store.getResourceBundle('en', 'concurrently')).to.eql({
+          status: 'ok',
+          namespace: 'concurrently',
+        });
+        done();
+      });
+    }).timeout(12000);
+  });
+});
+
+describe('BackendConnector load only one succeeds with retries', () => {
+  let connector;
+
+  before(() => {
+    connector = new BackendConnector(
+      new BackendMock(),
+      new ResourceStore(),
+      {
+        interpolator: new Interpolator(),
+      },
+      {
+        backend: { loadPath: 'http://localhost:9876/locales/{{lng}}/{{ns}}.json' },
+      },
+    );
+  });
+
+  describe('#load', () => {
+    it('should call callback', (done) => {
+      connector.load(['en'], ['fail', 'fail2', 'concurrently', 'retry'], function (err) {
+        expect(err).to.eql(['failed loading', 'failed loading']);
+        expect(connector.store.getResourceBundle('en', 'fail')).to.eql({});
+        expect(connector.store.getResourceBundle('en', 'fail2')).to.eql({});
+        expect(connector.store.getResourceBundle('en', 'concurrently')).to.eql({
+          status: 'ok',
+          namespace: 'concurrently',
+        });
+        expect(connector.store.getResourceBundle('en', 'retry')).to.eql({
+          status: 'nok',
+          retries: 2,
+        });
+        done();
+      });
+    }).timeout(12000);
+  });
+});
+
 describe('BackendConnector reload retry', () => {
   let connector;
 
