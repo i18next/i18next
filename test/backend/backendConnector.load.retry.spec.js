@@ -60,7 +60,7 @@ describe('BackendConnector load all fail - 1 namespace', () => {
   });
 });
 
-describe.only('BackendConnector load all fail - 10 namespaces', () => {
+describe('BackendConnector load all fail - 10 namespaces', () => {
   let connector;
 
   before(() => {
