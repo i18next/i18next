@@ -2002,6 +2002,8 @@
       _this.waitingReads = [];
       _this.maxParallelReads = options.maxParallelReads || 10;
       _this.readingCalls = 0;
+      _this.maxRetries = options.maxRetries >= 0 ? options.maxRetries : 5;
+      _this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
       _this.state = {};
       _this.queue = [];
 
@@ -2108,7 +2110,7 @@
         var _this3 = this;
 
         var tried = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-        var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 350;
+        var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.retryTimeout;
         var callback = arguments.length > 5 ? arguments[5] : undefined;
         if (!lng.length) return callback(null, {});
 
@@ -2134,7 +2136,7 @@
             _this3.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
           }
 
-          if (err && data && tried < 5) {
+          if (err && data && tried < _this3.maxRetries) {
             setTimeout(function () {
               _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
             }, wait);

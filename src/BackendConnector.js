@@ -27,6 +27,9 @@ class Connector extends EventEmitter {
     this.maxParallelReads = options.maxParallelReads || 10;
     this.readingCalls = 0;
 
+    this.maxRetries = options.maxRetries >= 0 ? options.maxRetries : 5;
+    this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
+
     this.state = {};
     this.queue = [];
 
@@ -139,7 +142,7 @@ class Connector extends EventEmitter {
     this.queue = this.queue.filter((q) => !q.done);
   }
 
-  read(lng, ns, fcName, tried = 0, wait = 350, callback) {
+  read(lng, ns, fcName, tried = 0, wait = this.retryTimeout, callback) {
     if (!lng.length) return callback(null, {}); // noting to load
 
     // Limit parallelism of calls to backend
@@ -158,7 +161,7 @@ class Connector extends EventEmitter {
         const next = this.waitingReads.shift();
         this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
       }
-      if (err && data /* = retryFlag */ && tried < 5) {
+      if (err && data /* = retryFlag */ && tried < this.maxRetries) {
         setTimeout(() => {
           this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
         }, wait);
