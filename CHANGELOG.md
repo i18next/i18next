@@ -1,3 +1,8 @@
+## vNext
+
+- types: remove old locize-editor types
+- types: extend compatibilityJSON with v4
+
 ## 21.8.16
 
 - types: fix getDataByLanguage type [1810](https://github.com/i18next/i18next/pull/1810)

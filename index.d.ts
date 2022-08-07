@@ -486,87 +486,9 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
 
   /**
    * Compatibility JSON version
-   * @default 'v3'
+   * @default 'v4'
    */
-  compatibilityJSON?: 'v1' | 'v2' | 'v3';
-
-  /**
-   * Options for https://github.com/locize/locize-editor
-   * @default undefined
-   */
-  editor?: {
-    /**
-     * Enable on init without the need of adding querystring locize=true
-     * @default false
-     */
-    enabled?: boolean;
-    /**
-     * If set to false you will need to open the editor via API
-     * @default true
-     */
-    autoOpen?: boolean;
-
-    /**
-     * Enable by adding querystring locize=true; can be set to another value or turned off by setting to false
-     * @default 'locize'
-     */
-    enableByQS?: string | false;
-
-    /**
-     * Turn on/off by pressing key combination. Combine this with `toggleKeyCode`
-     * @default 'ctrlKey'
-     */
-    toggleKeyModifier?: 'ctrlKey' | 'metaKey' | 'altKey' | 'shiftKey';
-    /**
-     * Turn on/off by pressing key combination. Combine this with `toggleKeyModifier`
-     * @default 24 (x)
-     */
-    toggleKeyCode?: number;
-
-    /**
-     * Use lng in editor taken from query string, eg. if running with lng=cimode (i18next, locize)
-     * @default 'useLng'
-     */
-    lngOverrideQS?: string;
-
-    /**
-     * Use lng in editor, eg. if running with lng=cimode (i18next, locize)
-     * @default null
-     */
-    lngOverride?: string | null;
-
-    /**
-     * How the editor will open.
-     * Setting to window will open a new window/tab instead
-     * @default 'iframe'
-     */
-    mode?: 'iframe' | 'window';
-
-    /**
-     * Styles to adapt layout in iframe mode to your website layout.
-     * This will add a style to the `<iframe>`
-     * @default 'z-index: 2000; position: fixed; top: 0; right: 0; bottom: 0; width: 600px; box-shadow: -3px 0 5px 0 rgba(0,0,0,0.5);'
-     */
-    iframeContainerStyle?: string;
-    /**
-     * Styles to adapt layout in iframe mode to your website layout.
-     * This will add a style to the parent of `<iframe>`
-     * @default 'height: 100%; width: 600px; border: none;'
-     */
-    iframeStyle?: string;
-    /**
-     * Styles to adapt layout in iframe mode to your website layout.
-     * This will add a style to `<body>`
-     * @default 'margin-right: 605px;'
-     */
-    bodyStyle?: string;
-
-    /**
-     * Handle when locize saved the edited translations, eg. reload website
-     * @default noop
-     */
-    onEditorSaved?: (lng: null, ns: string | readonly string[]) => void;
-  };
+  compatibilityJSON?: 'v1' | 'v2' | 'v3' | 'v4';
 
   /**
    * Options for https://github.com/locize/locize-lastused

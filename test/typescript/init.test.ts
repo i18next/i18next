@@ -464,16 +464,6 @@ i18next.init({
   },
   backend: locizeOptions,
   locizeLastUsed: locizeOptions,
-  editor: {
-    ...locizeOptions,
-    onEditorSaved: async (lng, ns) => {
-      // reload that namespace in given language
-      await i18next.reloadResources(lng, ns);
-      // trigger an event on i18n which triggers a rerender
-      // based on bindI18n below in react options
-      i18next.emit('editorSaved');
-    },
-  },
   react: {
     bindI18n: 'languageChanged editorSaved',
   },
