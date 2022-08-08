@@ -545,6 +545,23 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * @default 10
    */
   maxParallelReads?: number;
+
+  /**
+   * The maximum number of retries to perform.
+   * Note that retries are only performed when a request has no response
+   * and throws an error.
+   * The default value is used if value is set below 0.
+   * @default 5
+   */
+  maxRetries?: number;
+
+  /**
+   * Set how long to wait, in milliseconds, betweeen retries of failed requests.
+   * This number is compounded by a factor of 2 for subsequent retry.
+   * The default value is used if value is set below 1ms.
+   * @default 350
+   */
+  retryTimeout?: number;
 }
 
 export interface TOptionsBase {
