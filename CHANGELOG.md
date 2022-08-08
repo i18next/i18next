@@ -1,6 +1,6 @@
-## vNext
+## 21.9.0
 
-- types: remove old locize-editor types
+- Add Customizable Retry Logic [1810](https://github.com/i18next/i18next/pull/1810)
 - types: extend compatibilityJSON with v4
 
 ## 21.8.16
