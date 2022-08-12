@@ -98,7 +98,7 @@
     "rollup-plugin-terser": "^4.0.4",
     "sinon": "11.1.2",
     "tslint": "^5.12.1",
-    "typescript": "^3.6.4",
+    "typescript": "^4.7.4",
     "watchify": "3.9.0"
   },
   "scripts": {
