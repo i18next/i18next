@@ -832,6 +832,11 @@ export type TFuncKey<
     : NormalizeWithKeyPrefix<T[N], TKPrefix>
   : string;
 
+export interface WithT<N extends Namespace = DefaultNamespace> {
+  // Expose parameterized t in the i18next interface hierarchy
+  t: TFunction<N>;
+}
+
 export type TFunctionDetailedResult<T = string> = {
   /**
    * The plain used key
