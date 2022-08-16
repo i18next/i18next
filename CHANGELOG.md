@@ -1,3 +1,7 @@
+## 21.9.1
+
+- defaultNS can now also be set to false
+
 ## 21.9.0
 
 - Add Customizable Retry Logic [1810](https://github.com/i18next/i18next/pull/1810)

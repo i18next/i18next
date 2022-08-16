@@ -302,7 +302,7 @@ export interface InitOptions extends MergeBy<DefaultPluginOptions, PluginOptions
    * Default namespace used if not passed to translation function
    * @default 'translation'
    */
-  defaultNS?: string;
+  defaultNS?: string | false | readonly string[];
 
   /**
    * String or array of namespaces to lookup key if not found in given namespace.

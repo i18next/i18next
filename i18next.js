@@ -2378,7 +2378,7 @@
           options = {};
         }
 
-        if (!options.defaultNS && options.ns) {
+        if (!options.defaultNS && options.defaultNS !== false && options.ns) {
           if (typeof options.ns === 'string') {
             options.defaultNS = options.ns;
           } else if (options.ns.indexOf('translation') < 0) {
