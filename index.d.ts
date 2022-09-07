@@ -9,7 +9,7 @@ export type FallbackLng =
   | string
   | readonly string[]
   | FallbackLngObjList
-  | ((code: string) => string | readonly string[] | FallbackLngObjList);
+  | ((code: string) => string | readonly string[] | FallbackLngObjList | false);
 
 export type FormatFunction = (
   value: any,
