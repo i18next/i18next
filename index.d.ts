@@ -929,7 +929,6 @@ export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = un
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
-    options?: TOptions<TInterpolationMap>,
   ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
   <
     TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
@@ -937,9 +936,16 @@ export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = un
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
-    defaultValue?: string,
     options?: TOptions<TInterpolationMap> & { returnDetails: true },
   ): TFunctionDetailedResult<TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>>;
+  <
+    TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TDefaultResult extends DefaultTFuncReturn,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+    options?: TOptions<TInterpolationMap>,
+  ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
   <
     TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
     TDefaultResult extends DefaultTFuncReturn,
