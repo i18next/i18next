@@ -1,3 +1,76 @@
+## 21.9.1
+
+- defaultNS can now also be set to false
+
+## 21.9.0
+
+- Add Customizable Retry Logic [1810](https://github.com/i18next/i18next/pull/1810)
+- types: extend compatibilityJSON with v4
+
+## 21.8.16
+
+- types: fix getDataByLanguage type [1810](https://github.com/i18next/i18next/pull/1810)
+
+## 21.8.15
+
+- fix: make sure retry logic ends for failed backend reads
+
+## 21.8.14
+
+- allow overriding keyPrefix option t function returned from getFixedT (does not work for normal t function)
+
+## 21.8.13
+
+- types: new optional unescape option for react-i18next
+
+## 21.8.12
+
+- fix: respect pluralSeparator for special \_zero handling
+
+## 21.8.11
+
+- fix: types should always come first in exports [1796](https://github.com/i18next/i18next/pull/1796)
+
+## 21.8.10
+
+- types: fix loaded event result
+
+## 21.8.9
+
+- fix: deepFind for null values [1790](https://github.com/i18next/i18next/issues/1790)
+
+## 21.8.8
+
+- fix: loadNamespaces() doesn't keep resolving order when the second request completes before the first one [1785](https://github.com/i18next/i18next/issues/1785)
+
+## 21.8.7
+
+- fix: allow formatters having '' for string options eg. `this is an {{val, array(join: ' | ’)}}`
+
+## 21.8.6
+
+- fix: regression introduced in v21.6.11, respect `appendNamespaceToMissingKey` for `parseMissingKeyHandler` [1507](https://github.com/i18next/react-i18next/issues/1507)
+
+## 21.8.5
+
+- fix: interpolation with $ in values resets nextIndex to wrong position with skipOnVariables [1782](https://github.com/i18next/i18next/issues/1782)
+
+## 21.8.4
+
+- types: keyPrefix in react options
+
+## 21.8.3
+
+- prevent chrome warnings because of `window.navigator.userAgent` usage [1778](https://github.com/i18next/i18next/issues/1778)
+
+## 21.8.2
+
+- types: add saveMissingPlurals option [1774](https://github.com/i18next/i18next/issues/1774)
+
+## 21.8.1
+
+- fix regression introduced with [1768](https://github.com/i18next/i18next/pull/1768)
+
 ## 21.8.0
 
 - add maxParallelReads option, default 10 [1771](https://github.com/i18next/i18next/pull/1771)

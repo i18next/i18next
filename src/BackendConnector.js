@@ -3,8 +3,10 @@ import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
 function removePending(q, name) {
-  delete q.pending[name];
-  q.pendingCount--;
+  if (q.pending[name] !== undefined) {
+    delete q.pending[name];
+    q.pendingCount--;
+  }
 }
 
 class Connector extends EventEmitter {
@@ -24,6 +26,9 @@ class Connector extends EventEmitter {
     this.waitingReads = [];
     this.maxParallelReads = options.maxParallelReads || 10;
     this.readingCalls = 0;
+
+    this.maxRetries = options.maxRetries >= 0 ? options.maxRetries : 5;
+    this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
 
     this.state = {};
     this.queue = [];
@@ -51,15 +56,15 @@ class Connector extends EventEmitter {
         } else if (this.state[name] < 0) {
           // nothing to do for err
         } else if (this.state[name] === 1) {
-          if (pending[name] !== undefined) pending[name] = true;
+          if (pending[name] === undefined) pending[name] = true;
         } else {
           this.state[name] = 1; // pending
 
           hasAllNamespaces = false;
 
-          pending[name] = true;
-          toLoad[name] = true;
-          toLoadNamespaces[ns] = true;
+          if (pending[name] === undefined) pending[name] = true;
+          if (toLoad[name] === undefined) toLoad[name] = true;
+          if (toLoadNamespaces[ns] === undefined) toLoadNamespaces[ns] = true;
         }
       });
 
@@ -112,10 +117,10 @@ class Connector extends EventEmitter {
         // only do once per loaded -> this.emit('loaded', q.loaded);
         Object.keys(q.loaded).forEach((l) => {
           if (!loaded[l]) loaded[l] = {};
-          const loadedKeys = Object.keys(loaded[l]);
+          const loadedKeys = q.loaded[l];
           if (loadedKeys.length) {
             loadedKeys.forEach((ns) => {
-              if (loadedKeys[ns] !== undefined) loaded[l][ns] = true;
+              if (loaded[l][ns] === undefined) loaded[l][ns] = true;
             });
           }
         });
@@ -137,7 +142,7 @@ class Connector extends EventEmitter {
     this.queue = this.queue.filter((q) => !q.done);
   }
 
-  read(lng, ns, fcName, tried = 0, wait = 350, callback) {
+  read(lng, ns, fcName, tried = 0, wait = this.retryTimeout, callback) {
     if (!lng.length) return callback(null, {}); // noting to load
 
     // Limit parallelism of calls to backend
@@ -151,16 +156,16 @@ class Connector extends EventEmitter {
     this.readingCalls++;
 
     return this.backend[fcName](lng, ns, (err, data) => {
-      if (err && data /* = retryFlag */ && tried < 5) {
-        setTimeout(() => {
-          this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
-        }, wait);
-        return;
-      }
       this.readingCalls--;
       if (this.waitingReads.length > 0) {
         const next = this.waitingReads.shift();
         this.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
+      }
+      if (err && data /* = retryFlag */ && tried < this.maxRetries) {
+        setTimeout(() => {
+          this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
+        }, wait);
+        return;
       }
       callback(err, data);
     });

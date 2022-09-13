@@ -301,7 +301,10 @@ class Translator extends EventEmitter {
       // parseMissingKeyHandler
       if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
         if (this.options.compatibilityAPI !== 'v1') {
-          res = this.options.parseMissingKeyHandler(key, usedDefault ? res : undefined);
+          res = this.options.parseMissingKeyHandler(
+            this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key,
+            usedDefault ? res : undefined,
+          );
         } else {
           res = this.options.parseMissingKeyHandler(res);
         }
@@ -465,7 +468,7 @@ class Translator extends EventEmitter {
             let pluralSuffix;
             if (needsPluralHandling)
               pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
-            const zeroSuffix = '_zero';
+            const zeroSuffix = `${this.options.pluralSeparator}zero`;
 
             // get key for plural if needed
             if (needsPluralHandling) {

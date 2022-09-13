@@ -294,6 +294,16 @@ export interface ReactOptions {
    * @default ''
    */
   transWrapTextNodes?: string;
+  /**
+   * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
+   * @default undefined
+   */
+  keyPrefix?: string;
+  /**
+   * Unescape function
+   * by default it unescapes some basic html entities
+   */
+  unescape?(str: string): string;
 }
 
 export interface InitOptions extends PluginOptions {
@@ -376,7 +386,7 @@ export interface InitOptions extends PluginOptions {
    * Default namespace used if not passed to translation function
    * @default 'translation'
    */
-  defaultNS?: string;
+  defaultNS?: string | false | readonly string[];
 
   /**
    * String or array of namespaces to lookup key if not found in given namespace.
@@ -385,10 +395,16 @@ export interface InitOptions extends PluginOptions {
   fallbackNS?: false | string | readonly string[];
 
   /**
-   * Calls save missing key function on backend if key not found
+   * Calls save missing key function on backend if key not found.
    * @default false
    */
   saveMissing?: boolean;
+
+  /**
+   * Calls save missing key function on backend if key not found also for plural forms.
+   * @default false
+   */
+  saveMissingPlurals?: boolean;
 
   /**
    * Experimental: enable to update default values using the saveMissing
@@ -554,87 +570,9 @@ export interface InitOptions extends PluginOptions {
 
   /**
    * Compatibility JSON version
-   * @default 'v3'
+   * @default 'v4'
    */
-  compatibilityJSON?: 'v1' | 'v2' | 'v3';
-
-  /**
-   * Options for https://github.com/locize/locize-editor
-   * @default undefined
-   */
-  editor?: {
-    /**
-     * Enable on init without the need of adding querystring locize=true
-     * @default false
-     */
-    enabled?: boolean;
-    /**
-     * If set to false you will need to open the editor via API
-     * @default true
-     */
-    autoOpen?: boolean;
-
-    /**
-     * Enable by adding querystring locize=true; can be set to another value or turned off by setting to false
-     * @default 'locize'
-     */
-    enableByQS?: string | false;
-
-    /**
-     * Turn on/off by pressing key combination. Combine this with `toggleKeyCode`
-     * @default 'ctrlKey'
-     */
-    toggleKeyModifier?: 'ctrlKey' | 'metaKey' | 'altKey' | 'shiftKey';
-    /**
-     * Turn on/off by pressing key combination. Combine this with `toggleKeyModifier`
-     * @default 24 (x)
-     */
-    toggleKeyCode?: number;
-
-    /**
-     * Use lng in editor taken from query string, eg. if running with lng=cimode (i18next, locize)
-     * @default 'useLng'
-     */
-    lngOverrideQS?: string;
-
-    /**
-     * Use lng in editor, eg. if running with lng=cimode (i18next, locize)
-     * @default null
-     */
-    lngOverride?: string | null;
-
-    /**
-     * How the editor will open.
-     * Setting to window will open a new window/tab instead
-     * @default 'iframe'
-     */
-    mode?: 'iframe' | 'window';
-
-    /**
-     * Styles to adapt layout in iframe mode to your website layout.
-     * This will add a style to the `<iframe>`
-     * @default 'z-index: 2000; position: fixed; top: 0; right: 0; bottom: 0; width: 600px; box-shadow: -3px 0 5px 0 rgba(0,0,0,0.5);'
-     */
-    iframeContainerStyle?: string;
-    /**
-     * Styles to adapt layout in iframe mode to your website layout.
-     * This will add a style to the parent of `<iframe>`
-     * @default 'height: 100%; width: 600px; border: none;'
-     */
-    iframeStyle?: string;
-    /**
-     * Styles to adapt layout in iframe mode to your website layout.
-     * This will add a style to `<body>`
-     * @default 'margin-right: 605px;'
-     */
-    bodyStyle?: string;
-
-    /**
-     * Handle when locize saved the edited translations, eg. reload website
-     * @default noop
-     */
-    onEditorSaved?: (lng: null, ns: string | readonly string[]) => void;
-  };
+  compatibilityJSON?: 'v1' | 'v2' | 'v3' | 'v4';
 
   /**
    * Options for https://github.com/locize/locize-lastused
@@ -691,6 +629,23 @@ export interface InitOptions extends PluginOptions {
    * @default 10
    */
   maxParallelReads?: number;
+
+  /**
+   * The maximum number of retries to perform.
+   * Note that retries are only performed when a request has no response
+   * and throws an error.
+   * The default value is used if value is set below 0.
+   * @default 5
+   */
+  maxRetries?: number;
+
+  /**
+   * Set how long to wait, in milliseconds, betweeen retries of failed requests.
+   * This number is compounded by a factor of 2 for subsequent retry.
+   * The default value is used if value is set below 1ms.
+   * @default 350
+   */
+  retryTimeout?: number;
 }
 
 export interface TOptionsBase {
@@ -1199,7 +1154,7 @@ export interface i18n {
   /**
    * Returns a resource data by language.
    */
-  getDataByLanguage(lng: string): { translation: { [key: string]: string } } | undefined;
+  getDataByLanguage(lng: string): { [key: string]: { [key: string]: string } } | undefined;
 
   /**
    * Returns a t function that defaults to given language or namespace.
@@ -1300,7 +1255,10 @@ export interface i18n {
   /**
    * Gets fired on loaded resources.
    */
-  on(event: 'loaded', callback: (loaded: { [language: string]: readonly string[] }) => void): void;
+  on(
+    event: 'loaded',
+    callback: (loaded: { [language: string]: { [namespace: string]: boolean } }) => void,
+  ): void;
 
   /**
    * Gets fired if loading resources failed.

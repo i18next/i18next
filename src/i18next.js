@@ -56,7 +56,7 @@ class I18n extends EventEmitter {
       options = {};
     }
 
-    if (!options.defaultNS && options.ns) {
+    if (!options.defaultNS && options.defaultNS !== false && options.ns) {
       if (typeof options.ns === 'string') {
         options.defaultNS = options.ns;
       } else if (options.ns.indexOf('translation') < 0) {
@@ -386,9 +386,10 @@ class I18n extends EventEmitter {
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;
+      options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
 
       const keySeparator = this.options.keySeparator || '.';
-      const resultKey = keyPrefix ? `${keyPrefix}${keySeparator}${key}` : key;
+      const resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
       return this.t(resultKey, options);
     };
     if (typeof lng === 'string') {
@@ -575,6 +576,9 @@ class I18n extends EventEmitter {
   cloneInstance(options = {}, callback = noop) {
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
+    if ((options.debug !== undefined || options.prefix !== undefined)) {
+      clone.logger = clone.logger.clone(options);
+    }
     const membersToCopy = ['store', 'services', 'language'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];

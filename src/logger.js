@@ -63,6 +63,12 @@ class Logger {
       ...this.options,
     });
   }
+
+  clone(options) {
+    options = options || this.options;
+    options.prefix = options.prefix || this.prefix;
+    return new Logger(this.logger, options);
+  }
 }
 
 export default new Logger();

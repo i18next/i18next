@@ -387,7 +387,7 @@
 
     return data;
   }
-  var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
+  var isIE10 = typeof window !== 'undefined' && window.navigator && typeof window.navigator.userAgentData === 'undefined' && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
   var chars = [' ', ',', '?', '!', ';'];
   function looksLikeObjectPath(key, nsSeparator, keySeparator) {
     nsSeparator = nsSeparator || '';
@@ -446,6 +446,7 @@
         }
 
         if (mix === undefined) return undefined;
+        if (mix === null) return null;
 
         if (path.endsWith(p)) {
           if (typeof mix === 'string') return mix;
@@ -911,7 +912,7 @@
 
           if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
             if (this.options.compatibilityAPI !== 'v1') {
-              res = this.options.parseMissingKeyHandler(key, usedDefault ? res : undefined);
+              res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? "".concat(namespace, ":").concat(key) : key, usedDefault ? res : undefined);
             } else {
               res = this.options.parseMissingKeyHandler(res);
             }
@@ -1030,7 +1031,7 @@
               } else {
                 var pluralSuffix;
                 if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count, options);
-                var zeroSuffix = '_zero';
+                var zeroSuffix = "".concat(_this4.options.pluralSeparator, "zero");
 
                 if (needsPluralHandling) {
                   finalKeys.push(key + pluralSuffix);
@@ -1710,7 +1711,7 @@
             str = str.replace(match[0], safeValue);
 
             if (skipOnVariables) {
-              todo.regex.lastIndex += safeValue.length;
+              todo.regex.lastIndex += value.length;
               todo.regex.lastIndex -= match[0].length;
             } else {
               todo.regex.lastIndex = 0;
@@ -1863,11 +1864,11 @@
               key = _opt$split2[0],
               rest = _opt$split2.slice(1);
 
-          var val = rest.join(':');
-          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val.trim();
-          if (val.trim() === 'false') formatOptions[key.trim()] = false;
-          if (val.trim() === 'true') formatOptions[key.trim()] = true;
-          if (!isNaN(val.trim())) formatOptions[key.trim()] = parseInt(val.trim(), 10);
+          var val = rest.join(':').trim().replace(/^'+|'+$/g, '');
+          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val;
+          if (val === 'false') formatOptions[key.trim()] = false;
+          if (val === 'true') formatOptions[key.trim()] = true;
+          if (!isNaN(val)) formatOptions[key.trim()] = parseInt(val, 10);
         });
       }
     }
@@ -1968,8 +1969,10 @@
   function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
   function removePending(q, name) {
-    delete q.pending[name];
-    q.pendingCount--;
+    if (q.pending[name] !== undefined) {
+      delete q.pending[name];
+      q.pendingCount--;
+    }
   }
 
   var Connector = function (_EventEmitter) {
@@ -1999,6 +2002,8 @@
       _this.waitingReads = [];
       _this.maxParallelReads = options.maxParallelReads || 10;
       _this.readingCalls = 0;
+      _this.maxRetries = options.maxRetries >= 0 ? options.maxRetries : 5;
+      _this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
       _this.state = {};
       _this.queue = [];
 
@@ -2026,13 +2031,13 @@
             if (!options.reload && _this2.store.hasResourceBundle(lng, ns)) {
               _this2.state[name] = 2;
             } else if (_this2.state[name] < 0) ; else if (_this2.state[name] === 1) {
-              if (pending[name] !== undefined) pending[name] = true;
+              if (pending[name] === undefined) pending[name] = true;
             } else {
               _this2.state[name] = 1;
               hasAllNamespaces = false;
-              pending[name] = true;
-              toLoad[name] = true;
-              toLoadNamespaces[ns] = true;
+              if (pending[name] === undefined) pending[name] = true;
+              if (toLoad[name] === undefined) toLoad[name] = true;
+              if (toLoadNamespaces[ns] === undefined) toLoadNamespaces[ns] = true;
             }
           });
           if (!hasAllNamespaces) toLoadLanguages[lng] = true;
@@ -2077,11 +2082,11 @@
           if (q.pendingCount === 0 && !q.done) {
             Object.keys(q.loaded).forEach(function (l) {
               if (!loaded[l]) loaded[l] = {};
-              var loadedKeys = Object.keys(loaded[l]);
+              var loadedKeys = q.loaded[l];
 
               if (loadedKeys.length) {
                 loadedKeys.forEach(function (ns) {
-                  if (loadedKeys[ns] !== undefined) loaded[l][ns] = true;
+                  if (loaded[l][ns] === undefined) loaded[l][ns] = true;
                 });
               }
             });
@@ -2105,7 +2110,7 @@
         var _this3 = this;
 
         var tried = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-        var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 350;
+        var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.retryTimeout;
         var callback = arguments.length > 5 ? arguments[5] : undefined;
         if (!lng.length) return callback(null, {});
 
@@ -2123,19 +2128,19 @@
 
         this.readingCalls++;
         return this.backend[fcName](lng, ns, function (err, data) {
-          if (err && data && tried < 5) {
-            setTimeout(function () {
-              _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
-            }, wait);
-            return;
-          }
-
           _this3.readingCalls--;
 
           if (_this3.waitingReads.length > 0) {
             var next = _this3.waitingReads.shift();
 
             _this3.read(next.lng, next.ns, next.fcName, next.tried, next.wait, next.callback);
+          }
+
+          if (err && data && tried < _this3.maxRetries) {
+            setTimeout(function () {
+              _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
+            }, wait);
+            return;
           }
 
           callback(err, data);
@@ -2373,7 +2378,7 @@
           options = {};
         }
 
-        if (!options.defaultNS && options.ns) {
+        if (!options.defaultNS && options.defaultNS !== false && options.ns) {
           if (typeof options.ns === 'string') {
             options.defaultNS = options.ns;
           } else if (options.ns.indexOf('translation') < 0) {
@@ -2729,8 +2734,9 @@
           options.lng = options.lng || fixedT.lng;
           options.lngs = options.lngs || fixedT.lngs;
           options.ns = options.ns || fixedT.ns;
+          options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
           var keySeparator = _this5.options.keySeparator || '.';
-          var resultKey = keyPrefix ? "".concat(keyPrefix).concat(keySeparator).concat(key) : key;
+          var resultKey = options.keyPrefix ? "".concat(options.keyPrefix).concat(keySeparator).concat(key) : key;
           return _this5.t(resultKey, options);
         };
 

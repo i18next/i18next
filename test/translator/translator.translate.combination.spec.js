@@ -51,6 +51,7 @@ describe('Translator', () => {
           interpolator: new Interpolator(),
         },
         {
+          pluralSeparator: '_',
           contextSeparator: '_',
           keySeparator: '.',
           ns: 'translation',
