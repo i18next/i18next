@@ -199,6 +199,13 @@
           prefix: "".concat(this.prefix, ":").concat(moduleName, ":")
         }), this.options));
       }
+    }, {
+      key: "clone",
+      value: function clone(options) {
+        options = options || this.options;
+        options.prefix = options.prefix || this.prefix;
+        return new Logger(this.logger, options);
+      }
     }]);
 
     return Logger;
@@ -1747,7 +1754,12 @@
           var optionsString = "{".concat(c[1]);
           key = c[0];
           optionsString = this.interpolate(optionsString, clonedOptions);
-          optionsString = optionsString.replace(/'/g, '"');
+          var matchedSingleQuotes = optionsString.match(/'/g);
+          var matchedDoubleQuotes = optionsString.match(/"/g);
+
+          if (matchedSingleQuotes && matchedSingleQuotes.length % 2 === 0 && !matchedDoubleQuotes || matchedDoubleQuotes.length % 2 !== 0) {
+            optionsString = optionsString.replace(/'/g, '"');
+          }
 
           try {
             clonedOptions = JSON.parse(optionsString);
@@ -2872,6 +2884,11 @@
         });
 
         var clone = new I18n(mergedOptions);
+
+        if (options.debug !== undefined || options.prefix !== undefined) {
+          clone.logger = clone.logger.clone(options);
+        }
+
         var membersToCopy = ['store', 'services', 'language'];
         membersToCopy.forEach(function (m) {
           clone[m] = _this8[m];

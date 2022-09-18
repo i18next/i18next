@@ -31,6 +31,8 @@ describe('i18next.interpolation.nesting', () => {
               test_foo: "foo $t(test, { 'context': 'bar' })",
               test_bar: "bar $t(test, { 'context': 'baz' })",
               test_baz: 'baz',
+              foo: '$t(bar, {"firstName": "{{firstName}}", "lastName": "{{lastName}}" })',
+              bar: '{{firstName}} {{lastName}}',
             },
           },
         },
@@ -90,6 +92,20 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['test', { context: 'foo' }],
         expected: 'foo bar baz',
+      },
+      {
+        args: [
+          'foo',
+          { firstName: `Cool`, lastName: `O'Dood`, interpolation: { escapeValue: false } },
+        ],
+        expected: `Cool O'Dood`,
+      },
+      {
+        args: [
+          'bar',
+          { firstName: `Cool`, lastName: `O'Dood`, interpolation: { escapeValue: false } },
+        ],
+        expected: `Cool O'Dood`,
       },
     ];
 

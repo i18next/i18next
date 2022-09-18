@@ -177,7 +177,14 @@ class Interpolator {
       let optionsString = `{${c[1]}`;
       key = c[0];
       optionsString = this.interpolate(optionsString, clonedOptions);
-      optionsString = optionsString.replace(/'/g, '"');
+      const matchedSingleQuotes = optionsString.match(/'/g);
+      const matchedDoubleQuotes = optionsString.match(/"/g);
+      if (
+        (matchedSingleQuotes && matchedSingleQuotes.length % 2 === 0 && !matchedDoubleQuotes) ||
+        matchedDoubleQuotes.length % 2 !== 0
+      ) {
+        optionsString = optionsString.replace(/'/g, '"');
+      }
 
       try {
         clonedOptions = JSON.parse(optionsString);

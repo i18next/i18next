@@ -1,3 +1,7 @@
+## 21.9.2
+
+- optimize single quotes replacement for $t() nesting [1836](https://github.com/i18next/i18next/issues/1836)
+
 ## 21.9.1
 
 - defaultNS can now also be set to false
