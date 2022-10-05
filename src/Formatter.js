@@ -41,7 +41,7 @@ function parseFormatStr(formatStr) {
 
 function createCachedFormatter(fn) {
   const cache = Object.create(null);
-  return function (val, lng, options) {
+  return function invokeFormatter(val, lng, options) {
     const key = lng + JSON.stringify(options);
     let formatter = cache[key];
     if (!formatter) {
