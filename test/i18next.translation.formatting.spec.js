@@ -44,6 +44,8 @@ describe('i18next.translation.formatting', () => {
               intlList: 'A list of {{val, list}}',
               keyCustomFormatWithColon:
                 'Before {{date, customDate(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
+              keyCustomCachedFormatWithColon:
+                'Before {{date, customDateCached(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
             },
           },
         },
@@ -64,6 +66,12 @@ describe('i18next.translation.formatting', () => {
         });
         instance.services.formatter.add('customDate', (value, lng, options) => {
           return `customized date in format ${options.format} (and other param ${options.otherParam})`;
+        });
+        instance.services.formatter.addCached('customDateCached', (lng, options) => {
+          return (val) =>
+            `customized cached ${lng} date in format ${options.format} (and other param ${
+              options.otherParam
+            }) for ${val.getTime()}`;
         });
         done();
       },
@@ -224,6 +232,14 @@ describe('i18next.translation.formatting', () => {
       {
         args: ['keyCustomFormatWithColon', { date: new Date(Date.UTC(2022, 0, 4, 14, 33, 10)) }],
         expected: 'Before customized date in format EEEE d MMMM yyyy HH:mm (and other param 0)',
+      },
+      {
+        args: [
+          'keyCustomCachedFormatWithColon',
+          { date: new Date(Date.UTC(2022, 0, 4, 14, 33, 10)) },
+        ],
+        expected:
+          'Before customized cached en date in format EEEE d MMMM yyyy HH:mm (and other param 0) for 1641306790000',
       },
     ]);
 

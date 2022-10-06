@@ -1891,6 +1891,21 @@
     };
   }
 
+  function createCachedFormatter(fn) {
+    var cache = {};
+    return function invokeFormatter(val, lng, options) {
+      var key = lng + JSON.stringify(options);
+      var formatter = cache[key];
+
+      if (!formatter) {
+        formatter = fn(lng, options);
+        cache[key] = formatter;
+      }
+
+      return formatter(val);
+    };
+  }
+
   var Formatter = function () {
     function Formatter() {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -1900,23 +1915,38 @@
       this.logger = baseLogger.create('formatter');
       this.options = options;
       this.formats = {
-        number: function number(val, lng, options) {
-          return new Intl.NumberFormat(lng, options).format(val);
-        },
-        currency: function currency(val, lng, options) {
-          return new Intl.NumberFormat(lng, _objectSpread$4(_objectSpread$4({}, options), {}, {
+        number: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.NumberFormat(lng, options);
+          return function (val) {
+            return formatter.format(val);
+          };
+        }),
+        currency: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.NumberFormat(lng, _objectSpread$4(_objectSpread$4({}, options), {}, {
             style: 'currency'
-          })).format(val);
-        },
-        datetime: function datetime(val, lng, options) {
-          return new Intl.DateTimeFormat(lng, _objectSpread$4({}, options)).format(val);
-        },
-        relativetime: function relativetime(val, lng, options) {
-          return new Intl.RelativeTimeFormat(lng, _objectSpread$4({}, options)).format(val, options.range || 'day');
-        },
-        list: function list(val, lng, options) {
-          return new Intl.ListFormat(lng, _objectSpread$4({}, options)).format(val);
-        }
+          }));
+          return function (val) {
+            return formatter.format(val);
+          };
+        }),
+        datetime: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.DateTimeFormat(lng, _objectSpread$4({}, options));
+          return function (val) {
+            return formatter.format(val);
+          };
+        }),
+        relativetime: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.RelativeTimeFormat(lng, _objectSpread$4({}, options));
+          return function (val) {
+            return formatter.format(val, options.range || 'day');
+          };
+        }),
+        list: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.ListFormat(lng, _objectSpread$4({}, options));
+          return function (val) {
+            return formatter.format(val);
+          };
+        })
       };
       this.init(options);
     }
@@ -1934,6 +1964,11 @@
       key: "add",
       value: function add(name, fc) {
         this.formats[name.toLowerCase().trim()] = fc;
+      }
+    }, {
+      key: "addCached",
+      value: function addCached(name, fc) {
+        this.formats[name.toLowerCase().trim()] = createCachedFormatter(fc);
       }
     }, {
       key: "format",

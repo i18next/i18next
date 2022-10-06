@@ -40,7 +40,7 @@ function parseFormatStr(formatStr) {
 }
 
 function createCachedFormatter(fn) {
-  const cache = Object.create(null);
+  const cache = {};
   return function invokeFormatter(val, lng, options) {
     const key = lng + JSON.stringify(options);
     let formatter = cache[key];
@@ -93,6 +93,10 @@ class Formatter {
 
   add(name, fc) {
     this.formats[name.toLowerCase().trim()] = fc;
+  }
+
+  addCached(name, fc) {
+    this.formats[name.toLowerCase().trim()] = createCachedFormatter(fc);
   }
 
   format(value, format, lng, options) {

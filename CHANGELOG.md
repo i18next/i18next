@@ -1,3 +1,7 @@
+## 21.10.0
+
+- Add formatter cache [1843](https://github.com/i18next/i18next/pull/1843)
+
 ## 21.9.2
 
 - optimize single quotes replacement for $t() nesting [1836](https://github.com/i18next/i18next/issues/1836)
