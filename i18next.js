@@ -199,6 +199,13 @@
           prefix: "".concat(this.prefix, ":").concat(moduleName, ":")
         }), this.options));
       }
+    }, {
+      key: "clone",
+      value: function clone(options) {
+        options = options || this.options;
+        options.prefix = options.prefix || this.prefix;
+        return new Logger(this.logger, options);
+      }
     }]);
 
     return Logger;
@@ -1747,7 +1754,12 @@
           var optionsString = "{".concat(c[1]);
           key = c[0];
           optionsString = this.interpolate(optionsString, clonedOptions);
-          optionsString = optionsString.replace(/'/g, '"');
+          var matchedSingleQuotes = optionsString.match(/'/g);
+          var matchedDoubleQuotes = optionsString.match(/"/g);
+
+          if (matchedSingleQuotes && matchedSingleQuotes.length % 2 === 0 && !matchedDoubleQuotes || matchedDoubleQuotes.length % 2 !== 0) {
+            optionsString = optionsString.replace(/'/g, '"');
+          }
 
           try {
             clonedOptions = JSON.parse(optionsString);
@@ -1879,6 +1891,21 @@
     };
   }
 
+  function createCachedFormatter(fn) {
+    var cache = {};
+    return function invokeFormatter(val, lng, options) {
+      var key = lng + JSON.stringify(options);
+      var formatter = cache[key];
+
+      if (!formatter) {
+        formatter = fn(lng, options);
+        cache[key] = formatter;
+      }
+
+      return formatter(val);
+    };
+  }
+
   var Formatter = function () {
     function Formatter() {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -1888,23 +1915,38 @@
       this.logger = baseLogger.create('formatter');
       this.options = options;
       this.formats = {
-        number: function number(val, lng, options) {
-          return new Intl.NumberFormat(lng, options).format(val);
-        },
-        currency: function currency(val, lng, options) {
-          return new Intl.NumberFormat(lng, _objectSpread$4(_objectSpread$4({}, options), {}, {
+        number: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.NumberFormat(lng, options);
+          return function (val) {
+            return formatter.format(val);
+          };
+        }),
+        currency: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.NumberFormat(lng, _objectSpread$4(_objectSpread$4({}, options), {}, {
             style: 'currency'
-          })).format(val);
-        },
-        datetime: function datetime(val, lng, options) {
-          return new Intl.DateTimeFormat(lng, _objectSpread$4({}, options)).format(val);
-        },
-        relativetime: function relativetime(val, lng, options) {
-          return new Intl.RelativeTimeFormat(lng, _objectSpread$4({}, options)).format(val, options.range || 'day');
-        },
-        list: function list(val, lng, options) {
-          return new Intl.ListFormat(lng, _objectSpread$4({}, options)).format(val);
-        }
+          }));
+          return function (val) {
+            return formatter.format(val);
+          };
+        }),
+        datetime: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.DateTimeFormat(lng, _objectSpread$4({}, options));
+          return function (val) {
+            return formatter.format(val);
+          };
+        }),
+        relativetime: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.RelativeTimeFormat(lng, _objectSpread$4({}, options));
+          return function (val) {
+            return formatter.format(val, options.range || 'day');
+          };
+        }),
+        list: createCachedFormatter(function (lng, options) {
+          var formatter = new Intl.ListFormat(lng, _objectSpread$4({}, options));
+          return function (val) {
+            return formatter.format(val);
+          };
+        })
       };
       this.init(options);
     }
@@ -1922,6 +1964,11 @@
       key: "add",
       value: function add(name, fc) {
         this.formats[name.toLowerCase().trim()] = fc;
+      }
+    }, {
+      key: "addCached",
+      value: function addCached(name, fc) {
+        this.formats[name.toLowerCase().trim()] = createCachedFormatter(fc);
       }
     }, {
       key: "format",
@@ -2872,6 +2919,11 @@
         });
 
         var clone = new I18n(mergedOptions);
+
+        if (options.debug !== undefined || options.prefix !== undefined) {
+          clone.logger = clone.logger.clone(options);
+        }
+
         var membersToCopy = ['store', 'services', 'language'];
         membersToCopy.forEach(function (m) {
           clone[m] = _this8[m];
