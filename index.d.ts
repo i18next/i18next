@@ -824,10 +824,15 @@ type TypeOptionsFallback<TranslationValue, Option, MatchingValue> = Option exten
 /**
  * Checks if user has enabled `returnEmptyString` and `returnNull` options to retrieve correct values.
  */
+ interface CustomTypeParameters {
+  returnNull?: boolean;
+  returnEmptyString?: boolean;
+}
 export type NormalizeByTypeOptions<
   TranslationValue,
-  R = TypeOptionsFallback<TranslationValue, TypeOptions['returnEmptyString'], ''>,
-> = TypeOptionsFallback<R, TypeOptions['returnNull'], null>;
+  Options extends CustomTypeParameters = TypeOptions,
+  R = TypeOptionsFallback<TranslationValue, Options['returnEmptyString'], ''>,
+> = TypeOptionsFallback<R, Options['returnNull'], null>;
 
 type StringIfPlural<T> = TypeOptions['jsonFormat'] extends 'v4'
   ? T extends `${string}_${PluralSuffix}`
@@ -835,7 +840,7 @@ type StringIfPlural<T> = TypeOptions['jsonFormat'] extends 'v4'
     : never
   : never;
 
-type NormalizeReturn<
+export type NormalizeReturn<
   T,
   V,
   S extends string | false = TypeOptions['keySeparator'],
