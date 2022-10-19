@@ -102,12 +102,12 @@
     "watchify": "3.9.0"
   },
   "scripts": {
-    "pretest": "npm run test:typescript && npm run test:custom-typescript && npm run test:typescript:noninterop",
+    "pretest": "npm run test:typescript && npm run test:typescript:customtypes && npm run test:typescript:noninterop",
     "test": "npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",
     "test:compat": "karma start karma.backward.conf.js --singleRun",
     "test:typescript": "tslint --project tsconfig.json",
-    "test:custom-typescript": "tslint --project test/typescript/custom-types/tsconfig.json",
+    "test:typescript:customtypes": "tslint --project test/typescript/custom-types/tsconfig.json",
     "test:typescript:noninterop": "tslint --project tsconfig.nonEsModuleInterop.json",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
