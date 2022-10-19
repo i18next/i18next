@@ -1,3 +1,7 @@
+## 22.0.1
+
+- Fix normalize type options [1850](https://github.com/i18next/i18next/pull/1850)
+
 ## 22.0.0
 
 - Make the translation function fully type-safe [1775](https://github.com/i18next/i18next/pull/1775)
