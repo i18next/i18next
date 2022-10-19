@@ -3,7 +3,7 @@
 - Make the translation function fully type-safe [1775](https://github.com/i18next/i18next/pull/1775)
 
 BREAKING:
-Since this is a major rewrite for [TypeScript usage](https://www.i18next.com/overview/typescript) we dediced to create a major version.
+Since this is a major rewrite for [TypeScript usage](https://www.i18next.com/overview/typescript) we decided to create a major version.
 For JavaScript users v22.0.0 is equivalent to 21.10.0
 
 ## 21.10.0
