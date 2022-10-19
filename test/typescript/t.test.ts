@@ -16,9 +16,9 @@ function overloadedUsage(t: TFunction) {
 function returnCasts(t: TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
-  const o: object = t<object>('friend');
-  const sa: string[] = t<string[]>('friend');
-  const oa: object[] = t<object[]>('friend');
+  const o: object = t<string, object>('friend');
+  const sa: string[] = t<string, string[]>('friend');
+  const oa: object[] = t<string, object[]>('friend');
 }
 
 function defautValue(t: TFunction) {
@@ -134,18 +134,18 @@ function interpolation(t: TFunction) {
 
   const resolved = t('key', { returnDetails: true });
   resolved.res;
-  resolved.res.substring(2, 1);
+  if (typeof resolved.res === 'string') resolved.res.substring(2, 1);
   resolved.usedKey;
   resolved.exactUsedKey;
   resolved.usedNS;
   resolved.usedLng;
 
   const r2 = t('keyTwo', { returnDetails: false });
-  r2.substring(0, 2); // make sure it is a string
+  if (typeof r2 === 'string') r2.substring(0, 2); // make sure it is a string
   const r3 = t('keyThree');
-  r3.substring(0, 2); // make sure it is a string
+  if (typeof r3 === 'string') r3.substring(0, 2); // make sure it is a string
   const r4 = t('keyTwo', { ns: 'whatever' });
-  r4.substring(0, 2); // make sure it is a string
+  if (typeof r4 === 'string') r4.substring(0, 2); // make sure it is a string
 
   t('arrayJoinWithInterpolation', {
     myVar: 'interpolate',
