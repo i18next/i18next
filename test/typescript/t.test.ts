@@ -132,20 +132,23 @@ function interpolation(t: TFunction) {
   t('arrayJoin', { joinArrays: '+' });
   // -> "line1+line2+line3"
 
+  const resultObject: object = t('test', { returnObjects: true });
+  const resultDetailsAndObject: object = t('test', { returnObjects: true,  returnDetails: true}).res;
+
   const resolved = t('key', { returnDetails: true });
   resolved.res;
-  if (typeof resolved.res === 'string') resolved.res.substring(2, 1);
+  resolved.res.substring(2, 1);
   resolved.usedKey;
   resolved.exactUsedKey;
   resolved.usedNS;
   resolved.usedLng;
 
   const r2 = t('keyTwo', { returnDetails: false });
-  if (typeof r2 === 'string') r2.substring(0, 2); // make sure it is a string
+  r2.substring(0, 2); // make sure it is a string
   const r3 = t('keyThree');
-  if (typeof r3 === 'string') r3.substring(0, 2); // make sure it is a string
+  r3.substring(0, 2); // make sure it is a string
   const r4 = t('keyTwo', { ns: 'whatever' });
-  if (typeof r4 === 'string') r4.substring(0, 2); // make sure it is a string
+  r4.substring(0, 2); // make sure it is a string
 
   t('arrayJoinWithInterpolation', {
     myVar: 'interpolate',
