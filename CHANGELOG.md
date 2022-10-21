@@ -1,3 +1,7 @@
+## 22.0.2
+
+- [TypeScript] Add default value for TDefaultResult [1853](https://github.com/i18next/i18next/pull/1853)
+
 ## 22.0.1
 
 - Fix normalize type options [1850](https://github.com/i18next/i18next/pull/1850)
