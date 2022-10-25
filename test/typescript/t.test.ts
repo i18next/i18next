@@ -16,9 +16,9 @@ function overloadedUsage(t: TFunction) {
 function returnCasts(t: TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
-  const o: object = t<string, object>('friend');
-  const sa: string[] = t<string, string[]>('friend');
-  const oa: object[] = t<string, object[]>('friend');
+  const o: object = t<string, object>('friend', { returnObjects: true });
+  const sa: string[] = t<string, string[]>('friend', { returnObjects: true });
+  const oa: object[] = t<string, object[]>('friend', { returnObjects: true });
 }
 
 function defautValue(t: TFunction) {
@@ -132,8 +132,13 @@ function interpolation(t: TFunction) {
   t('arrayJoin', { joinArrays: '+' });
   // -> "line1+line2+line3"
 
-  const resultObject: object = t('test', { returnObjects: true });
-  const resultDetailsAndObject: object = t('test', { returnObjects: true,  returnDetails: true}).res;
+  const objectResult: object = t('test', { returnObjects: true });
+  const detailsAndObjectResult: object = t('test', {
+    returnObjects: true,
+    returnDetails: true,
+  }).res;
+  // @ts-expect-error
+  const notTrueObjectResult: object = t('test');
 
   const resolved = t('key', { returnDetails: true });
   resolved.res;
