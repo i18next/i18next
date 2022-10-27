@@ -860,13 +860,9 @@ type NormalizeMultiReturn<T, V> = V extends `${infer N}:${infer R}`
     : never
   : never;
 
-export type DefaultTFuncReturn =
-  | string
-  | object
-  | TFunctionDetailedResult
-  | Array<string | object>
-  | undefined
-  | null;
+export type DefaultTFuncReturn = string | undefined | null;
+
+export type DefaultTFuncReturnWithObject = DefaultTFuncReturn | object | Array<string | object>;
 
 export type TFuncReturn<
   N,
@@ -892,7 +888,7 @@ export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = un
   ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
   <
     TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturn = object,
+    TDefaultResult extends DefaultTFuncReturnWithObject = object,
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
@@ -908,7 +904,7 @@ export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = un
   ): TFunctionDetailedResult<TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>>;
   <
     TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturn = object,
+    TDefaultResult extends DefaultTFuncReturnWithObject = object,
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
