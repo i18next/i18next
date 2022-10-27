@@ -1,3 +1,8 @@
+## 22.0.3
+
+- Make getFixedT type-safe [1860](https://github.com/i18next/i18next/pull/1860)
+- types: Omit object from t function [1858](https://github.com/i18next/i18next/pull/1858)
+
 ## 22.0.2
 
 - [TypeScript] Add default value for TDefaultResult [1853](https://github.com/i18next/i18next/pull/1853)
