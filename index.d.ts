@@ -824,7 +824,7 @@ type TypeOptionsFallback<TranslationValue, Option, MatchingValue> = Option exten
 /**
  * Checks if user has enabled `returnEmptyString` and `returnNull` options to retrieve correct values.
  */
- interface CustomTypeParameters {
+interface CustomTypeParameters {
   returnNull?: boolean;
   returnEmptyString?: boolean;
 }
@@ -1184,12 +1184,20 @@ export interface i18n {
    *
    * Accepts optional keyPrefix that will be automatically applied to returned t function.
    */
-  getFixedT(
+  getFixedT<N extends Namespace = DefaultNamespace, TKPrefix extends KeyPrefix<N> = undefined>(
     lng: string | readonly string[],
-    ns?: string | readonly string[],
-    keyPrefix?: string,
-  ): TFunction;
-  getFixedT(lng: null, ns: string | readonly string[] | null, keyPrefix?: string): TFunction;
+    ns?: N,
+    keyPrefix?: TKPrefix,
+  ): TFunction<N, TKPrefix>;
+  getFixedT<
+    N extends Namespace | null,
+    TKPrefix extends KeyPrefix<ActualNS>,
+    ActualNS extends Namespace = N extends null ? DefaultNamespace : N,
+  >(
+    lng: null,
+    ns: N,
+    keyPrefix?: TKPrefix,
+  ): TFunction<ActualNS, TKPrefix>;
 
   /**
    * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
