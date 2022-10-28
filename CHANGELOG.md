@@ -1,3 +1,7 @@
+## 22.0.4
+
+- Add type for Formatter.addCached [1862](https://github.com/i18next/i18next/pull/1862)
+
 ## 22.0.3
 
 - Make getFixedT type-safe [1860](https://github.com/i18next/i18next/pull/1860)
