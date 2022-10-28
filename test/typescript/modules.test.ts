@@ -54,6 +54,7 @@ const formatterModule: FormatterModule = {
   type: 'formatter',
   init: () => null,
   add: () => null,
+  addCached: () => () => null,
   format: () => '',
 };
 
