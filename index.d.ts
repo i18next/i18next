@@ -971,6 +971,10 @@ export class ResourceStore {
 export interface Formatter {
   init(services: Services, i18nextOptions: InitOptions): void;
   add(name: string, fc: (value: any, lng: string | undefined, options: any) => string): void;
+  addCached(
+    name: string,
+    fc: (lng: string | undefined, options: any) => (value: any) => string,
+  ): void;
   format: FormatFunction;
 }
 

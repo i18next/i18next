@@ -21,3 +21,7 @@ resourceStore.data['en'];
 
 const formatter: Formatter | undefined = i18next.services.formatter;
 formatter!.add('test', (value: any, lng: string | undefined, options: any) => 'formatted');
+formatter!.addCached(
+  'test',
+  (lng: string | undefined, options: any) => (value: any) => 'formatted',
+);
