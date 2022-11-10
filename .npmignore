@@ -22,6 +22,7 @@ tsconfig.nonEsModuleInterop.json
 rollup.config.js
 tslint.json
 CHANGELOG.md
+CONTRIBUTING.md
 .github
 .husky
 examples/
