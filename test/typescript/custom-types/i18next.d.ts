@@ -3,6 +3,7 @@ import 'i18next';
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'custom';
+    returnNull: false;
     resources: {
       custom: {
         foo: 'foo';

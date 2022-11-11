@@ -860,7 +860,7 @@ type NormalizeMultiReturn<T, V> = V extends `${infer N}:${infer R}`
     : never
   : never;
 
-export type DefaultTFuncReturn = string | undefined | null;
+export type DefaultTFuncReturn = string | (TypeOptions['returnNull'] extends true ? null : never);
 
 export type DefaultTFuncReturnWithObject = DefaultTFuncReturn | object | Array<string | object>;
 
