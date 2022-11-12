@@ -1,3 +1,7 @@
+## 22.0.5
+
+- Change DefaultTFuncReturn to return null if returnNull typeOption is true [1865](https://github.com/i18next/i18next/pull/1865)
+
 ## 22.0.4
 
 - Add type for Formatter.addCached [1862](https://github.com/i18next/i18next/pull/1862)
