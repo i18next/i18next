@@ -45,3 +45,10 @@ function i18nextTPluralsUsage() {
   i18next.t('plurals:foo', { count: 1 });
   i18next.t('plurals:foo_many', { count: 10 });
 }
+
+// @ts-expect-error
+function returnNullWithFalseValue(t: TFunction<string>) {
+  function fn(value: null) {}
+  // @ts-expect-error
+  fn(t('foo'));
+}
