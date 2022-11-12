@@ -48,6 +48,7 @@ function i18nextTPluralsUsage() {
 
 // @ts-expect-error
 function returnNullWithFalseValue(t: TFunction<string>) {
+  function fn(value: null) {}
   // @ts-expect-error
-  const foo: null = t('foo') as null;
+  fn(t('foo'));
 }

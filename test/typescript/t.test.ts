@@ -43,13 +43,6 @@ function callsMethodWithOptionalNullArg(t: TFunction) {
   displayHint(t('friend'));
 }
 
-function callsMethodWithOptionalArg(t: TFunction) {
-  function displayHint(hint?: string) {
-    return String(hint);
-  }
-  displayHint(t('friend'));
-}
-
 function callsMethodWithRequiredNullArg(t: TFunction) {
   function displayHint(hint: string | null) {
     return String(hint);
