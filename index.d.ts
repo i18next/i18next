@@ -1130,7 +1130,7 @@ export interface ExistsFunction<
 
 export interface i18n {
   // Expose parameterized t in the i18next interface hierarchy
-  t: TFunction<FallbackOrNS<string>[]>;
+  t: TFunction<Namespace | DefaultNamespace>;
 
   /**
    * The default of the i18next module is an i18next instance ready to be initialized by calling init.
