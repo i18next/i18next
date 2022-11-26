@@ -1,6 +1,6 @@
 // Helpers
 type MergeBy<T, K> = Omit<T, keyof K> & K;
-type StringMap = { [key: string]: any };
+export type StringMap = { [key: string]: any };
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
   ? I
   : never;
@@ -116,7 +116,7 @@ export type PluginOptions = MergeBy<
   CustomPluginOptions
 >;
 
-type FormatFunction = (
+export type FormatFunction = (
   value: any,
   format?: string,
   lng?: string,
@@ -1116,7 +1116,7 @@ export interface NewableModule<T extends Module> extends Newable<T> {
   type: T['type'];
 }
 
-type Callback = (error: any, t: TFunction) => void;
+export type Callback = (error: any, t: TFunction) => void;
 
 /**
  * Uses similar args as the t function and returns true if a key exists.
