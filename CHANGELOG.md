@@ -1,3 +1,7 @@
+## 22.0.7
+
+- Expose some types [1871](https://github.com/i18next/i18next/pull/1871)
+
 ## 22.0.6
 
 - fix CallbackError type
