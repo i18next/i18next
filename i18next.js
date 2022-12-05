@@ -1528,9 +1528,7 @@
         var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
         var match;
         var value;
-        var clonedOptions = _objectSpread$3({}, options);
-        clonedOptions.applyPostProcessor = false;
-        delete clonedOptions.defaultValue;
+        var clonedOptions;
         function handleHasOptions(key, inheritedOptions) {
           var sep = this.nestingOptionsSeparator;
           if (key.indexOf(sep) < 0) return key;
@@ -1555,6 +1553,9 @@
         }
         while (match = this.nestingRegexp.exec(str)) {
           var formatters = [];
+          clonedOptions = _objectSpread$3({}, options);
+          clonedOptions.applyPostProcessor = false;
+          delete clonedOptions.defaultValue;
           var doReduce = false;
           if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
             var r = match[1].split(this.formatSeparator).map(function (elem) {

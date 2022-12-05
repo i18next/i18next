@@ -34,6 +34,13 @@ describe('i18next.interpolation.nesting', () => {
               foo: '$t(bar, {"firstName": "{{firstName}}", "lastName": "{{lastName}}" })',
               fooSingle: `$t(bar, {'firstName': '{{firstName}}', 'lastName': '{{lastName}}' })`,
               bar: '{{firstName}} {{lastName}}',
+
+              item_one: 'item',
+              item_other: 'items',
+              thing_one: 'thing',
+              thing_other: 'things',
+              phrase: 'A: $t(thing, { "count": 1 }) B: $t(item)',
+              phrase2: 'A: $t(thing, { "count": 2 }) B: $t(item)',
             },
           },
         },
@@ -128,6 +135,14 @@ describe('i18next.interpolation.nesting', () => {
           { firstName: `C'ool`, lastName: `O'Dood`, interpolation: { escapeValue: false } },
         ],
         expected: `C'ool O'Dood`,
+      },
+      {
+        args: ['phrase'],
+        expected: 'A: thing B: item',
+      },
+      {
+        args: ['phrase2'],
+        expected: 'A: things B: item',
       },
     ];
 

@@ -163,9 +163,7 @@ class Interpolator {
     let match;
     let value;
 
-    let clonedOptions = { ...options };
-    clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
-    delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
+    let clonedOptions;
 
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
     function handleHasOptions(key, inheritedOptions) {
@@ -203,6 +201,10 @@ class Interpolator {
     // regular escape on demand
     while ((match = this.nestingRegexp.exec(str))) {
       let formatters = [];
+
+      clonedOptions = { ...options };
+      clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
+      delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
 
       /**
        * If there is more than one parameter (contains the format separator). E.g.:

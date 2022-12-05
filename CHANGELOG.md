@@ -1,3 +1,7 @@
+## 22.0.8
+
+- fix options for continuous nesting [1876](https://github.com/i18next/i18next/issues/1876)
+
 ## 22.0.7
 
 - Expose some types [1871](https://github.com/i18next/i18next/pull/1871)
