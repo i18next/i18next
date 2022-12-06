@@ -9,6 +9,9 @@ t2('deeper').deeeeeper;
 const t3 = i18next.getFixedT('en');
 t3('foo');
 
+// t3('alternate:foobar.deep.deeper.deeeeeper');
+// t3('foobar.deep.deeper.deeeeeper', { ns: 'alternate' });
+
 const t4 = i18next.getFixedT('en', 'alternate', 'foobar');
 t4('barfoo');
 

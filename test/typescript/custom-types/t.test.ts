@@ -26,9 +26,11 @@ function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
 }
 
 function i18nextTUsage() {
+  // i18next.t('foobar.barfoo', { ns: 'alternate' });
   i18next.t('alternate:foobar.barfoo');
   i18next.t('alternate:foobar.deep').deeper.deeeeeper;
   i18next.t('custom:bar');
+  // i18next.t('bar');
 }
 
 function expectErrorWhenInvalidKeyWithI18nextT() {
