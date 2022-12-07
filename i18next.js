@@ -1898,7 +1898,7 @@
           return;
         }
         this.readingCalls++;
-        return this.backend[fcName](lng, ns, function (err, data) {
+        var resolver = function resolver(err, data) {
           _this3.readingCalls--;
           if (_this3.waitingReads.length > 0) {
             var next = _this3.waitingReads.shift();
@@ -1911,7 +1911,24 @@
             return;
           }
           callback(err, data);
-        });
+        };
+        var fc = this.backend[fcName].bind(this.backend);
+        if (fc.length === 2) {
+          try {
+            var r = fc(lng, ns);
+            if (r && typeof r.then === 'function') {
+              r.then(function (data) {
+                return resolver(null, data);
+              })["catch"](resolver);
+            } else {
+              resolver(null, r);
+            }
+          } catch (err) {
+            resolver(err);
+          }
+          return;
+        }
+        return fc(lng, ns, resolver);
       }
     }, {
       key: "prepareLoading",
@@ -1964,15 +1981,38 @@
       key: "saveMissing",
       value: function saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
         var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
+        var clb = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : function () {};
         if (this.services.utils && this.services.utils.hasLoadedNamespace && !this.services.utils.hasLoadedNamespace(namespace)) {
           this.logger.warn("did not save key \"".concat(key, "\" as the namespace \"").concat(namespace, "\" was not yet loaded"), 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
           return;
         }
         if (key === undefined || key === null || key === '') return;
         if (this.backend && this.backend.create) {
-          this.backend.create(languages, namespace, key, fallbackValue, null, _objectSpread$1(_objectSpread$1({}, options), {}, {
+          var opts = _objectSpread$1(_objectSpread$1({}, options), {}, {
             isUpdate: isUpdate
-          }));
+          });
+          var fc = this.backend.create.bind(this.backend);
+          if (fc.length < 6) {
+            try {
+              var r;
+              if (fc.length === 5) {
+                r = fc(languages, namespace, key, fallbackValue, opts);
+              } else {
+                r = fc(languages, namespace, key, fallbackValue);
+              }
+              if (r && typeof r.then === 'function') {
+                r.then(function (data) {
+                  return clb(null, data);
+                })["catch"](clb);
+              } else {
+                clb(null, r);
+              }
+            } catch (err) {
+              clb(err);
+            }
+          } else {
+            fc(languages, namespace, key, fallbackValue, clb, opts);
+          }
         }
         if (!languages || !languages[0]) return;
         this.store.addResource(languages[0], namespace, key, fallbackValue);

@@ -7,6 +7,7 @@ class Backend {
     this.services = services;
     this.options = options;
     this.retries = {};
+    this.created = {};
   }
 
   read(language, namespace, callback) {
@@ -47,6 +48,9 @@ class Backend {
         callback(null, { status: 'ok', namespace });
       }, 200);
       return;
+    } else if (namespace.indexOf('normal') === 0) {
+      callback(null, { status: 'ok', namespace, language });
+      return;
     } else {
       callback(null, { status: 'nok', retries: this.retries[language] });
       delete this.retries[language];
@@ -70,6 +74,18 @@ class Backend {
       delete this.retries[language];
       return;
     }
+  }
+
+  create(languages, namespace, key, fallbackValue, callback, options) {
+    languages.forEach((l) => {
+      this.created[l] = this.created[l] || {};
+      this.created[l][namespace] = this.created[l][namespace] || {};
+      this.created[l][namespace][key] = {
+        fallbackValue,
+        options,
+      };
+    });
+    callback(null);
   }
 }
 

@@ -1,3 +1,7 @@
+## 22.1.0
+
+- extend backend connector to accept also backends with promise / async-await signature
+
 ## 22.0.8
 
 - fix options for continuous nesting [1876](https://github.com/i18next/i18next/issues/1876)

@@ -155,7 +155,7 @@ class Connector extends EventEmitter {
     }
     this.readingCalls++;
 
-    return this.backend[fcName](lng, ns, (err, data) => {
+    const resolver = (err, data) => {
       this.readingCalls--;
       if (this.waitingReads.length > 0) {
         const next = this.waitingReads.shift();
@@ -168,7 +168,28 @@ class Connector extends EventEmitter {
         return;
       }
       callback(err, data);
-    });
+    };
+
+    const fc = this.backend[fcName].bind(this.backend);
+    if (fc.length === 2) {
+      // no callback
+      try {
+        const r = fc(lng, ns);
+        if (r && typeof r.then === 'function') {
+          // promise
+          r.then((data) => resolver(null, data)).catch(resolver);
+        } else {
+          // sync
+          resolver(null, r);
+        }
+      } catch (err) {
+        resolver(err);
+      }
+      return;
+    }
+
+    // normal with callback
+    return fc(lng, ns, resolver);
   }
 
   /* eslint consistent-return: 0 */
@@ -214,7 +235,7 @@ class Connector extends EventEmitter {
     });
   }
 
-  saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}) {
+  saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}, clb = () => {}) {
     if (
       this.services.utils &&
       this.services.utils.hasLoadedNamespace &&
@@ -231,10 +252,35 @@ class Connector extends EventEmitter {
     if (key === undefined || key === null || key === '') return;
 
     if (this.backend && this.backend.create) {
-      this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, {
+      const opts = {
         ...options,
         isUpdate,
-      });
+      };
+      const fc = this.backend.create.bind(this.backend);
+      if (fc.length < 6) {
+        // no callback
+        try {
+          let r;
+          if (fc.length === 5) {
+            // future callback-less api for i18next-locize-backend
+            r = fc(languages, namespace, key, fallbackValue, opts);
+          } else {
+            r = fc(languages, namespace, key, fallbackValue);
+          }
+          if (r && typeof r.then === 'function') {
+            // promise
+            r.then((data) => clb(null, data)).catch(clb);
+          } else {
+            // sync
+            clb(null, r);
+          }
+        } catch (err) {
+          clb(err);
+        }
+      } else {
+        // normal with callback
+        fc(languages, namespace, key, fallbackValue, clb /* unused callback */, opts);
+      }
     }
 
     // write to store to avoid resending
