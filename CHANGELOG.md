@@ -1,3 +1,11 @@
+## 22.1.2
+
+- revert: guess if languageDetector is async if no info provided
+
+## 22.1.1
+
+- guess if languageDetector is async if no info provided
+
 ## 22.1.0
 
 - extend backend connector to accept also backends with promise / async-await signature
