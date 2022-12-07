@@ -137,6 +137,9 @@ class I18n extends EventEmitter {
       if (this.modules.languageDetector) {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
         s.languageDetector.init(s, this.options.detection, this.options);
+        if (s.languageDetector.async === undefined) {
+          s.languageDetector.async = s.languageDetector.detect.length > 0;
+        }
       }
 
       if (this.modules.i18nFormat) {
