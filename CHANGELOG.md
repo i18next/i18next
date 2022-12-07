@@ -1,3 +1,7 @@
+## 22.1.3
+
+- named export for dir function
+
 ## 22.1.2
 
 - revert: guess if languageDetector is async if no info provided

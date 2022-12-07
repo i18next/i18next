@@ -4,6 +4,7 @@ export default i18next;
 
 export const createInstance = i18next.createInstance;
 
+export const dir = i18next.dir;
 export const init = i18next.init;
 export const loadResources = i18next.loadResources;
 export const reloadResources = i18next.reloadResources;
