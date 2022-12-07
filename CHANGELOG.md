@@ -1,3 +1,7 @@
+## 22.1.4
+
+- dir function executible also without initialization
+
 ## 22.1.3
 
 - named export for dir function

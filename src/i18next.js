@@ -566,7 +566,9 @@ class I18n extends EventEmitter {
       'ckb'
     ];
 
-    return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
+    const languageUtils = (this.services && this.services.languageUtils) || new LanguageUtils(getDefaults()) // for uninitialized usage
+
+    return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'
       : 'ltr';
   }
