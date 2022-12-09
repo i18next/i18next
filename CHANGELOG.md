@@ -1,3 +1,7 @@
+## 22.1.5
+
+- types: ability to pass ns as option instead of prefix i.e. `i18next.t('bar', { ns: 'alternate' });`
+
 ## 22.1.4
 
 - dir function executible also without initialization

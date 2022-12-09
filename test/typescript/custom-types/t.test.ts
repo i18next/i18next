@@ -23,13 +23,18 @@ function expectErrorWhenNamespaceDoesNotExist(t: TFunction<'foo'>) {}
 function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
   // @ts-expect-error
   t('bar');
+  t('foobar.barfoo');
 }
 
 function i18nextTUsage() {
-  // i18next.t('foobar.barfoo', { ns: 'alternate' });
+  i18next.t('foobar.barfoo', { ns: 'alternate' });
   i18next.t('alternate:foobar.barfoo');
   i18next.t('alternate:foobar.deep').deeper.deeeeeper;
   i18next.t('custom:bar');
+  i18next.t('bar', { ns: 'custom' });
+  // @ts-expect-error
+  i18next.t('bar', { ns: 'alternate' });
+  // i18next.t('bar', {});
   // i18next.t('bar');
 }
 

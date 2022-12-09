@@ -919,6 +919,15 @@ export interface TFunction<N extends Namespace = DefaultNamespace, TKPrefix = un
     options?: TOptions<TInterpolationMap>,
   ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
   <
+    TKeys extends TFuncKey<PassedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TDefaultResult extends DefaultTFuncReturn = string,
+    TInterpolationMap extends object = StringMap,
+    PassedNS extends Namespace = N extends null ? DefaultNamespace : N,
+  >(
+    key: TKeys | TKeys[],
+    options: TOptions<TInterpolationMap> & { ns: PassedNS },
+  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
+  <
     TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
     TDefaultResult extends DefaultTFuncReturn = string,
     TInterpolationMap extends object = StringMap,
