@@ -27,6 +27,9 @@ function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
 
   t('foobar.barfoo', 'some default value');
   t('foobar.barfoo', { defaultValue: 'some default value' });
+
+  // t('not.yet.existing', 'some default value');
+  // t('not.yet.existing', { defaultValue: 'some default value' });
 }
 
 function i18nextTUsage() {
@@ -45,6 +48,12 @@ function i18nextTUsage() {
   i18next.t('bar', { ns: 'custom', defaultValue: 'some default value' });
   // i18next.t('bar', { defaultValue: 'some default value' });
   // i18next.t('bar', 'some default value');
+
+  // i18next.t('custom:no.existing.yet', { defaultValue: 'some default value' });
+  // i18next.t('custom:no.existing.yet', 'some default value');
+  // i18next.t('no.existing.yet', { ns: 'custom', defaultValue: 'some default value' });
+  // i18next.t('no.existing.yet', { defaultValue: 'some default value' });
+  // i18next.t('no.existing.yet', 'some default value');
 }
 
 function expectErrorWhenInvalidKeyWithI18nextT() {
