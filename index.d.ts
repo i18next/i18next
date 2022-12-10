@@ -1067,10 +1067,10 @@ export interface LanguageDetectorAsyncModule extends Module {
   type: 'languageDetector';
   /** Set to true to enable async detection */
   async: true;
-  init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+  init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void | Promise<void>;
   /** Must call callback passing detected language */
-  detect(callback: (lng: string | readonly string[] | undefined) => void): void;
-  cacheUserLanguage(lng: string): void;
+  detect(callback: (lng: string | readonly string[] | undefined) => void): void | Promise<void>;
+  cacheUserLanguage(lng: string): void | Promise<void>;
 }
 
 /**
