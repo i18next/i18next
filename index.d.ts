@@ -87,7 +87,7 @@ export type TypeOptions = MergeBy<
   CustomTypeOptions
 >;
 
-export type PluginOptions = MergeBy<
+export type PluginOptions<T> = MergeBy<
   {
     /**
      * Options for language detection - check documentation of plugin
@@ -99,7 +99,7 @@ export type PluginOptions = MergeBy<
      * Options for backend - check documentation of plugin
      * @default undefined
      */
-    backend?: object;
+    backend?: T;
 
     /**
      * Options for cache layer - check documentation of plugin
@@ -306,7 +306,7 @@ export interface ReactOptions {
   unescape?(str: string): string;
 }
 
-export interface InitOptions extends PluginOptions {
+export interface InitOptions<T = object> extends PluginOptions<T> {
   /**
    * Logs info level to console output. Helps finding issues with loading not working.
    * @default false
@@ -1149,7 +1149,7 @@ export interface i18n {
    * @param callback - will be called after all translations were loaded or with an error when failed (in case of using a backend).
    */
   init(callback?: Callback): Promise<TFunction>;
-  init(options: InitOptions, callback?: Callback): Promise<TFunction>;
+  init<T>(options: InitOptions<T>, callback?: Callback): Promise<TFunction>;
 
   loadResources(callback?: (err: any) => void): void;
 
