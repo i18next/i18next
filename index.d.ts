@@ -1052,10 +1052,10 @@ export interface BackendModule<TOptions = object> extends Module {
  */
 export interface LanguageDetectorModule extends Module {
   type: 'languageDetector';
-  init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+  init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
   /** Must return detected language */
   detect(): string | readonly string[] | undefined;
-  cacheUserLanguage(lng: string): void;
+  cacheUserLanguage?(lng: string): void;
 }
 
 /**
@@ -1067,10 +1067,12 @@ export interface LanguageDetectorAsyncModule extends Module {
   type: 'languageDetector';
   /** Set to true to enable async detection */
   async: true;
-  init(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
-  /** Must call callback passing detected language */
-  detect(callback: (lng: string | readonly string[] | undefined) => void): void;
-  cacheUserLanguage(lng: string): void;
+  init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
+  /** Must call callback passing detected language or return a Promise*/
+  detect(
+    callback: (lng: string | readonly string[] | undefined) => void | undefined,
+  ): void | Promise<string | readonly string[] | undefined>;
+  cacheUserLanguage?(lng: string): void | Promise<void>;
 }
 
 /**

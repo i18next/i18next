@@ -2212,7 +2212,7 @@
           });
           if (this.modules.languageDetector) {
             s.languageDetector = createClassOnDemand(this.modules.languageDetector);
-            s.languageDetector.init(s, this.options.detection, this.options);
+            if (s.languageDetector.init) s.languageDetector.init(s, this.options.detection, this.options);
           }
           if (this.modules.i18nFormat) {
             s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
@@ -2405,7 +2405,7 @@
               setLngProps(l);
             }
             if (!_this4.translator.language) _this4.translator.changeLanguage(l);
-            if (_this4.services.languageDetector) _this4.services.languageDetector.cacheUserLanguage(l);
+            if (_this4.services.languageDetector && _this4.services.languageDetector.cacheUserLanguage) _this4.services.languageDetector.cacheUserLanguage(l);
           }
           _this4.loadResources(l, function (err) {
             done(err, l);
@@ -2414,7 +2414,11 @@
         if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
           setLng(this.services.languageDetector.detect());
         } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
-          this.services.languageDetector.detect(setLng);
+          if (this.services.languageDetector.detect.length === 0) {
+            this.services.languageDetector.detect().then(setLng);
+          } else {
+            this.services.languageDetector.detect(setLng);
+          }
         } else {
           setLng(lng);
         }

@@ -136,7 +136,7 @@ class I18n extends EventEmitter {
 
       if (this.modules.languageDetector) {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
-        s.languageDetector.init(s, this.options.detection, this.options);
+        if (s.languageDetector.init) s.languageDetector.init(s, this.options.detection, this.options);
       }
 
       if (this.modules.i18nFormat) {
@@ -355,7 +355,7 @@ class I18n extends EventEmitter {
         }
         if (!this.translator.language) this.translator.changeLanguage(l);
 
-        if (this.services.languageDetector) this.services.languageDetector.cacheUserLanguage(l);
+        if (this.services.languageDetector && this.services.languageDetector.cacheUserLanguage) this.services.languageDetector.cacheUserLanguage(l);
       }
 
       this.loadResources(l, err => {
@@ -366,7 +366,11 @@ class I18n extends EventEmitter {
     if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
       setLng(this.services.languageDetector.detect());
     } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
-      this.services.languageDetector.detect(setLng);
+      if (this.services.languageDetector.detect.length === 0) {
+        this.services.languageDetector.detect().then(setLng);
+      } else {
+        this.services.languageDetector.detect(setLng);
+      }
     } else {
       setLng(lng);
     }
