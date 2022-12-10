@@ -1,3 +1,7 @@
+## 22.2.0
+
+- types: extend the init method with a generic parameter for backend options [1878](https://github.com/i18next/i18next/pull/1878), [105](https://github.com/i18next/i18next-http-backend/pull/105), [34](https://github.com/i18next/i18next-fs-backend/pull/34)
+
 ## 22.1.5
 
 - types: ability to pass ns as option instead of prefix i.e. `i18next.t('bar', { ns: 'alternate' });`
