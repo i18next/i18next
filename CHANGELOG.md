@@ -1,3 +1,7 @@
+## 22.4.0
+
+- types: more overloads for t function
+
 ## 22.3.0
 
 - offer possibility to define a language detector's detect function as promise

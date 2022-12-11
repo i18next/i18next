@@ -4,13 +4,14 @@ const t1 = i18next.getFixedT(null, null, 'foo');
 
 const t2 = i18next.getFixedT(null, 'alternate', 'foobar.deep');
 t2('deeper.deeeeeper');
-t2('deeper').deeeeeper;
+// t2('deeper').deeeeeper; // i18next would say: "key 'deeper (en)' returned an object instead of string."
+t2('deeper', { returnObjects: true }).deeeeeper;
 
 const t3 = i18next.getFixedT('en');
 t3('foo');
 
 // t3('alternate:foobar.deep.deeper.deeeeeper');
-// t3('foobar.deep.deeper.deeeeeper', { ns: 'alternate' });
+t3('foobar.deep.deeper.deeeeeper', { ns: 'alternate' });
 
 const t4 = i18next.getFixedT('en', 'alternate', 'foobar');
 t4('barfoo');
