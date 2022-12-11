@@ -14,9 +14,12 @@ function namedDefaultNamespaceUsage(t: TFunction<'alternate'>) {
 
 function arrayNamespace(t: TFunction<['custom', 'alternate']>) {
   t('alternate:baz');
+  t('baz', { ns: 'alternate' });
   // t('alternate:foobar.deep').deeper.deeeeeper; // i18next would say: "key 'foobar.deep (en)' returned an object instead of string."
   t('alternate:foobar.deep', { returnObjects: true }).deeper.deeeeeper;
   t('custom:bar');
+  t('bar', { ns: 'custom' });
+  t('bar');
 }
 
 // @ts-expect-error
@@ -43,7 +46,7 @@ function i18nextTUsage() {
   i18next.t('bar', { ns: 'custom' });
   // @ts-expect-error
   i18next.t('bar', { ns: 'alternate' });
-  // i18next.t('bar', {});
+  i18next.t('bar', {});
   i18next.t('bar');
 
   i18next.t('custom:bar', { defaultValue: 'some default value' });

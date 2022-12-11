@@ -1,3 +1,7 @@
+## 22.4.1
+
+- types: more t function overloads for call with options argument but without ns value
+
 ## 22.4.0
 
 - types: more overloads for t function
