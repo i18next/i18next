@@ -893,6 +893,43 @@ export interface TFunction<
     key: TKeys | TKeys[],
   ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
 
+  // with returnDetails: true, returnObjects: true and ns prop in options
+  <
+    TKeys extends TFuncKey<Namespace, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TDefaultResult extends DefaultTFuncReturnWithObject = object,
+    TInterpolationMap extends object = StringMap,
+    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
+  >(
+    key: TKeys | TKeys[],
+    options: TOptions<TInterpolationMap> & {
+      ns: PassedNS;
+      returnObjects: true;
+      returnDetails: true;
+    },
+  ): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
+
+  // with returnObjects: true and ns prop in options
+  <
+    TKeys extends TFuncKey<Namespace, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TDefaultResult extends DefaultTFuncReturnWithObject = object,
+    TInterpolationMap extends object = StringMap,
+    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
+  >(
+    key: TKeys | TKeys[],
+    options: TOptions<TInterpolationMap> & { ns: PassedNS; returnObjects: true },
+  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
+
+  // with passed ns prop in options
+  <
+    TKeys extends TFuncKey<PassedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TDefaultResult extends DefaultTFuncReturn = string,
+    TInterpolationMap extends object = StringMap,
+    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
+  >(
+    key: TKeys | TKeys[],
+    options: TOptions<TInterpolationMap> & { ns: PassedNS },
+  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
+
   // with returnDetails: true, returnObjects: true
   <
     TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
@@ -922,17 +959,6 @@ export interface TFunction<
     key: TKeys | TKeys[],
     options: TOptions<TInterpolationMap> & { returnObjects: true },
   ): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
-
-  // with passed ns prop in options
-  <
-    TKeys extends TFuncKey<PassedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & { ns: PassedNS },
-  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
 
   // with options
   <

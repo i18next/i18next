@@ -1,3 +1,7 @@
+## 22.4.2
+
+- types: t function overloads for call with ns option in combination with objects
+
 ## 22.4.1
 
 - types: more t function overloads for call with options argument but without ns value

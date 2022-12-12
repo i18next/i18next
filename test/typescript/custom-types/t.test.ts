@@ -42,6 +42,8 @@ function i18nextTUsage() {
   i18next.t('alternate:foobar.barfoo');
   // i18next.t('alternate:foobar.deep').deeper.deeeeeper; // i18next would say: "key 'foobar.deep (en)' returned an object instead of string."
   i18next.t('alternate:foobar.deep', { returnObjects: true }).deeper.deeeeeper;
+  i18next.t('foobar.deep', { ns: 'alternate', returnObjects: true }).deeper.deeeeeper;
+  i18next.t('foobar.deep', { ns: 'alternate', returnObjects: true, returnDetails: true }).res;
   i18next.t('custom:bar');
   i18next.t('bar', { ns: 'custom' });
   // @ts-expect-error
