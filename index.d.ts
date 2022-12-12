@@ -879,11 +879,18 @@ export type TFuncReturn<
   : TDefaultResult;
 
 export interface TFunction<
-  N extends Namespace | null = DefaultNamespace,
+  N extends Namespace = DefaultNamespace,
   TKPrefix = undefined,
   ActualNS extends Namespace = N extends null ? DefaultNamespace : N,
 > {
   // just key without options etc...
+  <
+    TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TDefaultResult extends DefaultTFuncReturn = string,
+    TInterpolationMap extends object = StringMap,
+  >(
+    key: TKeys | TKeys[],
+  ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
   <
     TKeys extends TFuncKey<PassedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
     TDefaultResult extends DefaultTFuncReturn = string,
@@ -961,19 +968,27 @@ export interface TFunction<
   ): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
 
   // with options
+  // <
+  //   TKeys extends TFuncKey<UsedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+  //   TDefaultResult extends DefaultTFuncReturn = string,
+  //   TInterpolationMap extends object = StringMap,
+  //   PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
+  //   PassedOpt extends TOptions<TInterpolationMap> = TOptions<TInterpolationMap>,
+  //   UsedNS extends Namespace = Pick<PassedOpt, 'ns'> extends { ns: string }
+  //     ? PassedNS
+  //     : ActualNS | DefaultNamespace,
+  // >(
+  //   key: TKeys | TKeys[],
+  //   options: PassedOpt,
+  // ): TFuncReturn<UsedNS, TKeys, TDefaultResult, TKPrefix>;
   <
-    TKeys extends TFuncKey<UsedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
     TDefaultResult extends DefaultTFuncReturn = string,
     TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
-    PassedOpt extends TOptions<TInterpolationMap> = TOptions<TInterpolationMap>,
-    UsedNS extends Namespace = Pick<PassedOpt, 'ns'> extends { ns: string }
-      ? PassedNS
-      : ActualNS | DefaultNamespace,
   >(
     key: TKeys | TKeys[],
-    options: PassedOpt,
-  ): TFuncReturn<UsedNS, TKeys, TDefaultResult, TKPrefix>;
+    options?: TOptions<TInterpolationMap>,
+  ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
 
   // defaultValue
   <

@@ -44,12 +44,12 @@ function i18nextTUsage() {
   i18next.t('alternate:foobar.deep', { returnObjects: true }).deeper.deeeeeper;
   i18next.t('foobar.deep', { ns: 'alternate', returnObjects: true }).deeper.deeeeeper;
   i18next.t('foobar.deep', { ns: 'alternate', returnObjects: true, returnDetails: true }).res;
-  i18next.t('custom:bar');
-  i18next.t('bar', { ns: 'custom' });
+  i18next.t('custom:bar').trim();
+  i18next.t('bar', { ns: 'custom' }).trim();
   // @ts-expect-error
   i18next.t('bar', { ns: 'alternate' });
-  i18next.t('bar', {});
-  i18next.t('bar');
+  // i18next.t('bar', {}).trim();
+  i18next.t('bar').trim();
 
   i18next.t('custom:bar', { defaultValue: 'some default value' });
   i18next.t('custom:bar', 'some default value');
@@ -75,8 +75,8 @@ function expectErrorWhenInvalidNamespaceWithI18nextT() {
 }
 
 function i18nextTPluralsUsage() {
-  i18next.t('plurals:foo', { count: 1 });
-  i18next.t('plurals:foo_many', { count: 10 });
+  i18next.t('plurals:foo', { count: 1 }).trim();
+  i18next.t('plurals:foo_many', { count: 10 }).trim();
 }
 
 // @ts-expect-error

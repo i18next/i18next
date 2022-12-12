@@ -1,3 +1,7 @@
+## 22.4.3
+
+- types: t function overloads fix (open issue is still calling t with optional options argument)
+
 ## 22.4.2
 
 - types: t function overloads for call with ns option in combination with objects
