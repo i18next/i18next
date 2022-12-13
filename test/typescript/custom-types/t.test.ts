@@ -48,10 +48,15 @@ function i18nextTUsage() {
   i18next.t('bar', { ns: 'custom' }).trim();
   // @ts-expect-error
   i18next.t('bar', { ns: 'alternate' });
-  // i18next.t('bar', {}).trim();
+  i18next.t('bar', {}).trim();
   i18next.t('bar').trim();
   i18next.t('baz.bing').trim();
   i18next.t('alternate:foobar.barfoo').trim();
+
+  // with interpolation
+  i18next.t('custom:inter', { val: 'asdf' }).trim();
+  i18next.t('inter', { val: 'asdf', ns: 'custom' }).trim();
+  i18next.t('inter', { val: 'asdf' }).trim();
 
   i18next.t('custom:bar', { defaultValue: 'some default value' });
   i18next.t('custom:bar', 'some default value');

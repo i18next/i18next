@@ -1,6 +1,10 @@
+## 22.4.5
+
+- types: allow als general options as second argument for t function
+
 ## 22.4.4
 
-- types: fix some strang t function overloads fixes [1882](https://github.com/i18next/i18next/issues/1882)
+- types: fix some strange t function overloads fixes [1882](https://github.com/i18next/i18next/issues/1882)
 
 ## 22.4.3
 
