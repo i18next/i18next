@@ -892,7 +892,7 @@ export interface TFunction<
     key: TKeys | TKeys[],
   ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
   <
-    TKeys extends TFuncKey<PassedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TKeys extends TFuncKey<PassedNS, TKPrefix>,
     TDefaultResult extends DefaultTFuncReturn = string,
     TInterpolationMap extends object = StringMap,
     PassedNS extends Namespace = N extends string ? N : N extends unknown ? DefaultNamespace : N,
@@ -902,7 +902,7 @@ export interface TFunction<
 
   // with returnDetails: true, returnObjects: true and ns prop in options
   <
-    TKeys extends TFuncKey<Namespace, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TKeys extends TFuncKey<Namespace, TKPrefix>,
     TDefaultResult extends DefaultTFuncReturnWithObject = object,
     TInterpolationMap extends object = StringMap,
     PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
@@ -917,7 +917,7 @@ export interface TFunction<
 
   // with returnObjects: true and ns prop in options
   <
-    TKeys extends TFuncKey<Namespace, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TKeys extends TFuncKey<Namespace, TKPrefix>,
     TDefaultResult extends DefaultTFuncReturnWithObject = object,
     TInterpolationMap extends object = StringMap,
     PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
@@ -928,7 +928,7 @@ export interface TFunction<
 
   // with passed ns prop in options
   <
-    TKeys extends TFuncKey<PassedNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
+    TKeys extends TFuncKey<PassedNS, TKPrefix>,
     TDefaultResult extends DefaultTFuncReturn = string,
     TInterpolationMap extends object = StringMap,
     PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
@@ -987,7 +987,7 @@ export interface TFunction<
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
-    options?: TOptions<TInterpolationMap>,
+    options: TOptions<TInterpolationMap>,
   ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
 
   // defaultValue

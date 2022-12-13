@@ -8,6 +8,9 @@ declare module 'i18next' {
       custom: {
         foo: 'foo';
         bar: 'bar';
+        baz: {
+          bing: 'boop';
+        };
       };
       alternate: {
         baz: 'baz';

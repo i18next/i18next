@@ -50,6 +50,8 @@ function i18nextTUsage() {
   i18next.t('bar', { ns: 'alternate' });
   // i18next.t('bar', {}).trim();
   i18next.t('bar').trim();
+  i18next.t('baz.bing').trim();
+  i18next.t('alternate:foobar.barfoo').trim();
 
   i18next.t('custom:bar', { defaultValue: 'some default value' });
   i18next.t('custom:bar', 'some default value');

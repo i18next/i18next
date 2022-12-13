@@ -1,3 +1,7 @@
+## 22.4.4
+
+- types: fix some strang t function overloads fixes [1882](https://github.com/i18next/i18next/issues/1882)
+
 ## 22.4.3
 
 - types: t function overloads fix (open issue is still calling t with optional options argument)
