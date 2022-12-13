@@ -3,7 +3,7 @@ import 'i18next';
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'custom';
-    returnNull: false;
+    // returnNull: false;
     resources: {
       custom: {
         foo: 'foo';
@@ -12,6 +12,7 @@ declare module 'i18next' {
           bing: 'boop';
         };
         inter: 'some {{val}}';
+        nullKey: null;
       };
       alternate: {
         baz: 'baz';

@@ -29,7 +29,7 @@ export function get() {
 
     postProcess: false, // string or array of postProcessor names
     postProcessPassResolved: false, // pass resolved object into 'options.i18nResolved' for postprocessor
-    returnNull: true, // allows null value as valid translation
+    returnNull: false, // allows null value as valid translation
     returnEmptyString: true, // allows empty string value as valid translation
     returnObjects: false,
     joinArrays: false, // or string to join array

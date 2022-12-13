@@ -23,7 +23,7 @@ export interface CustomTypeOptions {}
  * declare module 'react-i18next' {
  *   interface CustomTypeOptions {
  *     defaultNS: 'custom';
- *     returnNull: false;
+ *     returnNull: true;
  *     returnEmptyString: false;
  *     nsSeparator: ':';
  *     keySeparator: '.';
@@ -45,7 +45,7 @@ export type TypeOptions = MergeBy<
     /**
      * Allows null values as valid translation
      */
-    returnNull: true;
+    returnNull: false;
 
     /**
      * Allows empty string as valid translation

@@ -1,4 +1,4 @@
-import i18next, { TFunction, TFuncKey } from 'i18next';
+import i18next, { t, TFunction, TFuncKey } from 'i18next';
 
 function defaultNamespaceUsage(t: TFunction) {
   t('bar');
@@ -103,4 +103,8 @@ function returnNullWithFalseValue(t: TFunction<string>) {
   function fn(value: null) {}
   // @ts-expect-error
   fn(t('foo'));
+}
+
+function nullTranslations() {
+  t('nullKey').trim();
 }
