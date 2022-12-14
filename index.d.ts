@@ -997,7 +997,7 @@ export interface TFunction<
     TInterpolationMap extends object = StringMap,
   >(
     key: TKeys | TKeys[],
-    defaultValue?: string,
+    defaultValue: string,
     options?: TOptions<TInterpolationMap> | string,
   ): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
   <
