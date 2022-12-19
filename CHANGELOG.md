@@ -1,3 +1,7 @@
+## 22.4.6
+
+- types: missing dir function export for typescript
+
 ## 22.4.5
 
 - types: allow als general options as second argument for t function
