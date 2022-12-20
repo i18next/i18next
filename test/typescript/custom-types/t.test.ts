@@ -32,8 +32,9 @@ function expectTFunctionToReturnString(t: TFunction<'alternate'>) {
   t(alternateTranslationKey2).trim();
 
   const alternateTranslationKeys: Array<TFuncKey<'alternate'>> = ['baz', 'foobar.barfoo'];
-  const locatedInValues = alternateTranslationKeys.map((value) => t(value, {}));
-  // .map((translation) => translation.trim()); // ???WHY??? Property 'trim' does not exist on type '{ bing: "boop"; }'
+  // const locatedInValues = alternateTranslationKeys
+  //   .map((value) => t(value, {}))
+  //   .map((translation) => translation.trim()); // ???WHY??? Property 'trim' does not exist on type '{ bing: "boop"; }'
 }
 
 function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
