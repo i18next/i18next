@@ -1,3 +1,7 @@
+## 22.4.7
+
+- fix: interpolation with data model "replace"
+
 ## 22.4.6
 
 - types: missing dir function export for typescript
