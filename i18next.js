@@ -832,7 +832,7 @@
             var nb = res.match(this.interpolator.nestingRegexp);
             nestBef = nb && nb.length;
           }
-          var data = options.replace && typeof options.replace !== 'string' && this.options.compatibilityAPI === 'v1' ? options.replace : options;
+          var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
           if (this.options.interpolation.defaultVariables) data = _objectSpread$4(_objectSpread$4({}, this.options.interpolation.defaultVariables), data);
           res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
           if (skipOnVariables) {
@@ -1554,6 +1554,7 @@
         while (match = this.nestingRegexp.exec(str)) {
           var formatters = [];
           clonedOptions = _objectSpread$3({}, options);
+          clonedOptions = clonedOptions.replace && typeof clonedOptions.replace !== 'string' ? clonedOptions.replace : clonedOptions;
           clonedOptions.applyPostProcessor = false;
           delete clonedOptions.defaultValue;
           var doReduce = false;

@@ -1,3 +1,7 @@
+## 22.4.8
+
+- fix: nested interpolation with data model "replace"
+
 ## 22.4.7
 
 - fix: interpolation with data model "replace"

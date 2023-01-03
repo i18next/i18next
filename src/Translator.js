@@ -349,12 +349,7 @@ class Translator extends EventEmitter {
       }
 
       // interpolate
-      let data =
-        options.replace &&
-        typeof options.replace !== 'string' &&
-        this.options.compatibilityAPI === 'v1'
-          ? options.replace
-          : options;
+      let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
       if (this.options.interpolation.defaultVariables)
         data = { ...this.options.interpolation.defaultVariables, ...data };
       res = this.interpolator.interpolate(res, data, options.lng || this.language, options);

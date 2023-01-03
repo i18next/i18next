@@ -203,6 +203,10 @@ class Interpolator {
       let formatters = [];
 
       clonedOptions = { ...options };
+      clonedOptions =
+        clonedOptions.replace && typeof clonedOptions.replace !== 'string'
+          ? clonedOptions.replace
+          : clonedOptions;
       clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
       delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
 
