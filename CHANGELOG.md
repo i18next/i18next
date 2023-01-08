@@ -1,6 +1,6 @@
 ## 22.4.9
 
-- fix: getFixedT with keyPrefix and fallback keys usage [1604](https://github.com/i18next/i18next/issues/1604)
+- fix: getFixedT with keyPrefix and fallback keys usage [1604](https://github.com/i18next/react-i18next/issues/1604)
 
 ## 22.4.8
 
