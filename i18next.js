@@ -2444,7 +2444,14 @@
           options.ns = options.ns || fixedT.ns;
           options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
           var keySeparator = _this5.options.keySeparator || '.';
-          var resultKey = options.keyPrefix ? "".concat(options.keyPrefix).concat(keySeparator).concat(key) : key;
+          var resultKey;
+          if (options.keyPrefix && Array.isArray(key)) {
+            resultKey = key.map(function (k) {
+              return "".concat(options.keyPrefix).concat(keySeparator).concat(k);
+            });
+          } else {
+            resultKey = options.keyPrefix ? "".concat(options.keyPrefix).concat(keySeparator).concat(key) : key;
+          }
           return _this5.t(resultKey, options);
         };
         if (typeof lng === 'string') {

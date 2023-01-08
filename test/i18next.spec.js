@@ -107,6 +107,17 @@ describe('i18next', () => {
         expect(t('nested.key', { keyPrefix: 'deeply' })).to.equal('quì!');
         expect(t.keyPrefix).to.equal('deeply.nested');
       });
+      it('should apply keyPrefix also for fallback keys', () => {
+        i18next.addResource('fr', 'translation', 'group.key1', 'Translation 1');
+        i18next.addResource('fr', 'translation', 'group.key2', 'Translation 2');
+        const t = i18next.getFixedT('fr', null, 'group');
+        expect(t('key1')).to.equal('Translation 1');
+        expect(t.keyPrefix).to.equal('group');
+        expect(t('key2')).to.equal('Translation 2');
+        expect(t.keyPrefix).to.equal('group');
+        expect(i18next.t(['group.key1', 'group.key2'], { lng: 'fr' })).to.equal('Translation 1');
+        expect(t(['key1', 'key2'])).to.equal('Translation 1');
+      });
     });
   });
 

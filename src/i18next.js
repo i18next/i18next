@@ -393,7 +393,12 @@ class I18n extends EventEmitter {
       options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
 
       const keySeparator = this.options.keySeparator || '.';
-      const resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
+      let resultKey
+      if (options.keyPrefix && Array.isArray(key)) {
+        resultKey = key.map(k => `${options.keyPrefix}${keySeparator}${k}`);
+      } else {
+        resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
+      }
       return this.t(resultKey, options);
     };
     if (typeof lng === 'string') {
