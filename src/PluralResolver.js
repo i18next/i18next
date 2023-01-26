@@ -186,6 +186,7 @@ class PluralResolver {
       if (suffix === 1) return '';
       if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
       return returnSuffix();
+      // eslint-disable-next-line no-else-return
     } else if (/* v2 */ this.options.compatibilityJSON === 'v2') {
       return returnSuffix();
     } else if (/* v3 - gettext index */ this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {

@@ -2,7 +2,7 @@ import baseLogger from './logger.js';
 
 function parseFormatStr(formatStr) {
   let formatName = formatStr.toLowerCase().trim();
-  let formatOptions = {};
+  const formatOptions = {};
   if (formatStr.indexOf('(') > -1) {
     const p = formatStr.split('(');
     formatName = p[0].toLowerCase().trim();
@@ -28,6 +28,7 @@ function parseFormatStr(formatStr) {
         if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val;
         if (val === 'false') formatOptions[key.trim()] = false;
         if (val === 'true') formatOptions[key.trim()] = true;
+        // eslint-disable-next-line no-restricted-globals
         if (!isNaN(val)) formatOptions[key.trim()] = parseInt(val, 10);
       });
     }
@@ -58,24 +59,24 @@ class Formatter {
 
     this.options = options;
     this.formats = {
-      number: createCachedFormatter((lng, options) => {
-        const formatter = new Intl.NumberFormat(lng, options);
+      number: createCachedFormatter((lng, opt) => {
+        const formatter = new Intl.NumberFormat(lng, { ...opt });
         return (val) => formatter.format(val);
       }),
-      currency: createCachedFormatter((lng, options) => {
-        const formatter = new Intl.NumberFormat(lng, { ...options, style: 'currency' });
+      currency: createCachedFormatter((lng, opt) => {
+        const formatter = new Intl.NumberFormat(lng, { ...opt, style: 'currency' });
         return (val) => formatter.format(val);
       }),
-      datetime: createCachedFormatter((lng, options) => {
-        const formatter = new Intl.DateTimeFormat(lng, { ...options });
+      datetime: createCachedFormatter((lng, opt) => {
+        const formatter = new Intl.DateTimeFormat(lng, { ...opt });
         return (val) => formatter.format(val);
       }),
-      relativetime: createCachedFormatter((lng, options) => {
-        const formatter = new Intl.RelativeTimeFormat(lng, { ...options });
-        return (val) => formatter.format(val, options.range || 'day');
+      relativetime: createCachedFormatter((lng, opt) => {
+        const formatter = new Intl.RelativeTimeFormat(lng, { ...opt });
+        return (val) => formatter.format(val, opt.range || 'day');
       }),
-      list: createCachedFormatter((lng, options) => {
-        const formatter = new Intl.ListFormat(lng, { ...options });
+      list: createCachedFormatter((lng, opt) => {
+        const formatter = new Intl.ListFormat(lng, { ...opt });
         return (val) => formatter.format(val);
       }),
     };
@@ -125,6 +126,7 @@ class Formatter {
           this.logger.warn(error);
         }
         return formatted;
+        // eslint-disable-next-line no-else-return
       } else {
         this.logger.warn(`there was no format function for ${formatName}`);
       }

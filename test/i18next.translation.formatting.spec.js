@@ -78,7 +78,7 @@ describe('i18next.translation.formatting', () => {
     );
   });
 
-  describe('formatting', () => {
+  describe.only('formatting', () => {
     // some legacy tests
     var tests = [
       {

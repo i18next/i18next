@@ -76,7 +76,7 @@ class LanguageUtil {
     // pick first supported code or if no restriction pick the first one (highest prio)
     codes.forEach((code) => {
       if (found) return;
-      let cleanedLng = this.formatLanguageCode(code);
+      const cleanedLng = this.formatLanguageCode(code);
       if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
     });
 
@@ -87,9 +87,11 @@ class LanguageUtil {
       codes.forEach((code) => {
         if (found) return;
 
-        let lngOnly = this.getLanguagePartFromCode(code);
+        const lngOnly = this.getLanguagePartFromCode(code);
+        // eslint-disable-next-line no-return-assign
         if (this.isSupportedCode(lngOnly)) return (found = lngOnly);
 
+        // eslint-disable-next-line array-callback-return
         found = this.options.supportedLngs.find((supportedLng) => {
           if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
         });

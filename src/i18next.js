@@ -218,7 +218,7 @@ class I18n extends EventEmitter {
   /* eslint consistent-return: 0 */
   loadResources(language, callback = noop) {
     let usedCallback = callback;
-    let usedLng = typeof language === 'string' ? language : this.language;
+    const usedLng = typeof language === 'string' ? language : this.language;
     if (typeof language === 'function') usedCallback = language;
 
     if (!this.options.resources || this.options.partialBundledLanguages) {
@@ -467,7 +467,7 @@ class I18n extends EventEmitter {
     const deferred = defer();
 
     if (!this.options.ns) {
-      callback && callback();
+      if (callback) callback();
       return Promise.resolve();
     }
     if (typeof ns === 'string') ns = [ns];

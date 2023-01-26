@@ -130,7 +130,7 @@ class Interpolator {
           if (typeof missingInterpolationHandler === 'function') {
             const temp = missingInterpolationHandler(str, match, options);
             value = typeof temp === 'string' ? temp : '';
-          } else if (options && options.hasOwnProperty(matchedVar)) {
+          } else if (options && Object.prototype.hasOwnProperty.call(options, matchedVar)) {
             value = ''; // undefined becomes empty string
           } else if (skipOnVariables) {
             value = match[0];
@@ -241,7 +241,7 @@ class Interpolator {
 
       if (doReduce) {
         value = formatters.reduce(
-          /* eslint-disable-line no-loop-func:0 */
+          // eslint-disable-next-line no-loop-func
           (v, f) =>
             this.format(v, f, options.lng, { ...options, interpolationkey: match[1].trim() }),
           value.trim(),

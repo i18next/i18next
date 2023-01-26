@@ -38,13 +38,13 @@ export function get() {
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
     overloadTranslationOptionHandler: function handle(args) {
-      var ret = {};
+      let ret = {};
       if (typeof args[1] === 'object') ret = args[1];
       if (typeof args[1] === 'string') ret.defaultValue = args[1];
       if (typeof args[2] === 'string') ret.tDescription = args[2];
       if (typeof args[2] === 'object' || typeof args[3] === 'object') {
-        var options = args[3] || args[2];
-        Object.keys(options).forEach(function (key) {
+        const options = args[3] || args[2];
+        Object.keys(options).forEach((key) => {
           ret[key] = options[key];
         });
       }

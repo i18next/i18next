@@ -119,8 +119,8 @@ class Connector extends EventEmitter {
           if (!loaded[l]) loaded[l] = {};
           const loadedKeys = q.loaded[l];
           if (loadedKeys.length) {
-            loadedKeys.forEach((ns) => {
-              if (loaded[l][ns] === undefined) loaded[l][ns] = true;
+            loadedKeys.forEach((n) => {
+              if (loaded[l][n] === undefined) loaded[l][n] = true;
             });
           }
         });

@@ -1,4 +1,6 @@
-parser: babel-eslint
+parser: "@babel/eslint-parser"
+// parserOptions:
+//   requireConfigFile: false
 extends: 
   - airbnb
   - prettier
@@ -7,7 +9,6 @@ rules:
   max-len: [0, 100]
   no-constant-condition: 0
   arrow-body-style: [1, "as-needed"]
-  comma-dangle: [2, "never"]
   padded-blocks: [0, "never"]
   no-unused-vars: [2, {vars: all, args: none}]
   prefer-arrow-callback: 1
@@ -16,6 +17,12 @@ rules:
   no-unused-expressions: 1
   import/extensions: 0
   comma-dangle: 0
+  prefer-destructuring: 0
+  default-param-last: 0
+  prefer-spread: 0
+  no-continue: 0
+  no-constructor-return: 0
+  consistent-return: 0
   react/prop-types:
     - 0
     - ignore: #coming from hoc

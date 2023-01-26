@@ -95,7 +95,7 @@ class Translator extends EventEmitter {
     if (!options) options = {};
 
     // non valid keys handling
-    if (keys === undefined || keys === null /* || keys === ''*/) return '';
+    if (keys === undefined || keys === null /* || keys === '' */) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     const returnDetails =
@@ -117,15 +117,19 @@ class Translator extends EventEmitter {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
         if (returnDetails) {
-          resolved.res = `${namespace}${nsSeparator}${key}`;
-          return resolved;
+          return {
+            res: `${namespace}${nsSeparator}${key}`,
+            usedKey: key,
+            exactUsedKey: key,
+            usedLng: lng,
+            usedNS: namespace,
+          };
         }
         return `${namespace}${nsSeparator}${key}`;
       }
 
       if (returnDetails) {
-        resolved.res = key;
-        return resolved;
+        return { res: key, usedKey: key, exactUsedKey: key, usedLng: lng, usedNS: namespace };
       }
       return key;
     }
@@ -173,7 +177,7 @@ class Translator extends EventEmitter {
         const copy = resTypeIsArray ? [] : {}; // apply child translation on a copy
 
         /* eslint no-restricted-syntax: 0 */
-        let newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
+        const newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
         for (const m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
             const deepKey = `${newKeyToUse}${keySeparator}${m}`;
