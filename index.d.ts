@@ -1,6 +1,6 @@
 // Helpers
 type MergeBy<T, K> = Omit<T, keyof K> & K;
-export type StringMap = { [key: string]: any };
+type StringMap = { [key: string]: any };
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
   ? I
   : never;
@@ -11,7 +11,7 @@ type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends ()
 /**
  * This interface can be augmented by users to add types to `i18next` default TypeOptions.
  */
-export interface CustomTypeOptions {}
+interface CustomTypeOptions {}
 
 /**
  * This interface can be augmented by users to add types to `i18next` default PluginOptions.
@@ -38,9 +38,9 @@ export interface CustomTypeOptions {}
  * }
  * ```
  */
-export interface CustomPluginOptions {}
+interface CustomPluginOptions {}
 
-export type TypeOptions = MergeBy<
+type TypeOptions = MergeBy<
   {
     /**
      * Allows null values as valid translation
@@ -87,7 +87,7 @@ export type TypeOptions = MergeBy<
   CustomTypeOptions
 >;
 
-export type PluginOptions<T> = MergeBy<
+type PluginOptions<T> = MergeBy<
   {
     /**
      * Options for language detection - check documentation of plugin
@@ -116,14 +116,14 @@ export type PluginOptions<T> = MergeBy<
   CustomPluginOptions
 >;
 
-export type FormatFunction = (
+type FormatFunction = (
   value: any,
   format?: string,
   lng?: string,
   options?: InterpolationOptions & StringMap,
 ) => string;
 
-export interface InterpolationOptions {
+interface InterpolationOptions {
   /**
    * Format function see formatting for details
    * @default noop
@@ -229,17 +229,17 @@ export interface InterpolationOptions {
   skipOnVariables?: boolean;
 }
 
-export interface FallbackLngObjList {
+interface FallbackLngObjList {
   [language: string]: readonly string[];
 }
 
-export type FallbackLng =
+type FallbackLng =
   | string
   | readonly string[]
   | FallbackLngObjList
   | ((code: string) => string | readonly string[] | FallbackLngObjList);
 
-export interface ReactOptions {
+interface ReactOptions {
   /**
    * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
    * @default 'default'
@@ -306,7 +306,7 @@ export interface ReactOptions {
   unescape?(str: string): string;
 }
 
-export interface InitOptions<T = object> extends PluginOptions<T> {
+interface InitOptions<T = object> extends PluginOptions<T> {
   /**
    * Logs info level to console output. Helps finding issues with loading not working.
    * @default false
@@ -648,7 +648,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   retryTimeout?: number;
 }
 
-export interface TOptionsBase {
+interface TOptionsBase {
   /**
    * Default value to return if a translation was not found
    */
@@ -714,15 +714,14 @@ export interface TOptionsBase {
 /**
  * Options that allow open ended values for interpolation unless type is provided.
  */
-export type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase &
-  TInterpolationMap;
+type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase & TInterpolationMap;
 
 type FallbackOrNS<F, T = keyof Resources> = [T] extends [never] ? F : T;
 
 type Resources = TypeOptions['resources'];
 type DefaultNamespace = TypeOptions['defaultNS'];
 
-export type Namespace<T = FallbackOrNS<string>> = T | T[];
+type Namespace<T = FallbackOrNS<string>> = T | T[];
 
 type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
 
@@ -733,7 +732,7 @@ type WithOrWithoutPlural<K> = TypeOptions['jsonFormat'] extends 'v4'
   : K;
 
 // Normalize single namespace
-export type KeysWithSeparator<K1, K2, S extends string = TypeOptions['keySeparator']> = `${K1 &
+type KeysWithSeparator<K1, K2, S extends string = TypeOptions['keySeparator']> = `${K1 &
   string}${S}${K2 & string}`;
 type KeysWithSeparator2<K1, K2> = KeysWithSeparator<K1, Exclude<K2, keyof any[]>>;
 type Normalize2<T, K = keyof T> = K extends keyof T
@@ -771,11 +770,11 @@ type NormalizeWithKeyPrefix<
     : Normalize<T[K]>
   : never;
 
-export type KeyPrefix<N extends Namespace> =
+type KeyPrefix<N extends Namespace> =
   | (N extends keyof Resources ? Normalize<Resources[N]> : string)
   | undefined;
 
-export type TFuncKey<
+type TFuncKey<
   N extends Namespace = DefaultNamespace,
   TKPrefix = undefined,
   T = Resources,
@@ -787,12 +786,12 @@ export type TFuncKey<
     : NormalizeWithKeyPrefix<T[N], TKPrefix>
   : string;
 
-export interface WithT<N extends Namespace = DefaultNamespace> {
+interface WithT<N extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<N>;
 }
 
-export type TFunctionDetailedResult<T = string> = {
+type TFunctionDetailedResult<T = string> = {
   /**
    * The plain used key
    */
@@ -828,7 +827,7 @@ interface CustomTypeParameters {
   returnNull?: boolean;
   returnEmptyString?: boolean;
 }
-export type NormalizeByTypeOptions<
+type NormalizeByTypeOptions<
   TranslationValue,
   Options extends CustomTypeParameters = TypeOptions,
   R = TypeOptionsFallback<TranslationValue, Options['returnEmptyString'], ''>,
@@ -840,7 +839,7 @@ type StringIfPlural<T> = TypeOptions['jsonFormat'] extends 'v4'
     : never
   : never;
 
-export type NormalizeReturn<
+type NormalizeReturn<
   T,
   V,
   S extends string | false = TypeOptions['keySeparator'],
@@ -860,11 +859,11 @@ type NormalizeMultiReturn<T, V> = V extends `${infer N}:${infer R}`
     : never
   : never;
 
-export type DefaultTFuncReturn = string | (TypeOptions['returnNull'] extends true ? null : never);
+type DefaultTFuncReturn = string | (TypeOptions['returnNull'] extends true ? null : never);
 
-export type DefaultTFuncReturnWithObject = DefaultTFuncReturn | object | Array<string | object>;
+type DefaultTFuncReturnWithObject = DefaultTFuncReturn | object | Array<string | object>;
 
-export type TFuncReturn<
+type TFuncReturn<
   N,
   TKeys,
   TDefaultResult,
@@ -878,7 +877,7 @@ export type TFuncReturn<
     : NormalizeReturn<T[N], KeysWithSeparator<TKPrefix, TKeys>>
   : TDefaultResult;
 
-export interface TFunction<
+interface TFunction<
   N extends Namespace = DefaultNamespace,
   TKPrefix = undefined,
   ActualNS extends Namespace = N extends null ? DefaultNamespace : N,
@@ -1019,21 +1018,21 @@ export interface TFunction<
   ): TFuncReturn<ActualNS, string, TDefaultResult, TKPrefix>;
 }
 
-export interface Resource {
+interface Resource {
   [language: string]: ResourceLanguage;
 }
 
-export interface ResourceLanguage {
+interface ResourceLanguage {
   [namespace: string]: ResourceKey;
 }
 
-export type ResourceKey =
+type ResourceKey =
   | string
   | {
       [key: string]: any;
     };
 
-export interface Interpolator {
+interface Interpolator {
   init(options: InterpolationOptions, reset: boolean): undefined;
   reset(): undefined;
   resetRegExp(): undefined;
@@ -1041,11 +1040,11 @@ export interface Interpolator {
   nest(str: string, fc: (...args: any[]) => any, options: InterpolationOptions): string;
 }
 
-export class ResourceStore {
-  constructor(data: Resource, options: InitOptions);
+interface ResourceStore {
+  new (data: Resource, options: InitOptions): ResourceStore;
 
-  public data: Resource;
-  public options: InitOptions;
+  data: Resource;
+  options: InitOptions;
 
   /**
    * Gets fired when resources got added or removed
@@ -1058,7 +1057,7 @@ export class ResourceStore {
   off(event: 'added' | 'removed', callback?: (lng: string, ns: string) => void): void;
 }
 
-export interface Formatter {
+interface Formatter {
   init(services: Services, i18nextOptions: InitOptions): void;
   add(name: string, fc: (value: any, lng: string | undefined, options: any) => string): void;
   addCached(
@@ -1068,7 +1067,7 @@ export interface Formatter {
   format: FormatFunction;
 }
 
-export interface Services {
+interface Services {
   backendConnector: any;
   i18nFormat: any;
   interpolator: Interpolator;
@@ -1080,7 +1079,7 @@ export interface Services {
   formatter?: Formatter;
 }
 
-export type ModuleType =
+type ModuleType =
   | 'backend'
   | 'logger'
   | 'languageDetector'
@@ -1089,23 +1088,20 @@ export type ModuleType =
   | 'formatter'
   | '3rdParty';
 
-export interface Module {
+interface Module {
   type: ModuleType;
 }
 
-export type CallbackError = Error | string | null | undefined;
-export type ReadCallback = (
-  err: CallbackError,
-  data: ResourceKey | boolean | null | undefined,
-) => void;
-export type MultiReadCallback = (err: CallbackError, data: Resource | null | undefined) => void;
+type CallbackError = Error | string | null | undefined;
+type ReadCallback = (err: CallbackError, data: ResourceKey | boolean | null | undefined) => void;
+type MultiReadCallback = (err: CallbackError, data: Resource | null | undefined) => void;
 
 /**
  * Used to load data for i18next.
  * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
  * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
  */
-export interface BackendModule<TOptions = object> extends Module {
+interface BackendModule<TOptions = object> extends Module {
   type: 'backend';
   init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
   read(language: string, namespace: string, callback: ReadCallback): void;
@@ -1131,7 +1127,7 @@ export interface BackendModule<TOptions = object> extends Module {
  * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
  * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
  */
-export interface LanguageDetectorModule extends Module {
+interface LanguageDetectorModule extends Module {
   type: 'languageDetector';
   init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
   /** Must return detected language */
@@ -1144,7 +1140,7 @@ export interface LanguageDetectorModule extends Module {
  * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
  * For singleton set property `type` to `'languageDetector'` For a prototype constructor set static property.
  */
-export interface LanguageDetectorAsyncModule extends Module {
+interface LanguageDetectorAsyncModule extends Module {
   type: 'languageDetector';
   /** Set to true to enable async detection */
   async: true;
@@ -1160,7 +1156,7 @@ export interface LanguageDetectorAsyncModule extends Module {
  * Used to extend or manipulate the translated values before returning them in `t` function.
  * Need to be a singleton object.
  */
-export interface PostProcessorModule extends Module {
+interface PostProcessorModule extends Module {
   /** Unique name */
   name: string;
   type: 'postProcessor';
@@ -1171,27 +1167,27 @@ export interface PostProcessorModule extends Module {
  * Override the built-in console logger.
  * Do not need to be a prototype function.
  */
-export interface LoggerModule extends Module {
+interface LoggerModule extends Module {
   type: 'logger';
   log(...args: any[]): void;
   warn(...args: any[]): void;
   error(...args: any[]): void;
 }
 
-export interface I18nFormatModule extends Module {
+interface I18nFormatModule extends Module {
   type: 'i18nFormat';
 }
 
-export interface FormatterModule extends Module, Formatter {
+interface FormatterModule extends Module, Formatter {
   type: 'formatter';
 }
 
-export interface ThirdPartyModule extends Module {
+interface ThirdPartyModule extends Module {
   type: '3rdParty';
   init(i18next: i18n): void;
 }
 
-export interface Modules {
+interface Modules {
   backend?: BackendModule;
   logger?: LoggerModule;
   languageDetector?: LanguageDetectorModule | LanguageDetectorAsyncModule;
@@ -1201,26 +1197,26 @@ export interface Modules {
 }
 
 // helper to identify class https://stackoverflow.com/a/45983481/2363935
-export interface Newable<T> {
+interface Newable<T> {
   new (...args: any[]): T;
 }
-export interface NewableModule<T extends Module> extends Newable<T> {
+interface NewableModule<T extends Module> extends Newable<T> {
   type: T['type'];
 }
 
-export type Callback = (error: any, t: TFunction) => void;
+type Callback = (error: any, t: TFunction) => void;
 
 /**
  * Uses similar args as the t function and returns true if a key exists.
  */
-export interface ExistsFunction<
+interface ExistsFunction<
   TKeys extends string = string,
   TInterpolationMap extends object = StringMap,
 > {
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
 
-export interface i18n {
+interface i18n {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<FallbackOrNS<string>[]>;
 
@@ -1490,20 +1486,61 @@ export interface i18n {
 }
 
 declare const i18next: i18n;
-export default i18next;
+export = i18next;
 
-export const createInstance: i18n['createInstance'];
-
-export const dir: i18n['dir'];
-export const init: i18n['init'];
-export const loadResources: i18n['loadResources'];
-export const reloadResources: i18n['reloadResources'];
-export const use: i18n['use'];
-export const changeLanguage: i18n['changeLanguage'];
-export const getFixedT: i18n['getFixedT'];
-export const t: i18n['t'];
-export const exists: i18n['exists'];
-export const setDefaultNamespace: i18n['setDefaultNamespace'];
-export const hasLoadedNamespace: i18n['hasLoadedNamespace'];
-export const loadNamespaces: i18n['loadNamespaces'];
-export const loadLanguages: i18n['loadLanguages'];
+// Use declaration merging
+declare namespace i18next {
+  export {
+    StringMap,
+    CustomTypeOptions,
+    CustomPluginOptions,
+    TypeOptions,
+    PluginOptions,
+    FormatFunction,
+    InterpolationOptions,
+    FallbackLngObjList,
+    FallbackLng,
+    ReactOptions,
+    InitOptions,
+    TOptionsBase,
+    TOptions,
+    Namespace,
+    KeysWithSeparator,
+    KeyPrefix,
+    TFuncKey,
+    WithT,
+    TFunctionDetailedResult,
+    NormalizeByTypeOptions,
+    NormalizeReturn,
+    DefaultTFuncReturn,
+    DefaultTFuncReturnWithObject,
+    TFuncReturn,
+    TFunction,
+    Resource,
+    ResourceLanguage,
+    ResourceKey,
+    Interpolator,
+    Formatter,
+    Services,
+    ModuleType,
+    Module,
+    CallbackError,
+    ReadCallback,
+    MultiReadCallback,
+    BackendModule,
+    LanguageDetectorModule,
+    LanguageDetectorAsyncModule,
+    PostProcessorModule,
+    LoggerModule,
+    I18nFormatModule,
+    FormatterModule,
+    ThirdPartyModule,
+    Modules,
+    Newable,
+    NewableModule,
+    Callback,
+    ExistsFunction,
+    i18n,
+    ResourceStore,
+  };
+}
