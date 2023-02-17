@@ -1,3 +1,7 @@
+## 22.4.10
+
+- format options are optional, fixes [1913](https://github.com/i18next/react-i18next/issues/1913)
+
 ## 22.4.9
 
 - fix: getFixedT with keyPrefix and fallback keys usage [1604](https://github.com/i18next/react-i18next/issues/1604)

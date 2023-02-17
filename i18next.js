@@ -687,14 +687,24 @@
           if (appendNamespaceToCIMode) {
             var nsSeparator = options.nsSeparator || this.options.nsSeparator;
             if (returnDetails) {
-              resolved.res = "".concat(namespace).concat(nsSeparator).concat(key);
-              return resolved;
+              return {
+                res: "".concat(namespace).concat(nsSeparator).concat(key),
+                usedKey: key,
+                exactUsedKey: key,
+                usedLng: lng,
+                usedNS: namespace
+              };
             }
             return "".concat(namespace).concat(nsSeparator).concat(key);
           }
           if (returnDetails) {
-            resolved.res = key;
-            return resolved;
+            return {
+              res: key,
+              usedKey: key,
+              exactUsedKey: key,
+              usedLng: lng,
+              usedNS: namespace
+            };
           }
           return key;
         }
@@ -1493,7 +1503,7 @@
               if (typeof missingInterpolationHandler === 'function') {
                 var temp = missingInterpolationHandler(str, match, options);
                 value = typeof temp === 'string' ? temp : '';
-              } else if (options && options.hasOwnProperty(matchedVar)) {
+              } else if (options && Object.prototype.hasOwnProperty.call(options, matchedVar)) {
                 value = '';
               } else if (skipOnVariables) {
                 value = match[0];
@@ -1599,9 +1609,7 @@
 
   function _arrayLikeToArray(arr, len) {
     if (len == null || len > arr.length) len = arr.length;
-    for (var i = 0, arr2 = new Array(len); i < len; i++) {
-      arr2[i] = arr[i];
-    }
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
     return arr2;
   }
 
@@ -1675,34 +1683,34 @@
       this.logger = baseLogger.create('formatter');
       this.options = options;
       this.formats = {
-        number: createCachedFormatter(function (lng, options) {
-          var formatter = new Intl.NumberFormat(lng, options);
+        number: createCachedFormatter(function (lng, opt) {
+          var formatter = new Intl.NumberFormat(lng, _objectSpread$2({}, opt));
           return function (val) {
             return formatter.format(val);
           };
         }),
-        currency: createCachedFormatter(function (lng, options) {
-          var formatter = new Intl.NumberFormat(lng, _objectSpread$2(_objectSpread$2({}, options), {}, {
+        currency: createCachedFormatter(function (lng, opt) {
+          var formatter = new Intl.NumberFormat(lng, _objectSpread$2(_objectSpread$2({}, opt), {}, {
             style: 'currency'
           }));
           return function (val) {
             return formatter.format(val);
           };
         }),
-        datetime: createCachedFormatter(function (lng, options) {
-          var formatter = new Intl.DateTimeFormat(lng, _objectSpread$2({}, options));
+        datetime: createCachedFormatter(function (lng, opt) {
+          var formatter = new Intl.DateTimeFormat(lng, _objectSpread$2({}, opt));
           return function (val) {
             return formatter.format(val);
           };
         }),
-        relativetime: createCachedFormatter(function (lng, options) {
-          var formatter = new Intl.RelativeTimeFormat(lng, _objectSpread$2({}, options));
+        relativetime: createCachedFormatter(function (lng, opt) {
+          var formatter = new Intl.RelativeTimeFormat(lng, _objectSpread$2({}, opt));
           return function (val) {
-            return formatter.format(val, options.range || 'day');
+            return formatter.format(val, opt.range || 'day');
           };
         }),
-        list: createCachedFormatter(function (lng, options) {
-          var formatter = new Intl.ListFormat(lng, _objectSpread$2({}, options));
+        list: createCachedFormatter(function (lng, opt) {
+          var formatter = new Intl.ListFormat(lng, _objectSpread$2({}, opt));
           return function (val) {
             return formatter.format(val);
           };
@@ -1731,8 +1739,9 @@
       }
     }, {
       key: "format",
-      value: function format(value, _format, lng, options) {
+      value: function format(value, _format, lng) {
         var _this = this;
+        var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
         var formats = _format.split(this.formatSeparator);
         var result = formats.reduce(function (mem, f) {
           var _parseFormatStr = parseFormatStr(f),
@@ -1861,8 +1870,8 @@
               if (!loaded[l]) loaded[l] = {};
               var loadedKeys = q.loaded[l];
               if (loadedKeys.length) {
-                loadedKeys.forEach(function (ns) {
-                  if (loaded[l][ns] === undefined) loaded[l][ns] = true;
+                loadedKeys.forEach(function (n) {
+                  if (loaded[l][n] === undefined) loaded[l][n] = true;
                 });
               }
             });
@@ -2516,7 +2525,7 @@
         var _this7 = this;
         var deferred = defer();
         if (!this.options.ns) {
-          callback && callback();
+          if (callback) callback();
           return Promise.resolve();
         }
         if (typeof ns === 'string') ns = [ns];
