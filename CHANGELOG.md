@@ -1,6 +1,6 @@
 ## 22.4.10
 
-- format options are optional, fixes [1913](https://github.com/i18next/react-i18next/issues/1913)
+- format options are optional, fixes [1913](https://github.com/i18next/i18next/issues/1913)
 
 ## 22.4.9
 
