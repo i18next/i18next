@@ -1,3 +1,7 @@
+## 22.4.11
+
+- types: fix postProcessor key argument type, fixes [1919](https://github.com/i18next/react-i18next/issues/1919)
+
 ## 22.4.10
 
 - format options are optional, fixes [1913](https://github.com/i18next/i18next/issues/1913)

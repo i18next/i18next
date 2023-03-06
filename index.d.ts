@@ -1164,7 +1164,7 @@ export interface PostProcessorModule extends Module {
   /** Unique name */
   name: string;
   type: 'postProcessor';
-  process(value: string, key: string, options: TOptions, translator: any): string;
+  process(value: string, key: string | string[], options: TOptions, translator: any): string;
 }
 
 /**
