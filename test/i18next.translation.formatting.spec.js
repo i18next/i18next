@@ -40,7 +40,7 @@ describe('i18next.translation.formatting', () => {
               intlRelativeTime: 'Lorem {{val, relativetime}}',
               intlRelativeTimeWithOptions: 'Lorem {{val, relativetime(quarter)}}',
               intlRelativeTimeWithOptionsExplicit:
-                'Lorem {{val, relativetime(range: quarter; style: narrow;)}}',
+                'Lorem {{val, relativetime(range: quarter; style: short;)}}',
               intlList: 'A list of {{val, list}}',
               keyCustomFormatWithColon:
                 'Before {{date, customDate(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
