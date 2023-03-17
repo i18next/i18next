@@ -1,3 +1,7 @@
+## 22.4.12
+
+- fix: getBestMatchFromCodes when dev is a supported lng [1927](https://github.com/i18next/react-i18next/issues/1927)
+
 ## 22.4.11
 
 - types: fix postProcessor key argument type, fixes [1919](https://github.com/i18next/react-i18next/issues/1919)

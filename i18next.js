@@ -1049,6 +1049,8 @@
             var lngOnly = _this.getLanguagePartFromCode(code);
             if (_this.isSupportedCode(lngOnly)) return found = lngOnly;
             found = _this.options.supportedLngs.find(function (supportedLng) {
+              if (supportedLng === lngOnly) return supportedLng;
+              if (supportedLng.indexOf('-') < 0 && lngOnly.indexOf('-') < 0) return;
               if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
             });
           });
