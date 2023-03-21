@@ -159,3 +159,37 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
   }
   return matched;
 }
+
+export function deepFind(obj, path, keySeparator = '.') {
+  if (!obj) return undefined;
+  if (obj[path]) return obj[path];
+  const paths = path.split(keySeparator);
+  let current = obj;
+  for (let i = 0; i < paths.length; ++i) {
+    if (!current) return undefined;
+    if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
+      return undefined;
+    }
+    if (current[paths[i]] === undefined) {
+      let j = 2;
+      let p = paths.slice(i, i + j).join(keySeparator);
+      let mix = current[p];
+      while (mix === undefined && paths.length > i + j) {
+        j++;
+        p = paths.slice(i, i + j).join(keySeparator);
+        mix = current[p];
+      }
+      if (mix === undefined) return undefined;
+      if (mix === null) return null;
+      if (path.endsWith(p)) {
+        if (typeof mix === 'string') return mix;
+        if (p && typeof mix[p] === 'string') return mix[p];
+      }
+      const joinedPath = paths.slice(i + j).join(keySeparator);
+      if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
+      return undefined;
+    }
+    current = current[paths[i]];
+  }
+  return current;
+}

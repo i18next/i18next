@@ -1,3 +1,7 @@
+## 22.4.13
+
+- fix: deepFind as fallback for interpolation [1930](https://github.com/i18next/react-i18next/issues/1930)
+
 ## 22.4.12
 
 - fix: getBestMatchFromCodes when dev is a supported lng [1927](https://github.com/i18next/react-i18next/issues/1927)
