@@ -25,6 +25,8 @@ t6('xxx');
 
 const t7 = i18next.getFixedT('en');
 t7('bar');
+// @ts-expect-error
 t7('alternate:foobar.barfoo');
+// @ts-expect-error
 t7('foobar.barfoo');
 t7('foobar.barfoo', { ns: 'alternate' });

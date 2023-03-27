@@ -742,7 +742,7 @@ type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 
 type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
-type FlatNamespace = $PreservedValue<keyof _Resources, string>;
+export type FlatNamespace = $PreservedValue<keyof _Resources, string>;
 export type Namespace<T = FlatNamespace> = T | readonly T[];
 
 export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase &
@@ -837,7 +837,9 @@ type ParseKeys<
  *********************************************************/
 type ParseInterpolationValues<Ret> =
   Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
-    ? Value | ParseInterpolationValues<Rest>
+    ?
+        | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
+        | ParseInterpolationValues<Rest>
     : never;
 type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
 

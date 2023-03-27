@@ -17,8 +17,8 @@ function returnCasts(t: TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
   const o: object = t('friend', { returnObjects: true });
-  const sa: string[] = t<string, string[]>('friend', { returnObjects: true });
-  const oa: object[] = t<string, object[]>('friend', { returnObjects: true });
+  const sa: string[] = t('friend', { returnObjects: true });
+  const oa: object[] = t('friend', { returnObjects: true });
 }
 
 function defautValue(t: TFunction) {
@@ -126,27 +126,28 @@ function interpolation(t: TFunction) {
   // -> "line1+line2+line3"
 
   const objectResult: object = t('test', { returnObjects: true });
-  const detailsAndObjectResult: object = t('test', {
+  const detailsAndObjecbarriersLinkTexttResult: object | string | null = t('test', {
     returnObjects: true,
     returnDetails: true,
   }).res;
+
   // @ts-expect-error
   const notTrueObjectResult: object = t('test');
 
   const resolved = t('key', { returnDetails: true });
   resolved.res;
-  resolved.res.substring(2, 1);
+  resolved.res?.substring(2, 1);
   resolved.usedKey;
   resolved.exactUsedKey;
   resolved.usedNS;
   resolved.usedLng;
 
   const r2 = t('keyTwo', { returnDetails: false });
-  r2.substring(0, 2); // make sure it is a string
+  r2?.substring(0, 2); // make sure it is a string
   const r3 = t('keyThree');
-  r3.substring(0, 2); // make sure it is a string
+  r3?.substring(0, 2); // make sure it is a string
   const r4 = t('keyTwo', { ns: 'whatever' });
-  r4.substring(0, 2); // make sure it is a string
+  r4?.substring(0, 2); // make sure it is a string
 
   t('arrayJoinWithInterpolation', {
     myVar: 'interpolate',
