@@ -30,10 +30,11 @@ rules:
       - fields
       - handleSubmit
 
+env:
+  node: true
+  browser: true
+  mocha: true
+
 globals:
   expect: true
-  describe: true
-  it: true
-  before: true
-  after: true
-  window: true
+  
