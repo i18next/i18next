@@ -249,7 +249,7 @@ export interface ReactOptions {
   nsMode?: 'default' | 'fallback';
   /**
    * Set it to the default parent element created by the Trans component.
-   * @default 'div'
+   * @default undefined
    */
   defaultTransParent?: string | React.ComponentType<any> | null;
   /**
