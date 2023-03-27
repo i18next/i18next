@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
+    "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-proposal-async-generator-functions": "^7.20.1",
     "@babel/plugin-transform-modules-commonjs": "^7.19.6",
     "@babel/plugin-transform-runtime": "^7.19.6",
@@ -58,7 +59,7 @@
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
-    "@babel/eslint-parser": "^7.19.1",
+    "@types/react": "^18.0.29",
     "babelify": "^10.0.0",
     "browserify": "17.0.0",
     "browserify-istanbul": "3.0.1",

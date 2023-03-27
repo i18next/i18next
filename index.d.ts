@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 // Helpers
 type MergeBy<T, K> = Omit<T, keyof K> & K;
 export type StringMap = { [key: string]: any };
@@ -249,7 +251,7 @@ export interface ReactOptions {
    * Set it to the default parent element created by the Trans component.
    * @default 'div'
    */
-  defaultTransParent?: string;
+  defaultTransParent?: string | React.ComponentType<any> | null;
   /**
    * Set which events trigger a re-render, can be set to false or string of events
    * @default 'languageChanged'

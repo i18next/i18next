@@ -1,3 +1,4 @@
+import type { FC } from 'react';
 import i18next, { TFunction, createInstance } from 'i18next';
 
 // i18next.js export default as esm module because the build is apart from commonjs.
@@ -472,4 +473,11 @@ i18next.init({
 createInstance({
   lng: 'en',
   fallbackLng: 'en',
+});
+
+const MyComponent: FC = () => null;
+i18next.init({
+  react: {
+    defaultTransParent: MyComponent,
+  },
 });
