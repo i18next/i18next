@@ -1754,6 +1754,10 @@
       value: function format(value, _format, lng) {
         var _this = this;
         var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+        if (!_format) {
+          this.logger.warn('format parameter is required');
+          return value;
+        }
         var formats = _format.split(this.formatSeparator);
         var result = formats.reduce(function (mem, f) {
           var _parseFormatStr = parseFormatStr(f),

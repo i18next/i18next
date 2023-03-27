@@ -101,6 +101,11 @@ class Formatter {
   }
 
   format(value, format, lng, options = {}) {
+    if (!format) {
+      this.logger.warn('format parameter is required');
+      return value;
+    }
+
     const formats = format.split(this.formatSeparator);
 
     const result = formats.reduce((mem, f) => {

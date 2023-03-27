@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 import i18next from '../src/i18next.js';
 
 const instance = i18next.createInstance();
@@ -6,6 +8,7 @@ describe('i18next.translation.formatting', () => {
   before((done) => {
     instance.init(
       {
+        debug: true,
         lng: 'en',
         resources: {
           en: {
@@ -52,35 +55,54 @@ describe('i18next.translation.formatting', () => {
       },
       () => {
         // add some custom formats used by legacy
-        instance.services.formatter.add('uppercase', (value, lng, options) => {
-          return value.toUpperCase();
-        });
-        instance.services.formatter.add('lowercase', (value, lng, options) => {
-          return value.toLowerCase();
-        });
-        instance.services.formatter.add('underscore', (value, lng, options) => {
-          return value.replace(/\s+/g, '_');
-        });
-        instance.services.formatter.add('encodeuricomponent', (value, lng, options) => {
-          return encodeURIComponent(value);
-        });
-        instance.services.formatter.add('customDate', (value, lng, options) => {
-          return `customized date in format ${options.format} (and other param ${options.otherParam})`;
-        });
-        instance.services.formatter.addCached('customDateCached', (lng, options) => {
-          return (val) =>
+        instance.services.formatter.add('uppercase', (value, lng, options) => value.toUpperCase());
+        instance.services.formatter.add('lowercase', (value, lng, options) => value.toLowerCase());
+        instance.services.formatter.add('underscore', (value, lng, options) =>
+          value.replace(/\s+/g, '_'),
+        );
+        instance.services.formatter.add('encodeuricomponent', (value, lng, options) =>
+          encodeURIComponent(value),
+        );
+        instance.services.formatter.add(
+          'customDate',
+          (value, lng, options) =>
+            `customized date in format ${options.format} (and other param ${options.otherParam})`,
+        );
+        instance.services.formatter.addCached(
+          'customDateCached',
+          (lng, options) => (val) =>
             `customized cached ${lng} date in format ${options.format} (and other param ${
               options.otherParam
-            }) for ${val.getTime()}`;
-        });
+            }) for ${val.getTime()}`,
+        );
         done();
       },
     );
   });
 
   describe('formatting', () => {
+    const sandbox = sinon.createSandbox();
+
+    /** @type {sinon.SinonSpy} */
+    let consoleWarnSpy;
+
+    beforeEach(() => {
+      consoleWarnSpy = sandbox.spy(console, 'warn');
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it('logs a warning when called without format parameter', () => {
+      expect(instance.format('test')).to.eql('test');
+
+      expect(consoleWarnSpy.calledOnce).to.eql(true);
+      expect(consoleWarnSpy.getCall(0).args[0]).to.includes('format parameter is required');
+    });
+
     // some legacy tests
-    var tests = [
+    let tests = [
       {
         args: ['oneFormatterTest'],
         expected: 'The following text is uppercased: HERE IS SOME TEXT',
@@ -244,7 +266,7 @@ describe('i18next.translation.formatting', () => {
     ]);
 
     tests.forEach((test) => {
-      it('correctly formats translations for ' + JSON.stringify(test.args), () => {
+      it(`correctly formats translations for ${JSON.stringify(test.args)}`, () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
     });

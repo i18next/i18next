@@ -118,7 +118,7 @@ export type PluginOptions<T> = MergeBy<
 
 export type FormatFunction = (
   value: any,
-  format?: string,
+  format: string,
   lng?: string,
   options?: InterpolationOptions & StringMap,
 ) => string;
