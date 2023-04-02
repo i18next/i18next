@@ -365,6 +365,8 @@ class Translator extends EventEmitter {
         const nestAft = na && na.length;
         if (nestBef < nestAft) options.nest = false;
       }
+      if (!options.lng && this.options.compatibilityAPI !== 'v1' && resolved && resolved.res)
+        options.lng = resolved.usedLng;
       if (options.nest !== false)
         res = this.interpolator.nest(
           res,
