@@ -174,6 +174,7 @@ describe('PluralResolver', () => {
       { compatibilityJSON: 'v2', expected: false },
       { compatibilityJSON: 'v3', expected: false },
       { compatibilityJSON: 'v4', expected: true },
+      { compatibilityJSON: 'v5', expected: true },
       { expected: true },
     ];
 

@@ -6,7 +6,7 @@ import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
   describe('translate() with plural', () => {
-    var t;
+    let t;
 
     before(() => {
       const rs = new ResourceStore({
@@ -14,6 +14,10 @@ describe('Translator', () => {
           translation: {
             test_one: 'test_en',
             test_other: 'tests_en',
+            pos_test_ordinal_one: 'pos_test_en_one',
+            pos_test_ordinal_two: 'pos_test_en_two',
+            pos_test_ordinal_few: 'pos_test_en_few',
+            pos_test_ordinal_other: 'pos_test_en_other',
           },
           translationWithZero: {
             test_zero: 'test_zero',
@@ -72,10 +76,21 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    var tests = [
+    const tests = [
       { args: ['translation:test', { count: 1 }], expected: 'test_en' },
       { args: ['translation:test', { count: 2 }], expected: 'tests_en' },
       { args: ['translation:test', { count: 0 }], expected: 'tests_en' },
+      {
+        args: ['translation:pos_test', { count: 0, ordinal: true }],
+        expected: 'pos_test_en_other',
+      },
+      { args: ['translation:pos_test', { count: 1, ordinal: true }], expected: 'pos_test_en_one' },
+      { args: ['translation:pos_test', { count: 2, ordinal: true }], expected: 'pos_test_en_two' },
+      { args: ['translation:pos_test', { count: 3, ordinal: true }], expected: 'pos_test_en_few' },
+      {
+        args: ['translation:pos_test', { count: 4, ordinal: true }],
+        expected: 'pos_test_en_other',
+      },
       { args: ['translationWithZero:test', { count: 0 }], expected: 'test_zero' },
       { args: ['translation:test', { count: 1, lngs: ['en-US', 'en'] }], expected: 'test_en' },
       { args: ['translation:test', { count: 2, lngs: ['en-US', 'en'] }], expected: 'tests_en' },
@@ -98,23 +113,23 @@ describe('Translator', () => {
       { args: ['translation:test', { count: 101, lng: 'ar' }], expected: 'tests_ar_other' },
       {
         args: ['translation:test', { count: 0, lng: 'ar', ordinal: true }],
-        expected: 'tests_ar_other',
+        expected: 'tests_ar_other', // fallback
       },
       {
         args: ['translation:test', { count: 1, lng: 'ar', ordinal: true }],
-        expected: 'tests_ar_other',
+        expected: 'tests_ar_other', // fallback
       },
       {
         args: ['translation:test', { count: 2, lng: 'ar', ordinal: true }],
-        expected: 'tests_ar_other',
+        expected: 'tests_ar_other', // fallback
       },
       {
         args: ['translation:test', { count: 3, lng: 'ar', ordinal: true }],
-        expected: 'tests_ar_other',
+        expected: 'tests_ar_other', // fallback
       },
       {
         args: ['translation:test', { count: 15, lng: 'ar', ordinal: true }],
-        expected: 'tests_ar_other',
+        expected: 'tests_ar_other', // fallback
       },
       { args: ['translation:test', { count: 0, lng: 'it' }], expected: 'tests_it_other' },
       { args: ['translation:test', { count: 1, lng: 'it' }], expected: 'test_it' },
@@ -122,24 +137,24 @@ describe('Translator', () => {
       { args: ['translation:test', { count: 11, lng: 'it' }], expected: 'tests_it_other' },
       {
         args: ['translation:test', { count: 0, lng: 'it', ordinal: true }],
-        expected: 'tests_it_other',
+        expected: 'tests_it_other', // fallback
       },
       {
         args: ['translation:test', { count: 1, lng: 'it', ordinal: true }],
-        expected: 'tests_it_other',
+        expected: 'tests_it_other', // fallback
       },
       {
         args: ['translation:test', { count: 2, lng: 'it', ordinal: true }],
-        expected: 'tests_it_other',
+        expected: 'tests_it_other', // fallback
       },
       {
         args: ['translation:test', { count: 11, lng: 'it', ordinal: true }],
-        expected: 'tests_it_many',
+        expected: 'tests_it_many', // fallback
       },
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
         expect(t.translate.apply(t, test.args)).to.eql(test.expected);
       });
     });
