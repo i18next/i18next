@@ -1,3 +1,7 @@
+## 22.4.15
+
+- fix: function t() passed options alteration [1947](https://github.com/i18next/react-i18next/issues/1947)
+
 ## 22.4.14
 
 - fix: pass lng to format function used in nesting [1938](https://github.com/i18next/react-i18next/issues/1938)

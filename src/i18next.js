@@ -96,7 +96,6 @@ class I18n extends EventEmitter {
       } else if (typeof Intl !== 'undefined') {
         formatter = Formatter;
       }
-  
 
       const lu = new LanguageUtils(this.options);
       this.store = new ResourceStore(this.options.resources, this.options);
