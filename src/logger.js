@@ -19,6 +19,8 @@ const consoleLogger = {
   },
 };
 
+let globalDebug;
+
 class Logger {
   constructor(concreteLogger, options = {}) {
     this.init(concreteLogger, options);
@@ -28,11 +30,17 @@ class Logger {
     this.prefix = options.prefix || 'i18next:';
     this.logger = concreteLogger || consoleLogger;
     this.options = options;
-    this.debug = options.debug;
+    globalDebug = options.debug;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  get debug() {
+    return globalDebug;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   setDebug(bool) {
-    this.debug = bool;
+    globalDebug = bool;
   }
 
   log(...args) {
