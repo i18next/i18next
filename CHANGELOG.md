@@ -1,18 +1,18 @@
 ## 22.4.15
 
-- fix: function t() passed options alteration [1947](https://github.com/i18next/react-i18next/issues/1947)
+- fix: function t() passed options alteration [1947](https://github.com/i18next/i18next/issues/1947)
 
 ## 22.4.14
 
-- fix: pass lng to format function used in nesting [1938](https://github.com/i18next/react-i18next/issues/1938)
+- fix: pass lng to format function used in nesting [1938](https://github.com/i18next/i18next/issues/1938)
 
 ## 22.4.13
 
-- fix: deepFind as fallback for interpolation [1930](https://github.com/i18next/react-i18next/issues/1930)
+- fix: deepFind as fallback for interpolation [1930](https://github.com/i18next/i18next/issues/1930)
 
 ## 22.4.12
 
-- fix: getBestMatchFromCodes when dev is a supported lng [1927](https://github.com/i18next/react-i18next/issues/1927)
+- fix: getBestMatchFromCodes when dev is a supported lng [1927](https://github.com/i18next/i18next/issues/1927)
 
 ## 22.4.11
 
