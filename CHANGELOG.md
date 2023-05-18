@@ -1,3 +1,7 @@
+## 22.5.0
+
+- extend hasLoadedNamespace function options to pass optional lng to optimize server side usage of react-i18next
+
 ## 22.4.15
 
 - fix: function t() passed options alteration [1947](https://github.com/i18next/i18next/issues/1947)

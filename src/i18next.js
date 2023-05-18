@@ -432,7 +432,7 @@ class I18n extends EventEmitter {
       return false;
     }
 
-    const lng = this.resolvedLanguage || this.languages[0];
+    const lng = options.lng || this.resolvedLanguage || this.languages[0];
     const fallbackLng = this.options ? this.options.fallbackLng : false;
     const lastLng = this.languages[this.languages.length - 1];
 

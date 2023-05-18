@@ -2516,7 +2516,7 @@
           this.logger.warn('hasLoadedNamespace: i18n.languages were undefined or empty', this.languages);
           return false;
         }
-        var lng = this.resolvedLanguage || this.languages[0];
+        var lng = options.lng || this.resolvedLanguage || this.languages[0];
         var fallbackLng = this.options ? this.options.fallbackLng : false;
         var lastLng = this.languages[this.languages.length - 1];
         if (lng.toLowerCase() === 'cimode') return true;
