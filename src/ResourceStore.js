@@ -56,8 +56,8 @@ class ResourceStore extends EventEmitter {
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {
-    let keySeparator = this.options.keySeparator;
-    if (keySeparator === undefined) keySeparator = '.';
+    const keySeparator =
+      options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     let path = [lng, ns];
     if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);

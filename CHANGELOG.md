@@ -1,3 +1,7 @@
+## 22.5.1
+
+- ResourceStore addResource: offer possibility to pass keySeparator via options [1968](https://github.com/i18next/i18next/issues/1968)
+
 ## 22.5.0
 
 - extend hasLoadedNamespace function options to pass optional lng to optimize server side usage of react-i18next

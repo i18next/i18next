@@ -490,8 +490,7 @@
         var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {
           silent: false
         };
-        var keySeparator = this.options.keySeparator;
-        if (keySeparator === undefined) keySeparator = '.';
+        var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
         var path = [lng, ns];
         if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
         if (lng.indexOf('.') > -1) {
