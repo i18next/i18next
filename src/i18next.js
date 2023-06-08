@@ -9,7 +9,7 @@ import Formatter from './Formatter.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
-import { defer, isIE10 } from './utils.js';
+import { defer } from './utils.js';
 
 function noop() { }
 
@@ -27,9 +27,6 @@ function bindMemberFunctions(inst) {
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
-    if (isIE10) {
-      EventEmitter.call(this) // <=IE10 fix (unable to call parent constructor)
-    }
 
     this.options = transformOptions(options);
     this.services = {};

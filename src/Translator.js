@@ -8,9 +8,6 @@ const checkedLoadedFor = {};
 class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
-    if (utils.isIE10) {
-      EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
-    }
 
     utils.copy(
       [

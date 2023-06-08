@@ -4,9 +4,6 @@ import * as utils from './utils.js';
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
     super();
-    if (utils.isIE10) {
-      EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
-    }
 
     this.data = data || {};
     this.options = options;

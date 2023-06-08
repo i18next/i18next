@@ -12,9 +12,6 @@ function removePending(q, name) {
 class Connector extends EventEmitter {
   constructor(backend, store, services, options = {}) {
     super();
-    if (utils.isIE10) {
-      EventEmitter.call(this); // <=IE10 fix (unable to call parent constructor)
-    }
 
     this.backend = backend;
     this.store = store;

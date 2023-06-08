@@ -6,7 +6,7 @@ BREAKING:
 
 - removed setDebug function in the logger: [1954](https://github.com/i18next/i18next/issues/1954#issuecomment-1537117407)
 - changed returnNull default to false [pull](https://github.com/i18next/i18next/pull/1885)
-- drop IE support
+- drop support for old browsers and Node.js < v12 [1948](https://github.com/i18next/i18next/issues/1948)
 
 ## 22.5.1
 

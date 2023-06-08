@@ -134,13 +134,6 @@ export function escape(data) {
   return data;
 }
 
-export const isIE10 =
-  typeof window !== 'undefined' &&
-  window.navigator && // https://github.com/i18next/i18next/issues/1778
-  typeof window.navigator.userAgentData === 'undefined' &&
-  window.navigator.userAgent &&
-  window.navigator.userAgent.indexOf('MSIE') > -1;
-
 const chars = [' ', ',', '?', '!', ';'];
 export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
   nsSeparator = nsSeparator || '';
