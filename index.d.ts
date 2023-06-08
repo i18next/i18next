@@ -498,7 +498,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Allows null values as valid translation
-   * @default true
+   * @default false
    */
   returnNull?: boolean;
 
