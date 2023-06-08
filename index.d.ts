@@ -1,30 +1,28 @@
-// Helpers
-type MergeBy<T, K> = Omit<T, keyof K> & K;
-export type StringMap = { [key: string]: any };
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
-  ? I
-  : never;
-type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends () => infer R
-  ? R
-  : never;
+// Internal Helpers
+type $MergeBy<T, K> = Omit<T, keyof K> & K;
+type $Dictionary<T = any> = { [key: string]: T };
+type $Value<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
+type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof any[]> : Arr;
+type $PreservedValue<Value, Fallback> = [Value] extends [never] ? Fallback : Value;
+type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
+type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
+type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
+  ? Value
+  : Fallback;
+type $SpecialObject = object | Array<string | object>;
 
 /**
  * This interface can be augmented by users to add types to `i18next` default TypeOptions.
- */
-export interface CustomTypeOptions {}
-
-/**
- * This interface can be augmented by users to add types to `i18next` default PluginOptions.
  *
  * Usage:
  * ```ts
- * // react-i18next.d.ts
- * import 'react-i18next';
- * declare module 'react-i18next' {
+ * // i18next.d.ts
+ * import 'i18next';
+ * declare module 'i18next' {
  *   interface CustomTypeOptions {
  *     defaultNS: 'custom';
  *     returnNull: false;
- *     returnEmptyString: false;
+ *     returnObjects: false;
  *     nsSeparator: ':';
  *     keySeparator: '.';
  *     jsonFormat: 'v4';
@@ -38,9 +36,14 @@ export interface CustomTypeOptions {}
  * }
  * ```
  */
+export interface CustomTypeOptions {}
+
+/**
+ * This interface can be augmented by users to add types to `i18next` default PluginOptions.
+ */
 export interface CustomPluginOptions {}
 
-export type TypeOptions = MergeBy<
+export type TypeOptions = $MergeBy<
   {
     /**
      * Allows null values as valid translation
@@ -48,9 +51,9 @@ export type TypeOptions = MergeBy<
     returnNull: true;
 
     /**
-     * Allows empty string as valid translation
+     * Allows objects as valid translation result
      */
-    returnEmptyString: true;
+    returnObjects: false;
 
     /**
      * Char to separate keys
@@ -61,6 +64,11 @@ export type TypeOptions = MergeBy<
      * Char to split namespace from key
      */
     nsSeparator: ':';
+
+    /**
+     * Char to split namespace from key
+     */
+    pluralSeparator: '_';
 
     /**
      * Default namespace used if not passed to translation function
@@ -83,11 +91,21 @@ export type TypeOptions = MergeBy<
      * values (mostly with Trans component)
      */
     allowObjectInHTMLChildren: false;
+
+    /**
+     * Prefix for interpolation
+     */
+    interpolationPrefix: '{{';
+
+    /**
+     * Suffix for interpolation
+     */
+    interpolationSuffix: '}}';
   },
   CustomTypeOptions
 >;
 
-export type PluginOptions<T> = MergeBy<
+export type PluginOptions<T> = $MergeBy<
   {
     /**
      * Options for language detection - check documentation of plugin
@@ -120,7 +138,7 @@ export type FormatFunction = (
   value: any,
   format?: string,
   lng?: string,
-  options?: InterpolationOptions & StringMap,
+  options?: InterpolationOptions & $Dictionary,
 ) => string;
 
 export interface InterpolationOptions {
@@ -680,7 +698,7 @@ export interface TOptionsBase {
   /**
    * Override namespaces (string or array)
    */
-  ns?: string | readonly string[];
+  ns?: Namespace;
   /**
    * Override char to separate keys
    */
@@ -711,85 +729,180 @@ export interface TOptionsBase {
   interpolation?: InterpolationOptions;
 }
 
-/**
- * Options that allow open ended values for interpolation unless type is provided.
- */
-export type TOptions<TInterpolationMap extends object = StringMap> = TOptionsBase &
+// Type Options
+type _ReturnObjects = TypeOptions['returnObjects'];
+type _ReturnNull = TypeOptions['returnNull'];
+type _KeySeparator = TypeOptions['keySeparator'];
+type _NsSeparator = TypeOptions['nsSeparator'];
+type _PluralSeparator = TypeOptions['pluralSeparator'];
+type _DefaultNamespace = TypeOptions['defaultNS'];
+type _Resources = TypeOptions['resources'];
+type _JSONFormat = TypeOptions['jsonFormat'];
+type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
+type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
+
+type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
+export type FlatNamespace = $PreservedValue<keyof _Resources, string>;
+export type Namespace<T = FlatNamespace> = T | readonly T[];
+
+export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase &
   TInterpolationMap;
-
-type FallbackOrNS<F, T = keyof Resources> = [T] extends [never] ? F : T;
-
-type Resources = TypeOptions['resources'];
-type DefaultNamespace = TypeOptions['defaultNS'];
-
-export type Namespace<T = FallbackOrNS<string>> = T | T[];
 
 type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
 
-type WithOrWithoutPlural<K> = TypeOptions['jsonFormat'] extends 'v4'
-  ? K extends `${infer B}_${PluralSuffix}`
-    ? B | K
-    : K
-  : K;
+type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4'
+  ? Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
+    ? KeyWithoutPlural | Key
+    : Key
+  : Key;
 
-// Normalize single namespace
-export type KeysWithSeparator<K1, K2, S extends string = TypeOptions['keySeparator']> = `${K1 &
-  string}${S}${K2 & string}`;
-type KeysWithSeparator2<K1, K2> = KeysWithSeparator<K1, Exclude<K2, keyof any[]>>;
-type Normalize2<T, K = keyof T> = K extends keyof T
-  ? T[K] extends StringMap
-    ? T[K] extends readonly any[]
-      ?
-          | KeysWithSeparator2<K, WithOrWithoutPlural<keyof T[K]>>
-          | KeysWithSeparator2<K, Normalize2<T[K]>>
-      :
-          | KeysWithSeparator<K, WithOrWithoutPlural<keyof T[K]>>
-          | KeysWithSeparator<K, Normalize2<T[K]>>
+type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
+type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
+
+/******************************************************
+ * Build all keys and key prefixes based on Resources *
+ ******************************************************/
+type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
+  ? Res[Key] extends $Dictionary
+    ?
+        | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
+        | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
     : never
   : never;
-type Normalize<T> = WithOrWithoutPlural<keyof T> | Normalize2<T>;
 
-// Normalize multiple namespaces
-type KeyWithNSSeparator<N, K, S extends string = TypeOptions['nsSeparator']> = `${N &
-  string}${S}${K & string}`;
-type NormalizeMulti<T, U extends keyof T, L = LastOf<U>> = L extends U
-  ? KeyWithNSSeparator<L, Normalize<T[L]>> | NormalizeMulti<T, Exclude<U, L>>
+type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res
+  ? Res[Key] extends $Dictionary
+    ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
+    : Key
   : never;
 
-// Normalize single namespace with key prefix
-type NormalizeWithKeyPrefix<
-  T,
-  K,
-  S extends string = TypeOptions['keySeparator'],
-> = K extends `${infer K1}${S}${infer K2}`
-  ? K1 extends keyof T
-    ? NormalizeWithKeyPrefix<T[K1], K2>
-    : never
-  : K extends keyof T
-  ? T[K] extends string
-    ? never
-    : Normalize<T[K]>
-  : never;
-
-export type KeyPrefix<N extends Namespace> =
-  | (N extends keyof Resources ? Normalize<Resources[N]> : string)
-  | undefined;
-
-export type TFuncKey<
-  N extends Namespace = DefaultNamespace,
-  TKPrefix = undefined,
-  T = Resources,
-> = N extends (keyof T)[] | Readonly<(keyof T)[]>
-  ? NormalizeMulti<T, N[number]>
-  : N extends keyof T
-  ? TKPrefix extends undefined
-    ? Normalize<T[N]>
-    : NormalizeWithKeyPrefix<T[N], TKPrefix>
+type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true
+  ? WithReturnObjects extends true
+    ? keyof Res | KeysBuilderWithReturnObjects<Res>
+    : KeysBuilderWithoutReturnObjects<Res>
   : string;
 
-export interface WithT<N extends Namespace = DefaultNamespace> {
+type KeysWithReturnObjects = {
+  [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], true>>;
+};
+type KeysWithoutReturnObjects = {
+  [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], false>>;
+};
+
+type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extends true
+  ? KeysWithReturnObjects
+  : KeysWithoutReturnObjects;
+
+/************************************************************************
+ * Parse t function keys based on the namespace, options and key prefix *
+ ************************************************************************/
+type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
+  ? ResourceKeys<true>
+  : ResourceKeys;
+
+type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
+  ? TOpt['ns']
+  : Ns;
+
+type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string
+  ? Keys extends `${KPrefix}${_KeySeparator}${infer Key}`
+    ? Key
+    : never
+  : Keys;
+
+type ParseKeysByNamespaces<
+  Ns extends Namespace,
+  Keys,
+  UnionNsps = Ns[number],
+> = Ns extends readonly any[]
+  ? UnionNsps extends keyof Keys
+    ? AppendNamespace<UnionNsps, Keys[UnionNsps]>
+    : never
+  : never;
+
+type ParseKeys<
+  Ns extends Namespace,
+  TOpt extends TOptions,
+  KPrefix,
+  Keys extends $Dictionary = KeysByTOptions<TOpt>,
+  ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
+> = $IsResourcesDefined extends true
+  ?
+      | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+      | ParseKeysByNamespaces<ActualNS, Keys>
+  : string;
+
+/*********************************************************
+ * Parse t function return type and interpolation values *
+ *********************************************************/
+type ParseInterpolationValues<Ret> =
+  Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
+    ?
+        | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
+        | ParseInterpolationValues<Rest>
+    : never;
+type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
+
+type ParseTReturnPlural<
+  Res,
+  Key,
+  KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`,
+> = KeyWithPlural extends keyof Res ? Res[KeyWithPlural] : $Value<Res, Key>;
+
+type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
+  ? ParseTReturn<RestKey, $Value<Res, K1>>
+  : ParseTReturnPlural<Res, Key>;
+
+type TReturnOptionalNull = _ReturnNull extends true ? null : never;
+type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
+  ? $SpecialObject
+  : TOpt['returnObjects'] extends true
+  ? $SpecialObject
+  : never;
+type DefaultTReturn<TOpt extends TOptions> =
+  | string
+  | TReturnOptionalObjects<TOpt>
+  | TReturnOptionalNull;
+
+export type TFunctionReturn<
+  Ns extends Namespace,
+  Key,
+  TOpt extends TOptions,
+  ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
+> = $IsResourcesDefined extends true
+  ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
+    ? ParseTReturn<RestKey, $Value<Resources, Nsp>>
+    : ParseTReturn<Key, Resources[$FirstNamespace<ActualNS>]>
+  : DefaultTReturn<TOpt>;
+
+type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true
+  ? TFunctionDetailedResult<Ret>
+  : Ret;
+
+type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
+  ? `${KPrefix}${_KeySeparator}${Key & string}`
+  : Key;
+
+/**************************
+ * T function declaration *
+ **************************/
+export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = undefined> {
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    ...args:
+      | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
+      | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+}
+
+export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+
+export interface WithT<Ns extends Namespace = _DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
-  t: TFunction<N>;
+  t: TFunction<Ns>;
 }
 
 export type TFunctionDetailedResult<T = string> = {
@@ -814,210 +927,6 @@ export type TFunctionDetailedResult<T = string> = {
    */
   usedNS: string;
 };
-
-type TypeOptionsFallback<TranslationValue, Option, MatchingValue> = Option extends false
-  ? TranslationValue extends MatchingValue
-    ? string
-    : TranslationValue
-  : TranslationValue;
-
-/**
- * Checks if user has enabled `returnEmptyString` and `returnNull` options to retrieve correct values.
- */
-interface CustomTypeParameters {
-  returnNull?: boolean;
-  returnEmptyString?: boolean;
-}
-export type NormalizeByTypeOptions<
-  TranslationValue,
-  Options extends CustomTypeParameters = TypeOptions,
-  R = TypeOptionsFallback<TranslationValue, Options['returnEmptyString'], ''>,
-> = TypeOptionsFallback<R, Options['returnNull'], null>;
-
-type StringIfPlural<T> = TypeOptions['jsonFormat'] extends 'v4'
-  ? T extends `${string}_${PluralSuffix}`
-    ? string
-    : never
-  : never;
-
-export type NormalizeReturn<
-  T,
-  V,
-  S extends string | false = TypeOptions['keySeparator'],
-> = V extends keyof T
-  ? NormalizeByTypeOptions<T[V]>
-  : S extends false
-  ? V
-  : V extends `${infer K}${S}${infer R}`
-  ? K extends keyof T
-    ? NormalizeReturn<T[K], R>
-    : never
-  : StringIfPlural<keyof T>;
-
-type NormalizeMultiReturn<T, V> = V extends `${infer N}:${infer R}`
-  ? N extends keyof T
-    ? NormalizeReturn<T[N], R>
-    : never
-  : never;
-
-export type DefaultTFuncReturn = string | (TypeOptions['returnNull'] extends true ? null : never);
-
-export type DefaultTFuncReturnWithObject = DefaultTFuncReturn | object | Array<string | object>;
-
-export type TFuncReturn<
-  N,
-  TKeys,
-  TDefaultResult,
-  TKPrefix = undefined,
-  T = Resources,
-> = N extends (keyof T)[]
-  ? NormalizeMultiReturn<T, TKeys>
-  : N extends keyof T
-  ? TKPrefix extends undefined
-    ? NormalizeReturn<T[N], TKeys>
-    : NormalizeReturn<T[N], KeysWithSeparator<TKPrefix, TKeys>>
-  : TDefaultResult;
-
-export interface TFunction<
-  N extends Namespace = DefaultNamespace,
-  TKPrefix = undefined,
-  ActualNS extends Namespace = N extends null ? DefaultNamespace : N,
-> {
-  // just key without options etc...
-  <
-    TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: TKeys | TKeys[],
-  ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
-  <
-    TKeys extends TFuncKey<PassedNS, TKPrefix>,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends unknown ? DefaultNamespace : N,
-  >(
-    key: TKeys | TKeys[],
-  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
-
-  // with returnDetails: true, returnObjects: true and ns prop in options
-  <
-    TKeys extends TFuncKey<Namespace, TKPrefix>,
-    TDefaultResult extends DefaultTFuncReturnWithObject = object,
-    TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & {
-      ns: PassedNS;
-      returnObjects: true;
-      returnDetails: true;
-    },
-  ): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
-
-  // with returnObjects: true and ns prop in options
-  <
-    TKeys extends TFuncKey<Namespace, TKPrefix>,
-    TDefaultResult extends DefaultTFuncReturnWithObject = object,
-    TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & { ns: PassedNS; returnObjects: true },
-  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
-
-  // with passed ns prop in options
-  <
-    TKeys extends TFuncKey<PassedNS, TKPrefix>,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & { ns: PassedNS },
-  ): TFuncReturn<PassedNS, TKeys, TDefaultResult, TKPrefix>;
-
-  // with returnDetails: true, returnObjects: true
-  <
-    TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturnWithObject = object,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & { returnDetails: true; returnObjects: true },
-  ): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
-
-  // with returnDetails: true
-  <
-    TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & { returnDetails: true },
-  ): TFunctionDetailedResult<TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>>;
-
-  // with returnObjects: true
-  <
-    TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturnWithObject = object,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: TKeys | TKeys[],
-    options: TOptions<TInterpolationMap> & { returnObjects: true },
-  ): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
-
-  // with options
-  <
-    TKeys extends TFuncKey<UsedNS, TKPrefix>,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-    PassedNS extends Namespace = N extends string ? N : N extends null ? DefaultNamespace : N,
-    PassedOpt extends TOptions<TInterpolationMap> = TOptions<TInterpolationMap>,
-    UsedNS extends Namespace = Pick<PassedOpt, 'ns'> extends { ns: string }
-      ? PassedNS
-      : ActualNS | DefaultNamespace,
-  >(
-    key: TKeys | TKeys[],
-    options: PassedOpt,
-  ): TFuncReturn<UsedNS, TKeys, TDefaultResult, TKPrefix>;
-  // <
-  //   TKeys extends TFuncKey<N, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-  //   TDefaultResult extends DefaultTFuncReturn = string,
-  //   TInterpolationMap extends object = StringMap,
-  // >(
-  //   key: TKeys | TKeys[],
-  //   options: TOptions<TInterpolationMap>,
-  // ): TFuncReturn<N, TKeys, TDefaultResult, TKPrefix>;
-
-  // defaultValue
-  <
-    TKeys extends TFuncKey<ActualNS, TKPrefix> | TemplateStringsArray extends infer A ? A : never,
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: TKeys | TKeys[],
-    defaultValue: string,
-    options?: TOptions<TInterpolationMap> | string,
-  ): TFuncReturn<ActualNS, TKeys, TDefaultResult, TKPrefix>;
-  <
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: string | string[],
-    defaultValue: string,
-    options?: TOptions<TInterpolationMap> | string,
-  ): TFuncReturn<ActualNS, string, TDefaultResult, TKPrefix>;
-
-  // defaultValue via options
-  <
-    TDefaultResult extends DefaultTFuncReturn = string,
-    TInterpolationMap extends object = StringMap,
-  >(
-    key: string | string[],
-    options: TOptions<TInterpolationMap> & { defaultValue: string },
-  ): TFuncReturn<ActualNS, string, TDefaultResult, TKPrefix>;
-}
 
 export interface Resource {
   [language: string]: ResourceLanguage;
@@ -1215,14 +1124,14 @@ export type Callback = (error: any, t: TFunction) => void;
  */
 export interface ExistsFunction<
   TKeys extends string = string,
-  TInterpolationMap extends object = StringMap,
+  TInterpolationMap extends object = $Dictionary,
 > {
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
 
 export interface i18n {
   // Expose parameterized t in the i18next interface hierarchy
-  t: TFunction<FallbackOrNS<string>[]>;
+  t: TFunction<[_DefaultNamespace, ...Exclude<FlatNamespace, _DefaultNamespace>[]]>;
 
   /**
    * The default of the i18next module is an i18next instance ready to be initialized by calling init.
@@ -1277,23 +1186,14 @@ export interface i18n {
    * Accepts optional keyPrefix that will be automatically applied to returned t function.
    */
   getFixedT<
-    N extends Namespace | null,
-    TKPrefix extends KeyPrefix<ActualNS> = undefined,
-    ActualNS extends Namespace = N extends null ? DefaultNamespace : N,
+    Ns extends Namespace | null = _DefaultNamespace,
+    TKPrefix extends KeyPrefix<ActualNs> = undefined,
+    ActualNs extends Namespace = Ns extends null ? _DefaultNamespace : Ns,
   >(
-    lng: string | readonly string[],
-    ns?: N,
-    keyPrefix?: TKPrefix,
-  ): TFunction<ActualNS, TKPrefix>;
-  getFixedT<
-    N extends Namespace | null,
-    TKPrefix extends KeyPrefix<ActualNS>,
-    ActualNS extends Namespace = N extends null ? DefaultNamespace : N,
-  >(
-    lng: null,
-    ns: N,
-    keyPrefix?: TKPrefix,
-  ): TFunction<ActualNS, TKPrefix>;
+    ...args:
+      | [lng: string | readonly string[], ns?: Ns, keyPrefix?: TKPrefix]
+      | [lng: null, ns: Ns, keyPrefix?: TKPrefix]
+  ): TFunction<ActualNs, TKPrefix>;
 
   /**
    * Changes the language. The callback will be called as soon translations were loaded or an error occurs while loading.
