@@ -1,3 +1,13 @@
+## 23.0.0 (not yet ready/released)
+
+- ordinal plural keys are now prefixed with `_ordinal` to help translators
+
+BREAKING:
+
+- removed setDebug function in the logger: [1954](https://github.com/i18next/i18next/issues/1954#issuecomment-1537117407)
+- changed returnNull default to false [pull](https://github.com/i18next/i18next/pull/1885)
+- drop IE support
+
 ## 22.5.1
 
 - ResourceStore addResource: offer possibility to pass keySeparator via options [1968](https://github.com/i18next/i18next/issues/1968)
