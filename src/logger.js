@@ -31,10 +31,6 @@ class Logger {
     this.debug = options.debug;
   }
 
-  setDebug(bool) {
-    this.debug = bool;
-  }
-
   log(...args) {
     return this.forward(args, 'log', '', true);
   }

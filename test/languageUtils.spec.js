@@ -252,7 +252,7 @@ describe('LanguageUtils', () => {
 
     before(() => {
       cu = new LanguageUtils({ fallbackLng: 'en', supportedLngs: ['nb-NO', 'de', 'en'] });
-      cu.logger.setDebug(false); // silence
+      cu.logger.debug = false; // silence
     });
 
     var tests = [
