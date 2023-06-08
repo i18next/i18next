@@ -1,3 +1,35 @@
+## 22.5.1
+
+- ResourceStore addResource: offer possibility to pass keySeparator via options [1968](https://github.com/i18next/i18next/issues/1968)
+
+## 22.5.0
+
+- extend hasLoadedNamespace function options to pass optional lng to optimize server side usage of react-i18next
+
+## 22.4.15
+
+- fix: function t() passed options alteration [1947](https://github.com/i18next/i18next/issues/1947)
+
+## 22.4.14
+
+- fix: pass lng to format function used in nesting [1938](https://github.com/i18next/i18next/issues/1938)
+
+## 22.4.13
+
+- fix: deepFind as fallback for interpolation [1930](https://github.com/i18next/i18next/issues/1930)
+
+## 22.4.12
+
+- fix: getBestMatchFromCodes when dev is a supported lng [1927](https://github.com/i18next/i18next/issues/1927)
+
+## 22.4.11
+
+- types: fix postProcessor key argument type, fixes [1919](https://github.com/i18next/i18next/issues/1919)
+
+## 22.4.10
+
+- format options are optional, fixes [1913](https://github.com/i18next/i18next/issues/1913)
+
 ## 22.4.9
 
 - fix: getFixedT with keyPrefix and fallback keys usage [1604](https://github.com/i18next/react-i18next/issues/1604)

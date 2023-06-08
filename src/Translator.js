@@ -92,6 +92,7 @@ class Translator extends EventEmitter {
       /* eslint prefer-rest-params: 0 */
       options = this.options.overloadTranslationOptionHandler(arguments);
     }
+    if (typeof options === 'object') options = { ...options };
     if (!options) options = {};
 
     // non valid keys handling
@@ -365,6 +366,8 @@ class Translator extends EventEmitter {
         const nestAft = na && na.length;
         if (nestBef < nestAft) options.nest = false;
       }
+      if (!options.lng && this.options.compatibilityAPI !== 'v1' && resolved && resolved.res)
+        options.lng = resolved.usedLng;
       if (options.nest !== false)
         res = this.interpolator.nest(
           res,

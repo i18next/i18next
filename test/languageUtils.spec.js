@@ -324,4 +324,59 @@ describe('LanguageUtils', () => {
       });
     });
   });
+
+  describe('getBestMatchFromCodes() with dev', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: ['fr'],
+        supportedLngs: ['dev', 'en', 'fr'],
+      });
+    });
+
+    var tests = [
+      { args: [['de']], expected: 'fr' },
+      { args: [['ru', 'en']], expected: 'en' },
+      { args: [['en-GB']], expected: 'en' },
+      { args: [['ru', 'en-GB']], expected: 'en' },
+      { args: [['de-CH']], expected: 'fr' },
+      { args: [['ru']], expected: 'fr' },
+      { args: [[]], expected: 'fr' },
+    ];
+
+    tests.forEach((test) => {
+      it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
+  describe('getBestMatchFromCodes() with dev and nonExplicitSupportedLngs: true', () => {
+    var cu;
+
+    before(() => {
+      cu = new LanguageUtils({
+        fallbackLng: ['fr'],
+        supportedLngs: ['dev', 'en', 'fr'],
+        nonExplicitSupportedLngs: true,
+      });
+    });
+
+    var tests = [
+      { args: [['de']], expected: 'fr' },
+      { args: [['ru', 'en']], expected: 'en' },
+      { args: [['en-GB']], expected: 'en-GB' },
+      { args: [['ru', 'en-GB']], expected: 'en-GB' },
+      { args: [['de-CH']], expected: 'fr' },
+      { args: [['ru']], expected: 'fr' },
+      { args: [[]], expected: 'fr' },
+    ];
+
+    tests.forEach((test) => {
+      it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
+        expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 });

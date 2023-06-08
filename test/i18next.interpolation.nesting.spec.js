@@ -41,6 +41,9 @@ describe('i18next.interpolation.nesting', () => {
               thing_other: 'things',
               phrase: 'A: $t(thing, { "count": 1 }) B: $t(item)',
               phrase2: 'A: $t(thing, { "count": 2 }) B: $t(item)',
+
+              date_MMDD: 'DD/MM/YY',
+              dateTest: '$t({{format}}, customdDateFormatter)',
             },
           },
         },
@@ -48,6 +51,10 @@ describe('i18next.interpolation.nesting', () => {
       () => {
         done();
       },
+    );
+    instance.services.formatter.add(
+      'customdDateFormatter',
+      (value, lng, options) => `${value} | ${lng}`,
     );
   });
 
@@ -143,6 +150,10 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['phrase2'],
         expected: 'A: things B: item',
+      },
+      {
+        args: ['dateTest', { format: 'date_MMDD' }],
+        expected: 'DD/MM/YY | en',
       },
     ];
 

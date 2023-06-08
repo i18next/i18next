@@ -1,6 +1,21 @@
 import * as utils from './utils.js';
 import baseLogger from './logger.js';
 
+function deepFindWithDefaults(
+  data,
+  defaultData,
+  key,
+  keySeparator = '.',
+  ignoreJSONStructure = true,
+) {
+  let path = utils.getPathWithDefaults(data, defaultData, key);
+  if (!path && ignoreJSONStructure && typeof key === 'string') {
+    path = utils.deepFind(data, key, keySeparator);
+    if (path === undefined) path = utils.deepFind(defaultData, key, keySeparator);
+  }
+  return path;
+}
+
 class Interpolator {
   constructor(options = {}) {
     this.logger = baseLogger.create('interpolator');
@@ -81,7 +96,13 @@ class Interpolator {
 
     const handleFormat = (key) => {
       if (key.indexOf(this.formatSeparator) < 0) {
-        const path = utils.getPathWithDefaults(data, defaultData, key);
+        const path = deepFindWithDefaults(
+          data,
+          defaultData,
+          key,
+          this.options.keySeparator,
+          this.options.ignoreJSONStructure,
+        );
         return this.alwaysFormat
           ? this.format(path, undefined, lng, { ...options, ...data, interpolationkey: key })
           : path;
@@ -91,11 +112,22 @@ class Interpolator {
       const k = p.shift().trim();
       const f = p.join(this.formatSeparator).trim();
 
-      return this.format(utils.getPathWithDefaults(data, defaultData, k), f, lng, {
-        ...options,
-        ...data,
-        interpolationkey: k,
-      });
+      return this.format(
+        deepFindWithDefaults(
+          data,
+          defaultData,
+          k,
+          this.options.keySeparator,
+          this.options.ignoreJSONStructure,
+        ),
+        f,
+        lng,
+        {
+          ...options,
+          ...data,
+          interpolationkey: k,
+        },
+      );
     };
 
     this.resetRegExp();

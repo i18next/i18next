@@ -93,6 +93,8 @@ class LanguageUtil {
 
         // eslint-disable-next-line array-callback-return
         found = this.options.supportedLngs.find((supportedLng) => {
+          if (supportedLng === lngOnly) return supportedLng;
+          if (supportedLng.indexOf('-') < 0 && lngOnly.indexOf('-') < 0) return;
           if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
         });
       });

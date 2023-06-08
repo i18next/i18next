@@ -1,8 +1,18 @@
-import i18next, { t, TFunction, TFuncKey } from 'i18next';
+import i18next, { TFunction } from 'i18next';
 
 function defaultNamespaceUsage(t: TFunction) {
   t('bar');
   t('foo');
+  t('baz.bing');
+  t('inter', { val: 'xx' });
+  t('baz', { returnObjects: true }).bing;
+
+  // @ts-expect-error
+  t('baz');
+  // @ts-expect-error
+  t('custom:bar');
+  // @ts-expect-error
+  t('foobar');
 }
 
 function namedDefaultNamespaceUsage(t: TFunction<'alternate'>) {
@@ -10,9 +20,15 @@ function namedDefaultNamespaceUsage(t: TFunction<'alternate'>) {
   t('foobar.deep.deeper.deeeeeper');
   // t('foobar.deep.deeper').deeeeeper; // i18next would say: "key 'foobar.deep.deeper (en)' returned an object instead of string."
   t('foobar.deep.deeper', { returnObjects: true }).deeeeeper;
+
+  // @ts-expect-error
+  t('alternate:foobar.barfoo');
+  // @ts-expect-error
+  t('foobar');
 }
 
 function arrayNamespace(t: TFunction<['custom', 'alternate']>) {
+  t('baz.bing');
   t('alternate:baz');
   t('baz', { ns: 'alternate' });
   // t('alternate:foobar.deep').deeper.deeeeeper; // i18next would say: "key 'foobar.deep (en)' returned an object instead of string."
@@ -20,21 +36,32 @@ function arrayNamespace(t: TFunction<['custom', 'alternate']>) {
   t('custom:bar');
   t('bar', { ns: 'custom' });
   t('bar');
+  t('baz', { ns: ['alternate', 'custom'] as const });
+
+  // @ts-expect-error
+  t('baz');
+  // @ts-expect-error
+  t('baz', { ns: 'custom' });
+  // @ts-expect-error
+  t('alternate:foobar.deep');
 }
 
 // @ts-expect-error
 function expectErrorWhenNamespaceDoesNotExist(t: TFunction<'foo'>) {}
 
 function expectTFunctionToReturnString(t: TFunction<'alternate'>) {
-  const alternateTranslationKey1: TFuncKey<'alternate'> = 'baz';
-  t(alternateTranslationKey1).trim();
-  const alternateTranslationKey2: TFuncKey<'alternate'> = 'foobar.barfoo';
-  t(alternateTranslationKey2).trim();
+  t('baz').trim();
+  t('foobar.barfoo').trim();
 
-  const alternateTranslationKeys: Array<TFuncKey<'alternate'>> = ['baz', 'foobar.barfoo'];
-  // const locatedInValues = alternateTranslationKeys
-  //   .map((value) => t(value, {}))
-  //   .map((translation) => translation.trim()); // ???WHY??? Property 'trim' does not exist on type '{ bing: "boop"; }'
+  const alternateTranslationKeys = ['baz', 'foobar.barfoo'] as const;
+  alternateTranslationKeys
+    .map((value) => {
+      return t(value);
+    })
+    .map((translation) => translation.trim());
+
+  // @ts-expect-error
+  t('foobar', { returnObjects: true }).trim();
 }
 
 function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
@@ -44,9 +71,6 @@ function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
 
   t('foobar.barfoo', 'some default value');
   t('foobar.barfoo', { defaultValue: 'some default value' });
-
-  t('not.yet.existing', 'some default value');
-  t('not.yet.existing', { defaultValue: 'some default value' });
 }
 
 function i18nextTUsage() {
@@ -69,18 +93,15 @@ function i18nextTUsage() {
   i18next.t('custom:inter', { val: 'asdf' }).trim();
   i18next.t('inter', { val: 'asdf', ns: 'custom' }).trim();
   i18next.t('inter', { val: 'asdf' }).trim();
+  i18next.t('qux', { val: 'asdf' }).trim();
+  // @ts-expect-error
+  i18next.t('custom:inter', { foo: 'asdf' });
 
   i18next.t('custom:bar', { defaultValue: 'some default value' });
   i18next.t('custom:bar', 'some default value');
   i18next.t('bar', { ns: 'custom', defaultValue: 'some default value' });
   i18next.t('bar', { defaultValue: 'some default value' });
   i18next.t('bar', 'some default value');
-
-  i18next.t('custom:no.existing.yet', { defaultValue: 'some default value' });
-  i18next.t('custom:no.existing.yet', 'some default value');
-  i18next.t('no.existing.yet', { ns: 'custom', defaultValue: 'some default value' });
-  i18next.t('no.existing.yet', { defaultValue: 'some default value' });
-  i18next.t('no.existing.yet', 'some default value');
 }
 
 function expectErrorWhenInvalidKeyWithI18nextT() {
@@ -99,10 +120,8 @@ function i18nextTPluralsUsage() {
 }
 
 // @ts-expect-error
-function returnNullWithFalseValue(t: TFunction<string>) {
-  function fn(value: null) {}
-  // @ts-expect-error
-  fn(t('foo'));
+function returnNeverWithInvalidNamespace(t: TFunction<string>) {
+  const result: never = t('foo');
 }
 
 function nullTranslations() {

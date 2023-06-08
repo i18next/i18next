@@ -100,7 +100,7 @@ class Formatter {
     this.formats[name.toLowerCase().trim()] = createCachedFormatter(fc);
   }
 
-  format(value, format, lng, options) {
+  format(value, format, lng, options = {}) {
     const formats = format.split(this.formatSeparator);
 
     const result = formats.reduce((mem, f) => {

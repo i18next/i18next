@@ -11,6 +11,7 @@ declare module 'i18next' {
         baz: {
           bing: 'boop';
         };
+        qux: 'some {{val, number}}';
         inter: 'some {{val}}';
         nullKey: null;
       };
