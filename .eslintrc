@@ -23,6 +23,7 @@ rules:
   no-continue: 0
   no-constructor-return: 0
   consistent-return: 0
+  no-nested-ternary: 0
   react/prop-types:
     - 0
     - ignore: #coming from hoc
@@ -35,5 +36,7 @@ globals:
   describe: true
   it: true
   before: true
+  beforeEach: true
   after: true
   window: true
+  sinon: true

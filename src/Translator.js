@@ -206,7 +206,14 @@ class Translator extends EventEmitter {
       const defaultValueSuffix = needsPluralHandling
         ? this.pluralResolver.getSuffix(lng, options.count, options)
         : '';
-      const defaultValue = options[`defaultValue${defaultValueSuffix}`] || options.defaultValue;
+      const defaultValueSuffixOrdinalFallback =
+        options.ordinal && needsPluralHandling
+          ? this.pluralResolver.getSuffix(lng, options.count, { ordinal: false })
+          : '';
+      const defaultValue =
+        options[`defaultValue${defaultValueSuffix}`] ||
+        options[`defaultValue${defaultValueSuffixOrdinalFallback}`] ||
+        options.defaultValue;
 
       // fallback value
       if (!this.isValidLookup(res) && hasDefaultValue) {
@@ -473,10 +480,15 @@ class Translator extends EventEmitter {
             if (needsPluralHandling)
               pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
             const zeroSuffix = `${this.options.pluralSeparator}zero`;
-
+            const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
             // get key for plural if needed
             if (needsPluralHandling) {
               finalKeys.push(key + pluralSuffix);
+              if (options.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                finalKeys.push(
+                  key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator),
+                );
+              }
               if (needsZeroSuffixLookup) {
                 finalKeys.push(key + zeroSuffix);
               }
@@ -490,6 +502,11 @@ class Translator extends EventEmitter {
               // get key for context + plural if needed
               if (needsPluralHandling) {
                 finalKeys.push(contextKey + pluralSuffix);
+                if (options.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                  finalKeys.push(
+                    contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator),
+                  );
+                }
                 if (needsZeroSuffixLookup) {
                   finalKeys.push(contextKey + zeroSuffix);
                 }

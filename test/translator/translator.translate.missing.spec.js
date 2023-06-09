@@ -86,7 +86,7 @@ describe('Translator', () => {
       { args: ['translation:test.missing', { count: 10 }], expected: NB_PLURALS_ARABIC },
       { args: ['translation:test.missing', { count: 0 }], expected: NB_PLURALS_ARABIC },
     ].forEach((test) => {
-      it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly sends missing for ${JSON.stringify(test.args)} args`, () => {
         t.translate.apply(t, test.args);
         expect(missingKeyHandler.callCount).to.eql(test.expected);
         expect(
@@ -159,13 +159,13 @@ describe('Translator', () => {
         expected: NB_PLURALS_ENGLISH_ORDINAL,
       },
     ].forEach((test) => {
-      it('correctly sends missing for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly sends missing for ${JSON.stringify(test.args)} args`, () => {
         t.translate.apply(t, test.args);
         expect(missingKeyHandler.callCount).to.eql(test.expected);
         expect(
           missingKeyHandler
             .getCall(0)
-            .calledWith(['en'], 'translation', 'test.missing_one', 'test.missing'),
+            .calledWith(['en'], 'translation', 'test.missing_ordinal_one', 'test.missing'),
         ).to.be.true;
       });
     });
@@ -190,20 +190,31 @@ describe('Translator', () => {
       t.translate('translation:test.missing', {
         count: 0,
         ordinal: true,
-        defaultValue_one: 'default1',
-        defaultValue_other: 'defaultOther',
+        defaultValue_ordinal_one: 'default1',
+        defaultValue_ordinal_other: 'defaultOther',
       });
     });
 
     it('correctly sends missing resolved value', () => {
       expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ENGLISH_ORDINAL);
       expect(
-        missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_other', 'defaultOther'),
+        missingKeyHandler.calledWith(
+          ['en'],
+          'translation',
+          'test.missing_ordinal_other',
+          'defaultOther',
+        ),
       ).to.be.true;
-      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_one', 'default1')).to
-        .be.true;
       expect(
-        missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_two', 'defaultOther'),
+        missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_ordinal_one', 'default1'),
+      ).to.be.true;
+      expect(
+        missingKeyHandler.calledWith(
+          ['en'],
+          'translation',
+          'test.missing_ordinal_two',
+          'defaultOther',
+        ),
       ).to.be.true;
     });
   });

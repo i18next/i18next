@@ -64,7 +64,8 @@ let _rulesPluralsTypes = {
 };
 /* eslint-enable */
 
-const deprecatedJsonVersions = ['v1', 'v2', 'v3'];
+const nonIntlVersions = ['v1', 'v2', 'v3'];
+const intlVersions = ['v4'];
 const suffixesOrder = {
   zero: 0,
   one: 1,
@@ -94,7 +95,7 @@ class PluralResolver {
 
     this.logger = baseLogger.create('pluralResolver');
 
-    if ((!this.options.compatibilityJSON || this.options.compatibilityJSON === 'v4') && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
+    if ((!this.options.compatibilityJSON || intlVersions.includes(this.options.compatibilityJSON)) && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
       this.options.compatibilityJSON = 'v3';
       this.logger.error('Your environment seems not to be Intl API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
     }
@@ -142,7 +143,7 @@ class PluralResolver {
     if (this.shouldUseIntlApi()) {
       return rule.resolvedOptions().pluralCategories
         .sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2])
-        .map(pluralCategory => `${this.options.prepend}${pluralCategory}`);
+        .map(pluralCategory => `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${pluralCategory}`);
     }
 
     return rule.numbers.map((number) => this.getSuffix(code, number, options));
@@ -153,7 +154,7 @@ class PluralResolver {
 
     if (rule) {
       if (this.shouldUseIntlApi()) {
-        return `${this.options.prepend}${rule.select(count)}`;
+        return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(count)}`;
       }
 
       return this.getSuffixRetroCompatible(rule, count);
@@ -196,7 +197,7 @@ class PluralResolver {
   }
 
   shouldUseIntlApi() {
-    return !deprecatedJsonVersions.includes(this.options.compatibilityJSON);
+    return !nonIntlVersions.includes(this.options.compatibilityJSON);
   }
 }
 
