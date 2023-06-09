@@ -48,7 +48,7 @@ export type TypeOptions = $MergeBy<
     /**
      * Allows null values as valid translation
      */
-    returnNull: true;
+    returnNull: false;
 
     /**
      * Allows objects as valid translation result
@@ -498,7 +498,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Allows null values as valid translation
-   * @default true
+   * @default false
    */
   returnNull?: boolean;
 

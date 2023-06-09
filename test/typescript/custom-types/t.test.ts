@@ -123,3 +123,8 @@ function i18nextTPluralsUsage() {
 function returnNeverWithInvalidNamespace(t: TFunction<string>) {
   const result: never = t('foo');
 }
+
+function nullTranslations() {
+  // seems to work only when not using typesafe translations
+  // i18next.t('nullKey').trim();
+}
