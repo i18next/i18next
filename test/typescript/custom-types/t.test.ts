@@ -125,6 +125,6 @@ function returnNeverWithInvalidNamespace(t: TFunction<string>) {
 }
 
 function nullTranslations() {
-  // seems not to work right now
+  // seems to work only when not using typesafe translations
   // i18next.t('nullKey').trim();
 }

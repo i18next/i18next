@@ -163,3 +163,7 @@ function interpolation(t: TFunction) {
   t('welcome ...', { keySeparator: false });
   // -> "welcome ..."
 }
+
+function nullTranslations() {
+  i18next.t('nullKey').trim();
+}
