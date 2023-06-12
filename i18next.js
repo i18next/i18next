@@ -555,7 +555,10 @@
         const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
         const hasDefaultValue = Translator.hasDefaultValue(options);
         const defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, options) : '';
-        const defaultValue = options[`defaultValue${defaultValueSuffix}`] || options.defaultValue;
+        const defaultValueSuffixOrdinalFallback = options.ordinal && needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, {
+          ordinal: false
+        }) : '';
+        const defaultValue = options[`defaultValue${defaultValueSuffix}`] || options[`defaultValue${defaultValueSuffixOrdinalFallback}`] || options.defaultValue;
         if (!this.isValidLookup(res) && hasDefaultValue) {
           usedDefault = true;
           res = defaultValue;
@@ -719,8 +722,12 @@
               let pluralSuffix;
               if (needsPluralHandling) pluralSuffix = this.pluralResolver.getSuffix(code, options.count, options);
               const zeroSuffix = `${this.options.pluralSeparator}zero`;
+              const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
               if (needsPluralHandling) {
                 finalKeys.push(key + pluralSuffix);
+                if (options.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                  finalKeys.push(key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
+                }
                 if (needsZeroSuffixLookup) {
                   finalKeys.push(key + zeroSuffix);
                 }
@@ -730,6 +737,9 @@
                 finalKeys.push(contextKey);
                 if (needsPluralHandling) {
                   finalKeys.push(contextKey + pluralSuffix);
+                  if (options.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                    finalKeys.push(contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
+                  }
                   if (needsZeroSuffixLookup) {
                     finalKeys.push(contextKey + zeroSuffix);
                   }
@@ -1044,7 +1054,8 @@
       return Number(n == 1 ? 0 : n == 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3);
     }
   };
-  const deprecatedJsonVersions = ['v1', 'v2', 'v3'];
+  const nonIntlVersions = ['v1', 'v2', 'v3'];
+  const intlVersions = ['v4'];
   const suffixesOrder = {
     zero: 0,
     one: 1,
@@ -1071,7 +1082,7 @@
       this.languageUtils = languageUtils;
       this.options = options;
       this.logger = baseLogger.create('pluralResolver');
-      if ((!this.options.compatibilityJSON || this.options.compatibilityJSON === 'v4') && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
+      if ((!this.options.compatibilityJSON || intlVersions.includes(this.options.compatibilityJSON)) && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
         this.options.compatibilityJSON = 'v3';
         this.logger.error('Your environment seems not to be Intl API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
       }
@@ -1112,7 +1123,7 @@
         return [];
       }
       if (this.shouldUseIntlApi()) {
-        return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map(pluralCategory => `${this.options.prepend}${pluralCategory}`);
+        return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map(pluralCategory => `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${pluralCategory}`);
       }
       return rule.numbers.map(number => this.getSuffix(code, number, options));
     }
@@ -1121,7 +1132,7 @@
       const rule = this.getRule(code, options);
       if (rule) {
         if (this.shouldUseIntlApi()) {
-          return `${this.options.prepend}${rule.select(count)}`;
+          return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(count)}`;
         }
         return this.getSuffixRetroCompatible(rule, count);
       }
@@ -1151,7 +1162,7 @@
       return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
     }
     shouldUseIntlApi() {
-      return !deprecatedJsonVersions.includes(this.options.compatibilityJSON);
+      return !nonIntlVersions.includes(this.options.compatibilityJSON);
     }
   }
 
@@ -1718,7 +1729,7 @@
       missingInterpolationHandler: false,
       postProcess: false,
       postProcessPassResolved: false,
-      returnNull: true,
+      returnNull: false,
       returnEmptyString: true,
       returnObjects: false,
       joinArrays: false,
