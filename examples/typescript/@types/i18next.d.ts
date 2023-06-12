@@ -4,19 +4,11 @@ import Resources from './resources';
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: typeof defaultNS;
+
+    // the resources.d.ts file is generated with npm run
     resources: Resources;
+
+    // if type safe interpolation is not necessay:
     // resources: (typeof resources)['en'];
-    // resources: {
-    //   // ns1: {
-    //   //   "title": "Welcome!",
-    //   //   "description": {
-    //   //     "part1": "This is just a basic example of how to use i18next with typescript",
-    //   //     "part2": "😉"
-    //   //   },
-    //   //   "inter": "interpolated {{val}}"
-    //   // };
-    //   // ns1: typeof resources['en']['ns1'];
-    //   ns2: typeof resources['en']['ns2'];
-    // };
   }
 }
