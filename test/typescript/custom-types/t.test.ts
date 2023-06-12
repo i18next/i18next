@@ -5,6 +5,8 @@ function defaultNamespaceUsage(t: TFunction) {
   t('foo');
   t('baz.bing');
   t('inter', { val: 'xx' });
+  // @ts-expect-error
+  t('inter', { wrongOrNoValPassed: 'xx' });
   t('baz', { returnObjects: true }).bing;
 
   // @ts-expect-error

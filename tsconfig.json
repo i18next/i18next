@@ -10,7 +10,6 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": { "i18next": ["./index.d.ts"] },
-
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
