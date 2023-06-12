@@ -8,7 +8,7 @@ declare module 'i18next' {
     // the resources.d.ts file is generated with npm run i18next-resources-for-ts
     resources: Resources;
 
-    // if type safe interpolation is not necessay:
+    // if type safe interpolation is not wanted, this is sufficient:
     // resources: (typeof resources)['en'];
   }
 }
