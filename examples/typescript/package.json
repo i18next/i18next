@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && node dist/index.js"
+    "build": "npm run i18next-resources-for-ts && tsc",
+    "start": "npm run build && node dist/index.js",
+    "i18next-resources-for-ts": "i18next-resources-for-ts interface -i ./i18n/en -o ./@types/resources.d.ts"
   },
   "license": "MIT",
   "devDependencies": {
+    "i18next-resources-for-ts": "1.1.0",
     "typescript": "^5.1.3"
   },
   "dependencies": {
