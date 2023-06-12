@@ -1,7 +1,7 @@
 <html>
   <head>
     <script src="./i18next.min.js" ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/1.0.1/i18nextBrowserLanguageDetector.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/7.0.2/i18nextBrowserLanguageDetector.min.js" ></script>
   </head>
 
   <body>
@@ -13,31 +13,32 @@
       // - https://www.i18next.com/overview/plugins-and-utils
       // - https://www.i18next.com/overview/configuration-options
       i18next
-      .use(window.i18nextBrowserLanguageDetector)
-      .init({
-        //lng: 'en', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
-        resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
-          en: {
-            translation: {
-              input: {
-                placeholder: "a placeholder"
-              },
-              nav: {
-                home: 'Home',
-                page1: 'Page One',
-                page2: 'Page Two'
+        .use(window.i18nextBrowserLanguageDetector)
+        .init({
+          fallbackLng: 'en',
+          //lng: 'en', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+          resources: { // evtl. load via http https://github.com/i18next/i18next-http-backend
+            en: {
+              translation: {
+                input: {
+                  placeholder: "a placeholder"
+                },
+                nav: {
+                  home: 'Home',
+                  page1: 'Page One',
+                  page2: 'Page Two'
+                }
               }
             }
-          }
-        },
-        debug: true
-      }, function(err, t) {
-        var fixedT = i18next.getFixedT(null, null);
-        console.warn(fixedT('nav.page3', 'support'), fixedT('nav.page3', 'support') === 'support');
-        console.warn(i18next.t('input.placeholder'), i18next.t('input.placeholder') === 'a placeholder');
-        console.warn(i18next.t('nav.home'), i18next.t('nav.home') === 'Home');
-        console.warn(i18next);
-      });
+          },
+          debug: true
+        }, function(err, t) {
+          var fixedT = i18next.getFixedT(null, null);
+          console.warn(fixedT('nav.page3', 'support'), fixedT('nav.page3', 'support') === 'support');
+          console.warn(i18next.t('input.placeholder'), i18next.t('input.placeholder') === 'a placeholder');
+          console.warn(i18next.t('nav.home'), i18next.t('nav.home') === 'Home');
+          console.warn(i18next);
+        });
     </script>
 
   </body>
