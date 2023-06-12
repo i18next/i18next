@@ -5,7 +5,7 @@ declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: typeof defaultNS;
 
-    // the resources.d.ts file is generated with npm run
+    // the resources.d.ts file is generated with npm run i18next-resources-for-ts
     resources: Resources;
 
     // if type safe interpolation is not necessay:
