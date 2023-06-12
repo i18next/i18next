@@ -20,6 +20,7 @@ tsconfig.nonEsModuleInterop.json
 .prettierignore
 .prettierrc
 rollup.config.js
+rollup.config.mjs
 tslint.json
 CHANGELOG.md
 CONTRIBUTING.md
