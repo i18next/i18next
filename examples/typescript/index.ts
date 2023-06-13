@@ -10,8 +10,10 @@ console.log(i18next.t('description.part2', { ns: 'ns2' }));
 
 // interpolation
 i18next.t('inter', { val: 'xx' });
-// this errors only if resources are imported:
+
+// this ts error occurs only if resources are imported:
 //   1) as const (ts file)
-//   2) or as interface (d.ts file)
+//   or
+//   2) as interface (d.ts file)
 // @ts-expect-error
 i18next.t('inter', { valWrong: 'xx' });
