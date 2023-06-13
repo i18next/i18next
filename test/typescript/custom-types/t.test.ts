@@ -130,3 +130,8 @@ function nullTranslations() {
   // seems to work only when not using typesafe translations
   // i18next.t('nullKey').trim();
 }
+
+// function i18nextContextUsage(t: TFunction<'ctx'>) {
+//   t('dessert', { context: 'cake' }).trim();
+//   t('dessert', { context: 'muffin' }).trim();
+// }
