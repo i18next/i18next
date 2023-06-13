@@ -34,7 +34,8 @@ declare module 'i18next' {
       };
       ctx: {
         dessert_cake: 'a nice cake';
-        dessert_muffin: 'a nice muffin';
+        dessert_muffin_one: 'a nice muffin';
+        dessert_muffin_other: '{{count}} nice muffins';
       };
       ord: {
         place_ordinal_one: '1st place';

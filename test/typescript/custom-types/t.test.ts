@@ -141,4 +141,7 @@ function nullTranslations() {
 // function i18nextContextUsage(t: TFunction<'ctx'>) {
 //   t('dessert', { context: 'cake' }).trim();
 //   t('dessert', { context: 'muffin' }).trim();
+
+//   // context + plural
+//   t('dessert', { context: 'muffin', count: 3 }).trim();
 // }
