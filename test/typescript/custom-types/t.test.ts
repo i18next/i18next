@@ -122,10 +122,10 @@ function i18nextTPluralsUsage() {
 }
 
 function i18nextOrdinalPluralUsage(t: TFunction<'ord'>) {
-  t('place', { count: 1 }).trim();
-  t('place', { count: 2 }).trim();
-  t('place', { count: 3 }).trim();
-  t('place', { count: 4 }).trim();
+  t('place', { ordinal: true, count: 1 }).trim();
+  t('place', { ordinal: true, count: 2 }).trim();
+  t('place', { ordinal: true, count: 3 }).trim();
+  t('place', { ordinal: true, count: 4 }).trim();
 }
 
 // @ts-expect-error
