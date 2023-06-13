@@ -121,6 +121,13 @@ function i18nextTPluralsUsage() {
   i18next.t('plurals:foo_many', { count: 10 }).trim();
 }
 
+function i18nextOrdinalPluralUsage(t: TFunction<'ord'>) {
+  t('place', { count: 1 }).trim();
+  t('place', { count: 2 }).trim();
+  t('place', { count: 3 }).trim();
+  t('place', { count: 4 }).trim();
+}
+
 // @ts-expect-error
 function returnNeverWithInvalidNamespace(t: TFunction<string>) {
   const result: never = t('foo');
@@ -134,11 +141,4 @@ function nullTranslations() {
 // function i18nextContextUsage(t: TFunction<'ctx'>) {
 //   t('dessert', { context: 'cake' }).trim();
 //   t('dessert', { context: 'muffin' }).trim();
-// }
-
-// function i18nextOrdinalPluralUsage(t: TFunction<'ord'>) {
-//   t('place', { count: 1 }).trim();
-//   t('place', { count: 2 }).trim();
-//   t('place', { count: 3 }).trim();
-//   t('place', { count: 4 }).trim();
 // }

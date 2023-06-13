@@ -676,6 +676,10 @@ export interface TOptionsBase {
    */
   count?: number;
   /**
+   * Ordinal flag for ordinal plurals
+   */
+  ordinal?: boolean;
+  /**
    * Used for contexts (eg. male\female)
    */
   context?: any;
@@ -751,7 +755,9 @@ export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsB
 type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
 
 type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4'
-  ? Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
+  ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+    ? KeyWithoutOrdinalPlural | Key
+    : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
     ? KeyWithoutPlural | Key
     : Key
   : Key;
@@ -847,7 +853,13 @@ type ParseTReturnPlural<
   Res,
   Key,
   KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`,
-> = KeyWithPlural extends keyof Res ? Res[KeyWithPlural] : $Value<Res, Key>;
+  KeyWithOrdinalPlural = `${Key &
+    string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
+> = KeyWithOrdinalPlural extends keyof Res
+  ? Res[KeyWithOrdinalPlural]
+  : KeyWithPlural extends keyof Res
+  ? Res[KeyWithPlural]
+  : $Value<Res, Key>;
 
 type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
   ? ParseTReturn<RestKey, $Value<Res, K1>>
