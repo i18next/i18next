@@ -32,6 +32,16 @@ declare module 'i18next' {
         foo_many: 'foo';
         foo_other: 'foo';
       };
+      ctx: {
+        dessert_cake: 'a nice cake';
+        dessert_muffin: 'a nice muffin';
+      };
+      ord: {
+        place_ordinal_one: '1st place';
+        place_ordinal_two: '2nd place';
+        place_ordinal_few: '3rd place';
+        place_ordinal_other: '{{count}}th place';
+      };
     };
   }
 }
