@@ -1,6 +1,9 @@
 import i18next from 'i18next';
-import ns1 from './en/ns1.json';
-import ns2 from './en/ns2.json';
+// using json imports would work, but interpolation checks would not work
+// import ns1 from './en/ns1.json';
+// import ns2 from './en/ns2.json';
+import ns1 from './en/ns1';
+import ns2 from './en/ns2';
 
 export const defaultNS = 'ns1';
 

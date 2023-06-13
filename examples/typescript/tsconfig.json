@@ -10,6 +10,6 @@
     "sourceMap": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "strict": true
+    "strictNullChecks": true
   }
 }
