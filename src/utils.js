@@ -186,3 +186,8 @@ export function deepFind(obj, path, keySeparator = '.') {
   }
   return current;
 }
+
+export function getCleanedCode(code) {
+  if (code && code.indexOf('_') > 0) return code.replace('_', '-');
+  return code;
+}

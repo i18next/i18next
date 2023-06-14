@@ -1,4 +1,5 @@
 import baseLogger from './logger.js';
+import { getCleanedCode } from './utils.js'
 
 // definition http://translate.sourceforge.net/wiki/l10n/pluralforms
 /* eslint-disable */
@@ -110,7 +111,7 @@ class PluralResolver {
   getRule(code, options = {}) {
     if (this.shouldUseIntlApi()) {
       try {
-        return new Intl.PluralRules(code, { type: options.ordinal ? 'ordinal' : 'cardinal' });
+        return new Intl.PluralRules(getCleanedCode(code), { type: options.ordinal ? 'ordinal' : 'cardinal' });
       } catch {
         return;
       }

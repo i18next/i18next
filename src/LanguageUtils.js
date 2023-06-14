@@ -1,4 +1,5 @@
 import baseLogger from './logger.js';
+import { getCleanedCode } from './utils.js';
 
 function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -13,6 +14,7 @@ class LanguageUtil {
   }
 
   getScriptPartFromCode(code) {
+    code = getCleanedCode(code);
     if (!code || code.indexOf('-') < 0) return null;
 
     const p = code.split('-');
@@ -23,6 +25,7 @@ class LanguageUtil {
   }
 
   getLanguagePartFromCode(code) {
+    code = getCleanedCode(code);
     if (!code || code.indexOf('-') < 0) return code;
 
     const p = code.split('-');
@@ -140,7 +143,7 @@ class LanguageUtil {
       }
     };
 
-    if (typeof code === 'string' && code.indexOf('-') > -1) {
+    if (typeof code === 'string' && (code.indexOf('-') > -1 || code.indexOf('_') > -1)) {
       if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
       if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly')
         addCode(this.getScriptPartFromCode(code));
