@@ -9,7 +9,7 @@
 
 - ordinal plural keys are now prefixed with `_ordinal` to help translators (non-breaking, bacause of fallback) [1945](https://github.com/i18next/i18next/pull/1945)
 
-➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v-22-x-x-to-v-23-0-0)
+➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v22.x.x-to-v23.0.0)
 
 ## 22.5.1
 
@@ -428,7 +428,7 @@ For JavaScript users v22.0.0 is equivalent to 21.10.0
 - remove deprecated whitelist features
 - introduce new i18next.resolvedLanguage property
 
-➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v-20-x-x-to-v-21-0-0)
+➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v20.x.x-to-v21.0.0)
 
 ## 20.6.1
 
