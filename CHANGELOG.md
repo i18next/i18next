@@ -1,12 +1,15 @@
-## 23.0.0 (not yet ready/released)
+## 23.0.0
 
-BREAKING:
+**This is a major breaking release:**
 
-- removed setDebug function in the logger: [1954](https://github.com/i18next/i18next/issues/1954#issuecomment-1537117407)
-- changed returnNull default to false [1885](https://github.com/i18next/i18next/pull/1885)
+- redesigned TypeScript types [1911](https://github.com/i18next/i18next/pull/1911)
+- removed `setDebug` function in the logger: [1954](https://github.com/i18next/i18next/issues/1954#issuecomment-1537117407)
+- changed `returnNull` default to `false` [1885](https://github.com/i18next/i18next/pull/1885)
 - drop support for old browsers and Node.js < v12 [1948](https://github.com/i18next/i18next/issues/1948)
 
 - ordinal plural keys are now prefixed with `_ordinal` to help translators (non-breaking, bacause of fallback) [1945](https://github.com/i18next/i18next/pull/1945)
+
+➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v-22-x-x-to-v-23-0-0)
 
 ## 22.5.1
 
