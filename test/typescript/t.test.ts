@@ -167,3 +167,12 @@ function interpolation(t: TFunction) {
 function nullTranslations() {
   i18next.t('nullKey').trim();
 }
+
+function datamap(t: TFunction) {
+  interface TransDataMap {
+    'Greeting': { name: string; };
+  }
+  function trans<K extends keyof TransDataMap>(key: K, data: TransDataMap[K]): string {
+    return t(key, data);
+  }
+}
