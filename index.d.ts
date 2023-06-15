@@ -827,9 +827,9 @@ type ParseKeysByNamespaces<
   : never;
 
 export type ParseKeys<
-  Ns extends Namespace,
-  TOpt extends TOptions,
-  KPrefix,
+  Ns extends Namespace = _DefaultNamespace,
+  TOpt extends TOptions = {},
+  KPrefix = undefined,
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
