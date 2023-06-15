@@ -826,7 +826,7 @@ type ParseKeysByNamespaces<
     : never
   : never;
 
-type ParseKeys<
+export type ParseKeys<
   Ns extends Namespace,
   TOpt extends TOptions,
   KPrefix,
