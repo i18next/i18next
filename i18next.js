@@ -272,6 +272,10 @@
     }
     return current;
   }
+  function getCleanedCode(code) {
+    if (code && code.indexOf('_') > 0) return code.replace('_', '-');
+    return code;
+  }
 
   class ResourceStore extends EventEmitter {
     constructor(data) {
@@ -793,6 +797,7 @@
       this.logger = baseLogger.create('languageUtils');
     }
     getScriptPartFromCode(code) {
+      code = getCleanedCode(code);
       if (!code || code.indexOf('-') < 0) return null;
       const p = code.split('-');
       if (p.length === 2) return null;
@@ -801,6 +806,7 @@
       return this.formatLanguageCode(p.join('-'));
     }
     getLanguagePartFromCode(code) {
+      code = getCleanedCode(code);
       if (!code || code.indexOf('-') < 0) return code;
       const p = code.split('-');
       return this.formatLanguageCode(p[0]);
@@ -879,7 +885,7 @@
           this.logger.warn(`rejecting language code not found in supportedLngs: ${c}`);
         }
       };
-      if (typeof code === 'string' && code.indexOf('-') > -1) {
+      if (typeof code === 'string' && (code.indexOf('-') > -1 || code.indexOf('_') > -1)) {
         if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
         if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly') addCode(this.getScriptPartFromCode(code));
         if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
@@ -1095,7 +1101,7 @@
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (this.shouldUseIntlApi()) {
         try {
-          return new Intl.PluralRules(code, {
+          return new Intl.PluralRules(getCleanedCode(code), {
             type: options.ordinal ? 'ordinal' : 'cardinal'
           });
         } catch {
