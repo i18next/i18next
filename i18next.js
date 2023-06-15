@@ -2197,11 +2197,11 @@
       const languageUtils = this.services && this.services.languageUtils || new LanguageUtil(get());
       return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
     }
-    static createInstance = function () {
+    static createInstance() {
       let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       let callback = arguments.length > 1 ? arguments[1] : undefined;
       return new I18n(options, callback);
-    };
+    }
     cloneInstance() {
       let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       let callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;

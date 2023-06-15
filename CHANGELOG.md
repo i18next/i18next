@@ -1,3 +1,7 @@
+## 23.0.2
+
+- refactor: static createInstance for wider browser support [1973](https://github.com/i18next/i18next/pull/1973)
+
 ## 23.0.1
 
 - types: export ParseKeys
