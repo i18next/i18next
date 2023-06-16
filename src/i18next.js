@@ -581,6 +581,8 @@ class I18n extends EventEmitter {
   static createInstance(options = {}, callback) { return new I18n(options, callback) }
 
   cloneInstance(options = {}, callback = noop) {
+    const forkResourceStore = options.forkResourceStore;
+    if (forkResourceStore) delete options.forkResourceStore;
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
     if ((options.debug !== undefined || options.prefix !== undefined)) {
@@ -594,12 +596,16 @@ class I18n extends EventEmitter {
     clone.services.utils = {
       hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
     };
-    clone.translator = new Translator(clone.services, clone.options);
+    if (forkResourceStore) {
+      clone.store = new ResourceStore(this.store.data, mergedOptions);
+      clone.services.resourceStore = clone.store;
+    }
+    clone.translator = new Translator(clone.services, mergedOptions);
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);
     });
     clone.init(mergedOptions, callback);
-    clone.translator.options = clone.options; // sync options
+    clone.translator.options = mergedOptions; // sync options
     clone.translator.backendConnector.services.utils = {
       hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
     };

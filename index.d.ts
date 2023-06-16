@@ -1141,6 +1141,15 @@ export interface ExistsFunction<
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
 
+export interface CloneOptions extends InitOptions {
+  /**
+   * Will create a new instance of the resource store and import the existing translation resources.
+   * This way it will not shared the resource store instance.
+   * @default false
+   */
+  forkResourceStore?: boolean;
+}
+
 export interface i18n {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<[_DefaultNamespace, ...Exclude<FlatNamespace, _DefaultNamespace>[]]>;
@@ -1282,7 +1291,7 @@ export interface i18n {
    * Creates a clone of the current instance. Shares store, plugins and initial configuration.
    * Can be used to create an instance sharing storage but being independent on set language or namespaces.
    */
-  cloneInstance(options?: InitOptions, callback?: Callback): i18n;
+  cloneInstance(options?: CloneOptions, callback?: Callback): i18n;
 
   /**
    * Gets fired after initialization.
