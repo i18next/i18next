@@ -11,6 +11,6 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "i18next": "^23.0.0"
+    "i18next": "^23.1.0"
   }
 }
