@@ -516,6 +516,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Returns an object that includes information about the used language, namespace, key and value
+   * @default false
    */
   returnDetails?: boolean;
 
