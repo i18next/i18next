@@ -14,9 +14,12 @@ function overloadedUsage(t: TFunction) {
 }
 
 function returnCasts(t: TFunction) {
-  const s: string = t('friend'); // same as <string>
+  // Note that a type cast is `as type` or `<type>`. `: type` is a type annotation.
+  const s: string = t('friend'); // not same as <string>
   const s2: string = t`friend`;
   const o: object = t('friend', { returnObjects: true });
+  // @ts-expect-error
+  const o2: string = t('friend', { returnObjects: true });
   const sa: string[] = t('friend', { returnObjects: true });
   const oa: object[] = t('friend', { returnObjects: true });
 }
@@ -172,7 +175,24 @@ function datamap(t: TFunction) {
   interface TransDataMap {
     'Greeting': { name: string; };
   }
-  function trans<K extends keyof TransDataMap>(key: K, data: TransDataMap[K]): string | TFunctionDetailedResult<string> {
+  // Don't accept the return type of TFunctionDetailedResult
+  // to detect data types that are invalid with this function.
+  function trans<K extends keyof TransDataMap>(key: K, data: TransDataMap[K]): string {
+    // Must return string.
+    return t(key, data);
+  }
+  // Must not accept data types not returning a string value.
+  // @ts-expect-error
+  trans('Greeting', { name: 'Name', returnDetails: true });
+  () => document.body.textContent = trans('Greeting', { name: 'Name' });
+
+  interface TransObjectDataMap {
+    'Greeting': { name: string; returnDetails?: boolean; };
+  }
+  // Must not contain data types not returning a string value.
+  () => function trans<K extends keyof TransObjectDataMap>(key: K, data: TransObjectDataMap[K]): string {
+    // Detect that the datamap contains invalid data types not returning a string value.
+    // @ts-expect-error
     return t(key, data);
   }
 }
