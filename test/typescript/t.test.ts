@@ -1,4 +1,4 @@
-import i18next, { TFunction } from 'i18next';
+import i18next, { TFunction, TFunctionDetailedResult } from 'i18next';
 
 function basicUsage(t: TFunction) {
   t('friend');
@@ -172,7 +172,7 @@ function datamap(t: TFunction) {
   interface TransDataMap {
     'Greeting': { name: string; };
   }
-  function trans<K extends keyof TransDataMap>(key: K, data: TransDataMap[K]): string {
+  function trans<K extends keyof TransDataMap>(key: K, data: TransDataMap[K]): string | TFunctionDetailedResult<string> {
     return t(key, data);
   }
 }
