@@ -1,3 +1,7 @@
+## 23.2.0
+
+- types: add fallbackNS type handling [1975](https://github.com/i18next/i18next/pull/1975)
+
 ## 23.1.0
 
 - cloneInstance: introduce `forkResourceStore` [1974](https://github.com/i18next/i18next/issues/1974)
