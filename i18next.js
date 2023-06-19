@@ -2197,14 +2197,16 @@
       const languageUtils = this.services && this.services.languageUtils || new LanguageUtil(get());
       return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
     }
-    static createInstance = function () {
+    static createInstance() {
       let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       let callback = arguments.length > 1 ? arguments[1] : undefined;
       return new I18n(options, callback);
-    };
+    }
     cloneInstance() {
       let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       let callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
+      const forkResourceStore = options.forkResourceStore;
+      if (forkResourceStore) delete options.forkResourceStore;
       const mergedOptions = {
         ...this.options,
         ...options,
@@ -2226,7 +2228,11 @@
       clone.services.utils = {
         hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
       };
-      clone.translator = new Translator(clone.services, clone.options);
+      if (forkResourceStore) {
+        clone.store = new ResourceStore(this.store.data, mergedOptions);
+        clone.services.resourceStore = clone.store;
+      }
+      clone.translator = new Translator(clone.services, mergedOptions);
       clone.translator.on('*', function (event) {
         for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
           args[_key4 - 1] = arguments[_key4];
@@ -2234,7 +2240,7 @@
         clone.emit(event, ...args);
       });
       clone.init(mergedOptions, callback);
-      clone.translator.options = clone.options;
+      clone.translator.options = mergedOptions;
       clone.translator.backendConnector.services.utils = {
         hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
       };

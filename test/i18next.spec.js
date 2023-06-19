@@ -72,6 +72,35 @@ describe('i18next', () => {
         expect(instance2.translator.language).to.equal('de');
       });
     });
+
+    describe('cloneInstance({ forkResourceStore: true })', () => {
+      let orgInstance;
+      let newInstance;
+      before(() => {
+        orgInstance = i18next.createInstance();
+        orgInstance.init({
+          lng: 'en',
+          resources: {
+            en: {
+              translation: {
+                deeper: {
+                  key: 'value here',
+                },
+              },
+            },
+          },
+        });
+        newInstance = orgInstance.cloneInstance({ forkResourceStore: true, keySeparator: '__' });
+      });
+
+      it('it not has shared instance of resource store', () => {
+        expect(newInstance.store).not.to.equal(orgInstance.store);
+        expect(orgInstance.t('deeper.key')).to.equal('value here');
+        expect(orgInstance.t('deeper.key')).not.to.equal(newInstance.t('deeper.key'));
+        expect(newInstance.t('deeper__key')).to.equal('value here');
+        expect(orgInstance.t('deeper.key')).to.equal(newInstance.t('deeper__key'));
+      });
+    });
   });
 
   describe('i18next - functions', () => {

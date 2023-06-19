@@ -328,6 +328,20 @@ newInstance.init(
   },
 );
 
+const cloneWithFork = i18next.cloneInstance(
+  {
+    forkResourceStore: true,
+    keySeparator: '__',
+  },
+  (err, t) => {
+    if (err) {
+      console.log('something went wrong loading', err);
+      return;
+    }
+    t('key'); // -> same as i18next.t
+  },
+);
+
 i18next.on('initialized', (options) => {});
 i18next.on('loaded', (loaded) => {});
 i18next.on('failedLoading', (lng: string, ns: string, msg: string) => {});
