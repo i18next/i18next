@@ -901,14 +901,73 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
 export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = undefined> {
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions & { returnObjects: true },
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    options: TOpt & InterpolationMap<Ret> & { returnObjects: true },
+  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions & { returnDetails: true },
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    options: TOpt & InterpolationMap<Ret> & { returnDetails: true },
+  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions,
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
-    ...args:
-      | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
-      | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+    key: Key | Key[],
+    options?: TOpt & InterpolationMap<Ret>,
+  ): TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>;
+
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions & { returnObjects: true },
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    defaultValue: string,
+    options: TOpt & InterpolationMap<Ret> & { returnObjects: true },
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions & { returnDetails: true },
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    defaultValue: string,
+    options: TOpt & InterpolationMap<Ret> & { returnDetails: true },
+  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    defaultValue: string,
+    options?: TOpt & InterpolationMap<Ret>,
+  ): TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>;
 }
+
+// export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = undefined> {
+//   <
+//     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+//     TOpt extends TOptions,
+//     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+//   >(
+//     ...args:
+//       | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
+//       | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+//   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+// }
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
