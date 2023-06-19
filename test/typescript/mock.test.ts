@@ -21,5 +21,5 @@ const mockWithTAndResources: WithT<'article'> = {
 };
 
 const t: TFunction<'article'> = (key: string) =>
-  translation.fi.article[key as keyof typeof translation.fi.article];
+  translation.fi.article[key as keyof typeof translation.fi.article] as any;
 t('translationKey').trim();
