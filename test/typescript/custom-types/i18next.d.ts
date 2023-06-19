@@ -3,6 +3,7 @@ import 'i18next';
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'custom';
+    fallbackNS: 'fallback';
     resources: {
       custom: {
         foo: 'foo';
@@ -13,6 +14,9 @@ declare module 'i18next' {
         qux: 'some {{val, number}}';
         inter: 'some {{val}}';
         nullKey: null;
+      };
+      fallback: {
+        fallbackKey: 'fallback';
       };
       alternate: {
         baz: 'baz';
