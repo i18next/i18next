@@ -1,4 +1,4 @@
-import i18next, { TFunction, TFunctionDetailedResult } from 'i18next';
+import i18next, { TFunction } from 'i18next';
 
 function basicUsage(t: TFunction) {
   t('friend');
@@ -173,7 +173,7 @@ function nullTranslations() {
 
 function datamap(t: TFunction) {
   interface TransDataMap {
-    'Greeting': { name: string; };
+    Greeting: { name: string };
   }
   // Don't accept the return type of TFunctionDetailedResult
   // to detect data types that are invalid with this function.
@@ -184,15 +184,19 @@ function datamap(t: TFunction) {
   // Must not accept data types not returning a string value.
   // @ts-expect-error
   trans('Greeting', { name: 'Name', returnDetails: true });
-  () => document.body.textContent = trans('Greeting', { name: 'Name' });
+  () => (document.body.textContent = trans('Greeting', { name: 'Name' }));
 
   interface TransObjectDataMap {
-    'Greeting': { name: string; returnDetails?: boolean; };
+    Greeting: { name: string; returnDetails?: boolean };
   }
   // Must not contain data types not returning a string value.
-  () => function trans<K extends keyof TransObjectDataMap>(key: K, data: TransObjectDataMap[K]): string {
-    // Detect that the datamap contains invalid data types not returning a string value.
-    // @ts-expect-error
-    return t(key, data);
-  }
+  () =>
+    function trans<K extends keyof TransObjectDataMap>(
+      key: K,
+      data: TransObjectDataMap[K],
+    ): string {
+      // Detect that the datamap contains invalid data types not returning a string value.
+      // @ts-expect-error
+      return t(key, data);
+    };
 }
