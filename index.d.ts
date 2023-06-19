@@ -845,6 +845,12 @@ export type ParseKeys<
     ?
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
         | ParseKeysByNamespaces<ActualNS, Keys>
+    : _FallbackNamespace extends Array<infer FallbackNs extends Namespace>
+    ?
+        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<FallbackNs>], KPrefix>
+        | ParseKeysByNamespaces<ActualNS, Keys>
+        | ParseKeysByNamespaces<FallbackNs, Keys>
     :
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<_FallbackNamespace>], KPrefix>

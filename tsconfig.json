@@ -14,5 +14,9 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["./index.d.ts", "./test/**/*.ts*"],
-  "exclude": ["test/typescript/nonEsModuleInterop/**/*.ts", "test/typescript/custom-types"]
+  "exclude": [
+    "test/typescript/nonEsModuleInterop/**/*.ts",
+    "test/typescript/custom-types",
+    "test/typescript/fallback-types"
+  ]
 }
