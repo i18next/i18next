@@ -906,7 +906,7 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
-    options: TOpt & InterpolationMap<Ret> & { returnObjects: true },
+    options: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 
   <
@@ -915,7 +915,7 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
-    options: TOpt & InterpolationMap<Ret> & { returnDetails: true },
+    options: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 
   <
@@ -934,7 +934,7 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
   >(
     key: Key | Key[],
     defaultValue: string,
-    options: TOpt & InterpolationMap<Ret> & { returnObjects: true },
+    options: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 
   <
@@ -944,7 +944,7 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
   >(
     key: Key | Key[],
     defaultValue: string,
-    options: TOpt & InterpolationMap<Ret> & { returnDetails: true },
+    options: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 
   <
