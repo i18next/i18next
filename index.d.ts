@@ -903,25 +903,22 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions & { returnObjects: true },
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     options: TOpt,
-  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+  ): TFunctionReturnOptionalDetails<TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, TOpt>;
 
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions & { returnDetails: true },
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     options: TOpt,
-  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+  ): TFunctionReturnOptionalDetails<TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, TOpt>;
 
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions,
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     options?: TOpt,
@@ -930,27 +927,24 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions & { returnObjects: true },
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     defaultValue: string,
     options: TOpt,
-  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+  ): TFunctionReturnOptionalDetails<TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, TOpt>;
 
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions & { returnDetails: true },
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     defaultValue: string,
     options: TOpt,
-  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+  ): TFunctionReturnOptionalDetails<TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>, TOpt>;
 
   <
     Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     TOpt extends TOptions,
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     defaultValue: string,
