@@ -30,3 +30,4 @@ t7('alternate:foobar.barfoo');
 // @ts-expect-error
 t7('foobar.barfoo');
 t7('foobar.barfoo', { ns: 'alternate' });
+t7('fallbackKey');

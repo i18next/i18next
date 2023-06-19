@@ -76,6 +76,12 @@ export type TypeOptions = $MergeBy<
     defaultNS: 'translation';
 
     /**
+     * Fallback namespace used if translation not found in given namespace
+     * @default false
+     */
+    fallbackNS: false;
+
+    /**
      * Json Format Version - V4 allows plural suffixes
      */
     jsonFormat: 'v4';
@@ -741,6 +747,7 @@ type _KeySeparator = TypeOptions['keySeparator'];
 type _NsSeparator = TypeOptions['nsSeparator'];
 type _PluralSeparator = TypeOptions['pluralSeparator'];
 type _DefaultNamespace = TypeOptions['defaultNS'];
+type _FallbackNamespace = TypeOptions['fallbackNS'];
 type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
@@ -834,9 +841,15 @@ export type ParseKeys<
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
-  ?
-      | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-      | ParseKeysByNamespaces<ActualNS, Keys>
+  ? _FallbackNamespace extends false
+    ?
+        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+        | ParseKeysByNamespaces<ActualNS, Keys>
+    :
+        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<_FallbackNamespace>], KPrefix>
+        | ParseKeysByNamespaces<ActualNS, Keys>
+        | ParseKeysByNamespaces<_FallbackNamespace, Keys>
   : string;
 
 /*********************************************************
