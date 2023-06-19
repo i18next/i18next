@@ -883,13 +883,13 @@ export type TFunctionReturn<
   Ns extends Namespace,
   Key,
   TOpt extends TOptions,
-  Def extends DefaultTReturn,
+  Ret extends DefaultTReturn,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
   ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
     ? ParseTReturn<RestKey, $Value<Resources, Nsp>>
     : ParseTReturn<Key, Resources[$FirstNamespace<ActualNS>]>
-  : Def;
+  : Ret;
 
 type TFunctionReturnAll<Ret> =
   | Ret
