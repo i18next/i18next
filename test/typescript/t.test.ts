@@ -15,13 +15,15 @@ function overloadedUsage(t: TFunction) {
 
 function returnCasts(t: TFunction) {
   // Note that a type cast is `as type` or `<type>`. `: type` is a type annotation.
-  const s: string = t('friend'); // not same as <string>
-  const s2: string = t`friend`;
-  const o: object = t('friend', { returnObjects: true });
+  (): string => t('friend'); // not same as <string>
+  (): string => t`friend`;
+  (): object => t('friend', { returnObjects: true });
   // @ts-expect-error
-  const o2: string = t('friend', { returnObjects: true });
-  const sa: string[] = t('friend', { returnObjects: true });
-  const oa: object[] = t('friend', { returnObjects: true });
+  (): string => t('friend', { returnObjects: true });
+  // @ts-expect-error
+  (): string[] => t('friend', { returnObjects: true });
+  (): string[] => t('friend', { returnObjects: true }) as string[];
+  (): object[] => t('friend', { returnObjects: true }) as object[];
 }
 
 function defautValue(t: TFunction) {
