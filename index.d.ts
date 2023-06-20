@@ -841,21 +841,21 @@ export type ParseKeys<
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
-  ? _FallbackNamespace extends false
-    ?
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
-    : _FallbackNamespace extends Array<infer FallbackNs extends Namespace>
+  ? _FallbackNamespace extends Array<infer FallbackNs extends Namespace>
     ?
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<FallbackNs>], KPrefix>
         | ParseKeysByNamespaces<ActualNS, Keys>
         | ParseKeysByNamespaces<FallbackNs, Keys>
-    :
+    : _FallbackNamespace extends Namespace
+    ?
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
         | ParseKeysByKeyPrefix<Keys[$FirstNamespace<_FallbackNamespace>], KPrefix>
         | ParseKeysByNamespaces<ActualNS, Keys>
         | ParseKeysByNamespaces<_FallbackNamespace, Keys>
+    :
+        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+        | ParseKeysByNamespaces<ActualNS, Keys>
   : string;
 
 /*********************************************************
