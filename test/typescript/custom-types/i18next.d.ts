@@ -5,6 +5,9 @@ declare module 'i18next' {
     defaultNS: 'custom';
     resources: {
       custom: {
+        common: {
+          foo: 'bar';
+        };
         foo: 'foo';
         bar: 'bar';
         baz: {
@@ -15,6 +18,9 @@ declare module 'i18next' {
         nullKey: null;
       };
       alternate: {
+        common: {
+          foo: 'bar';
+        };
         baz: 'baz';
         foobar: {
           barfoo: 'barfoo';
@@ -26,6 +32,9 @@ declare module 'i18next' {
         };
       };
       plurals: {
+        common: {
+          foo: 'bar';
+        };
         foo_zero: 'foo';
         foo_one: 'foo';
         foo_two: 'foo';
@@ -33,11 +42,17 @@ declare module 'i18next' {
         foo_other: 'foo';
       };
       ctx: {
+        common: {
+          foo: 'bar';
+        };
         dessert_cake: 'a nice cake';
         dessert_muffin_one: 'a nice muffin';
         dessert_muffin_other: '{{count}} nice muffins';
       };
       ord: {
+        common: {
+          foo: 'bar';
+        };
         place_ordinal_one: '1st place';
         place_ordinal_two: '2nd place';
         place_ordinal_few: '3rd place';

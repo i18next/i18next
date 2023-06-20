@@ -145,3 +145,22 @@ function nullTranslations() {
 //   // context + plural
 //   t('dessert', { context: 'muffin', count: 3 }).trim();
 // }
+
+function anotherInstance() {
+  // CustomTypeOptions pollute and break all other instances.
+  const i = i18next.createInstance({
+    lng: 'en',
+    resources: {
+      en: {
+        translation: {
+          'a': 'b',
+        },
+      },
+    },
+  });
+  i.init();
+
+  const t = i.t;
+  t('a'); // Correct but error
+  t('common').foo // Wrong but no error
+}
