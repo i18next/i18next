@@ -1,3 +1,7 @@
+## 23.2.1
+
+- types: fix fallbackNS type handling [1979](https://github.com/i18next/i18next/pull/1979)
+
 ## 23.2.0
 
 - types: add fallbackNS type handling [1975](https://github.com/i18next/i18next/pull/1975)
