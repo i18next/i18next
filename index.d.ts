@@ -747,7 +747,9 @@ type _KeySeparator = TypeOptions['keySeparator'];
 type _NsSeparator = TypeOptions['nsSeparator'];
 type _PluralSeparator = TypeOptions['pluralSeparator'];
 type _DefaultNamespace = TypeOptions['defaultNS'];
-type _FallbackNamespace = TypeOptions['fallbackNS'];
+type _FallbackNamespace = TypeOptions['fallbackNS'] extends false
+  ? TypeOptions['defaultNS']
+  : TypeOptions['fallbackNS'];
 type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];

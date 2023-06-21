@@ -1,3 +1,7 @@
+## 23.2.2
+
+- types: try to fix fallbackNS type handling also for older TS version [1981](https://github.com/i18next/i18next/issues/1981)
+
 ## 23.2.1
 
 - types: fix fallbackNS type handling [1979](https://github.com/i18next/i18next/pull/1979)
