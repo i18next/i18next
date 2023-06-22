@@ -805,7 +805,7 @@ type KeysWithoutReturnObjects = {
   [Ns in FlatNamespace]: WithOrWithoutPlural<KeysBuilder<Resources[Ns], false>>;
 };
 
-type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extends true
+export type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extends true
   ? KeysWithReturnObjects
   : KeysWithoutReturnObjects;
 
@@ -826,14 +826,14 @@ type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string
     : never
   : Keys;
 
-type ParseKeysByNamespaces<
-  Ns extends Namespace,
-  Keys,
-  UnionNsps = Ns[number],
-> = Ns extends readonly any[]
+type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (infer UnionNsps)[]
   ? UnionNsps extends keyof Keys
     ? AppendNamespace<UnionNsps, Keys[UnionNsps]>
     : never
+  : never;
+
+type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends Namespace
+  ? Keys[_FallbackNamespace[number]]
   : never;
 
 export type ParseKeys<
@@ -843,21 +843,10 @@ export type ParseKeys<
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
-  ? _FallbackNamespace extends Array<infer FallbackNs extends Namespace>
-    ?
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<FallbackNs>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
-        | ParseKeysByNamespaces<FallbackNs, Keys>
-    : _FallbackNamespace extends Namespace
-    ?
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<_FallbackNamespace>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
-        | ParseKeysByNamespaces<_FallbackNamespace, Keys>
-    :
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
+  ?
+      | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+      | ParseKeysByNamespaces<ActualNS, Keys>
+      | ParseKeysByFallbackNs<Keys>
   : string;
 
 /*********************************************************
