@@ -1,3 +1,7 @@
+## 23.2.3
+
+- types: Optimize logic for fallback ns [19198481](https://github.com/i18next/i18next/pull/1984)
+
 ## 23.2.2
 
 - types: try to fix fallbackNS type handling also for older TS version [1981](https://github.com/i18next/i18next/issues/1981)
