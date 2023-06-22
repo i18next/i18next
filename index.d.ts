@@ -747,9 +747,7 @@ type _KeySeparator = TypeOptions['keySeparator'];
 type _NsSeparator = TypeOptions['nsSeparator'];
 type _PluralSeparator = TypeOptions['pluralSeparator'];
 type _DefaultNamespace = TypeOptions['defaultNS'];
-type _FallbackNamespace = TypeOptions['fallbackNS'] extends false
-  ? TypeOptions['defaultNS']
-  : TypeOptions['fallbackNS'];
+type _FallbackNamespace = TypeOptions['fallbackNS'];
 type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
@@ -826,15 +824,17 @@ type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string
     : never
   : Keys;
 
-type ParseKeysByNamespaces<
-  Ns extends Namespace,
-  Keys,
-  UnionNsps = Ns[number],
-> = Ns extends readonly any[]
+type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (infer UnionNsps)[]
   ? UnionNsps extends keyof Keys
     ? AppendNamespace<UnionNsps, Keys[UnionNsps]>
     : never
   : never;
+
+type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false
+  ? never
+  : _FallbackNamespace extends (infer UnionFallbackNs extends string)[]
+  ? Keys[UnionFallbackNs]
+  : Keys[_FallbackNamespace & string];
 
 export type ParseKeys<
   Ns extends Namespace = _DefaultNamespace,
@@ -843,21 +843,10 @@ export type ParseKeys<
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
-  ? _FallbackNamespace extends Array<infer FallbackNs extends Namespace>
-    ?
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<FallbackNs>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
-        | ParseKeysByNamespaces<FallbackNs, Keys>
-    : _FallbackNamespace extends Namespace
-    ?
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<_FallbackNamespace>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
-        | ParseKeysByNamespaces<_FallbackNamespace, Keys>
-    :
-        | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
-        | ParseKeysByNamespaces<ActualNS, Keys>
+  ?
+      | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+      | ParseKeysByNamespaces<ActualNS, Keys>
+      | ParseKeysByFallbackNs<Keys>
   : string;
 
 /*********************************************************
