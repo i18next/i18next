@@ -878,14 +878,11 @@ type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer Re
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
-  ? $SpecialObject
+  ? $SpecialObject | string
   : TOpt['returnObjects'] extends true
   ? $SpecialObject
-  : never;
-type DefaultTReturn<TOpt extends TOptions> =
-  | string
-  | TReturnOptionalObjects<TOpt>
-  | TReturnOptionalNull;
+  : string;
+type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
 export type TFunctionReturn<
   Ns extends Namespace,

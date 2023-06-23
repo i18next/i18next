@@ -16,6 +16,8 @@ function overloadedUsage(t: TFunction) {
 function returnCasts(t: TFunction) {
   const s: string = t('friend'); // same as <string>
   const s2: string = t`friend`;
+  // @ts-expect-error
+  const s3: string = t('friend', { returnObjects: true });
   const o: object = t('friend', { returnObjects: true });
   const sa: string[] = t('friend', { returnObjects: true });
   const oa: object[] = t('friend', { returnObjects: true });
