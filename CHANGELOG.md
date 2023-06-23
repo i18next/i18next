@@ -1,6 +1,10 @@
+## 23.2.4
+
+- types: Constrain return type when returnObjects is true [1985](https://github.com/i18next/i18next/pull/1985)
+
 ## 23.2.3
 
-- types: Optimize logic for fallback ns [19198481](https://github.com/i18next/i18next/pull/1984)
+- types: Optimize logic for fallback ns [1984](https://github.com/i18next/i18next/pull/1984)
 
 ## 23.2.2
 
