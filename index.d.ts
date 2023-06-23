@@ -912,10 +912,27 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
     TOpt extends TOptions,
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
-    ...args:
-      | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
-      | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+    key: Key | Key[],
+    options?: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+  <
+    Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    defaultValue: string,
+    options?: TOpt & InterpolationMap<Ret>,
+  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+  // <
+  //   Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+  //   TOpt extends TOptions,
+  //   Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  // >(
+  //   ...args:
+  //     | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
+  //     | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+  // ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 }
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;

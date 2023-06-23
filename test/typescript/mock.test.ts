@@ -1,4 +1,4 @@
-import { WithT } from 'i18next';
+import { WithT, TFunction } from 'i18next';
 
 /**
  * Exercises in mocking
@@ -19,3 +19,7 @@ const mockWithTAndResources: WithT<'article'> = {
   t: ((key: string) =>
     translation.fi.article[key as keyof typeof translation.fi.article] || key) as any,
 };
+
+const t: TFunction<'article'> = (key) =>
+  translation.fi.article[key as keyof typeof translation.fi.article] || key;
+t('translationKey').trim();
