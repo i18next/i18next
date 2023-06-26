@@ -16,8 +16,7 @@ const translation = {
 };
 
 const mockWithTAndResources: WithT<'article'> = {
-  t: ((key: string) =>
-    translation.fi.article[key as keyof typeof translation.fi.article] || key) as any,
+  t: (key) => translation.fi.article[key as keyof typeof translation.fi.article] || key,
 };
 
 const t: TFunction<'article'> = (key) =>
