@@ -1,4 +1,5 @@
 import baseLogger from './logger.js';
+import {getCleanedCode} from "./utils";
 
 function parseFormatStr(formatStr) {
   let formatName = formatStr.toLowerCase().trim();
@@ -46,7 +47,7 @@ function createCachedFormatter(fn) {
     const key = lng + JSON.stringify(options);
     let formatter = cache[key];
     if (!formatter) {
-      formatter = fn(lng, options);
+      formatter = fn(getCleanedCode(lng), options);
       cache[key] = formatter;
     }
     return formatter(val);

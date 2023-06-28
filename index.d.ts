@@ -665,7 +665,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   maxRetries?: number;
 
   /**
-   * Set how long to wait, in milliseconds, betweeen retries of failed requests.
+   * Set how long to wait, in milliseconds, between retries of failed requests.
    * This number is compounded by a factor of 2 for subsequent retry.
    * The default value is used if value is set below 1ms.
    * @default 350

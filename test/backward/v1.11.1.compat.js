@@ -925,7 +925,7 @@ describe('i18next', function () {
       //       beforeEach(function(done) {
       //         spy.reset();
       //
-      //         // exipred
+      //         // expired
       //         var local = window.localStorage.getItem('res_en-US');
       //         local = JSON.parse(local);
       //         local.i18nStamp = 0;
@@ -968,7 +968,7 @@ describe('i18next', function () {
       });
 
       describe('with lowercase flag', function () {
-        describe('default behaviour will uppercase specifc country part.', function () {
+        describe('default behaviour will uppercase specific country part.', function () {
           beforeEach(function (done) {
             i18n.init(
               i18n.functions.extend(opts, {
