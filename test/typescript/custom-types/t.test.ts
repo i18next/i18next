@@ -74,6 +74,10 @@ function expectErrorWhenKeyNotInNamespace(t: TFunction<'alternate'>) {
   t('foobar.barfoo', 'some default value');
   t('foobar.barfoo', { defaultValue: 'some default value' });
 
+  // @ts-expect-error
+  t('new.key');
+  // @ts-expect-error
+  t('new.key', { other: 'stuff' });
   t('new.key', { defaultValue: 'some default value' });
   t('new.key', 'some default value');
 }
