@@ -1,3 +1,7 @@
+## 23.2.5
+
+- Clean language code before passing to formatters [1985](https://github.com/i18next/i18next/pull/1988)
+
 ## 23.2.4
 
 - types: Constrain return type when returnObjects is true [1985](https://github.com/i18next/i18next/pull/1985)
