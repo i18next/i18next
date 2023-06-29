@@ -915,6 +915,8 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
     ...args:
       | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
       | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+      | [key: string | string[], options: TOpt & InterpolationMap<Ret> & { defaultValue: string }]
+      | [key: string | string[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 }
 

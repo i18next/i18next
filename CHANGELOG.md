@@ -1,6 +1,10 @@
+## 23.2.6
+
+- Re-allow unknown keys, when a defaultValue is provided [1867](https://github.com/i18next/i18next/issues/1867)
+
 ## 23.2.5
 
-- Clean language code before passing to formatters [1985](https://github.com/i18next/i18next/pull/1988)
+- Clean language code before passing to formatters [1988](https://github.com/i18next/i18next/pull/1988)
 
 ## 23.2.4
 
