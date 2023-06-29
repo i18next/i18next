@@ -1395,7 +1395,7 @@
       const key = lng + JSON.stringify(options);
       let formatter = cache[key];
       if (!formatter) {
-        formatter = fn(lng, options);
+        formatter = fn(getCleanedCode(lng), options);
         cache[key] = formatter;
       }
       return formatter(val);

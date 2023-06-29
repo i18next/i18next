@@ -183,7 +183,7 @@ class Translator extends EventEmitter {
               ...options,
               ...{ joinArrays: false, ns: namespaces },
             });
-            if (copy[m] === deepKey) copy[m] = res[m]; // if nothing found use orginal value as fallback
+            if (copy[m] === deepKey) copy[m] = res[m]; // if nothing found use original value as fallback
           }
         }
         res = copy;

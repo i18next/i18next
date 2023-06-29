@@ -29,7 +29,7 @@ describe('ResourceStore', () => {
         rs = new ResourceStore(data);
       });
 
-      it('it adds resouces by addResource', () => {
+      it('it adds resources by addResource', () => {
         // basic key
         rs.addResource('de', 'translation', 'test', 'test');
         expect(rs.getResource('de', 'translation', 'test')).to.equal('test');
@@ -129,7 +129,7 @@ describe('ResourceStore', () => {
         rs = new ResourceStore(data);
       });
 
-      it('it adds resouces by addResourceBundle', () => {
+      it('it adds resources by addResourceBundle', () => {
         rs.addResourceBundle('en', 'translation', { something: 'deeper' });
         expect(rs.getResource('en', 'translation')).to.eql({ something: 'deeper', test: 'test' });
 
@@ -161,7 +161,7 @@ describe('ResourceStore', () => {
         rs = new ResourceStore(data);
       });
 
-      it('it checks resouces by hasResourceBundle', () => {
+      it('it checks resources by hasResourceBundle', () => {
         expect(rs.hasResourceBundle('en', 'translation')).to.be.ok;
         expect(rs.hasResourceBundle('en', 'notExisting')).to.not.be.ok;
       });
@@ -173,7 +173,7 @@ describe('ResourceStore', () => {
         rs = new ResourceStore(data);
       });
 
-      it('it get resouces by getResourceBundle', () => {
+      it('it get resources by getResourceBundle', () => {
         expect(rs.getResourceBundle('en', 'translation')).to.be.eql({ test: 'test' });
       });
     });
@@ -184,7 +184,7 @@ describe('ResourceStore', () => {
         rs = new ResourceStore(data);
       });
 
-      it('it removes resouces by removeResourceBundle', () => {
+      it('it removes resources by removeResourceBundle', () => {
         rs.removeResourceBundle('en', 'translation');
         expect(rs.getResourceBundle('en', 'translation')).to.be.not.ok;
       });

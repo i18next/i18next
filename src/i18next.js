@@ -319,7 +319,7 @@ class I18n extends EventEmitter {
     const setLngProps = (l) => {
       this.language = l;
       this.languages = this.services.languageUtils.toResolveHierarchy(l);
-      // find the first language resolved languaged
+      // find the first language resolved language
       this.resolvedLanguage = undefined;
       this.setResolvedLanguage(l);
     };

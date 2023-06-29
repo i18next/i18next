@@ -305,7 +305,7 @@ describe('BackendConnector retry with maxRetries=6', () => {
   });
 });
 
-// All tests have 250ms of code-exection buffer time built in.
+// All tests have 250ms of code-execution buffer time built in.
 // To ensure test correctness, the tests should never time out.
 describe('BackendConnector retry with shorter intervals', () => {
   let connector;

@@ -4,7 +4,7 @@ import LanguageUtils from '../../src/LanguageUtils';
 import PluralResolver from '../../src/PluralResolver';
 import Interpolator from '../../src/Interpolator';
 
-// These tests orignated from issues:
+// These tests originated from issues:
 //
 // https://github.com/i18next/i18next/issues/906
 // https://github.com/i18next/i18next-xhr-backend/issues/258

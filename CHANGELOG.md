@@ -40,7 +40,7 @@
 - changed `returnNull` default to `false` [1885](https://github.com/i18next/i18next/pull/1885)
 - drop support for old browsers and Node.js < v12 [1948](https://github.com/i18next/i18next/issues/1948)
 
-- ordinal plural keys are now prefixed with `_ordinal` to help translators (non-breaking, bacause of fallback) [1945](https://github.com/i18next/i18next/pull/1945)
+- ordinal plural keys are now prefixed with `_ordinal` to help translators (non-breaking, because of fallback) [1945](https://github.com/i18next/i18next/pull/1945)
 
 ➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v22.x.x-to-v23.0.0)
 
@@ -130,7 +130,7 @@
 
 ## 22.1.4
 
-- dir function executible also without initialization
+- dir function executable also without initialization
 
 ## 22.1.3
 
@@ -631,7 +631,7 @@ For JavaScript users v22.0.0 is equivalent to 21.10.0
 ## 19.5.4
 
 - typescript fix: getDataByLanguage typings & test [1472](https://github.com/i18next/i18next/pull/1472)
-- typescript fix: type declarion of exposed EventEmitter#off methods [1460](https://github.com/i18next/i18next/pull/1460)
+- typescript fix: type declaration of exposed EventEmitter#off methods [1460](https://github.com/i18next/i18next/pull/1460)
 
 ## 19.5.3
 
@@ -653,9 +653,9 @@ For JavaScript users v22.0.0 is equivalent to 21.10.0
 - rename option nonExpicitWhitelist to nonExplicitSupportedLngs
 - rename function languageUtils.isWhitelisted to languageUtils.isSupportedCode
 
-This changes are made with temporal backwards compatiblity and will warn your for deprecated usage of old terms to give users and plugin providers some time to adapt their code base.
+These changes are made with temporal backwards compatibility and will warn your for deprecated usage of old terms to give users and plugin providers some time to adapt their code base.
 
-The temporal backwards compatiblity will be removed in a follow up major release.
+The temporal backwards compatibility will be removed in a follow-up major release.
 
 Learn more about why this change was made [here](https://github.com/i18next/i18next/issues/1466).
 
@@ -1647,7 +1647,7 @@ BREAKING:
 - PR #101 automatic gettext like sprintf syntax detection + postprocess injection
 - customload will get called on dynamicLoad too
 - fixes namespace array settings if loaded resourcebundle or additional namespaces
-- lookup of not existend resouces can be fallbacked to other namespaces - see option fallbackNS (array or string if one ns to fallback to)
+- lookup of not existend resources can be fallbacked to other namespaces - see option fallbackNS (array or string if one ns to fallback to)
 - defaultValues get postProcessed
 - BREAKING: per default null values in resources get translated to fallback. This can be changed by setting option fallbackOnNull to false
 - PR #81 added support for passing options to nested resources
