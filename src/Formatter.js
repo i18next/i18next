@@ -1,5 +1,5 @@
 import baseLogger from './logger.js';
-import {getCleanedCode} from "./utils";
+import { getCleanedCode } from './utils.js';
 
 function parseFormatStr(formatStr) {
   let formatName = formatStr.toLowerCase().trim();

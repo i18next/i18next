@@ -1,3 +1,7 @@
+## 23.2.7
+
+- fix utils import (for Deno)
+
 ## 23.2.6
 
 - Re-allow unknown keys, when a defaultValue is provided [1867](https://github.com/i18next/i18next/issues/1867)
