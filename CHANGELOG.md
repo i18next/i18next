@@ -1,3 +1,7 @@
+## 23.2.8
+
+- types for hasLoadedNamespace
+
 ## 23.2.7
 
 - fix utils import (for Deno)

@@ -1250,6 +1250,24 @@ export interface i18n {
   resolvedLanguage?: string;
 
   /**
+   * Checks if namespace has loaded yet.
+   * i.e. used by react-i18next
+   */
+  hasLoadedNamespace(
+    ns: string | readonly string[],
+    options?: {
+      lng?: string | readonly string[];
+      precheck: (
+        i18n: i18n,
+        loadNotPending: (
+          lng: string | readonly string[],
+          ns: string | readonly string[],
+        ) => boolean,
+      ) => boolean;
+    },
+  ): boolean;
+
+  /**
    * Loads additional namespaces not defined in init options.
    */
   loadNamespaces(ns: string | readonly string[], callback?: Callback): Promise<void>;
