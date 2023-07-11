@@ -1,3 +1,7 @@
+## 23.2.9
+
+- types: Add brand to TFunction type so different namespaces' TFunctions are not treated as compatible [1994](https://github.com/i18next/i18next/pull/1994)
+
 ## 23.2.8
 
 - types for hasLoadedNamespace
