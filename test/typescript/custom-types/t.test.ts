@@ -152,3 +152,10 @@ function nullTranslations() {
 //   // context + plural
 //   t('dessert', { context: 'muffin', count: 3 }).trim();
 // }
+
+function expectErrorForDifferentTFunctions(t: TFunction<'ord'>) {
+  const fn: (t: TFunction<'plurals'>) => void = () => {};
+
+  // @ts-expect-error
+  fn(t);
+}
