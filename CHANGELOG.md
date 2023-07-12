@@ -1,3 +1,7 @@
+## 23.2.11
+
+- types: Fix $TFunctionBrand [1997](https://github.com/i18next/i18next/pull/1997)
+
 ## 23.2.10
 
 - types: emit function can have additional arguments [1993](https://github.com/i18next/i18next/issues/1993)
