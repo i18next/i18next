@@ -7,12 +7,15 @@ function expectErrorsForDifferentTFunctions(
   t4: TFunction<[string, string]>,
 ) {
   const fn: (t: TFunction<'plurals'>) => void = () => {};
+  const fn2: (t: TFunction) => void = () => {};
 
-  // @ts-expect-error
+  // no error - not checked when CustomTypeOptions["resources"] is not provided
   fn(t1);
-  // @ts-expect-error
   fn(t2);
-  fn(t3); // no error
-  // @ts-expect-error
+  fn(t3);
   fn(t4);
+  fn2(t1);
+  fn2(t2);
+  fn2(t3);
+  fn2(t4);
 }
