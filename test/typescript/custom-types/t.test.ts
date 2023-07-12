@@ -153,9 +153,16 @@ function nullTranslations() {
 //   t('dessert', { context: 'muffin', count: 3 }).trim();
 // }
 
-function expectErrorForDifferentTFunctions(t: TFunction<'ord'>) {
+function expectErrorsForDifferentTFunctions(
+  t1: TFunction<'ord'>,
+  t2: TFunction<['ord', 'plurals']>,
+  t3: TFunction<['plurals', 'ord']>,
+) {
   const fn: (t: TFunction<'plurals'>) => void = () => {};
 
   // @ts-expect-error
-  fn(t);
+  fn(t1);
+  // @ts-expect-error
+  fn(t2);
+  fn(t3); // no error
 }
