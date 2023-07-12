@@ -1436,7 +1436,7 @@ export interface i18n {
   /**
    * Emit event
    */
-  emit(eventName: string): void;
+  emit(eventName: string, ...args: any[]): void;
 }
 
 declare const i18next: i18n;

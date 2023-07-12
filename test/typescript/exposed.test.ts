@@ -25,3 +25,8 @@ formatter!.addCached(
   'test',
   (lng: string | undefined, options: any) => (value: any) => 'formatted',
 );
+
+i18next.on('custom', (arg) => {});
+i18next.emit('custom');
+i18next.emit('custom', { some: 'opt' });
+i18next.emit('custom', { some: 'opt' }, { more: 'stuff' });
