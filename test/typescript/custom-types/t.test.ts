@@ -102,7 +102,10 @@ function i18nextTUsage() {
   i18next.t('custom:inter', { val: 'asdf' }).trim();
   i18next.t('inter', { val: 'asdf', ns: 'custom' }).trim();
   i18next.t('inter', { val: 'asdf' }).trim();
-  i18next.t('qux', { val: 'asdf' }).trim();
+  // @ts-expect-error
+  i18next.t('qux', { val: 'this should be a number, hence the error' }).trim();
+  // @ts-expect-error
+  i18next.t('currencyWithCode', { val: 'this should also be a number' });
   // @ts-expect-error
   i18next.t('custom:inter', { foo: 'asdf' });
 

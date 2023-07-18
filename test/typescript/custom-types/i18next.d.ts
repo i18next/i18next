@@ -12,6 +12,7 @@ declare module 'i18next' {
           bing: 'boop';
         };
         qux: 'some {{val, number}}';
+        currencyWithCode: 'money {{val, currency(USD)}}';
         inter: 'some {{val}}';
         nullKey: null;
       };

@@ -852,13 +852,33 @@ export type ParseKeys<
 /*********************************************************
  * Parse t function return type and interpolation values *
  *********************************************************/
-type ParseInterpolationValues<Ret> =
+type FormatParam<Value extends string, Format> = Format extends 'number' | 'currency'
+  ? Record<Value, Parameters<Intl.NumberFormat['format']>[0]> & {
+      formatParams?: Partial<Record<Value, Intl.NumberFormatOptions>>;
+    }
+  : Format extends 'datetime'
+  ? Record<Value, Parameters<Intl.DateTimeFormat['format']>[0]> & {
+      formatParams?: Partial<Record<Value, Intl.DateTimeFormatOptions>>;
+    }
+  : Format extends 'relativetime'
+  ? Record<Value, Parameters<Intl.RelativeTimeFormat['format']>[0]> & {
+      formatParams?: Partial<Record<Value, Intl.RelativeTimeFormatOptions>>;
+    }
+  : Format extends 'list'
+  ? Record<Value, Parameters<Intl.ListFormat['format']>[0]> & {
+      formatParams?: Partial<Record<Value, Intl.ListFormatOptions>>;
+    }
+  : Record<Value, any>;
+type InterpolationMap<Ret> =
   Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
     ?
-        | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
-        | ParseInterpolationValues<Rest>
-    : never;
-type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
+        | (Value extends `${infer ActualValue},${string}${infer Format}`
+            ? Format extends `${infer ActualFormat}(${string}`
+              ? FormatParam<ActualValue, ActualFormat>
+              : FormatParam<ActualValue, Format>
+            : Record<Value, any>) &
+            InterpolationMap<Rest>
+    : {};
 
 type ParseTReturnPlural<
   Res,
