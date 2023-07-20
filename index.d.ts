@@ -51,6 +51,11 @@ export type TypeOptions = $MergeBy<
     returnNull: false;
 
     /**
+     * Allows empty string as valid translation
+     */
+    returnEmptyString: true;
+
+    /**
      * Allows objects as valid translation result
      */
     returnObjects: false;
@@ -742,6 +747,7 @@ export interface TOptionsBase {
 
 // Type Options
 type _ReturnObjects = TypeOptions['returnObjects'];
+type _ReturnEmptyString = TypeOptions['returnEmptyString'];
 type _ReturnNull = TypeOptions['returnNull'];
 type _KeySeparator = TypeOptions['keySeparator'];
 type _NsSeparator = TypeOptions['nsSeparator'];
@@ -860,6 +866,16 @@ type ParseInterpolationValues<Ret> =
     : never;
 type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
 
+type ParseTReturnWithFallback<Key, Val> = Val extends ''
+  ? _ReturnEmptyString extends true
+    ? ''
+    : Key
+  : Val extends null
+  ? _ReturnNull extends true
+    ? null
+    : Key
+  : Val;
+
 type ParseTReturnPlural<
   Res,
   Key,
@@ -867,10 +883,10 @@ type ParseTReturnPlural<
   KeyWithOrdinalPlural = `${Key &
     string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
 > = KeyWithOrdinalPlural extends keyof Res
-  ? Res[KeyWithOrdinalPlural]
+  ? ParseTReturnWithFallback<Key, Res[KeyWithOrdinalPlural]>
   : KeyWithPlural extends keyof Res
-  ? Res[KeyWithPlural]
-  : $Value<Res, Key>;
+  ? ParseTReturnWithFallback<Key, Res[KeyWithPlural]>
+  : ParseTReturnWithFallback<Key, $Value<Res, Key>>;
 
 type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
   ? ParseTReturn<RestKey, $Value<Res, K1>>

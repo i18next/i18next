@@ -111,6 +111,10 @@ function i18nextTUsage() {
   i18next.t('bar', { ns: 'custom', defaultValue: 'some default value' });
   i18next.t('bar', { defaultValue: 'some default value' });
   i18next.t('bar', 'some default value');
+
+  // key fallback
+  // @ts-expect-error
+  i18next.t('key fallback with {{val}}', {});
 }
 
 function expectErrorWhenInvalidKeyWithI18nextT() {
@@ -141,8 +145,7 @@ function returnNeverWithInvalidNamespace(t: TFunction<string>) {
 }
 
 function nullTranslations() {
-  // seems to work only when not using typesafe translations
-  // i18next.t('nullKey').trim();
+  i18next.t('nullKey').trim();
 }
 
 // function i18nextContextUsage(t: TFunction<'ctx'>) {
