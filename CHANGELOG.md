@@ -1,3 +1,7 @@
+## 23.3.0
+
+- types: Fix performance issue that affects flat object with multiple (thousands) keys [2004](https://github.com/i18next/i18next/pull/2004)
+
 ## 23.2.11
 
 - types: Fix $TFunctionBrand [1997](https://github.com/i18next/i18next/pull/1997)
