@@ -1,7 +1,6 @@
 // Internal Helpers
 type $MergeBy<T, K> = Omit<T, keyof K> & K;
 type $Dictionary<T = any> = { [key: string]: T };
-type $Value<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
 type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof any[]> : Arr;
 type $PreservedValue<Value, Fallback> = [Value] extends [never] ? Fallback : Value;
 type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
@@ -866,14 +865,10 @@ type ParseTReturnPlural<
   KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`,
   KeyWithOrdinalPlural = `${Key &
     string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
-> = KeyWithOrdinalPlural extends keyof Res
-  ? Res[KeyWithOrdinalPlural]
-  : KeyWithPlural extends keyof Res
-  ? Res[KeyWithPlural]
-  : $Value<Res, Key>;
+> = Res[(KeyWithOrdinalPlural | KeyWithPlural | Key) & keyof Res];
 
 type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
-  ? ParseTReturn<RestKey, $Value<Res, K1>>
+  ? ParseTReturn<RestKey, Res[K1 & keyof Res]>
   : ParseTReturnPlural<Res, Key>;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
@@ -891,7 +886,7 @@ export type TFunctionReturn<
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
   ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
-    ? ParseTReturn<RestKey, $Value<Resources, Nsp>>
+    ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources]>
     : ParseTReturn<Key, Resources[$FirstNamespace<ActualNS>]>
   : DefaultTReturn<TOpt>;
 
@@ -915,7 +910,6 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
   >(
     ...args:
       | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
-      | [key: Key | Key[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
       | [key: string | string[], options: TOpt & InterpolationMap<Ret> & { defaultValue: string }]
       | [key: string | string[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
