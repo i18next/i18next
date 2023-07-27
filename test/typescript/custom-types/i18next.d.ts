@@ -37,6 +37,7 @@ declare module 'i18next' {
         foo_other: 'foo';
       };
       ctx: {
+        foo: 'foo';
         dessert_cake: 'a nice cake';
         dessert_muffin_one: 'a nice muffin';
         dessert_muffin_other: '{{count}} nice muffins';

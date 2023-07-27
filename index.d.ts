@@ -835,6 +835,12 @@ type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extend
   ? Keys[UnionFallbackNs]
   : Keys[_FallbackNamespace & string];
 
+type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string
+  ? Keys extends `${infer Prefix}_${TOpt['context']}${infer Suffix}`
+    ? `${Prefix}${Suffix}`
+    : never
+  : Keys;
+
 export type ParseKeys<
   Ns extends Namespace = _DefaultNamespace,
   TOpt extends TOptions = {},
@@ -842,10 +848,12 @@ export type ParseKeys<
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
-  ?
+  ? FilterKeysByContext<
       | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
       | ParseKeysByNamespaces<ActualNS, Keys>
-      | ParseKeysByFallbackNs<Keys>
+      | ParseKeysByFallbackNs<Keys>,
+      TOpt
+    >
   : string;
 
 /*********************************************************
@@ -879,15 +887,20 @@ type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
   : string;
 type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
+type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
+  ? `${Key & string}_${TOpt['context']}`
+  : Key;
+
 export type TFunctionReturn<
   Ns extends Namespace,
   Key,
   TOpt extends TOptions,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
+  ActualKey = KeyWithContext<Key, TOpt>,
 > = $IsResourcesDefined extends true
-  ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
+  ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
     ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources]>
-    : ParseTReturn<Key, Resources[$FirstNamespace<ActualNS>]>
+    : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>]>
   : DefaultTReturn<TOpt>;
 
 type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true
@@ -910,8 +923,8 @@ export interface TFunction<Ns extends Namespace = _DefaultNamespace, KPrefix = u
   >(
     ...args:
       | [key: Key | Key[], options?: TOpt & InterpolationMap<Ret>]
-      | [key: string | string[], options: TOpt & InterpolationMap<Ret> & { defaultValue: string }]
-      | [key: string | string[], defaultValue: string, options?: TOpt & InterpolationMap<Ret>]
+      | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: string }]
+      | [key: string | string[], defaultValue: string, options?: TOpt & $Dictionary]
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
 }
 

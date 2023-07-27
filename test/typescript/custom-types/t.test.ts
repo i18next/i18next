@@ -111,6 +111,8 @@ function i18nextTUsage() {
   i18next.t('bar', { ns: 'custom', defaultValue: 'some default value' });
   i18next.t('bar', { defaultValue: 'some default value' });
   i18next.t('bar', 'some default value');
+
+  const str: string = i18next.t('unknown-ns:unknown-key', 'default value');
 }
 
 function expectErrorWhenInvalidKeyWithI18nextT() {
@@ -145,13 +147,16 @@ function nullTranslations() {
   // i18next.t('nullKey').trim();
 }
 
-// function i18nextContextUsage(t: TFunction<'ctx'>) {
-//   t('dessert', { context: 'cake' }).trim();
-//   t('dessert', { context: 'muffin' }).trim();
+function i18nextContextUsage(t: TFunction<'ctx'>) {
+  t('dessert', { context: 'cake' as const }).trim();
 
-//   // context + plural
-//   t('dessert', { context: 'muffin', count: 3 }).trim();
-// }
+  // context + plural
+  t('dessert', { context: 'muffin' as const, count: 3 }).trim();
+
+  // @ts-expect-error
+  // valid key with invalid context
+  t('foo', { context: 'cake' as const }).trim();
+}
 
 function expectErrorsForDifferentTFunctions(
   t1: TFunction<'ord'>,
