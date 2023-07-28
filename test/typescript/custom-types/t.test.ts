@@ -38,7 +38,7 @@ function arrayNamespace(t: TFunction<['custom', 'alternate']>) {
   t('custom:bar');
   t('bar', { ns: 'custom' });
   t('bar');
-  t('baz', { ns: ['alternate', 'custom'] as const });
+  t('baz', { ns: ['alternate', 'custom'] });
 
   // @ts-expect-error
   t('baz');
@@ -148,14 +148,14 @@ function nullTranslations() {
 }
 
 function i18nextContextUsage(t: TFunction<'ctx'>) {
-  t('dessert', { context: 'cake' as const }).trim();
+  t('dessert', { context: 'cake' }).trim();
 
   // context + plural
-  t('dessert', { context: 'muffin' as const, count: 3 }).trim();
+  t('dessert', { context: 'muffin', count: 3 }).trim();
 
   // @ts-expect-error
   // valid key with invalid context
-  t('foo', { context: 'cake' as const }).trim();
+  t('foo', { context: 'cake' }).trim();
 }
 
 function expectErrorsForDifferentTFunctions(
