@@ -1,3 +1,8 @@
+## 23.4.0
+
+- types: Support const modifier for options and key [2007](https://github.com/i18next/i18next/pull/2007)
+- types: Support context [2006](https://github.com/i18next/i18next/pull/2006)
+
 ## 23.3.0
 
 - types: Fix performance issue that affects flat object with multiple (thousands) keys [2004](https://github.com/i18next/i18next/pull/2004)
