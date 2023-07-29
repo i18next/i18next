@@ -1,5 +1,5 @@
 // Internal Helpers
-import type { $Dictionary } from 'typescript/helpers';
+import type { $Dictionary } from './typescript/helpers.d.ts';
 import type {
   DefaultNamespace,
   FlatNamespace,
@@ -11,9 +11,9 @@ import type {
   ResourceKey,
   ResourceLanguage,
   TOptions,
-} from 'typescript/options';
+} from './typescript/options.d.ts';
 
-import type { KeyPrefix, TFunction } from 'typescript/t';
+import type { KeyPrefix, TFunction } from './typescript/t.d.ts';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
@@ -494,8 +494,8 @@ export interface i18n {
   emit(eventName: string, ...args: any[]): void;
 }
 
-export type * from 'typescript/options';
-export type * from 'typescript/t';
+export type * from './typescript/options.d.ts';
+export type * from './typescript/t.d.ts';
 
 declare const i18next: i18n;
 export default i18next;

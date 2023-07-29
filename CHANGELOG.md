@@ -1,3 +1,7 @@
+## 23.4.1
+
+- types: fix typescript imports
+
 ## 23.4.0
 
 - types: Support const modifier for options and key [2007](https://github.com/i18next/i18next/pull/2007)

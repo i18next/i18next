@@ -1,5 +1,11 @@
-import type { $OmitArrayKeys, $PreservedValue, $Dictionary, $SpecialObject } from './helpers';
-import type { TypeOptions, Namespace, FlatNamespace, DefaultNamespace, TOptions } from './options';
+import type { $OmitArrayKeys, $PreservedValue, $Dictionary, $SpecialObject } from './helpers.d.ts';
+import type {
+  TypeOptions,
+  Namespace,
+  FlatNamespace,
+  DefaultNamespace,
+  TOptions,
+} from './options.d.ts';
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
