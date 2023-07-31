@@ -548,7 +548,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   overloadTranslationOptionHandler?(args: string[]): TOptions;
 
   /**
-   * @see https://www.i18next.com/interpolation.html
+   * @see https://www.i18next.com/translation-function/interpolation
    */
   interpolation?: InterpolationOptions;
 
