@@ -4,7 +4,7 @@
   "description": "i18next internationalization framework",
   "main": "./dist/cjs/i18next.js",
   "module": "./dist/esm/i18next.js",
-  "types": "./index.d.ts",
+  "types": "./index.d.mts",
   "typesVersions": {
     "<5.0": {
       "typescript/t.d.ts": [
@@ -15,9 +15,14 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./index.d.ts",
-      "import": "./dist/esm/i18next.js",
-      "require": "./dist/cjs/i18next.js"
+      "import": {
+        "types": "./index.d.mts",
+        "default": "./dist/esm/i18next.js"
+      },
+      "require": {
+        "types": "./index.d.ts",
+        "default": "./dist/cjs/i18next.js"
+      }
     }
   },
   "keywords": [
