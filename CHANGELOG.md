@@ -1,3 +1,7 @@
+## 23.4.2
+
+- types: export some types for next-i18next
+
 ## 23.4.1
 
 - types: fix typescript imports

@@ -495,7 +495,32 @@ export interface i18n {
 }
 
 export type * from './typescript/options.d.ts';
+export type {
+  FallbackLngObjList,
+  FallbackLng,
+  InitOptions,
+  TypeOptions,
+  CustomTypeOptions,
+  CustomPluginOptions,
+  PluginOptions,
+  FormatFunction,
+  InterpolationOptions,
+  ReactOptions,
+  ResourceKey,
+  ResourceLanguage,
+  Resource,
+  TOptions,
+  Namespace,
+  DefaultNamespace,
+} from './typescript/options.d.ts';
 export type * from './typescript/t.d.ts';
+export type {
+  TFunction,
+  ParseKeys,
+  TFunctionReturn,
+  TFunctionDetailedResult,
+  KeyPrefix,
+} from './typescript/t.d.ts';
 
 declare const i18next: i18n;
 export default i18next;
