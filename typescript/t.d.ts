@@ -19,6 +19,7 @@ type _ReturnNull = TypeOptions['returnNull'];
 type _KeySeparator = TypeOptions['keySeparator'];
 type _NsSeparator = TypeOptions['nsSeparator'];
 type _PluralSeparator = TypeOptions['pluralSeparator'];
+type _ContextSeparator = TypeOptions['contextSeparator'];
 type _FallbackNamespace = TypeOptions['fallbackNS'];
 type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
@@ -104,7 +105,7 @@ type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extend
   : Keys[_FallbackNamespace & string];
 
 type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string
-  ? Keys extends `${infer Prefix}_${TOpt['context']}${infer Suffix}`
+  ? Keys extends `${infer Prefix}${_ContextSeparator}${TOpt['context']}${infer Suffix}`
     ? `${Prefix}${Suffix}`
     : never
   : Keys;
@@ -156,7 +157,7 @@ type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
 type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
 type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
-  ? `${Key & string}_${TOpt['context']}`
+  ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
   : Key;
 
 export type TFunctionReturn<

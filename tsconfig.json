@@ -18,6 +18,7 @@
     "test/typescript/nonEsModuleInterop/**/*.ts",
     "test/typescript/custom-types",
     "test/typescript/default-types",
-    "test/typescript/fallback-types"
+    "test/typescript/fallback-types",
+    "test/typescript/custom-context-separator"
   ]
 }
