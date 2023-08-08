@@ -1,3 +1,7 @@
+## 23.4.3
+
+- types: add customisation of contextSeparator [2017](https://github.com/i18next/i18next/pull/2017)
+
 ## 23.4.2
 
 - types: export some types for next-i18next
