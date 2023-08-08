@@ -55,9 +55,14 @@ export type TypeOptions = $MergeBy<
     nsSeparator: ':';
 
     /**
-     * Char to split namespace from key
+     * Char to split plural from key
      */
     pluralSeparator: '_';
+
+    /**
+     * Char to split context from key
+     */
+    contextSeparator: '_';
 
     /**
      * Default namespace used if not passed to translation function
