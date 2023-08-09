@@ -171,3 +171,11 @@ function expectErrorsForDifferentTFunctions(
   fn(t2);
   fn(t3); // no error
 }
+
+function usingTFunctionInsideAnotherTFunction(t: TFunction) {
+  t('foo', { defaultValue: t('bar') });
+
+  t('foo', { something: t('bar') });
+
+  t('foo', { defaultValue: t('bar'), something: t('bar') });
+}
