@@ -1,3 +1,7 @@
+## 23.4.4
+
+- types: add customisation of contextSeparator also on v4 t types [2019](https://github.com/i18next/i18next/pull/2019)
+
 ## 23.4.3
 
 - types: add customisation of contextSeparator [2017](https://github.com/i18next/i18next/pull/2017)
