@@ -512,6 +512,7 @@ export type {
   TOptions,
   Namespace,
   DefaultNamespace,
+  FlatNamespace,
 } from './typescript/options.d.ts';
 export type * from './typescript/t.d.ts';
 export type {
