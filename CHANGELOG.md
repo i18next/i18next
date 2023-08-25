@@ -1,3 +1,7 @@
+## 23.4.6
+
+- pass correct language for custom i18nFormat
+
 ## 23.4.5
 
 - types: named export for FlatNamespace

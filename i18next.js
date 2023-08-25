@@ -637,7 +637,7 @@
         res = this.i18nFormat.parse(res, {
           ...this.options.interpolation.defaultVariables,
           ...options
-        }, resolved.usedLng, resolved.usedNS, resolved.usedKey, {
+        }, options.lng || this.language || resolved.usedLng, resolved.usedNS, resolved.usedKey, {
           resolved
         });
       } else if (!options.skipInterpolation) {

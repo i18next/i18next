@@ -333,7 +333,7 @@ class Translator extends EventEmitter {
       res = this.i18nFormat.parse(
         res,
         { ...this.options.interpolation.defaultVariables, ...options },
-        resolved.usedLng,
+        options.lng || this.language || resolved.usedLng,
         resolved.usedNS,
         resolved.usedKey,
         { resolved },
