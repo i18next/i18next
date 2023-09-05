@@ -218,7 +218,7 @@ class I18n extends EventEmitter {
     if (typeof language === 'function') usedCallback = language;
 
     if (!this.options.resources || this.options.partialBundledLanguages) {
-      if (usedLng && usedLng.toLowerCase() === 'cimode') return usedCallback(); // avoid loading resources for cimode
+      if (usedLng && usedLng.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback(); // avoid loading resources for cimode
 
       const toLoad = [];
 

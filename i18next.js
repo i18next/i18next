@@ -1956,7 +1956,7 @@
       const usedLng = typeof language === 'string' ? language : this.language;
       if (typeof language === 'function') usedCallback = language;
       if (!this.options.resources || this.options.partialBundledLanguages) {
-        if (usedLng && usedLng.toLowerCase() === 'cimode') return usedCallback();
+        if (usedLng && usedLng.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback();
         const toLoad = [];
         const append = lng => {
           if (!lng) return;
