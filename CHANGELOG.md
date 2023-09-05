@@ -1,3 +1,7 @@
+## 23.4.8
+
+- fix: preload languages also on cimode, if configured
+
 ## 23.4.7
 
 - preload languages also on cimode, if configured

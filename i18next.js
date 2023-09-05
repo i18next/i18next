@@ -1960,6 +1960,7 @@
         const toLoad = [];
         const append = lng => {
           if (!lng) return;
+          if (lng === 'cimode') return;
           const lngs = this.services.languageUtils.toResolveHierarchy(lng);
           lngs.forEach(l => {
             if (toLoad.indexOf(l) < 0) toLoad.push(l);
