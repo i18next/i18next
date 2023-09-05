@@ -1,3 +1,7 @@
+## 23.4.9
+
+- fix: preload languages also on cimode, if configured also as fallbackLng
+
 ## 23.4.8
 
 - fix: preload languages also on cimode, if configured

@@ -224,9 +224,10 @@ class I18n extends EventEmitter {
 
       const append = lng => {
         if (!lng) return;
-        if (lng === 'cimode') return
+        if (lng === 'cimode') return;
         const lngs = this.services.languageUtils.toResolveHierarchy(lng);
         lngs.forEach(l => {
+          if (l === 'cimode') return;
           if (toLoad.indexOf(l) < 0) toLoad.push(l);
         });
       };
