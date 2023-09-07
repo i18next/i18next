@@ -169,3 +169,11 @@ function interpolation(t: TFunction) {
 function nullTranslations() {
   i18next.t('nullKey').trim();
 }
+
+function usingTFunctionInsideAnotherTFunction(t: TFunction) {
+  t('foobar', { defaultValue: t('inter') });
+
+  t('foobar', { defaultValue: t('inter'), someValue: t('inter') });
+
+  t('foobar', { something: t('inter') });
+}

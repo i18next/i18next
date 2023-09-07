@@ -685,7 +685,7 @@ export interface TOptionsBase {
   /**
    * Default value to return if a translation was not found
    */
-  defaultValue?: any;
+  defaultValue?: unknown;
   /**
    * Count value used for plurals
    */

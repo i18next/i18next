@@ -134,7 +134,10 @@ type ParseInterpolationValues<Ret> =
         | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
         | ParseInterpolationValues<Rest>
     : never;
-type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
+type InterpolationMap<Ret> = Record<
+  $PreservedValue<ParseInterpolationValues<Ret>, string>,
+  unknown
+>;
 
 type ParseTReturnPlural<
   Res,
@@ -208,6 +211,7 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
  **************************/
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
