@@ -134,7 +134,10 @@ type ParseInterpolationValues<Ret> =
         | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
         | ParseInterpolationValues<Rest>
     : never;
-type InterpolationMap<Ret> = Record<$PreservedValue<ParseInterpolationValues<Ret>, string>, any>;
+type InterpolationMap<Ret> = Record<
+  $PreservedValue<ParseInterpolationValues<Ret>, string>,
+  unknown
+>;
 
 type ParseTReturnPlural<
   Res,

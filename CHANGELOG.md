@@ -1,3 +1,7 @@
+## 23.5.1
+
+- types: use unknown to better infer types on nested t functions also for older typescript version [2032](https://github.com/i18next/i18next/issues/2032)
+
 ## 23.5.0
 
 - types: use unknown to better infer types on nested t functions [2018](https://github.com/i18next/i18next/pull/2018)
