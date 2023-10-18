@@ -555,6 +555,7 @@ class Translator extends EventEmitter {
   }
 
   getUsedParamsDetails(options = {}) {
+    // we need to remember to extend this array whenever new option properties are added
     const optionsKeys = [
       'defaultValue',
       'ordinal',
