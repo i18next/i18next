@@ -1,3 +1,7 @@
+## 23.6.0
+
+- add interpolation data to response if returnDetails is true [2053](https://github.com/i18next/i18next/pull/2053)
+
 ## 23.5.1
 
 - types: use unknown to better infer types on nested t functions also for older typescript version [2032](https://github.com/i18next/i18next/issues/2032)
