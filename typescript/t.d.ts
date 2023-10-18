@@ -175,7 +175,7 @@ export type TFunctionReturn<
     : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>]>
   : DefaultTReturn<TOpt>;
 
-export type TFunctionDetailedResult<T = string> = {
+export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
   /**
    * The plain used key
    */
@@ -196,10 +196,14 @@ export type TFunctionDetailedResult<T = string> = {
    * The used namespace for this translation.
    */
   usedNS: string;
+  /**
+   * The parameters used for interpolation.
+   */
+  usedParams: InterpolationMap<T> & { count?: TOpt['count'] };
 };
 
 type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true
-  ? TFunctionDetailedResult<Ret>
+  ? TFunctionDetailedResult<Ret, TOpt>
   : Ret;
 
 type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string

@@ -73,6 +73,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -83,6 +84,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -93,6 +95,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -103,6 +106,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'de',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -113,6 +117,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'de',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -123,6 +128,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -133,6 +139,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -143,6 +150,7 @@ describe('Translator', () => {
             exactUsedKey: 'test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -153,6 +161,7 @@ describe('Translator', () => {
             exactUsedKey: 'deep.test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
           },
         },
         {
@@ -163,6 +172,73 @@ describe('Translator', () => {
             exactUsedKey: 'deep.test',
             usedLng: 'en',
             usedNS: 'translation',
+            usedParams: {},
+          },
+        },
+        {
+          args: ['translation:test', { returnDetails: true, testParam: 'test-param' }],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+            usedParams: {
+              testParam: 'test-param',
+            },
+          },
+        },
+        {
+          args: [
+            'translation:test',
+            {
+              returnDetails: true,
+              replace: { testParam: 'test-param' },
+            },
+          ],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+            usedParams: {
+              testParam: 'test-param',
+            },
+          },
+        },
+        {
+          args: [
+            'translation:test',
+            {
+              defaultValue: 'default',
+              ordinal: true,
+              context: undefined,
+              replace: { testParam: 'test-param' },
+              lng: 'en',
+              lngs: ['en', 'de'],
+              fallbackLng: 'en',
+              ns: ['translation', 'other'],
+              keySeparator: '.',
+              nsSeparator: ':',
+              returnObjects: false,
+              returnDetails: true,
+              joinArrays: true,
+              postProcess: false,
+              interpolation: { escapeValue: false },
+              count: 1,
+            },
+          ],
+          expected: {
+            usedKey: 'test',
+            res: 'test_en',
+            exactUsedKey: 'test',
+            usedLng: 'en',
+            usedNS: 'translation',
+            usedParams: {
+              testParam: 'test-param',
+              count: 1,
+            },
           },
         },
       ];
