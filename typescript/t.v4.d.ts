@@ -203,7 +203,7 @@ export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
 };
 
 type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true
-  ? TFunctionDetailedResult<Ret>
+  ? TFunctionDetailedResult<Ret, TOpt>
   : Ret;
 
 type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
