@@ -143,6 +143,7 @@ function interpolation(t: TFunction) {
   resolved.exactUsedKey;
   resolved.usedNS;
   resolved.usedLng;
+  resolved.usedParams;
 
   const r2 = t('keyTwo', { returnDetails: false });
   r2?.substring(0, 2); // make sure it is a string

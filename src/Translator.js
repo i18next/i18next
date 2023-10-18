@@ -121,13 +121,21 @@ class Translator extends EventEmitter {
             exactUsedKey: key,
             usedLng: lng,
             usedNS: namespace,
+            usedParams: this.getUsedParamsDetails(options),
           };
         }
         return `${namespace}${nsSeparator}${key}`;
       }
 
       if (returnDetails) {
-        return { res: key, usedKey: key, exactUsedKey: key, usedLng: lng, usedNS: namespace };
+        return {
+          res: key,
+          usedKey: key,
+          exactUsedKey: key,
+          usedLng: lng,
+          usedNS: namespace,
+          usedParams: this.getUsedParamsDetails(options),
+        };
       }
       return key;
     }
@@ -163,6 +171,7 @@ class Translator extends EventEmitter {
           : `key '${key} (${this.language})' returned an object instead of string.`;
         if (returnDetails) {
           resolved.res = r;
+          resolved.usedParams = this.getUsedParamsDetails(options);
           return resolved;
         }
         return r;
@@ -323,6 +332,7 @@ class Translator extends EventEmitter {
     // return
     if (returnDetails) {
       resolved.res = res;
+      resolved.usedParams = this.getUsedParamsDetails(options);
       return resolved;
     }
     return res;
@@ -542,6 +552,45 @@ class Translator extends EventEmitter {
     if (this.i18nFormat && this.i18nFormat.getResource)
       return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
+  }
+
+  getUsedParamsDetails(options = {}) {
+    const optionsKeys = [
+      'defaultValue',
+      'ordinal',
+      'context',
+      'replace',
+      'lng',
+      'lngs',
+      'fallbackLng',
+      'ns',
+      'keySeparator',
+      'nsSeparator',
+      'returnObjects',
+      'returnDetails',
+      'joinArrays',
+      'postProcess',
+      'interpolation',
+    ];
+
+    const useOptionsReplaceForData = options.replace && typeof options.replace !== 'string';
+    let data = useOptionsReplaceForData ? options.replace : options;
+    if (useOptionsReplaceForData && typeof options.count !== 'undefined') {
+      data.count = options.count;
+    }
+
+    if (this.options.interpolation.defaultVariables) {
+      data = { ...this.options.interpolation.defaultVariables, ...data };
+    }
+
+    // avoid reporting options (execpt count) as usedParams
+    if (!useOptionsReplaceForData) {
+      for (const key of optionsKeys) {
+        delete data[key];
+      }
+    }
+
+    return data;
   }
 
   static hasDefaultValue(options) {
