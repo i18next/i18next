@@ -245,8 +245,6 @@ describe('Translator', () => {
 
       tests.forEach((test) => {
         it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
-          console.log(t.translate.apply(t, test.args));
-          console.log(test.expected);
           expect(t.translate.apply(t, test.args)).to.eql(test.expected);
         });
       });
