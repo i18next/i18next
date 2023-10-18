@@ -585,6 +585,7 @@ class Translator extends EventEmitter {
 
     // avoid reporting options (execpt count) as usedParams
     if (!useOptionsReplaceForData) {
+      data = { ...data };
       for (const key of optionsKeys) {
         delete data[key];
       }
