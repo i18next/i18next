@@ -416,7 +416,10 @@ class Translator extends EventEmitter {
         res,
         key,
         this.options && this.options.postProcessPassResolved
-          ? { i18nResolved: resolved, ...options }
+          ? {
+              i18nResolved: { ...resolved, usedParams: this.getUsedParamsDetails(options) },
+              ...options,
+            }
           : options,
         this,
       );
