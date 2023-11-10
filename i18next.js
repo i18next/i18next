@@ -688,7 +688,10 @@
       const postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
       if (res !== undefined && res !== null && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) {
         res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? {
-          i18nResolved: resolved,
+          i18nResolved: {
+            ...resolved,
+            usedParams: this.getUsedParamsDetails(options)
+          },
           ...options
         } : options, this);
       }

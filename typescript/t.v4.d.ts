@@ -78,11 +78,11 @@ type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extend
 /************************************************************************
  * Parse t function keys based on the namespace, options and key prefix *
  ************************************************************************/
-type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
+export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
   ? ResourceKeys<true>
   : ResourceKeys;
 
-type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
+export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
   ? TOpt['ns']
   : Ns;
 
@@ -159,7 +159,7 @@ type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
   : string;
 type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
-type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
+export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
   : Key;
 

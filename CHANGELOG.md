@@ -1,3 +1,8 @@
+## 23.7.0
+
+- fix: separate cjs and mjs typings [2010](https://github.com/i18next/i18next/issues/2010)
+- fix: consider importing './typescript/t.js' [2048](https://github.com/i18next/i18next/issues/2048)
+
 ## 23.6.0
 
 - add interpolation data to response if returnDetails is true [2053](https://github.com/i18next/i18next/pull/2053)

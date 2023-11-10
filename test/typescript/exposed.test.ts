@@ -4,6 +4,7 @@
 import i18next, { Interpolator, Modules, WithT, ResourceStore, Formatter } from 'i18next';
 
 i18next.init();
+const lng = i18next.resolvedLanguage || i18next.language;
 
 const interpolator: Interpolator = i18next.services.interpolator;
 

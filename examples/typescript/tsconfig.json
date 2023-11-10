@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "esModuleInterop": true,
     "target": "es6",
     "lib": ["es2015"],
     "jsx": "react",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "outDir": "dist",

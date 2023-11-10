@@ -1,5 +1,5 @@
 // Internal Helpers
-import type { $Dictionary } from './typescript/helpers.d.ts';
+import type { $Dictionary } from './typescript/helpers.js';
 import type {
   DefaultNamespace,
   FlatNamespace,
@@ -11,9 +11,9 @@ import type {
   ResourceKey,
   ResourceLanguage,
   TOptions,
-} from './typescript/options.d.ts';
+} from './typescript/options.js';
 
-import type { KeyPrefix, TFunction } from './typescript/t.d.ts';
+import type { KeyPrefix, TFunction } from './typescript/t.js';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
@@ -494,8 +494,9 @@ export interface i18n {
   emit(eventName: string, ...args: any[]): void;
 }
 
-export type * from './typescript/options.d.ts';
+export type * from './typescript/options.js';
 export type {
+  // we need to explicitely export some types, to prevent some issues with next-i18next and interpolation variable validation, etc...
   FallbackLngObjList,
   FallbackLng,
   InitOptions,
@@ -513,15 +514,15 @@ export type {
   Namespace,
   DefaultNamespace,
   FlatNamespace,
-} from './typescript/options.d.ts';
-export type * from './typescript/t.d.ts';
+} from './typescript/options.js';
+export type * from './typescript/t.js';
 export type {
   TFunction,
   ParseKeys,
   TFunctionReturn,
   TFunctionDetailedResult,
   KeyPrefix,
-} from './typescript/t.d.ts';
+} from './typescript/t.js';
 
 declare const i18next: i18n;
 export default i18next;
