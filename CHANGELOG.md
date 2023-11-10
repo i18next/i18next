@@ -1,3 +1,7 @@
+## 23.7.1
+
+- fix some mjs typings
+
 ## 23.7.0
 
 - fix: separate cjs and mjs typings [2010](https://github.com/i18next/i18next/issues/2010)

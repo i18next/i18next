@@ -1,4 +1,5 @@
 import * as i18next from './index.js';
+import type { $Dictionary } from './typescript/helpers.js';
 
 import type { DefaultNamespace, Namespace } from './typescript/options.js';
 
@@ -12,7 +13,7 @@ export type Module = i18next.Module;
 export type CallbackError = i18next.CallbackError;
 export type ReadCallback = i18next.ReadCallback;
 export type MultiReadCallback = i18next.MultiReadCallback;
-export type BackendModule = i18next.BackendModule;
+export type BackendModule<TOptions = object> = i18next.BackendModule<TOptions>;
 export type LanguageDetectorModule = i18next.LanguageDetectorModule;
 export type LanguageDetectorAsyncModule = i18next.LanguageDetectorAsyncModule;
 export type PostProcessorModule = i18next.PostProcessorModule;
@@ -24,7 +25,13 @@ export type Modules = i18next.Modules;
 export type Newable<T> = i18next.Newable<T>;
 export type NewableModule<T extends Module> = i18next.NewableModule<T>;
 export type Callback = i18next.Callback;
-export type ExistsFunction = i18next.ExistsFunction;
+export type ExistsFunction<
+  TKeys extends string = string,
+  TInterpolationMap extends object = $Dictionary,
+  > = i18next.ExistsFunction<
+  TKeys,
+  TInterpolationMap
+>;
 export type CloneOptions = i18next.CloneOptions;
 export type i18n = i18next.i18n;
 
