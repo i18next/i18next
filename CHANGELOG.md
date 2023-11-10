@@ -1,3 +1,7 @@
+## 23.7.2
+
+- types: optimize mts
+
 ## 23.7.1
 
 - fix some mjs typings

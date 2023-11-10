@@ -1,44 +1,46 @@
-import * as i18next from './index.js';
+import * as i18nextMod from './index.js';
 import type { $Dictionary } from './typescript/helpers.js';
 
 import type { DefaultNamespace, Namespace } from './typescript/options.js';
 
-export type WithT<Ns extends Namespace = DefaultNamespace> = i18next.WithT<Ns>;
-export type Interpolator = i18next.Interpolator;
-export type ResourceStore = i18next.ResourceStore;
-export type Formatter = i18next.Formatter;
-export type Services = i18next.Services;
-export type ModuleType = i18next.ModuleType;
-export type Module = i18next.Module;
-export type CallbackError = i18next.CallbackError;
-export type ReadCallback = i18next.ReadCallback;
-export type MultiReadCallback = i18next.MultiReadCallback;
-export type BackendModule<TOptions = object> = i18next.BackendModule<TOptions>;
-export type LanguageDetectorModule = i18next.LanguageDetectorModule;
-export type LanguageDetectorAsyncModule = i18next.LanguageDetectorAsyncModule;
-export type PostProcessorModule = i18next.PostProcessorModule;
-export type LoggerModule = i18next.LoggerModule;
-export type I18nFormatModule = i18next.I18nFormatModule;
-export type FormatterModule = i18next.FormatterModule;
-export type ThirdPartyModule = i18next.ThirdPartyModule;
-export type Modules = i18next.Modules;
-export type Newable<T> = i18next.Newable<T>;
-export type NewableModule<T extends Module> = i18next.NewableModule<T>;
-export type Callback = i18next.Callback;
+export type WithT<Ns extends Namespace = DefaultNamespace> = i18nextMod.WithT<Ns>;
+export type Interpolator = i18nextMod.Interpolator;
+export type ResourceStore = i18nextMod.ResourceStore;
+export type Formatter = i18nextMod.Formatter;
+export type Services = i18nextMod.Services;
+export type ModuleType = i18nextMod.ModuleType;
+export type Module = i18nextMod.Module;
+export type CallbackError = i18nextMod.CallbackError;
+export type ReadCallback = i18nextMod.ReadCallback;
+export type MultiReadCallback = i18nextMod.MultiReadCallback;
+export type BackendModule<TOptions = object> = i18nextMod.BackendModule<TOptions>;
+export type LanguageDetectorModule = i18nextMod.LanguageDetectorModule;
+export type LanguageDetectorAsyncModule = i18nextMod.LanguageDetectorAsyncModule;
+export type PostProcessorModule = i18nextMod.PostProcessorModule;
+export type LoggerModule = i18nextMod.LoggerModule;
+export type I18nFormatModule = i18nextMod.I18nFormatModule;
+export type FormatterModule = i18nextMod.FormatterModule;
+export type ThirdPartyModule = i18nextMod.ThirdPartyModule;
+export type Modules = i18nextMod.Modules;
+export type Newable<T> = i18nextMod.Newable<T>;
+export type NewableModule<T extends Module> = i18nextMod.NewableModule<T>;
+export type Callback = i18nextMod.Callback;
 export type ExistsFunction<
   TKeys extends string = string,
   TInterpolationMap extends object = $Dictionary,
-  > = i18next.ExistsFunction<
+  > = i18nextMod.ExistsFunction<
   TKeys,
   TInterpolationMap
 >;
-export type CloneOptions = i18next.CloneOptions;
-export type i18n = i18next.i18n;
+export type CloneOptions = i18nextMod.CloneOptions;
 
 export type * from './typescript/options.js';
 export type * from './typescript/t.js';
 
-export default i18next.default;
+// tslint:disable-next-line:no-empty-interface
+export interface i18n extends i18nextMod.i18n {}
+declare const i18next: i18n;
+export default i18next;
 
 export const createInstance: i18n['createInstance'];
 
