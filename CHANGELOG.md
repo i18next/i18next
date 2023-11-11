@@ -1,3 +1,7 @@
+## 23.7.3
+
+- fix: consider importing '\*.js'
+
 ## 23.7.2
 
 - types: optimize mts
