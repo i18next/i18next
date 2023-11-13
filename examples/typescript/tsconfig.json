@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "target": "es6",
     "lib": ["es2015"],
     "jsx": "react",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "Classic",
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "outDir": "dist",
-    "resolveJsonModule": true,
+    // "resolveJsonModule": true,
     "strictNullChecks": true
   }
 }

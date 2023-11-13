@@ -17,5 +17,6 @@ i18next.t('inter', { val: 'xx' });
 //   1) as const (ts file)
 //   or
 //   2) as interface (d.ts file)
-// @ts-expect-error
-i18next.t('inter', { valWrong: 'xx' });
+// throws only with ts v5
+// // @ts-expect-error
+// i18next.t('inter', { valWrong: 'xx' });
