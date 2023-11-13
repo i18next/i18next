@@ -1,3 +1,7 @@
+## 23.7.5
+
+- fix types export for TypeScript v4 in combination with react-i18next
+
 ## 23.7.4
 
 - fix for TypeScript v4 in combination with react-i18next
