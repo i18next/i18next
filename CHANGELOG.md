@@ -1,3 +1,7 @@
+## 23.7.6
+
+- types: CustomInstanceExtenstions
+
 ## 23.7.5
 
 - fix types export for TypeScript v4 in combination with react-i18next
