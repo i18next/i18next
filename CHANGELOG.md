@@ -1,3 +1,7 @@
+## 23.7.7
+
+- optimize TypeScript V4 export
+
 ## 23.7.6
 
 - types: CustomInstanceExtenstions

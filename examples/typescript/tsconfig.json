@@ -6,7 +6,7 @@
     "target": "es6",
     "lib": ["es2015"],
     "jsx": "react",
-    "moduleResolution": "Classic",
+    "moduleResolution": "Node",
     // "moduleResolution": "NodeNext",
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
