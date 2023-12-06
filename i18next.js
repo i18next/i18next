@@ -1135,7 +1135,7 @@
           return new Intl.PluralRules(getCleanedCode(code), {
             type: options.ordinal ? 'ordinal' : 'cardinal'
           });
-        } catch {
+        } catch (err) {
           return;
         }
       }
