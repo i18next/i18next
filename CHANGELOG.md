@@ -1,3 +1,7 @@
+## 23.7.9
+
+- types: fix FormatFunction should allow any value inside options parameter
+
 ## 23.7.8
 
 - prevent cosmetic SyntaxError because of non catched error variable
