@@ -138,7 +138,7 @@ export type FormatFunction = (
   value: any,
   format?: string,
   lng?: string,
-  options?: InterpolationOptions & $Dictionary,
+  options?: InterpolationOptions & $Dictionary<any>,
 ) => string;
 
 export interface InterpolationOptions {
