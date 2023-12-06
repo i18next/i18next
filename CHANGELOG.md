@@ -1,3 +1,7 @@
+## 23.7.8
+
+- prevent cosmetic SyntaxError because of non catched error variable
+
 ## 23.7.7
 
 - optimize TypeScript V4 export
