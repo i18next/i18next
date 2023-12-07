@@ -36,6 +36,14 @@ declare module 'i18next' {
         foo_many: 'foo';
         foo_other: 'foo';
       };
+      nonPlurals: {
+        test: 'Test';
+        test_2: 'Test 2';
+        // 'test_form.title': 'title';
+        test_form: {
+          title: 'title';
+        };
+      };
       ctx: {
         foo: 'foo';
         dessert_cake: 'a nice cake';

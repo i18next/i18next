@@ -137,6 +137,13 @@ function i18nextOrdinalPluralUsage(t: TFunction<'ord'>) {
   t('place', { ordinal: true, count: 4 }).trim();
 }
 
+function i18nextTFalsePluralsUsage(t: TFunction<'nonPlurals'>) {
+  // this currently errors, but should not...
+  // t('test').trim();
+  t('test_2').trim();
+  t('test_form.title').trim();
+}
+
 // @ts-expect-error
 function returnNeverWithInvalidNamespace(t: TFunction<string>) {
   const result: never = t('foo');
