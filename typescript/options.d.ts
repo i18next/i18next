@@ -1,4 +1,4 @@
-import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.js';
+import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.d.ts';
 
 /**
  * This interface can be augmented by users to add types to `i18next` default TypeOptions.
