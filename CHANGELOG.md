@@ -1,3 +1,7 @@
+## 23.7.11
+
+- types: fix for older ts versions [2090](https://github.com/i18next/i18next/issues/2090)
+
 ## 23.7.10
 
 - types: initializedStoreOnce and initializedLanguageOnce [2089](https://github.com/i18next/i18next/pull/2089)

@@ -98,11 +98,19 @@ type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (in
     : never
   : never;
 
+// this seems not to work for ts < 4.7.2
+// type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false
+//   ? never
+//   : _FallbackNamespace extends (infer UnionFallbackNs extends string)[]
+//     ? Keys[UnionFallbackNs]
+//     : Keys[_FallbackNamespace & string];
+// so let's try this:
+type First<T> = T extends [infer U, ...any[]] ? U : any;
 type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false
   ? never
-  : _FallbackNamespace extends (infer UnionFallbackNs extends string)[]
-  ? Keys[UnionFallbackNs]
-  : Keys[_FallbackNamespace & string];
+  : _FallbackNamespace extends string
+  ? Keys[_FallbackNamespace & string]
+  : Keys[First<_FallbackNamespace>];
 
 type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string
   ? Keys extends `${infer Prefix}${_ContextSeparator}${TOpt['context']}${infer Suffix}`
