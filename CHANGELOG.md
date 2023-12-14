@@ -1,3 +1,7 @@
+## 23.7.10
+
+- types: initializedStoreOnce and initializedLanguageOnce [2089](https://github.com/i18next/i18next/pull/2089)
+
 ## 23.7.9
 
 - types: fix FormatFunction should allow any value inside options parameter
