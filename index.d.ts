@@ -491,6 +491,16 @@ export interface i18n extends CustomInstanceExtenstions {
   isInitialized: boolean;
 
   /**
+   * Store was initialized
+   */
+  initializedStoreOnce: boolean;
+
+  /**
+   * Language was initialized
+   */
+  initializedLanguageOnce: boolean;
+
+  /**
    * Emit event
    */
   emit(eventName: string, ...args: any[]): void;
