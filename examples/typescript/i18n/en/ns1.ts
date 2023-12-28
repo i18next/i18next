@@ -5,6 +5,9 @@ const ns1 = {
     part2: '😉',
   },
   inter: 'interpolated {{val}}',
+  some: 'ctx',
+  some_me: 'ctx2',
+  some_1234: 'ctx3',
 } as const;
 
 export default ns1;

@@ -8,6 +8,10 @@ console.log(i18next.t('ns1:description.part2'));
 console.log(i18next.t('ns2:description.part2'));
 console.log(i18next.t('description.part2', { ns: 'ns2' }));
 
+console.log(i18next.t('some'));
+console.log(i18next.t('some', { context: 'me' }));
+console.log(i18next.t('some', { context: '1234' }));
+
 const l = i18next.language;
 
 // interpolation

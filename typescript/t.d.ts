@@ -215,7 +215,6 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
  **************************/
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
-
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
