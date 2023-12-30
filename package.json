@@ -118,7 +118,7 @@
     "watchify": "4.0.0"
   },
   "scripts": {
-    "pretest": "npm run generate_ts_v4_index && npm run test:typescript && npm run test:typescript:customtypes && npm run test:typescript:defaulttypes && npm run test:typescript:fallbacktypes && npm run test:typescript:noninterop && npm run test:typescript:customcontextseparator",
+    "pretest": "npm run generate_ts_v4_index && npm run test:typescript && npm run test:typescript:customtypes && npm run test:typescript:customtypesjsonv3 && npm run test:typescript:defaulttypes && npm run test:typescript:fallbacktypes && npm run test:typescript:noninterop && npm run test:typescript:customcontextseparator && npm run test:typescript:manykeys",
     "lint": "eslint src",
     "test": "npm run lint && npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",
@@ -126,8 +126,10 @@
     "test:typescript": "tslint --project tsconfig.json",
     "test:typescript:defaulttypes": "tslint --project test/typescript/default-types/tsconfig.json",
     "test:typescript:customtypes": "tslint --project test/typescript/custom-types/tsconfig.json",
+    "test:typescript:customtypesjsonv3": "tslint --project test/typescript/custom-types-json-v3/tsconfig.json",
     "test:typescript:fallbacktypes": "tslint --project test/typescript/fallback-types/tsconfig.json",
     "test:typescript:customcontextseparator": "tslint --project test/typescript/custom-context-separator/tsconfig.json",
+    "test:typescript:manykeys": "tslint --project test/typescript/many-keys/tsconfig.json",
     "test:typescript:noninterop": "tslint --project tsconfig.nonEsModuleInterop.json",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",

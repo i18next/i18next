@@ -28,9 +28,11 @@ type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 
 type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
 
-type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
+type PluralSuffix = _JSONFormat extends 'v4'
+  ? 'zero' | 'one' | 'two' | 'few' | 'many' | 'other'
+  : number | 'plural';
 
-type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4'
+type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' | 'v3'
   ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
     ? KeyWithoutOrdinalPlural | Key
     : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
@@ -143,13 +145,28 @@ type ParseTReturnPlural<
   Res,
   Key,
   KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`,
+> = Res[(KeyWithPlural | Key) & keyof Res];
+
+type ParseTReturnPluralOrdinal<
+  Res,
+  Key,
   KeyWithOrdinalPlural = `${Key &
     string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
-> = Res[(KeyWithOrdinalPlural | KeyWithPlural | Key) & keyof Res];
+> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
 
-type ParseTReturn<Key, Res> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
-  ? ParseTReturn<RestKey, Res[K1 & keyof Res]>
-  : ParseTReturnPlural<Res, Key>;
+type ParseTReturn<
+  Key,
+  Res,
+  TOpt extends TOptions = {},
+> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
+  ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt>
+  : // Process plurals only if count is provided inside options
+  TOpt['count'] extends number
+  ? TOpt['ordinal'] extends boolean
+    ? ParseTReturnPluralOrdinal<Res, Key>
+    : ParseTReturnPlural<Res, Key>
+  : // otherwise access plain key without adding plural and ordinal suffixes
+    Res[Key & keyof Res];
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
@@ -171,8 +188,8 @@ export type TFunctionReturn<
   ActualKey = KeyWithContext<Key, TOpt>,
 > = $IsResourcesDefined extends true
   ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
-    ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources]>
-    : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>]>
+    ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt>
+    : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt>
   : DefaultTReturn<TOpt>;
 
 export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
