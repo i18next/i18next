@@ -8,6 +8,8 @@ const ns1 = {
   some: 'ctx',
   some_me: 'ctx2',
   some_1234: 'ctx3',
+  pl_one: 'sing',
+  pl_other: '{{count}} plur',
 } as const;
 
 export default ns1;

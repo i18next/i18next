@@ -1,3 +1,7 @@
+## 23.7.13
+
+- types: optimise ParseTReturn [2095](https://github.com/i18next/i18next/pull/2095)
+
 ## 23.7.12
 
 - types: fix for older ts version (context validation only for TS 5)

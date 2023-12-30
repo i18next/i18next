@@ -12,6 +12,9 @@ console.log(i18next.t('some'));
 console.log(i18next.t('some', { context: 'me' }));
 console.log(i18next.t('some', { context: '1234' }));
 
+console.log(i18next.t('pl', { count: 1 }));
+console.log(i18next.t('pl', { count: 2 }));
+
 const l = i18next.language;
 
 // interpolation
