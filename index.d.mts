@@ -28,10 +28,7 @@ export type Callback = i18nextMod.Callback;
 export type ExistsFunction<
   TKeys extends string = string,
   TInterpolationMap extends object = $Dictionary,
-  > = i18nextMod.ExistsFunction<
-  TKeys,
-  TInterpolationMap
->;
+> = i18nextMod.ExistsFunction<TKeys, TInterpolationMap>;
 export type CloneOptions = i18nextMod.CloneOptions;
 
 export type * from './typescript/options.js';
