@@ -81,7 +81,6 @@
     "chai": "4.3.10",
     "coveralls": "3.1.1",
     "cpy-cli": "^5.0.0",
-    "dtslint": "^0.4.2",
     "eslint": "8.53.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "^9.0.0",
@@ -113,24 +112,17 @@
     "rimraf": "5.0.5",
     "rollup": "^4.3.0",
     "sinon": "17.0.1",
-    "tslint": "^6.1.3",
     "typescript": "5.1.3",
+    "vitest": "1.1.0",
     "watchify": "4.0.0"
   },
   "scripts": {
-    "pretest": "npm run generate_ts_v4_index && npm run test:typescript && npm run test:typescript:customtypes && npm run test:typescript:customtypesjsonv3 && npm run test:typescript:defaulttypes && npm run test:typescript:fallbacktypes && npm run test:typescript:noninterop && npm run test:typescript:customcontextseparator && npm run test:typescript:manykeys",
     "lint": "eslint src",
-    "test": "npm run lint && npm run test:new && npm run test:compat",
+    "pretest": "npm run generate_ts_v4_index && npm run lint",
+    "test": "npm run test:typescript -- --run && npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",
     "test:compat": "karma start karma.backward.conf.js --singleRun",
-    "test:typescript": "tslint --project tsconfig.json",
-    "test:typescript:defaulttypes": "tslint --project test/typescript/default-types/tsconfig.json",
-    "test:typescript:customtypes": "tslint --project test/typescript/custom-types/tsconfig.json",
-    "test:typescript:customtypesjsonv3": "tslint --project test/typescript/custom-types-json-v3/tsconfig.json",
-    "test:typescript:fallbacktypes": "tslint --project test/typescript/fallback-types/tsconfig.json",
-    "test:typescript:customcontextseparator": "tslint --project test/typescript/custom-context-separator/tsconfig.json",
-    "test:typescript:manykeys": "tslint --project test/typescript/many-keys/tsconfig.json",
-    "test:typescript:noninterop": "tslint --project tsconfig.nonEsModuleInterop.json",
+    "test:typescript": "vitest --typecheck --workspace vitest.workspace.mts",
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
     "build": "rimraf dist && rollup -c && echo '{\"type\":\"module\"}' > dist/esm/package.json && cpy \"./dist/umd/*.js\" ./",
@@ -139,13 +131,13 @@
     "fix_dist_package": "node -e 'console.log(`{\"type\":\"module\",\"version\":\"${process.env.npm_package_version}\"}`)' > dist/esm/package.json",
     "preversion": "npm run test && npm run build && git push",
     "postversion": "npm run fix_dist_package && git push && git push --tags && npm run release",
-    "prettier": "prettier --write \"{,**/}*.{ts,tsx,js,json,md}\"",
+    "prettier": "prettier --write \"{,**/}*.{ts,tsx,mts,js,json,md}\"",
     "prepare": "husky install",
     "release": "gh-release"
   },
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT",
   "lint-staged": {
-    "*.{ts,tsx,js,json,md}": "prettier --write"
+    "*.{ts,tsx,mts,js,json,md}": "prettier --write"
   }
 }

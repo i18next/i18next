@@ -16,14 +16,13 @@ sample.html
 .codeclimate.yml
 .coveralls.yml
 tsconfig.json
-tsconfig.nonEsModuleInterop.json
 .prettierignore
-.prettierrc
+.prettierrc.json
 rollup.config.js
 rollup.config.mjs
-tslint.json
 CHANGELOG.md
 CONTRIBUTING.md
 .github
 .husky
 examples/
+vitest.workspace.mts

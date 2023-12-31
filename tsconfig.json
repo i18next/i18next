@@ -11,16 +11,7 @@
     "baseUrl": ".",
     "paths": { "i18next": ["./index.d.mts"] },
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["./index.d.mts", "./test/**/*.ts*"],
-  "exclude": [
-    "test/typescript/nonEsModuleInterop/**/*.ts",
-    "test/typescript/custom-types",
-    "test/typescript/custom-types-json-v3",
-    "test/typescript/default-types",
-    "test/typescript/fallback-types",
-    "test/typescript/custom-context-separator",
-    "test/typescript/many-keys"
-  ]
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
+  }
 }

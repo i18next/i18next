@@ -1,33 +1,59 @@
-import i18next from 'i18next';
+import { describe, it, assertType, expectTypeOf } from 'vitest';
+import i18next, { TFunction } from 'i18next';
 
-const t1 = i18next.getFixedT(null, null, 'foo');
+describe('getFixedT', () => {
+  it('returns a `TFunction`', () => {
+    assertType<TFunction<'custom', 'foo'>>(i18next.getFixedT(null, null, 'foo'));
+  });
 
-const t2 = i18next.getFixedT(null, 'alternate', 'foobar.deep');
-t2('deeper.deeeeeper');
-// t2('deeper').deeeeeper; // i18next would say: "key 'deeper (en)' returned an object instead of string."
-t2('deeper', { returnObjects: true }).deeeeeper;
+  it('throws an error when providing `keyPrefix` and nothing else', () => {
+    // @ts-expect-error
+    assertType(i18next.getFixedT(null, null, 'xxx'));
+  });
 
-const t3 = i18next.getFixedT('en');
-t3('foo');
+  describe('should work with `namespace` and `keyPrefix`', () => {
+    const t = i18next.getFixedT(null, 'alternate', 'foobar.deep');
 
-// t3('alternate:foobar.deep.deeper.deeeeeper');
-t3('foobar.deep.deeper.deeeeeper', { ns: 'alternate' });
+    it('should retrieve deep key', () => {
+      expectTypeOf(t('deeper.deeeeeper')).toEqualTypeOf<'foobar'>();
+    });
 
-const t4 = i18next.getFixedT('en', 'alternate', 'foobar');
-t4('barfoo');
+    it('should work with `returnObjects`', () => {
+      // t2('deeper').deeeeeper; // i18next would say: "key 'deeper (en)' returned an object instead of string."
+      expectTypeOf(t('deeper', { returnObjects: true })).toEqualTypeOf<{
+        deeeeeper: 'foobar';
+      }>();
+    });
 
-// @ts-expect-error
-const t5 = i18next.getFixedT(null, null, 'xxx');
+    it('should throw an error if key does not exist', () => {
+      // @ts-expect-error
+      assertType(t6('xxx'));
+    });
+  });
 
-const t6 = i18next.getFixedT(null, 'alternate', 'foobar');
-// @ts-expect-error
-t6('xxx');
+  it('should work when providing only language', () => {
+    const t = i18next.getFixedT('en');
 
-const t7 = i18next.getFixedT('en');
-t7('bar');
-// @ts-expect-error
-t7('alternate:foobar.barfoo');
-// @ts-expect-error
-t7('foobar.barfoo');
-t7('foobar.barfoo', { ns: 'alternate' });
-t7('fallbackKey');
+    expectTypeOf(t('foo')).toEqualTypeOf<'foo'>();
+    expectTypeOf(t('foobar.deep.deeper.deeeeeper', { ns: 'alternate' })).toEqualTypeOf<'foobar'>();
+  });
+
+  it('should work when providing `language`,`namespace` and `keyPrefix`', () => {
+    const t = i18next.getFixedT('en', 'alternate', 'foobar');
+    expectTypeOf(t('barfoo')).toEqualTypeOf<'barfoo'>();
+  });
+
+  it('should work when providing just `language`', () => {
+    const t = i18next.getFixedT('en');
+
+    expectTypeOf(t('bar')).toEqualTypeOf<'bar'>();
+
+    expectTypeOf(t('foobar.barfoo', { ns: 'alternate' })).toEqualTypeOf<'barfoo'>();
+    expectTypeOf(t('fallbackKey')).toEqualTypeOf<never>();
+
+    // @ts-expect-error
+    assertType(t('alternate:foobar.barfoo'));
+    // @ts-expect-error
+    assertType(t('foobar.barfoo'));
+  });
+});
