@@ -6,7 +6,7 @@ assets/
 .babelrc
 .editorconfig
 .eslintignore
-.eslintrc
+.eslintrc.js
 .gitignore
 bower.json
 gulpfile.js
@@ -16,6 +16,7 @@ sample.html
 .codeclimate.yml
 .coveralls.yml
 tsconfig.json
+tsconfig.lint.json
 .prettierignore
 .prettierrc.json
 rollup.config.js

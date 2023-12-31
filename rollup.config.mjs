@@ -14,7 +14,7 @@ const getBabelOptions = ({ useESModules }) => ({
 });
 
 const input = './src/index.js';
-const inputCjs = './src/index.cjs.js';
+const inputCjs = './src/index.cjs';
 const name = 'i18next';
 // check relative and absolute paths for windows and unix
 const external = (id) => !id.startsWith('.') && !id.startsWith('/') && !id.includes(':');

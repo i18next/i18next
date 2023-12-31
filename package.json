@@ -63,7 +63,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
-    "@babel/eslint-parser": "^7.23.3",
     "@babel/plugin-proposal-async-generator-functions": "^7.20.7",
     "@babel/plugin-transform-modules-commonjs": "^7.23.3",
     "@babel/plugin-transform-runtime": "^7.23.3",
@@ -75,6 +74,8 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "0.4.4",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
     "babelify": "^10.0.0",
     "browserify": "17.0.0",
     "browserify-istanbul": "3.0.1",
@@ -84,6 +85,7 @@
     "eslint": "8.53.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "2.29.0",
     "gh-release": "7.0.2",
     "husky": "^8.0.3",
@@ -115,7 +117,7 @@
     "watchify": "4.0.0"
   },
   "scripts": {
-    "lint": "eslint src",
+    "lint": "eslint src typescript \"./*.{ts,mts}\"",
     "pretest": "npm run generate_ts_v4_index && npm run lint",
     "test": "npm run test:typescript -- --run && npm run test:new && npm run test:compat",
     "test:new": "karma start karma.conf.js --singleRun",

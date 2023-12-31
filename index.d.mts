@@ -36,6 +36,7 @@ export type * from './typescript/t.js';
 
 export interface CustomInstanceExtenstions {}
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface i18n extends i18nextMod.i18n, CustomInstanceExtenstions {}
 
 declare const i18next: i18n;

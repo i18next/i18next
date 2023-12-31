@@ -12,7 +12,6 @@ import type {
   ResourceLanguage,
   TOptions,
 } from './typescript/options.js';
-
 import type { KeyPrefix, TFunction } from './typescript/t.js';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
@@ -32,12 +31,14 @@ export class ResourceStore {
   constructor(data: Resource, options: InitOptions);
 
   public data: Resource;
+
   public options: InitOptions;
 
   /**
    * Gets fired when resources got added or removed
    */
   on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
+
   /**
    * Remove event listener
    * removes all callback when callback not specified
@@ -92,9 +93,9 @@ export type MultiReadCallback = (err: CallbackError, data: Resource | null | und
  * Can be provided as a singleton or as a prototype constructor (preferred for supporting multiple instances of i18next).
  * For singleton set property `type` to `'backend'` For a prototype constructor set static property.
  */
-export interface BackendModule<TOptions = object> extends Module {
+export interface BackendModule<Options = object> extends Module {
   type: 'backend';
-  init(services: Services, backendOptions: TOptions, i18nextOptions: InitOptions): void;
+  init(services: Services, backendOptions: Options, i18nextOptions: InitOptions): void;
   read(language: string, namespace: string, callback: ReadCallback): void;
   /** Save the missing translation */
   create?(
@@ -136,7 +137,7 @@ export interface LanguageDetectorAsyncModule extends Module {
   /** Set to true to enable async detection */
   async: true;
   init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
-  /** Must call callback passing detected language or return a Promise*/
+  /** Must call callback passing detected language or return a Promise */
   detect(
     callback: (lng: string | readonly string[] | undefined) => void | undefined,
   ): void | Promise<string | readonly string[] | undefined>;
@@ -218,6 +219,7 @@ export interface CloneOptions extends InitOptions {
 
 export interface CustomInstanceExtenstions {}
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface i18n extends CustomInstanceExtenstions {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<[DefaultNamespace, ...Exclude<FlatNamespace, DefaultNamespace>[]]>;
