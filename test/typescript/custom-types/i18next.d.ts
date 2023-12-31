@@ -15,9 +15,6 @@ declare module 'i18next' {
         inter: 'some {{val}}';
         nullKey: null;
       };
-      fallback: {
-        fallbackKey: 'fallback';
-      };
       alternate: {
         baz: 'baz';
         foobar: {
@@ -28,6 +25,9 @@ declare module 'i18next' {
             };
           };
         };
+      };
+      fallback: {
+        fallbackKey: 'fallback';
       };
       plurals: {
         foo_zero: 'foo';

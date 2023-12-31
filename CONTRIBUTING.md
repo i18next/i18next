@@ -20,3 +20,29 @@ By making a contribution to this project, I certify that:
   submit with it, including my sign-off) is maintained indefinitely and may be
   redistributed consistent with this project or the open source license(s)
   involved.
+
+## Testing
+
+### Typescript
+
+To run all typescript test run
+
+```bash
+npm run test:typescript
+```
+
+If you want to run only a specific project
+
+```bash
+npm run test:typescript -- --project many-keys
+```
+
+#### New Test scenario
+
+If you need to create a new typescript test scenario:
+
+1. Create a new folder inside `test/typescript`
+2. Create a `tsconfig.json` and a `i18next.d.ts` with the relevant properties inside `CustomOptions`
+3. If you need to test multiple tsconfig within the same scenario you can create another `tsconfig.json` but with a semantic name between tsconfig and json.
+   E.g.: `tsconfig.nonEsModuleInterop.json` inside `test/typescript/misc`
+4. For more information about workspace setup check `vitest.workspace.mts`

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/prettierrc.json",
   "bracketSpacing": true,
   "bracketSameLine": false,
   "printWidth": 100,

@@ -34,10 +34,8 @@ export type CloneOptions = i18nextMod.CloneOptions;
 export type * from './typescript/options.js';
 export type * from './typescript/t.js';
 
-// tslint:disable-next-line:no-empty-interface
 export interface CustomInstanceExtenstions {}
 
-// tslint:disable-next-line:no-empty-interface
 export interface i18n extends i18nextMod.i18n, CustomInstanceExtenstions {}
 
 declare const i18next: i18n;
