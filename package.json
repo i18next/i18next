@@ -126,7 +126,6 @@
     "tdd": "karma start karma.conf.js",
     "tdd:compat": "karma start karma.backward.conf.js",
     "build": "rimraf dist && rollup -c && echo '{\"type\":\"module\"}' > dist/esm/package.json && cpy \"./dist/umd/*.js\" ./",
-    "__nerate_ts_v4_index": "cp index.d.ts index.v4.d.ts && node -e \"fs.writeFileSync('index.v4.d.ts', fs.readFileSync('index.v4.d.ts').toString().replace(/.js'/g, '.d.ts\\''))\"",
     "generate_ts_v4_index": "cp index.d.ts index.v4.d.ts && node -e \"fs.writeFileSync('index.v4.d.ts', fs.readFileSync('index.v4.d.ts').toString().replace(/t.js/g, 't.v4.js').replace(/export type \\* /g, '// export type * '))\"",
     "fix_dist_package": "node -e 'console.log(`{\"type\":\"module\",\"version\":\"${process.env.npm_package_version}\"}`)' > dist/esm/package.json",
     "preversion": "npm run test && npm run build && git push",
