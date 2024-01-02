@@ -7,11 +7,8 @@ import type {
   TOptions,
 } from './options.js';
 
-type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
-type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
-  ? Value
-  : Fallback;
-type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
+/** @todo consider to replace {} with Record<string, never> */
+/* eslint @typescript-eslint/ban-types: ['error', { types: { "{}": false } }] */
 
 // Type Options
 type _ReturnObjects = TypeOptions['returnObjects'];
@@ -25,6 +22,12 @@ type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
+
+type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
+type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
+  ? Value
+  : Fallback;
+type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] : Ns;
 
 type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
 
@@ -43,9 +46,9 @@ type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' | 'v3'
 type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
 type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
 
-/******************************************************
+/** ****************************************************
  * Build all keys and key prefixes based on Resources *
- ******************************************************/
+ ***************************************************** */
 type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
   ? Res[Key] extends $Dictionary
     ?
@@ -77,9 +80,9 @@ type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extend
   ? KeysWithReturnObjects
   : KeysWithoutReturnObjects;
 
-/************************************************************************
+/** **********************************************************************
  * Parse t function keys based on the namespace, options and key prefix *
- ************************************************************************/
+ *********************************************************************** */
 export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
   ? ResourceKeys<true>
   : ResourceKeys;
@@ -127,9 +130,9 @@ export type ParseKeys<
     >
   : string;
 
-/*********************************************************
+/** *******************************************************
  * Parse t function return type and interpolation values *
- *********************************************************/
+ ******************************************************** */
 type ParseInterpolationValues<Ret> =
   Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
     ?
@@ -227,9 +230,9 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
-/**************************
+/** ************************
  * T function declaration *
- **************************/
+ ************************* */
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
   <

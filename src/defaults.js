@@ -52,7 +52,8 @@ export function get() {
     },
     interpolation: {
       escapeValue: true,
-      format: (value, format, lng, options) => value,
+      /** @type {import('i18next').FormatFunction} */
+      format: (value) => value,
       prefix: '{{',
       suffix: '}}',
       formatSeparator: ',',
