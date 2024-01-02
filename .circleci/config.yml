@@ -1,5 +1,24 @@
-version: 2
+version: 2.1
+
 jobs:
+  lint:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm-wee
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Lint
+          command: npm run lint
+
   test:
     docker:
       - image: circleci/node:latest-browsers
@@ -19,20 +38,9 @@ jobs:
       - run:
           name: Test
           command: npm test
-  lint:
-    docker:
-      - image: circleci/node
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: install-npm-wee
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: Lint
-          command: npm run lint
+
+workflows:
+  lint_and_test:
+    jobs:
+      - lint
+      - test
