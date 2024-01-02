@@ -54,11 +54,17 @@ type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
     ?
         | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
         | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
+    : Res[Key] extends unknown[]
+    ?
+        | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
+        | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
     : never
   : never;
 
 type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res
   ? Res[Key] extends $Dictionary
+    ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
+    : Res[Key] extends unknown[]
     ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
     : Key
   : never;
@@ -169,7 +175,11 @@ type ParseTReturn<
     ? ParseTReturnPluralOrdinal<Res, Key>
     : ParseTReturnPlural<Res, Key>
   : // otherwise access plain key without adding plural and ordinal suffixes
-    Res[Key & keyof Res];
+  Res extends unknown[]
+  ? Key extends `${infer NKey extends number}`
+    ? Res[NKey]
+    : never
+  : Res[Key & keyof Res];
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
