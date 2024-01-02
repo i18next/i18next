@@ -9,6 +9,10 @@ engines:
         - python
         - php
   eslint:
+    # Disabled since this engine used a different set of version of
+    # `@typescript/eslint` and `typescript`
+    #
+    # @see https://github.com/i18next/i18next/pull/2098
     enabled: false
     channel: "eslint-8"
   fixme:

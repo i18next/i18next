@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
-      - image:  circleci/node:latest-browsers
+      - image: circleci/node:latest-browsers
         environment:
           CHROME_BIN: '/usr/bin/google-chrome'
     steps:
@@ -17,11 +17,11 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: test
+          name: Test
           command: npm test
   lint:
     docker:
-      - image:  circleci/node
+      - image: circleci/node
     steps:
       - checkout
       - restore_cache:
@@ -34,5 +34,5 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: test
+          name: Lint
           command: npm run lint
