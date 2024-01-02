@@ -40,43 +40,46 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'error',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
-    '@typescript-eslint/naming-convention': [
-      'error',
-      {
-        selector: 'default',
-        format: ['camelCase'],
-        leadingUnderscore: 'allow',
-        trailingUnderscore: 'allow',
-      },
 
-      {
-        selector: ['import', 'parameter'],
-        format: ['camelCase', 'PascalCase'],
-      },
+    // Turned off due to codeclimate lacking support for this rules
+    '@typescript-eslint/naming-convention': 'off',
+    // '@typescript-eslint/naming-convention': [
+    //   'error',
+    //   {
+    //     selector: 'default',
+    //     format: ['camelCase'],
+    //     leadingUnderscore: 'allow',
+    //     trailingUnderscore: 'allow',
+    //   },
 
-      {
-        selector: 'variable',
-        format: ['camelCase', 'UPPER_CASE'],
-        leadingUnderscore: 'allow',
-        trailingUnderscore: 'allow',
-      },
+    //   {
+    //     selector: ['import', 'parameter'],
+    //     format: ['camelCase', 'PascalCase'],
+    //   },
 
-      {
-        selector: 'typeLike',
-        format: ['PascalCase'],
-      },
+    //   {
+    //     selector: 'variable',
+    //     format: ['camelCase', 'UPPER_CASE'],
+    //     leadingUnderscore: 'allow',
+    //     trailingUnderscore: 'allow',
+    //   },
 
-      {
-        selector: 'interface',
-        format: ['PascalCase'],
-        filter: 'i18n',
-      },
+    //   {
+    //     selector: 'typeLike',
+    //     format: ['PascalCase'],
+    //   },
 
-      {
-        selector: 'typeAlias',
-        format: ['PascalCase'],
-        leadingUnderscore: 'allow',
-      },
-    ],
+    //   {
+    //     selector: 'interface',
+    //     format: ['PascalCase'],
+    //     filter: 'i18n',
+    //   },
+
+    //   {
+    //     selector: 'typeAlias',
+    //     format: ['PascalCase'],
+    //     leadingUnderscore: 'allow',
+    //   },
+    // ],
   },
 };
