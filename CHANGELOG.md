@@ -1,3 +1,7 @@
+## 23.7.14
+
+- types: fix types for array access
+
 ## 23.7.13
 
 - types: optimise ParseTReturn [2095](https://github.com/i18next/i18next/pull/2095)

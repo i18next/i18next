@@ -1789,7 +1789,6 @@
       },
       interpolation: {
         escapeValue: true,
-        /** @type {import('i18next').FormatFunction} */
         format: value => value,
         prefix: '{{',
         suffix: '}}',
