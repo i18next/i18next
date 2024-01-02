@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image:  circleci/node:latest-browsers
         environment:
@@ -19,3 +19,20 @@ jobs:
       - run:
           name: test
           command: npm test
+  lint:
+    docker:
+      - image:  circleci/node
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm-wee
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: test
+          command: npm run lint
