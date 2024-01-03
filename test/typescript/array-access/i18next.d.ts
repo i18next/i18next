@@ -2,7 +2,7 @@ import 'i18next';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
-    defaultNS: 'main';
+    defaultNS: 'prefix';
     resources: {
       main: {
         arrayOfStrings: ['zero', 'one'];
@@ -21,6 +21,23 @@ declare module 'i18next' {
             dessert_muffin_other: '{{count}} nice muffins';
           },
         ];
+      };
+
+      prefix: {
+        greeting: string;
+        timeOfDay: {
+          morning: string;
+          afternoon: string;
+        };
+        parent: {
+          parent: string;
+          other: string;
+        };
+        deep: {
+          deep: {
+            deep: string;
+          };
+        };
       };
 
       ord: {
