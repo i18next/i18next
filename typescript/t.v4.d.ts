@@ -50,11 +50,7 @@ type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`
  * Build all keys and key prefixes based on Resources *
  ***************************************************** */
 type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
-  ? Res[Key] extends $Dictionary
-    ?
-        | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
-        | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
-    : Res[Key] extends readonly unknown[]
+  ? Res[Key] extends $Dictionary | readonly unknown[]
     ?
         | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
         | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
@@ -62,9 +58,7 @@ type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
   : never;
 
 type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res
-  ? Res[Key] extends $Dictionary
-    ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
-    : Res[Key] extends readonly unknown[]
+  ? Res[Key] extends $Dictionary | readonly unknown[]
     ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
     : Key
   : never;
