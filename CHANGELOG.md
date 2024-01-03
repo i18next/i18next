@@ -1,3 +1,7 @@
+## 23.7.15
+
+- types: simplifies types for array access and fixes [2103](https://github.com/i18next/i18next/issues/2103)
+
 ## 23.7.14
 
 - types: fix types for array access
