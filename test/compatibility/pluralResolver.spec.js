@@ -1,3 +1,5 @@
+import { describe, it, expect, beforeAll } from 'vitest';
+
 import PluralResolver from '../../src/PluralResolver';
 import LanguageUtils from '../../src/LanguageUtils';
 
@@ -5,8 +7,8 @@ describe('PluralResolver', () => {
   describe('getRule()', () => {
     let pr;
 
-    before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
+    beforeAll(() => {
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
       pr = new PluralResolver(lu, { simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
     });
 
@@ -18,19 +20,19 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns getRule for an unsupported locale', () => {
-      expect(pr.getRule('non-existent')).to.be.undefined;
+      expect(pr.getRule('non-existent')).toBeUndefined();
     });
   });
 
   describe('needsPlural()', () => {
     let pr;
 
-    before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
+    beforeAll(() => {
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
       pr = new PluralResolver(lu, { simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: true },
       { args: ['fr'], expected: true },
       { args: ['ar'], expected: true },
@@ -62,21 +64,22 @@ describe('PluralResolver', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly returns needsPlural for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly returns needsPlural for ${JSON.stringify(test.args)} args`, () => {
         expect(pr.needsPlural.apply(pr, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('getSuffix()', () => {
-    var cu, pr;
+    let cu;
+    let pr;
 
-    before(() => {
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackCode: 'en' });
       pr = new PluralResolver(cu, { simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en', 0], expected: 'plural' },
       { args: ['en', 1], expected: '' },
       { args: ['en', 10], expected: 'plural' },
@@ -231,7 +234,7 @@ describe('PluralResolver', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly returns suffix for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly returns suffix for ${JSON.stringify(test.args)} args`, () => {
         expect(pr.getSuffix.apply(pr, test.args)).to.eql(test.expected);
       });
     });
@@ -240,8 +243,8 @@ describe('PluralResolver', () => {
   describe('getPluralFormsOfKey()', () => {
     let pr;
 
-    before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
+    beforeAll(() => {
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
       pr = new PluralResolver(lu, {
         simplifyPluralSuffix: true,
         prepend: '_',
@@ -249,26 +252,25 @@ describe('PluralResolver', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en', 'key'], expected: ['key', 'key_plural'] },
       { args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5'] },
     ];
 
     tests.forEach((test) => {
-      it(
-        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
-        () => {
-          expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
-        },
-      );
+      it(`correctly returns pluralforms of a given key for ${JSON.stringify(
+        test.args,
+      )} args`, () => {
+        expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
+      });
     });
   });
 
   describe('getPluralFormsOfKey() with nonSimplifiedPluralSuffix', () => {
     let pr;
 
-    before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
+    beforeAll(() => {
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
       pr = new PluralResolver(lu, {
         simplifyPluralSuffix: false,
         prepend: '_',
@@ -276,26 +278,25 @@ describe('PluralResolver', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en', 'key'], expected: ['key_0', 'key_1'] },
       { args: ['ar', 'key'], expected: ['key_0', 'key_1', 'key_2', 'key_3', 'key_4', 'key_5'] },
     ];
 
     tests.forEach((test) => {
-      it(
-        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
-        () => {
-          expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
-        },
-      );
+      it(`correctly returns pluralforms of a given key for ${JSON.stringify(
+        test.args,
+      )} args`, () => {
+        expect(pr.getPluralFormsOfKey.apply(pr, test.args)).to.eql(test.expected);
+      });
     });
   });
 
   describe('getSuffixes()', () => {
     let pr;
 
-    before(() => {
-      let lu = new LanguageUtils({ fallbackLng: 'en' });
+    beforeAll(() => {
+      const lu = new LanguageUtils({ fallbackLng: 'en' });
       pr = new PluralResolver(lu, {
         simplifyPluralSuffix: true,
         prepend: '_',
@@ -303,19 +304,18 @@ describe('PluralResolver', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: [], expected: [] },
       { args: ['en'], expected: ['', '_plural'] },
       { args: ['ar'], expected: ['_0', '_1', '_2', '_3', '_4', '_5'] },
     ];
 
     tests.forEach((test) => {
-      it(
-        'correctly returns pluralforms of a given key for ' + JSON.stringify(test.args) + ' args',
-        () => {
-          expect(pr.getSuffixes.apply(pr, test.args)).to.eql(test.expected);
-        },
-      );
+      it(`correctly returns pluralforms of a given key for ${JSON.stringify(
+        test.args,
+      )} args`, () => {
+        expect(pr.getSuffixes.apply(pr, test.args)).to.eql(test.expected);
+      });
     });
   });
 });

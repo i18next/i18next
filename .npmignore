@@ -11,7 +11,6 @@ assets/
 bower.json
 gulpfile.js
 karma.conf.js
-karma.backward.conf.js
 sample.html
 .codeclimate.yml
 .coveralls.yml
