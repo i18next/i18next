@@ -9,6 +9,9 @@ describe('t', () => {
       expectTypeOf(t('arrayOfStrings.0')).toEqualTypeOf<'zero'>();
       expectTypeOf(t('arrayOfStrings.1')).toEqualTypeOf<'one'>();
 
+      expectTypeOf(t('readonlyArrayOfStrings.0')).toEqualTypeOf<'readonly zero'>();
+      expectTypeOf(t('readonlyArrayOfStrings.1')).toEqualTypeOf<'readonly one'>();
+
       expectTypeOf(t('arrayOfObjects.0.foo')).toEqualTypeOf<'bar'>();
       expectTypeOf(t('arrayOfObjects.1.fizz')).toEqualTypeOf<'buzz'>();
 

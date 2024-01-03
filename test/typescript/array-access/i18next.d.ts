@@ -6,6 +6,7 @@ declare module 'i18next' {
     resources: {
       main: {
         arrayOfStrings: ['zero', 'one'];
+        readonlyArrayOfStrings: readonly ['readonly zero', 'readonly one'];
         arrayOfObjects: [
           { foo: 'bar' },
           { fizz: 'buzz' },
