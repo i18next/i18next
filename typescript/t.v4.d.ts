@@ -54,7 +54,7 @@ type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
     ?
         | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
         | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
-    : Res[Key] extends unknown[]
+    : Res[Key] extends readonly unknown[]
     ?
         | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
         | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
@@ -64,7 +64,7 @@ type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
 type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res
   ? Res[Key] extends $Dictionary
     ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
-    : Res[Key] extends unknown[]
+    : Res[Key] extends readonly unknown[]
     ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
     : Key
   : never;
@@ -175,7 +175,7 @@ type ParseTReturn<
     ? ParseTReturnPluralOrdinal<Res, Key>
     : ParseTReturnPlural<Res, Key>
   : // otherwise access plain key without adding plural and ordinal suffixes
-  Res extends unknown[]
+  Res extends readonly unknown[]
   ? Key extends `${infer NKey extends number}`
     ? Res[NKey]
     : never
