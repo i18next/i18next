@@ -1,60 +1,62 @@
+import { describe, it, expect, beforeEach, vitest } from 'vitest';
 import EventEmitter from '../src/EventEmitter';
 
 describe('i18next', () => {
   describe('published', () => {
+    /** @type {EventEmitter}  */
     let emitter;
     beforeEach(() => {
       emitter = new EventEmitter();
     });
 
-    it('it should emit', (done) => {
-      // test on
-      emitter.on('ok', (payload) => {
-        expect(payload).to.equal('data ok');
-        done();
-      });
+    it('it should emit', () => {
+      const activeHandler = vitest.fn();
+      const disabledHandler = vitest.fn();
 
-      // test off
-      const nok = (payload) => {
-        expect(payload).to.equal('not called as off');
-        done();
-      };
-      emitter.on('nok', nok);
-      emitter.off('nok', nok);
+      expect(activeHandler).not.toHaveBeenCalled();
+      expect(disabledHandler).not.toHaveBeenCalled();
 
-      emitter.emit('nok', 'there should be no listener');
+      emitter.on('ok', activeHandler);
+      emitter.off('nok', disabledHandler);
+
       emitter.emit('ok', 'data ok');
+      emitter.emit('nok', 'there should be no listener');
+
+      expect(activeHandler).toHaveBeenCalled();
+      expect(activeHandler).toHaveBeenCalledWith('data ok');
+      expect(disabledHandler).not.toHaveBeenCalled();
     });
 
-    it('it should emit wildcard', (done) => {
-      // test on
+    it('it should emit wildcard', () => {
+      expect.assertions(2);
+
       emitter.on('*', (name, payload) => {
         expect(name).to.equal('ok');
         expect(payload).to.equal('data ok');
-        done();
       });
 
       emitter.emit('ok', 'data ok');
     });
 
-    it('it should emit with array params', (done) => {
-      // test on
+    it('it should emit with array params', () => {
+      expect.assertions(2);
+
       emitter.on('array-event', (array, data) => {
         expect(array).to.eql(['array ok 1', 'array ok 2']);
         expect(data).to.equal('data ok');
-        done();
       });
 
       emitter.emit('array-event', ['array ok 1', 'array ok 2'], 'data ok');
     });
 
-    it('it should emit wildcard with array params', (done) => {
+    it('it should emit wildcard with array params', () => {
+      expect.assertions(3);
+
       // test on
       emitter.on('*', (ev, array, data) => {
         expect(ev).to.equal('array-event');
         expect(array).to.eql(['array ok 1', 'array ok 2']);
         expect(data).to.equal('data ok');
-        done();
       });
 
       emitter.emit('array-event', ['array ok 1', 'array ok 2'], 'data ok');

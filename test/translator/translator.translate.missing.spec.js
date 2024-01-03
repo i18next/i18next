@@ -1,3 +1,4 @@
+import { describe, it, expect, vitest, beforeEach } from 'vitest';
 import Interpolator from '../../src/Interpolator';
 import LanguageUtils from '../../src/LanguageUtils';
 import PluralResolver from '../../src/PluralResolver';
@@ -9,8 +10,11 @@ const NB_PLURALS_ARABIC = 6;
 const NB_PLURALS_ENGLISH_ORDINAL = 4;
 
 describe('Translator', () => {
+  /** @type {Translator} */
   let t;
+  /** @type {import('i18next').Services} */
   let tServices;
+  /** @type {unknown} */
   let missingKeyHandler;
 
   beforeEach(() => {
@@ -39,7 +43,7 @@ describe('Translator', () => {
       interpolator: new Interpolator(),
     };
 
-    missingKeyHandler = sinon.spy();
+    missingKeyHandler = vitest.fn();
   });
 
   describe('translate() saveMissing', () => {
@@ -59,9 +63,15 @@ describe('Translator', () => {
     });
 
     it('correctly sends missing for "translation:test.missing"', () => {
-      expect(t.translate('translation:test.missing')).to.eql('test.missing');
-      expect(missingKeyHandler.calledWith(['en'], 'translation', 'test.missing', 'test.missing')).to
-        .be.true;
+      expect(t.translate('translation:test.missing')).toEqual('test.missing');
+      expect(missingKeyHandler).toHaveBeenCalledWith(
+        ['en'],
+        'translation',
+        'test.missing',
+        'test.missing',
+        false,
+        expect.objectContaining({}),
+      );
     });
   });
 
@@ -88,12 +98,16 @@ describe('Translator', () => {
     ].forEach((test) => {
       it(`correctly sends missing for ${JSON.stringify(test.args)} args`, () => {
         t.translate.apply(t, test.args);
-        expect(missingKeyHandler.callCount).to.eql(test.expected);
-        expect(
-          missingKeyHandler
-            .getCall(0)
-            .calledWith(['ar'], 'translation', 'test.missing_zero', 'test.missing'),
-        ).to.be.true;
+        expect(missingKeyHandler).toHaveBeenCalledTimes(test.expected);
+        expect(missingKeyHandler).toHaveBeenNthCalledWith(
+          1,
+          ['ar'],
+          'translation',
+          'test.missing_zero',
+          'test.missing',
+          false,
+          expect.objectContaining({}),
+        );
       });
     });
   });
@@ -122,13 +136,34 @@ describe('Translator', () => {
     });
 
     it('correctly sends missing resolved value', () => {
-      expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ARABIC);
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_zero', 'default0'))
-        .to.be.true;
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_one', 'default1')).to
-        .be.true;
-      expect(missingKeyHandler.calledWith(['ar'], 'translation', 'test.missing_two', 'default0')).to
-        .be.true;
+      expect(missingKeyHandler).toHaveBeenCalledTimes(NB_PLURALS_ARABIC);
+      expect(missingKeyHandler).toHaveBeenNthCalledWith(
+        1,
+        ['ar'],
+        'translation',
+        'test.missing_zero',
+        'default0',
+        false,
+        expect.objectContaining({}),
+      );
+      expect(missingKeyHandler).toHaveBeenNthCalledWith(
+        2,
+        ['ar'],
+        'translation',
+        'test.missing_one',
+        'default1',
+        false,
+        expect.objectContaining({}),
+      );
+      expect(missingKeyHandler).toHaveBeenNthCalledWith(
+        3,
+        ['ar'],
+        'translation',
+        'test.missing_two',
+        'default0',
+        false,
+        expect.objectContaining({}),
+      );
     });
   });
 
@@ -161,12 +196,16 @@ describe('Translator', () => {
     ].forEach((test) => {
       it(`correctly sends missing for ${JSON.stringify(test.args)} args`, () => {
         t.translate.apply(t, test.args);
-        expect(missingKeyHandler.callCount).to.eql(test.expected);
-        expect(
-          missingKeyHandler
-            .getCall(0)
-            .calledWith(['en'], 'translation', 'test.missing_ordinal_one', 'test.missing'),
-        ).to.be.true;
+        expect(missingKeyHandler).toHaveBeenCalledTimes(test.expected);
+        expect(missingKeyHandler).toHaveBeenNthCalledWith(
+          1,
+          ['en'],
+          'translation',
+          'test.missing_ordinal_one',
+          'test.missing',
+          false,
+          expect.objectContaining({}),
+        );
       });
     });
   });
@@ -196,26 +235,31 @@ describe('Translator', () => {
     });
 
     it('correctly sends missing resolved value', () => {
-      expect(missingKeyHandler.callCount).to.eql(NB_PLURALS_ENGLISH_ORDINAL);
-      expect(
-        missingKeyHandler.calledWith(
-          ['en'],
-          'translation',
-          'test.missing_ordinal_other',
-          'defaultOther',
-        ),
-      ).to.be.true;
-      expect(
-        missingKeyHandler.calledWith(['en'], 'translation', 'test.missing_ordinal_one', 'default1'),
-      ).to.be.true;
-      expect(
-        missingKeyHandler.calledWith(
-          ['en'],
-          'translation',
-          'test.missing_ordinal_two',
-          'defaultOther',
-        ),
-      ).to.be.true;
+      expect(missingKeyHandler).toHaveBeenCalledTimes(NB_PLURALS_ENGLISH_ORDINAL);
+      expect(missingKeyHandler).toHaveBeenCalledWith(
+        ['en'],
+        'translation',
+        'test.missing_ordinal_other',
+        'defaultOther',
+        false,
+        expect.objectContaining({}),
+      );
+      expect(missingKeyHandler).toHaveBeenCalledWith(
+        ['en'],
+        'translation',
+        'test.missing_ordinal_one',
+        'default1',
+        false,
+        expect.objectContaining({}),
+      );
+      expect(missingKeyHandler).toHaveBeenCalledWith(
+        ['en'],
+        'translation',
+        'test.missing_ordinal_two',
+        'defaultOther',
+        false,
+        expect.objectContaining({}),
+      );
     });
   });
 });

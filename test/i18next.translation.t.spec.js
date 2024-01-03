@@ -1,8 +1,10 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 
 describe('i18next t default returns', () => {
+  /** @type {import('i18next').i18n} */
   let i18n;
-  before(() => {
+  beforeAll(() => {
     i18n = i18next.createInstance();
     i18n.init({
       fallbackLng: 'en',

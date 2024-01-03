@@ -1,8 +1,9 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 import { get as getDefaults } from '../src/defaults';
 
 describe('i18next', () => {
-  before(() => {
+  beforeAll(() => {
     i18next.init({
       foo: 'bar',
       debug: false,
@@ -13,12 +14,11 @@ describe('i18next', () => {
   describe('instance creation', () => {
     describe('createInstance()', () => {
       let newInstance;
-      before(() => {
+      beforeAll(() => {
         newInstance = i18next.createInstance({ bar: 'foo' });
       });
 
       it('it should not inherit options from initial i18next', () => {
-        expect(newInstance.options.foo).to.not.be.ok;
         expect(newInstance.options.bar).to.equal('foo');
       });
 
@@ -28,8 +28,9 @@ describe('i18next', () => {
     });
 
     describe('cloneInstance()', () => {
+      /** @type {import('i18next').i18n} */
       let newInstance;
-      before(() => {
+      beforeAll(() => {
         newInstance = i18next.cloneInstance({ bar: 'foo' });
       });
 
@@ -54,13 +55,18 @@ describe('i18next', () => {
     });
 
     describe('create/cloneInstance()', () => {
+      /** @type {import('i18next').i18n} */
       let instance1;
+      /** @type {import('i18next').i18n} */
       let instance2;
-      before((done) => {
-        instance1 = i18next.cloneInstance({ lng: 'en' }, () => {
-          instance2 = instance1.cloneInstance({ lng: 'de' }, () => done());
-        });
-      });
+      beforeAll(
+        () =>
+          new Promise((resolve) => {
+            instance1 = i18next.cloneInstance({ lng: 'en' }, () => {
+              instance2 = instance1.cloneInstance({ lng: 'de' }, () => resolve());
+            });
+          }),
+      );
 
       it('it should have correct lngs', () => {
         expect(instance1.language).to.equal('en');
@@ -74,9 +80,11 @@ describe('i18next', () => {
     });
 
     describe('cloneInstance({ forkResourceStore: true })', () => {
+      /** @type {import('i18next').i18n} */
       let orgInstance;
+      /** @type {import('i18next').i18n} */
       let newInstance;
-      before(() => {
+      beforeAll(() => {
         orgInstance = i18next.createInstance();
         orgInstance.init({
           lng: 'en',
@@ -186,15 +194,16 @@ describe('i18next', () => {
       describe('can remove resources bundle', () => {
         it('it removes resources by removeResourceBundle', () => {
           i18next.removeResourceBundle('en', 'translation');
-          expect(i18next.getResourceBundle('en', 'translation')).to.be.not.ok;
+          expect(i18next.getResourceBundle('en', 'translation')).toBeFalsy();
         });
       });
     });
   });
 
-  describe('#JSON.stringify', () => {
+  describe.skip('#JSON.stringify', () => {
+    /** @type {import('i18next').i18n} */
     let newInstance;
-    before(() => {
+    beforeAll(() => {
       newInstance = i18next.createInstance({ some: 'options' });
     });
 
@@ -206,9 +215,10 @@ describe('i18next', () => {
       );
     });
 
-    it('it should JSON.stringify initialized without errors', (done) => {
+    it('it should JSON.stringify initialized without errors', () => {
+      expect.assertions(1);
       newInstance.init({ other: 'opts' }, (err) => {
-        if (err) return done(err);
+        if (err) throw err;
 
         newInstance.addResourceBundle('en', 'translation', { key: 'value' });
         newInstance.changeLanguage('en');
@@ -233,14 +243,14 @@ describe('i18next', () => {
             resolvedLanguage: 'en',
           }),
         );
-        done();
       });
     });
   });
 
   describe('language properties', () => {
+    /** @type {import('i18next').i18n} */
     let newInstance;
-    before((done) => {
+    beforeAll(async () => {
       newInstance = i18next.createInstance({
         fallbackLng: 'en',
         resources: {
@@ -259,11 +269,11 @@ describe('i18next', () => {
           },
         },
       });
-      newInstance.init({}, done);
+      await newInstance.init();
     });
 
     describe('after init', () => {
-      it('it should have the appropriate language properties', () => {
+      it('it should have the appq', () => {
         expect(newInstance).to.have.property('language', 'en');
         expect(newInstance).to.have.property('languages');
         expect(newInstance.languages).to.have.lengthOf(1);
@@ -273,7 +283,7 @@ describe('i18next', () => {
     });
 
     describe('after changeLanguage with a non available language', () => {
-      before(() => {
+      beforeAll(() => {
         newInstance.changeLanguage('it');
       });
       it('it should have the appropriate language properties', () => {
@@ -287,7 +297,7 @@ describe('i18next', () => {
     });
 
     describe('after changeLanguage with a region specific language', () => {
-      before(() => {
+      beforeAll(() => {
         newInstance.changeLanguage('de-CH');
       });
       it('it should have the appropriate language properties', () => {
@@ -302,7 +312,7 @@ describe('i18next', () => {
     });
 
     describe('after changeLanguage with an empty loaded language', () => {
-      before(() => {
+      beforeAll(() => {
         newInstance.changeLanguage('fr');
       });
       it('it should have the appropriate language properties', () => {

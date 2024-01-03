@@ -1,38 +1,35 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 
+/** @type {import('i18next').i18n} */
 const instance = i18next.createInstance();
 
 describe('i18next.interpolation.nesting', () => {
-  before((done) => {
-    instance.init(
-      {
-        lng: 'en',
-        interpolation: {
-          // skipOnVariables: true, // true by default
-        },
-        resources: {
-          en: {
-            translation: {
-              key: 'value {{a}}',
-              key2: 'value {{a}} {{b}}',
-              keyWithoutVar: 'value',
-              nested: 'nested stuff',
-              keyWithNest: '$t(nested2) value',
-              keyWithNestAndVar: '$t(nested2) value {{a}}',
-              nested2: 'HI',
-              cur: 'Save {{CURRENCY}}{{AMOUNT}}',
-            },
+  beforeAll(async () => {
+    await instance.init({
+      lng: 'en',
+      interpolation: {
+        // skipOnVariables: true, // true by default
+      },
+      resources: {
+        en: {
+          translation: {
+            key: 'value {{a}}',
+            key2: 'value {{a}} {{b}}',
+            keyWithoutVar: 'value',
+            nested: 'nested stuff',
+            keyWithNest: '$t(nested2) value',
+            keyWithNestAndVar: '$t(nested2) value {{a}}',
+            nested2: 'HI',
+            cur: 'Save {{CURRENCY}}{{AMOUNT}}',
           },
         },
       },
-      () => {
-        done();
-      },
-    );
+    });
   });
 
   describe('nesting', () => {
-    var tests = [
+    const tests = [
       {
         args: ['keyWithoutVar'],
         expected: 'value',
@@ -82,7 +79,7 @@ describe('i18next.interpolation.nesting', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly nests for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly nests for ${JSON.stringify(test.args)} args`, () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
     });

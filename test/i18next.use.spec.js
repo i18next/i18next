@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import i18next from '../src/i18next.js';
 
 describe('i18next.use()', () => {

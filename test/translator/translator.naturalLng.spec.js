@@ -1,41 +1,37 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../../src/i18next.js';
 
 const instance = i18next.createInstance();
 
 describe('Translator', () => {
   describe('translate() with natural language', () => {
-    before((done) => {
-      instance.init(
-        {
-          lng: 'en',
-          fallbackLng: 'en',
-          resources: {
-            en: {
-              translation: {
-                'test: with a sentence. or more text': 'test_en',
-                errorCodes: {
-                  UNAUTHORIZED: 'Unauthorized',
-                  'BAD REQUEST': 'Bad request',
-                },
-                UNAUTHORIZED: 'Unauthorized 2',
-                'BAD REQUEST': 'Bad request 2',
+    beforeAll(async () => {
+      await instance.init({
+        lng: 'en',
+        fallbackLng: 'en',
+        resources: {
+          en: {
+            translation: {
+              'test: with a sentence. or more text': 'test_en',
+              errorCodes: {
+                UNAUTHORIZED: 'Unauthorized',
+                'BAD REQUEST': 'Bad request',
               },
-              test: {
-                anotherKey: 'from other ns',
-                'key with space': 'key with space from other ns',
-              },
+              UNAUTHORIZED: 'Unauthorized 2',
+              'BAD REQUEST': 'Bad request 2',
             },
-            de: {
-              translation: {
-                'test: with a sentence. or more text': 'test_de',
-              },
+            test: {
+              anotherKey: 'from other ns',
+              'key with space': 'key with space from other ns',
+            },
+          },
+          de: {
+            translation: {
+              'test: with a sentence. or more text': 'test_de',
             },
           },
         },
-        () => {
-          done();
-        },
-      );
+      });
     });
 
     const tests = [
@@ -65,8 +61,8 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly formats translations for ' + JSON.stringify(test.args), () => {
-        expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
+      it(`correctly formats translations for ${JSON.stringify(test.args)}`, () => {
+        expect(instance.t.apply(instance, test.args)).toEqual(test.expected);
       });
     });
   });

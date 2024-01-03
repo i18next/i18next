@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import logger from '../src/logger';
 
 const mockLogger = {
@@ -24,7 +25,7 @@ const mockLogger = {
 };
 
 describe('logger', () => {
-  before(() => {
+  beforeAll(() => {
     logger.init(mockLogger, { debug: true });
   });
 

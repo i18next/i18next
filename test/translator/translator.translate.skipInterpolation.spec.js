@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import Translator from '../../src/Translator';
 import ResourceStore from '../../src/ResourceStore.js';
 import LanguageUtils from '../../src/LanguageUtils';
@@ -7,9 +8,10 @@ import PostProcessor from '../../src/postProcessor';
 
 describe('Translator', () => {
   describe('translate() skip interpolation', () => {
-    var t;
+    /** @type {Translator} */
+    let t;
 
-    before(() => {
+    beforeAll(() => {
       const rs = new ResourceStore({
         en: {
           translation: {
@@ -43,7 +45,7 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    var tests = [
+    const tests = [
       { args: ['translation:test', { skipInterpolation: true }], expected: 'test_en {{key}}' },
       {
         args: ['translation:test', { skipInterpolation: false, key: 'value' }],
@@ -82,16 +84,16 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
+        expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
   });
 
   describe('translate() skip interpolation should allow post process', () => {
-    var t;
+    let t;
 
-    before(() => {
+    beforeAll(() => {
       const rs = new ResourceStore({
         en: {
           translation: {
@@ -122,12 +124,12 @@ describe('Translator', () => {
       );
       PostProcessor.addPostProcessor({
         name: 'postProcessValue',
-        process: (value, key, options, translator) => 'post processed: ' + value,
+        process: (value) => `post processed: ${value}`,
       });
       t.changeLanguage('en');
     });
 
-    var tests = [
+    const tests = [
       {
         args: ['translation:test', { skipInterpolation: true, postProcess: 'postProcessValue' }],
         expected: 'post processed: test_en',
@@ -167,8 +169,8 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
+        expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
   });

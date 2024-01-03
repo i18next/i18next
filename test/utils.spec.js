@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import * as utils from '../src/utils';
 
 describe('utils', () => {
@@ -13,9 +14,7 @@ describe('utils', () => {
         true,
       );
 
-      expect(res).to.eql({
-        some: 'else',
-      });
+      expect(res).toEqual({ some: 'else' });
     });
 
     it('it should not overwrite', () => {
@@ -29,9 +28,7 @@ describe('utils', () => {
         false,
       );
 
-      expect(res).to.eql({
-        some: 'thing',
-      });
+      expect(res).toEqual({ some: 'thing' });
     });
   });
 });

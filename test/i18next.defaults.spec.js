@@ -1,4 +1,6 @@
+import { describe, it, expect } from 'vitest';
 import * as defaultFc from '../src/defaults';
+
 const defaults = defaultFc.get();
 
 describe('defaults', () => {

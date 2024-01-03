@@ -1,14 +1,15 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import LanguageUtils from '../src/LanguageUtils';
 
 describe('LanguageUtils', () => {
   describe('toResolveHierarchy()', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackLng: 'en' });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'en'] },
       { args: ['de', 'fr'], expected: ['de', 'fr'] },
@@ -22,16 +23,16 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - extended fallback object', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: {
           de: ['de-CH', 'en'],
@@ -45,7 +46,7 @@ describe('LanguageUtils', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'de-CH', 'en'] },
       { args: ['de-CH'], expected: ['de-CH', 'de', 'fr', 'it', 'en'] },
@@ -55,16 +56,16 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - fallback function returns object', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: () => ({
           de: ['de-CH', 'en'],
@@ -78,7 +79,7 @@ describe('LanguageUtils', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'de-CH', 'en'] },
       { args: ['de-CH'], expected: ['de-CH', 'de', 'fr', 'it', 'en'] },
@@ -88,22 +89,22 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - fallback function returns string', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: () => 'en',
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'en'] },
       { args: ['de', 'fr'], expected: ['de', 'fr'] },
@@ -117,22 +118,22 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - fallback function returns array', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: () => ['de', 'en', 'zh'],
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en', 'de', 'zh'] },
       { args: ['de'], expected: ['de', 'en', 'zh'] },
       { args: ['de-AT'], expected: ['de-AT', 'de', 'en', 'zh'] },
@@ -141,20 +142,20 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - cleanCode Option', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackLng: 'en', cleanCode: true });
     });
 
-    var tests = [
+    const tests = [
       { args: ['EN'], expected: ['en'] },
       { args: ['DE'], expected: ['de', 'en'] },
       { args: ['DE', 'fr'], expected: ['de', 'fr'] },
@@ -166,20 +167,20 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - lowerCaseLng Option', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackLng: 'en', lowerCaseLng: true });
     });
 
-    var tests = [
+    const tests = [
       { args: ['EN'], expected: ['en'] },
       { args: ['DE'], expected: ['de', 'en'] },
       { args: ['DE', 'fr'], expected: ['de', 'fr'] },
@@ -191,20 +192,20 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - load Option: lngOnly', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackLng: 'en', load: 'languageOnly' });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'en'] },
       { args: ['de', 'fr'], expected: ['de', 'fr'] },
@@ -216,20 +217,20 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - load Option: currentOnly', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackLng: 'en', load: 'currentOnly' });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'en'] },
       { args: ['de', 'fr'], expected: ['de', 'fr'] },
@@ -241,21 +242,21 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - supportedLngs', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({ fallbackLng: 'en', supportedLngs: ['nb-NO', 'de', 'en'] });
       cu.logger.debug = false; // silence
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'en'] },
       { args: ['de', 'fr'], expected: ['de'] },
@@ -266,16 +267,16 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('toResolveHierarchy() - non explicit supportedLngs ', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: ['en'],
         supportedLngs: ['de', 'en', 'zh'],
@@ -283,7 +284,7 @@ describe('LanguageUtils', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: ['en'], expected: ['en'] },
       { args: ['de'], expected: ['de', 'en'] },
       { args: ['de-AT'], expected: ['de-AT', 'de', 'en'] },
@@ -292,23 +293,23 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly prepares resolver for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly prepares resolver for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.toResolveHierarchy.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('getBestMatchFromCodes()', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: ['en'],
         supportedLngs: ['en-US', 'en', 'de-DE'],
       });
     });
 
-    var tests = [
+    const tests = [
       { args: [['en']], expected: 'en' },
       { args: [['ru', 'en']], expected: 'en' },
       { args: [['en-GB']], expected: 'en' },
@@ -319,23 +320,23 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly get best match for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('getBestMatchFromCodes() with dev', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: ['fr'],
         supportedLngs: ['dev', 'en', 'fr'],
       });
     });
 
-    var tests = [
+    const tests = [
       { args: [['de']], expected: 'fr' },
       { args: [['ru', 'en']], expected: 'en' },
       { args: [['en-GB']], expected: 'en' },
@@ -346,16 +347,16 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly get best match for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
       });
     });
   });
 
   describe('getBestMatchFromCodes() with dev and nonExplicitSupportedLngs: true', () => {
-    var cu;
-
-    before(() => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: ['fr'],
         supportedLngs: ['dev', 'en', 'fr'],
@@ -363,7 +364,7 @@ describe('LanguageUtils', () => {
       });
     });
 
-    var tests = [
+    const tests = [
       { args: [['de']], expected: 'fr' },
       { args: [['ru', 'en']], expected: 'en' },
       { args: [['en-GB']], expected: 'en-GB' },
@@ -374,7 +375,7 @@ describe('LanguageUtils', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly get best match for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly get best match for ${JSON.stringify(test.args)} args`, () => {
         expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
       });
     });

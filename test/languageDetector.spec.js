@@ -1,10 +1,10 @@
+import { describe, it, expect } from 'vitest';
 import { createInstance } from '../src/index.js';
-import { expect } from 'chai';
 
 describe('LanguageDetector with different signatures', () => {
   describe('LanguageDetector with minimal sync signature', () => {
     let detectingLanguage = 'de-CH';
-    let i18n = createInstance();
+    const i18n = createInstance();
     i18n.use({
       type: 'languageDetector',
       detect: () => detectingLanguage,
@@ -29,12 +29,15 @@ describe('LanguageDetector with different signatures', () => {
   describe('LanguageDetector with full sync signature', () => {
     let detectingLanguage = 'de-CH';
     let cachedLng;
-    let i18n = createInstance();
+    const i18n = createInstance();
     i18n.use({
       type: 'languageDetector',
       init: () => {},
       detect: () => detectingLanguage,
-      cacheUserLanguage: (l) => (cachedLng = l),
+      cacheUserLanguage: (l) => {
+        cachedLng = l;
+        return l;
+      },
     });
 
     describe('#init', () => {
@@ -57,7 +60,7 @@ describe('LanguageDetector with different signatures', () => {
 
   describe('LanguageDetector with async callback signature', () => {
     let detectingLanguage = 'de-CH';
-    let i18n = createInstance();
+    const i18n = createInstance();
     i18n.use({
       type: 'languageDetector',
       async: true,
@@ -65,21 +68,17 @@ describe('LanguageDetector with different signatures', () => {
     });
 
     describe('#init', () => {
-      it('should work as usual', (done) => {
-        i18n.init({}, (err) => {
-          expect(i18n.language).to.eql('de-CH');
-          done(err);
-        });
+      it('should work as usual', async () => {
+        await i18n.init({});
+        expect(i18n.language).to.eql('de-CH');
       });
     });
 
     describe('#changeLanguage', () => {
-      it('should detect the language accordingly', (done) => {
+      it('should detect the language accordingly', async () => {
         detectingLanguage = 'it';
-        i18n.changeLanguage(undefined, (err) => {
-          expect(i18n.language).to.eql('it');
-          done(err);
-        });
+        await i18n.changeLanguage(undefined);
+        expect(i18n.language).to.eql('it');
       });
     });
   });
@@ -87,32 +86,33 @@ describe('LanguageDetector with different signatures', () => {
   describe('LanguageDetector with async promise signature', () => {
     let detectingLanguage = 'de-CH';
     let cachedLng;
-    let i18n = createInstance();
+    const i18n = createInstance();
     i18n.use({
       type: 'languageDetector',
       async: true,
       detect: async () => Promise.resolve(detectingLanguage),
-      cacheUserLanguage: async (l) => (cachedLng = l),
+      cacheUserLanguage: async (l) => {
+        cachedLng = l;
+        return Promise.resolve(l);
+      },
     });
 
     describe('#init', () => {
-      it('should work as usual', (done) => {
-        i18n.init({}, (err) => {
-          expect(i18n.language).to.eql('de-CH');
-          expect(cachedLng).to.eql('de-CH');
-          done(err);
-        });
+      it('should work as usual', async () => {
+        await i18n.init({});
+
+        expect(i18n.language).to.eql('de-CH');
+        expect(cachedLng).to.eql('de-CH');
       });
     });
 
     describe('#changeLanguage', () => {
-      it('should detect the language accordingly', (done) => {
+      it('should detect the language accordingly', async () => {
         detectingLanguage = 'it';
-        i18n.changeLanguage(undefined, (err) => {
-          expect(i18n.language).to.eql('it');
-          expect(cachedLng).to.eql('it');
-          done(err);
-        });
+        await i18n.changeLanguage(undefined);
+
+        expect(i18n.language).to.eql('it');
+        expect(cachedLng).to.eql('it');
       });
     });
   });

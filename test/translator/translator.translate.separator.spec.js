@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import Translator from '../../src/Translator';
 import ResourceStore from '../../src/ResourceStore.js';
 import LanguageUtils from '../../src/LanguageUtils';
@@ -6,9 +7,10 @@ import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
   describe('translate() separator usage', () => {
-    var t;
+    /** @type {Translator} */
+    let t;
 
-    before(() => {
+    beforeAll(() => {
       const rs = new ResourceStore(
         {
           en: {
@@ -70,7 +72,7 @@ describe('Translator', () => {
 
     tests.forEach((test) => {
       it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+        expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
   });

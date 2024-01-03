@@ -1,65 +1,59 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 
+/** @type {import('i18next').i18n} */
 const instance = i18next.createInstance();
 
 describe('i18next.interpolation.nesting', () => {
-  before((done) => {
-    instance.init(
-      {
-        lng: 'en',
-        resources: {
-          en: {
-            translation: {
-              test1: 'test $t(nest1) {{a}}',
-              nest1: 'nest value',
-              // options
-              test2: 'test $t(nest2, { "b": "{{a}}" })',
-              nest2: 'nest {{b}}',
-              // 2 options
-              test3: 'test $t(nest3, { "b": "{{a}}", "c": "{{b}}" })',
-              nest3: 'nest {{b}} {{c}}',
-              // , in key
-              test102: '$t(test102, is, {"key": "success"})',
-              'test102, is': 'this test is {{key}}',
-              // , in key and two options , separated
-              test103: '$t(test103, is, {"key": "success", "key2": "full"})',
-              'test103, is': 'this test is {{key2}} {{key}}',
-              keyA1: '{{text}} interpolated',
-              keyB1: 'Text to interpolate => $t(keyA1, { "text": "foo" })',
-              keyA1rec: '{{text}} interpolated | $t(keyB1rec)',
-              keyB1rec: 'Text to interpolate => $t(keyA1rec, { "text": "foo" })',
-              test_foo: "foo $t(test, { 'context': 'bar' })",
-              test_bar: "bar $t(test, { 'context': 'baz' })",
-              test_baz: 'baz',
-              foo: '$t(bar, {"firstName": "{{firstName}}", "lastName": "{{lastName}}" })',
-              fooSingle: `$t(bar, {'firstName': '{{firstName}}', 'lastName': '{{lastName}}' })`,
-              bar: '{{firstName}} {{lastName}}',
+  beforeAll(async () => {
+    await instance.init({
+      lng: 'en',
+      resources: {
+        en: {
+          translation: {
+            test1: 'test $t(nest1) {{a}}',
+            nest1: 'nest value',
+            // options
+            test2: 'test $t(nest2, { "b": "{{a}}" })',
+            nest2: 'nest {{b}}',
+            // 2 options
+            test3: 'test $t(nest3, { "b": "{{a}}", "c": "{{b}}" })',
+            nest3: 'nest {{b}} {{c}}',
+            // , in key
+            test102: '$t(test102, is, {"key": "success"})',
+            'test102, is': 'this test is {{key}}',
+            // , in key and two options , separated
+            test103: '$t(test103, is, {"key": "success", "key2": "full"})',
+            'test103, is': 'this test is {{key2}} {{key}}',
+            keyA1: '{{text}} interpolated',
+            keyB1: 'Text to interpolate => $t(keyA1, { "text": "foo" })',
+            keyA1rec: '{{text}} interpolated | $t(keyB1rec)',
+            keyB1rec: 'Text to interpolate => $t(keyA1rec, { "text": "foo" })',
+            test_foo: "foo $t(test, { 'context': 'bar' })",
+            test_bar: "bar $t(test, { 'context': 'baz' })",
+            test_baz: 'baz',
+            foo: '$t(bar, {"firstName": "{{firstName}}", "lastName": "{{lastName}}" })',
+            fooSingle: `$t(bar, {'firstName': '{{firstName}}', 'lastName': '{{lastName}}' })`,
+            bar: '{{firstName}} {{lastName}}',
 
-              item_one: 'item',
-              item_other: 'items',
-              thing_one: 'thing',
-              thing_other: 'things',
-              phrase: 'A: $t(thing, { "count": 1 }) B: $t(item)',
-              phrase2: 'A: $t(thing, { "count": 2 }) B: $t(item)',
+            item_one: 'item',
+            item_other: 'items',
+            thing_one: 'thing',
+            thing_other: 'things',
+            phrase: 'A: $t(thing, { "count": 1 }) B: $t(item)',
+            phrase2: 'A: $t(thing, { "count": 2 }) B: $t(item)',
 
-              date_MMDD: 'DD/MM/YY',
-              dateTest: '$t({{format}}, customdDateFormatter)',
-            },
+            date_MMDD: 'DD/MM/YY',
+            dateTest: '$t({{format}}, customdDateFormatter)',
           },
         },
       },
-      () => {
-        done();
-      },
-    );
-    instance.services.formatter.add(
-      'customdDateFormatter',
-      (value, lng, options) => `${value} | ${lng}`,
-    );
+    });
+    instance.services.formatter.add('customdDateFormatter', (value, lng) => `${value} | ${lng}`);
   });
 
   describe('nesting', () => {
-    var tests = [
+    const tests = [
       {
         args: ['test1', { a: 'foo' }],
         expected: 'test nest value foo',
@@ -158,7 +152,7 @@ describe('i18next.interpolation.nesting', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly nests for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly nests for ${JSON.stringify(test.args)} args`, () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
     });

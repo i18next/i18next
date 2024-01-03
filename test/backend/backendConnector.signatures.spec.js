@@ -1,10 +1,10 @@
+import { describe, it, expect, beforeEach, vitest } from 'vitest';
 import BackendConnector from '../../src/BackendConnector.js';
+import Interpolator from '../../src/Interpolator.js';
+import ResourceStore from '../../src/ResourceStore.js';
 import BackendMock from './backendMock.js';
 import BackendMockPromise from './backendMockPromise.js';
 import BackendMockSync from './backendMockSync.js';
-import Interpolator from '../../src/Interpolator.js';
-import ResourceStore from '../../src/ResourceStore.js';
-import { expect } from 'chai';
 
 describe('BackendConnector with different signatures', () => {
   describe('BackendConnector with callback signature', () => {
@@ -22,21 +22,24 @@ describe('BackendConnector with different signatures', () => {
     });
 
     describe('#load', () => {
-      it('should work as usual', (done) => {
-        connector.load(['en'], ['normal'], function (err) {
-          expect(err).to.eql(undefined);
-          expect(connector.store.getResourceBundle('en', 'normal')).to.eql({
+      it('should work as usual', () => {
+        expect.assertions(2);
+
+        connector.load(['en'], ['normal'], (err) => {
+          expect(err).toEqual(undefined);
+          expect(connector.store.getResourceBundle('en', 'normal')).toEqual({
             status: 'ok',
             language: 'en',
             namespace: 'normal',
           });
-          done();
         });
       });
     });
 
     describe('#saveMissing', () => {
-      it('should work as usual', (done) => {
+      it('should work as usual', () => {
+        expect.assertions(2);
+
         connector.saveMissing(
           ['en'],
           'normal',
@@ -46,7 +49,7 @@ describe('BackendConnector with different signatures', () => {
           { tDescription: 'some descr' },
           (err) => {
             expect(err).to.be.oneOf([null, undefined]);
-            expect(connector.backend.created).to.eql({
+            expect(connector.backend.created).toEqual({
               en: {
                 normal: {
                   'missing.key': {
@@ -59,7 +62,6 @@ describe('BackendConnector with different signatures', () => {
                 },
               },
             });
-            done();
           },
         );
       });
@@ -67,6 +69,7 @@ describe('BackendConnector with different signatures', () => {
   });
 
   describe('BackendConnector with promise signature', () => {
+    /** @type {BackendConnector} */
     let connector;
 
     beforeEach(() => {
@@ -81,21 +84,26 @@ describe('BackendConnector with different signatures', () => {
     });
 
     describe('#load', () => {
-      it('should work as usual', (done) => {
-        connector.load(['en'], ['namespace2'], function (err) {
-          expect(err).to.eql(undefined);
-          expect(connector.store.getResourceBundle('en', 'namespace2')).to.eql({
-            status: 'ok',
-            language: 'en',
-            namespace: 'namespace2',
-          });
-          done();
+      it('should work as usual', async () => {
+        const callback = vitest.fn();
+
+        connector.load(['en'], ['namespace2'], callback);
+
+        await vitest.waitFor(() => expect(callback).toHaveBeenCalled());
+
+        expect(callback).toHaveBeenCalledWith();
+        expect(connector.store.getResourceBundle('en', 'namespace2')).toEqual({
+          status: 'ok',
+          language: 'en',
+          namespace: 'namespace2',
         });
       });
     });
 
     describe('#saveMissing', () => {
-      it('should work as usual', (done) => {
+      it('should work as usual', async () => {
+        const callback = vitest.fn();
+
         connector.saveMissing(
           ['en'],
           'namespace2',
@@ -103,29 +111,31 @@ describe('BackendConnector with different signatures', () => {
           'some fallback',
           false,
           { tDescription: 'some descr' },
-          (err) => {
-            expect(err).to.be.oneOf([null, undefined]);
-            expect(connector.backend.created).to.eql({
-              en: {
-                namespace2: {
-                  'missing.key': {
-                    fallbackValue: 'some fallback',
-                    options: {
-                      tDescription: 'some descr',
-                      isUpdate: false,
-                    },
-                  },
+          callback,
+        );
+
+        await vitest.waitFor(() => expect(callback).toHaveBeenCalled());
+
+        expect(callback).toHaveBeenCalledWith(null, undefined);
+        expect(connector.backend.created).toEqual({
+          en: {
+            namespace2: {
+              'missing.key': {
+                fallbackValue: 'some fallback',
+                options: {
+                  tDescription: 'some descr',
+                  isUpdate: false,
                 },
               },
-            });
-            done();
+            },
           },
-        );
+        });
       });
     });
   });
 
   describe('BackendConnector with sync signature', () => {
+    /** @type {BackendConnector} */
     let connector;
 
     beforeEach(() => {
@@ -140,21 +150,26 @@ describe('BackendConnector with different signatures', () => {
     });
 
     describe('#load', () => {
-      it('should work as usual', (done) => {
-        connector.load(['en'], ['namespace3'], function (err) {
-          expect(err).to.eql(undefined);
-          expect(connector.store.getResourceBundle('en', 'namespace3')).to.eql({
-            status: 'ok',
-            language: 'en',
-            namespace: 'namespace3',
-          });
-          done();
+      it('should work as usual', async () => {
+        const callback = vitest.fn();
+
+        connector.load(['en'], ['namespace3'], callback);
+
+        await vitest.waitFor(() => expect(callback).toHaveBeenCalled());
+
+        expect(callback).toHaveBeenCalledWith();
+        expect(connector.store.getResourceBundle('en', 'namespace3')).toEqual({
+          status: 'ok',
+          language: 'en',
+          namespace: 'namespace3',
         });
       });
     });
 
     describe('#saveMissing', () => {
-      it('should work as usual', (done) => {
+      it('should work as usual', async () => {
+        const callback = vitest.fn();
+
         connector.saveMissing(
           ['en'],
           'namespace3',
@@ -162,24 +177,25 @@ describe('BackendConnector with different signatures', () => {
           'some fallback',
           false,
           { tDescription: 'some descr' },
-          (err) => {
-            expect(err).to.be.oneOf([null, undefined]);
-            expect(connector.backend.created).to.eql({
-              en: {
-                namespace3: {
-                  'missing.key': {
-                    fallbackValue: 'some fallback',
-                    options: {
-                      tDescription: 'some descr',
-                      isUpdate: false,
-                    },
-                  },
+          callback,
+        );
+
+        await vitest.waitFor(() => expect(callback).toHaveBeenCalled());
+
+        expect(callback).toHaveBeenCalledWith(null, undefined);
+        expect(connector.backend.created).toEqual({
+          en: {
+            namespace3: {
+              'missing.key': {
+                fallbackValue: 'some fallback',
+                options: {
+                  tDescription: 'some descr',
+                  isUpdate: false,
                 },
               },
-            });
-            done();
+            },
           },
-        );
+        });
       });
     });
   });

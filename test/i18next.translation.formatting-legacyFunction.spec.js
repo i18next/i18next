@@ -1,60 +1,57 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 
 const instance = i18next.createInstance();
 
 describe('i18next.translation.formatting.legacyFunction', () => {
-  before((done) => {
-    instance.init(
-      {
-        lng: 'en',
-        resources: {
-          en: {
-            translation: {
-              oneFormatterTest: 'The following text is uppercased: $t(key5, uppercase)',
-              anotherOneFormatterTest: 'The following text is underscored: $t(key6, underscore)',
-              twoFormattersTest:
-                'The following text is uppercased: $t(key5, uppercase). The following text is underscored: $t(key5, underscore)',
-              twoFormattersTogetherTest:
-                'The following text is uppercased, underscored, then uri component encoded: $t(key7, uppercase, underscore, encodeuricomponent)',
-              oneFormatterUsingAnotherFormatterTest:
-                'The following text is lowercased: $t(twoFormattersTogetherTest, lowercase)',
-              oneFormatterUsingCurrencyTest: 'The following text is an amount: $t(key8, currency)',
-              missingTranslationTest:
-                'No text will be shown when the translation key is missing: $t(, uppercase)',
-              key5: 'Here is some text',
-              key6: 'Here is some text with numb3r5',
-              key7: 'Here is some: text? with, (punctuation)',
-              key8: '10000',
-              withSpace: ' there',
-              keyWithNesting: 'hi$t(withSpace)',
-              twoInterpolationsWithUniqueFormatOptions:
-                'The value is {{localValue, currency}} or {{altValue, currency}}',
-            },
-          },
-        },
-        interpolation: {
-          format: function (value, format, lng, options) {
-            if (format === 'uppercase') return value.toUpperCase();
-            if (format === 'lowercase') return value.toLowerCase();
-            if (format === 'underscore') return value.replace(/\s+/g, '_');
-            if (format === 'encodeuricomponent') return encodeURIComponent(value);
-            if (format === 'currency')
-              return Intl.NumberFormat(options.parmOptions[options.interpolationkey].locale, {
-                style: 'currency',
-                currency: options.parmOptions[options.interpolationkey].currency,
-              }).format(value);
-            return value;
+  beforeAll(async () => {
+    instance.init({
+      lng: 'en',
+      resources: {
+        en: {
+          translation: {
+            oneFormatterTest: 'The following text is uppercased: $t(key5, uppercase)',
+            anotherOneFormatterTest: 'The following text is underscored: $t(key6, underscore)',
+            twoFormattersTest:
+              'The following text is uppercased: $t(key5, uppercase). The following text is underscored: $t(key5, underscore)',
+            twoFormattersTogetherTest:
+              'The following text is uppercased, underscored, then uri component encoded: $t(key7, uppercase, underscore, encodeuricomponent)',
+            oneFormatterUsingAnotherFormatterTest:
+              'The following text is lowercased: $t(twoFormattersTogetherTest, lowercase)',
+            oneFormatterUsingCurrencyTest: 'The following text is an amount: $t(key8, currency)',
+            missingTranslationTest:
+              'No text will be shown when the translation key is missing: $t(, uppercase)',
+            key5: 'Here is some text',
+            key6: 'Here is some text with numb3r5',
+            key7: 'Here is some: text? with, (punctuation)',
+            key8: '10000',
+            withSpace: ' there',
+            keyWithNesting: 'hi$t(withSpace)',
+            twoInterpolationsWithUniqueFormatOptions:
+              'The value is {{localValue, currency}} or {{altValue, currency}}',
           },
         },
       },
-      () => {
-        done();
+      interpolation: {
+        format(value, format, lng, options) {
+          if (format === 'uppercase') return value.toUpperCase();
+          if (format === 'lowercase') return value.toLowerCase();
+          if (format === 'underscore') return value.replace(/\s+/g, '_');
+          if (format === 'encodeuricomponent') return encodeURIComponent(value);
+          if (format === 'currency') {
+            return Intl.NumberFormat(options.parmOptions[options.interpolationkey].locale, {
+              style: 'currency',
+              currency: options.parmOptions[options.interpolationkey].currency,
+            }).format(value);
+          }
+          return value;
+        },
       },
-    );
+    });
   });
 
   describe('formatting', () => {
-    var tests = [
+    const tests = [
       {
         args: ['oneFormatterTest'],
         expected: 'The following text is uppercased: HERE IS SOME TEXT',
@@ -114,7 +111,7 @@ describe('i18next.translation.formatting.legacyFunction', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly formats translations for ' + JSON.stringify(test.args), () => {
+      it(`correctly formats translations for ${JSON.stringify(test.args)}`, () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
     });

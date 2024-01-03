@@ -4,17 +4,13 @@ import { defineWorkspace } from 'vitest/config';
 import type { UserProjectConfigExport } from 'vitest/config';
 
 export default defineWorkspace([
-  // {
-  //   test: {
-  //     name: 'runtime',
-  //     dir: './test',
-  //     exclude: [
-  //       '**/typescript/**',
-  //       '**/backward/**'
-  //     ],
-  //     environment: 'happy-dom',
-  //   },
-  // },
+  {
+    test: {
+      name: 'runtime',
+      dir: './test',
+      exclude: ['**/typescript/**', '**/backward/**'],
+    },
+  },
 
   {
     test: {

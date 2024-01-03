@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 
 const Logger = {
@@ -9,17 +10,17 @@ const Logger = {
     error: [],
   },
 
-  log: function (args) {
+  log(args) {
     this.entries.log.push(args[0]);
   },
-  warn: function (args) {
+  warn(args) {
     this.entries.warn.push(args[0]);
   },
-  error: function (args) {
+  error(args) {
     this.entries.error.push(args[0]);
   },
 
-  reset: function () {
+  reset() {
     this.entries = {
       log: [],
       warn: [],
@@ -52,6 +53,7 @@ const Backend = {
   },
 };
 
+/** @type {import('i18next').i18n} */
 let i18n = i18next.createInstance();
 i18n.use(Backend);
 i18n.use(Logger);
@@ -60,43 +62,44 @@ describe('i18next', () => {
   describe('hasLoadedNamespace', () => {
     describe('not called init()', () => {
       it('it should nok', () => {
-        expect(i18n.isInitialized).to.not.be.ok;
-        expect(i18n.hasLoadedNamespace('ns1')).to.equal(false);
+        expect(i18n.isInitialized).toBeFalsy();
+        expect(i18n.hasLoadedNamespace('ns1')).toBeFalsy();
       });
     });
 
     describe('called init() not detecting lng', () => {
-      it('it should ok - but warn about issue', (done) => {
-        i18n.init({ debug: true, saveMissing: true }, (err, t) => {
-          expect(i18n.isInitialized).to.be.ok;
+      it('it should ok - but warn about issue', async () => {
+        await i18n.init({ debug: true, saveMissing: true });
+        expect(i18n.isInitialized).toBeTruthy();
 
-          expect(i18n.hasLoadedNamespace('translation')).to.equal(false);
+        expect(i18n.hasLoadedNamespace('translation')).to.equal(false);
 
-          expect(Logger.entries.warn[0]).to.equal(
-            'i18next: init: no languageDetector is used and no lng is defined',
-          );
-          expect(Logger.entries.warn[1]).to.equal(
-            'i18next: hasLoadedNamespace: i18n.languages were undefined or empty',
-          );
-          Logger.reset();
-          done();
-        });
+        expect(Logger.entries.warn[0]).to.equal(
+          'i18next: init: no languageDetector is used and no lng is defined',
+        );
+        expect(Logger.entries.warn[1]).to.equal(
+          'i18next: hasLoadedNamespace: i18n.languages were undefined or empty',
+        );
+        Logger.reset();
       });
     });
 
     describe('called init() properly', () => {
-      before((done) => {
-        i18n = i18n.cloneInstance({ debug: true, saveMissing: true, lng: 'en-US' }, () => {
-          done();
-        });
-      });
+      beforeAll(
+        () =>
+          new Promise((resolve) => {
+            i18n = i18n.cloneInstance({ debug: true, saveMissing: true, lng: 'en-US' }, () => {
+              resolve();
+            });
+          }),
+      );
 
       it('it should ok for loaded ns', () => {
-        expect(i18n.hasLoadedNamespace('translation')).to.equal(true);
+        expect(i18n.hasLoadedNamespace('translation')).toBeTruthy();
       });
 
       it('it should nok for not loaded ns', () => {
-        expect(i18n.hasLoadedNamespace('ns1')).to.equal(false);
+        expect(i18n.hasLoadedNamespace('ns1')).toBeFalsy();
       });
 
       describe('translator - calling t', () => {
@@ -141,10 +144,8 @@ describe('i18next', () => {
     });
 
     describe('for a namespace failed loading', () => {
-      before((done) => {
-        i18n.loadNamespaces('fail-ns', () => {
-          done();
-        });
+      beforeAll(async () => {
+        await i18n.loadNamespaces('fail-ns');
       });
 
       it('it should ok for loaded ns', () => {
@@ -154,10 +155,8 @@ describe('i18next', () => {
   });
 
   describe('for lng = cimode', () => {
-    before((done) => {
-      i18n.changeLanguage('cimode', () => {
-        done();
-      });
+    beforeAll(async () => {
+      i18n.changeLanguage('cimode');
     });
 
     it('it should ok for loaded ns', () => {
@@ -170,19 +169,15 @@ describe('i18next', () => {
   });
 
   describe('not having a backend', () => {
+    /** @type {import('i18next').i18n} */
     const i18n2 = i18next.createInstance();
     i18n2.use(Logger);
-    before((done) => {
-      i18n2.init(
-        {
-          debug: true,
-          lng: 'en-US',
-          resources: { 'en-US': { translation: {} }, dev: { translation: {} } },
-        },
-        () => {
-          done();
-        },
-      );
+    beforeAll(async () => {
+      await i18n2.init({
+        debug: true,
+        lng: 'en-US',
+        resources: { 'en-US': { translation: {} }, dev: { translation: {} } },
+      });
     });
 
     it('it should ok for passed in ns', () => {
@@ -195,20 +190,16 @@ describe('i18next', () => {
   });
 
   describe('having a backend and having resources but without partialBundledLanguages flag', () => {
+    /** @type {import('i18next').i18n} */
     const i18n2 = i18next.createInstance();
     i18n2.use(Backend);
     i18n2.use(Logger);
-    before((done) => {
-      i18n2.init(
-        {
-          debug: true,
-          lng: 'en-US',
-          resources: { 'en-US': { translation: {} }, dev: { translation: {} } },
-        },
-        () => {
-          done();
-        },
-      );
+    beforeAll(async () => {
+      await i18n2.init({
+        debug: true,
+        lng: 'en-US',
+        resources: { 'en-US': { translation: {} }, dev: { translation: {} } },
+      });
     });
 
     it('it should ok for passed in ns', () => {

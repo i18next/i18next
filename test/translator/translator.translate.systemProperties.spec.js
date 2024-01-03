@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import Translator from '../../src/Translator';
 import ResourceStore from '../../src/ResourceStore.js';
 import LanguageUtils from '../../src/LanguageUtils';
@@ -15,9 +16,10 @@ import Interpolator from '../../src/Interpolator';
 
 describe('Translator', () => {
   describe('translate()', () => {
-    var t;
+    /** @type {Translator} */
+    let t;
 
-    before(() => {
+    beforeAll(() => {
       const rs = new ResourceStore({
         en: {
           translation: {
@@ -54,15 +56,15 @@ describe('Translator', () => {
       t.changeLanguage('de');
     });
 
-    var tests = [
+    const tests = [
       { args: ['test', { lng: 'de', nsSeparator: '.' }], expected: 'test_de' },
       { args: ['test.length', { lng: 'de', nsSeparator: '.' }], expected: 'test_length' },
       { args: ['test.search', { lng: 'de', nsSeparator: '.' }], expected: 'test_search' },
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
+        expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
   });

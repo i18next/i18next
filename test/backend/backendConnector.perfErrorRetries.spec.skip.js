@@ -1,13 +1,14 @@
+import { describe, it, expect, vitest, beforeAll } from 'vitest';
 import BackendConnector from '../../src/BackendConnector.js';
-import BackendMock from './backendMock.js';
 import Interpolator from '../../src/Interpolator.js';
 import ResourceStore from '../../src/ResourceStore.js';
-import { expect } from 'chai';
+import BackendMock from './backendMock.js';
 
 describe('BackendConnector performance (retry) test', () => {
+  /** @type {BackendConnector} */
   let connector;
 
-  before(() => {
+  beforeAll(() => {
     connector = new BackendConnector(
       new BackendMock(),
       new ResourceStore(),
@@ -20,22 +21,36 @@ describe('BackendConnector performance (retry) test', () => {
     );
   });
 
-  describe('#load', () => {
-    it('should load retry (failed) items mixed with concurrent longer items in under the 12 seconds timeout', (done) => {
-      const namespaces = [];
-      for (let i = 0; i < 20; i++) {
-        namespaces.push(`concurrentlyLonger${i}`);
-      }
-      for (let i = 0; i < 3; i++) {
-        namespaces.push(`fail${i}`);
-      }
-      for (let i = 0; i < 20; i++) {
-        namespaces.push(`concurrently${i}`);
-      }
-      connector.load(['en'], namespaces, function (err) {
-        expect(err).to.be.ok;
-        done();
+  describe(
+    '#load',
+    () => {
+      it('should load retry (failed) items mixed with concurrent longer items in under the 12 seconds timeout', async () => {
+        const namespaces = [];
+        for (let i = 0; i < 20; i++) {
+          namespaces.push(`concurrentlyLonger${i}`);
+        }
+        for (let i = 0; i < 3; i++) {
+          namespaces.push(`fail${i}`);
+        }
+        for (let i = 0; i < 20; i++) {
+          namespaces.push(`concurrently${i}`);
+        }
+
+        const callback = vitest.fn();
+
+        connector.load(['en'], namespaces, callback);
+
+        await vitest.waitFor(() => expect(callback).toHaveBeenCalled(), {
+          timeout: 12000,
+        });
+
+        expect(callback).toHaveBeenCalledWith([
+          'failed loading',
+          'failed loading',
+          'failed loading',
+        ]);
       });
-    }).timeout(12000);
-  });
+    },
+    { timeout: 12000 },
+  );
 });

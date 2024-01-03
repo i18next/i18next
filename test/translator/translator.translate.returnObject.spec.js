@@ -1,3 +1,4 @@
+import { describe, it, expect, vitest, beforeAll } from 'vitest';
 import Translator from '../../src/Translator';
 import ResourceStore from '../../src/ResourceStore.js';
 import LanguageUtils from '../../src/LanguageUtils';
@@ -7,9 +8,10 @@ import logger from '../../src/logger';
 
 describe('Translator', () => {
   describe('translate() with returnObjects=true', () => {
-    var t;
+    /** @type {Translator} */
+    let t;
 
-    before(() => {
+    beforeAll(() => {
       const rs = new ResourceStore({
         en: {
           common: {
@@ -63,7 +65,7 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    var tests = [
+    const tests = [
       { args: ['common:test'], expected: ['common_test_en_1', 'common_test_en_2'] },
       { args: ['special:test'], expected: ['special_test_en_1', 'special_test_en_2'] },
 
@@ -89,23 +91,27 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
-        expect(t.translate.apply(t, test.args)).to.eql(test.expected);
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
+        expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
   });
 
   describe('translate() with returnObjects=false', () => {
+    /** @type {Translator} */
     let t;
+    /** @type {import('vitest').MockInstance} */
     let loggerStub;
+    /** @type {ResourceStore} */
     let rs;
+    /** @type {LanguageUtils} */
     let lu;
-    const loggerSpy = sinon.spy();
-    before(() => {
-      loggerStub = sinon.stub(logger, 'create');
-      loggerStub.returns({
+    const loggerSpy = vitest.fn();
+    beforeAll(() => {
+      loggerStub = vitest.spyOn(logger, 'create');
+      loggerStub.mockReturnValue({
         warn: loggerSpy,
-        log: sinon.spy(),
+        log: vitest.fn(),
       });
 
       rs = new ResourceStore({
@@ -141,9 +147,9 @@ describe('Translator', () => {
     describe('and "returnedObjectHandler" defined', () => {
       it('should not emit a warning', () => {
         t.translate.apply(t, ['common:array']);
-        expect(
-          loggerSpy.calledWith('accessing an object - but returnObjects options is not enabled!'),
-        ).to.be.false;
+        expect(loggerSpy).not.toHaveBeenCalledWith(
+          'accessing an object - but returnObjects options is not enabled!',
+        );
       });
     });
 
@@ -167,9 +173,9 @@ describe('Translator', () => {
         );
         t.changeLanguage('en');
         t.translate.apply(t, ['common:array']);
-        expect(
-          loggerSpy.calledWith('accessing an object - but returnObjects options is not enabled!'),
-        ).to.be.true;
+        expect(loggerSpy).toHaveBeenCalledWith(
+          'accessing an object - but returnObjects options is not enabled!',
+        );
       });
     });
   });

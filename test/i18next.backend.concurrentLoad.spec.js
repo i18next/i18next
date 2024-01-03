@@ -1,10 +1,11 @@
+import { describe, it, beforeAll } from 'vitest';
 import i18next from '../src/i18next.js';
 import BackendMock from './backend/backendMock.js';
 
 describe('i18next backend', () => {
   const i18n = i18next.createInstance();
 
-  before(() => {
+  beforeAll(() => {
     i18n.use(BackendMock).init({
       fallbackLng: 'en',
       fallbackNS: 'concurrently',

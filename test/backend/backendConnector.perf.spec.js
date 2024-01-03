@@ -1,13 +1,14 @@
+import { describe, it, expect, beforeAll } from 'vitest';
 import BackendConnector from '../../src/BackendConnector.js';
-import BackendMock from './backendMock.js';
 import Interpolator from '../../src/Interpolator.js';
 import ResourceStore from '../../src/ResourceStore.js';
-import { expect } from 'chai';
+import BackendMock from './backendMock.js';
 
 describe('BackendConnector performance test', () => {
+  /** @type {BackendConnector} */
   let connector;
 
-  before(() => {
+  beforeAll(() => {
     connector = new BackendConnector(
       new BackendMock(),
       new ResourceStore(),
@@ -21,18 +22,19 @@ describe('BackendConnector performance test', () => {
   });
 
   describe('#load', () => {
-    it('should load 10,000 items in under the 2 second timeout', (done) => {
+    it('should load 10,000 items in under the 2 second timeout', () => {
+      expect.assertions(2);
+
       const namespaces = [];
       for (let i = 0; i < 10000; i++) {
         namespaces.push(`namespace${i}`);
       }
-      connector.load(['en'], namespaces, function (err) {
-        expect(err).to.be.not.ok;
-        expect(connector.store.getResourceBundle('en', 'namespace1')).to.eql({
+      connector.load(['en'], namespaces, (err) => {
+        expect(err).toBeFalsy();
+        expect(connector.store.getResourceBundle('en', 'namespace1')).toEqual({
           status: 'nok',
           retries: 0,
         });
-        done();
       });
     });
   });

@@ -1,9 +1,10 @@
+import { describe, it, expect, beforeEach, vitest } from 'vitest';
 import ResourceStore from '../src/ResourceStore.js';
 
 describe('ResourceStore', () => {
   describe('constructor', () => {
     it('it should set empty data if not passing them in', () => {
-      let rs = new ResourceStore();
+      const rs = new ResourceStore();
       expect(rs.toJSON()).to.eql({});
     });
 
@@ -15,12 +16,13 @@ describe('ResourceStore', () => {
           },
         },
       };
-      let rs = new ResourceStore(data);
+      const rs = new ResourceStore(data);
       expect(rs.toJSON()).to.equal(data);
     });
   });
 
   describe('resource manipulation', () => {
+    /** @type {ResourceStore} */
     let rs;
 
     describe('can add resources', () => {
@@ -51,31 +53,31 @@ describe('ResourceStore', () => {
       });
 
       it("it should emit 'added' event on addResource call", () => {
-        const spy = sinon.spy();
+        const spy = vitest.fn();
         rs.on('added', spy);
         rs.addResource('fr', 'translation', 'hi', 'salut');
-        expect(spy.calledWithExactly('fr', 'translation', 'hi', 'salut')).to.be.true;
+        expect(spy).toHaveBeenCalledWith('fr', 'translation', 'hi', 'salut');
       });
 
       it("it should not emit 'added' event on addResource call with silent option", () => {
-        const spy = sinon.spy();
+        const spy = vitest.fn();
         rs.on('added', spy);
         rs.addResource('fr', 'translation', 'hi', 'salut', { silent: true });
-        expect(spy.notCalled).to.be.true;
+        expect(spy).not.toHaveBeenCalled();
       });
 
       it("it should emit 'added' event on addResources call", () => {
-        const spy = sinon.spy();
+        const spy = vitest.fn();
         rs.on('added', spy);
         rs.addResources('fr', 'translation', {
           hi: 'salut',
           hello: 'bonjour',
         });
-        expect(spy.calledOnce).to.be.true;
+        expect(spy).toHaveBeenCalledOnce();
       });
 
       it("it should not emit 'added' event on addResources call with silent option", () => {
-        const spy = sinon.spy();
+        const spy = vitest.fn();
         rs.on('added', spy);
         rs.addResources(
           'fr',
@@ -86,11 +88,11 @@ describe('ResourceStore', () => {
           },
           { silent: true },
         );
-        expect(spy.notCalled).to.be.true;
+        expect(spy).not.toHaveBeenCalled();
       });
 
       it("it should emit 'added' event on addResourceBundle call", () => {
-        const spy = sinon.spy();
+        const spy = vitest.fn();
         rs.on('added', spy);
         rs.addResourceBundle(
           'fr',
@@ -102,11 +104,11 @@ describe('ResourceStore', () => {
           true,
           true,
         );
-        expect(spy.calledOnce).to.be.true;
+        expect(spy).toHaveBeenCalledOnce();
       });
 
       it("it should not emit 'added' event on addResourceBundle call with silent option", () => {
-        const spy = sinon.spy();
+        const spy = vitest.fn();
         rs.on('added', spy);
         rs.addResourceBundle(
           'fr',
@@ -119,7 +121,7 @@ describe('ResourceStore', () => {
           true,
           { silent: true },
         );
-        expect(spy.notCalled).to.be.true;
+        expect(spy).not.toHaveBeenCalled();
       });
     });
 
@@ -143,14 +145,14 @@ describe('ResourceStore', () => {
       });
 
       it('without polluting the prototype by __proto__', () => {
-        const malicious_payload = '{"__proto__":{"vulnerable":"Polluted"}}';
-        rs.addResourceBundle('en', 'translation', JSON.parse(malicious_payload), true, true);
+        const maliciousPayload = '{"__proto__":{"vulnerable":"Polluted"}}';
+        rs.addResourceBundle('en', 'translation', JSON.parse(maliciousPayload), true, true);
         expect({}.vulnerable).to.eql(undefined);
       });
 
       it('without polluting the prototype by constructor', () => {
-        const malicious_payload = '{"constructor": {"prototype": {"polluted": "yes"}}}';
-        rs.addResourceBundle('en', 'translation', JSON.parse(malicious_payload), true);
+        const maliciousPayload = '{"constructor": {"prototype": {"polluted": "yes"}}}';
+        rs.addResourceBundle('en', 'translation', JSON.parse(maliciousPayload), true);
         expect({}.polluted).to.eql(undefined);
       });
     });
@@ -162,8 +164,8 @@ describe('ResourceStore', () => {
       });
 
       it('it checks resources by hasResourceBundle', () => {
-        expect(rs.hasResourceBundle('en', 'translation')).to.be.ok;
-        expect(rs.hasResourceBundle('en', 'notExisting')).to.not.be.ok;
+        expect(rs.hasResourceBundle('en', 'translation')).toBeTruthy();
+        expect(rs.hasResourceBundle('en', 'notExisting')).toBeFalsy();
       });
     });
 
@@ -186,7 +188,7 @@ describe('ResourceStore', () => {
 
       it('it removes resources by removeResourceBundle', () => {
         rs.removeResourceBundle('en', 'translation');
-        expect(rs.getResourceBundle('en', 'translation')).to.be.not.ok;
+        expect(rs.getResourceBundle('en', 'translation')).toBeFalsy();
       });
     });
 

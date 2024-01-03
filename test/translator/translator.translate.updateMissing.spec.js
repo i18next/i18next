@@ -1,3 +1,4 @@
+import { describe, it, expect, vitest, beforeEach } from 'vitest';
 import Interpolator from '../../src/Interpolator';
 import LanguageUtils from '../../src/LanguageUtils';
 import PluralResolver from '../../src/PluralResolver';
@@ -5,8 +6,11 @@ import ResourceStore from '../../src/ResourceStore.js';
 import Translator from '../../src/Translator';
 
 describe('Translator', () => {
+  /** @type {Translator} */
   let t;
+  /** @type {import('i18next').Services} */
   let tServices;
+  /** @type {unknown} */
   let missingKeyHandler;
 
   beforeEach(() => {
@@ -35,7 +39,7 @@ describe('Translator', () => {
       interpolator: new Interpolator(),
     };
 
-    missingKeyHandler = sinon.spy();
+    missingKeyHandler = vitest.fn();
   });
 
   describe('translate() using updateMissing', () => {
@@ -58,24 +62,33 @@ describe('Translator', () => {
 
     describe('without default value', () => {
       it('does not invoke missingKeyHandler', () => {
-        expect(t.translate('translation:test')).to.eql('test_en');
-        expect(missingKeyHandler.notCalled).to.be.true;
+        expect(t.translate('translation:test')).toEqual('test_en');
+        expect(missingKeyHandler).not.toHaveBeenCalled();
       });
     });
 
     describe('with an unchanged default value', () => {
       it('does not invoke missingKeyHandler', () => {
-        expect(t.translate('translation:test', { defaultValue: 'test_en' })).to.eql('test_en');
-        expect(missingKeyHandler.notCalled).to.be.true;
+        expect(t.translate('translation:test', { defaultValue: 'test_en' })).toEqual('test_en');
+        expect(missingKeyHandler).not.toHaveBeenCalled();
       });
     });
 
     describe('with a new default value', () => {
       it('correctly sends missing', () => {
-        expect(t.translate('translation:test', { defaultValue: 'new value' })).to.eql('test_en');
-        expect(missingKeyHandler.calledOnce).to.be.true;
-        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
-          .true;
+        expect(t.translate('translation:test', { defaultValue: 'new value' })).toEqual('test_en');
+        expect(missingKeyHandler).toHaveBeenCalledOnce();
+        expect(missingKeyHandler).toHaveBeenCalledWith(
+          ['en'],
+          'translation',
+          'test',
+          'new value',
+          true,
+          expect.objectContaining({
+            defaultValue: expect.any(String),
+            lng: expect.any(String),
+          }),
+        );
       });
     });
   });
@@ -105,10 +118,19 @@ describe('Translator', () => {
             defaultValue: 'new value',
             defaultValue_plural: 'new values',
           }),
-        ).to.eql('test_en');
-        expect(missingKeyHandler.calledOnce).to.be.true;
-        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test', 'new value', true)).to.be
-          .true;
+        ).toEqual('test_en');
+        expect(missingKeyHandler).toHaveBeenCalledOnce();
+        expect(missingKeyHandler).toHaveBeenCalledWith(
+          ['en'],
+          'translation',
+          'test',
+          'new value',
+          true,
+          expect.objectContaining({
+            defaultValue: expect.any(String),
+            lng: expect.any(String),
+          }),
+        );
       });
     });
 
@@ -120,8 +142,8 @@ describe('Translator', () => {
             defaultValue: 'new value',
             defaultValue_plural: 'new values',
           }),
-        ).to.eql('test_en');
-        expect(missingKeyHandler.calledOnce).to.be.true;
+        ).toEqual('test_en');
+        expect(missingKeyHandler).toHaveBeenCalledOnce();
       });
     });
 
@@ -133,13 +155,32 @@ describe('Translator', () => {
               count,
               defaultValue: 'new value',
             }),
-          ).to.eql('test_en');
-          expect(missingKeyHandler.calledTwice).to.be.true;
-          expect(missingKeyHandler.calledWith(['en'], 'translation', 'test_one', 'new value', true))
-            .to.be.true;
-          expect(
-            missingKeyHandler.calledWith(['en'], 'translation', 'test_other', 'new value', true),
-          ).to.be.true;
+          ).toEqual('test_en');
+          expect(missingKeyHandler).toHaveBeenCalledTimes(2);
+          expect(missingKeyHandler).toHaveBeenNthCalledWith(
+            1,
+            ['en'],
+            'translation',
+            'test_one',
+            'new value',
+            true,
+            expect.objectContaining({
+              defaultValue: expect.any(String),
+              lng: expect.any(String),
+            }),
+          );
+          expect(missingKeyHandler).toHaveBeenNthCalledWith(
+            2,
+            ['en'],
+            'translation',
+            'test_other',
+            'new value',
+            true,
+            expect.objectContaining({
+              defaultValue: expect.any(String),
+              lng: expect.any(String),
+            }),
+          );
         });
       });
     });
@@ -152,13 +193,36 @@ describe('Translator', () => {
             defaultValue_one: 'new value',
             defaultValue_other: 'new values',
           }),
-        ).to.eql('test_en');
-        expect(missingKeyHandler.calledTwice).to.be.true;
-        expect(missingKeyHandler.calledWith(['en'], 'translation', 'test_one', 'new value', true))
-          .to.be.true;
-        expect(
-          missingKeyHandler.calledWith(['en'], 'translation', 'test_other', 'new values', true),
-        ).to.be.true;
+        ).toEqual('test_en');
+        expect(missingKeyHandler).toHaveBeenCalledTimes(2);
+        expect(missingKeyHandler).toHaveBeenNthCalledWith(
+          1,
+          ['en'],
+          'translation',
+          'test_one',
+          'new value',
+          true,
+          expect.objectContaining({
+            count: expect.any(Number),
+            defaultValue_one: expect.any(String),
+            defaultValue_other: expect.any(String),
+            lng: expect.any(String),
+          }),
+        );
+        expect(missingKeyHandler).toHaveBeenNthCalledWith(
+          2,
+          ['en'],
+          'translation',
+          'test_other',
+          'new values',
+          true,
+          expect.objectContaining({
+            count: expect.any(Number),
+            defaultValue_one: expect.any(String),
+            defaultValue_other: expect.any(String),
+            lng: expect.any(String),
+          }),
+        );
       });
     });
   });

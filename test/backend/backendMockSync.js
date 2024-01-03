@@ -1,4 +1,4 @@
-class Backend {
+class BackendMockSync {
   constructor(services, options = {}) {
     this.init(services, options);
   }
@@ -25,4 +25,4 @@ class Backend {
   }
 }
 
-export default Backend;
+export default BackendMockSync;
