@@ -8,10 +8,6 @@ assets/
 .eslintignore
 .eslintrc.js
 .gitignore
-bower.json
-gulpfile.js
-karma.conf.js
-karma.backward.conf.js
 sample.html
 .codeclimate.yml
 .coveralls.yml
@@ -26,4 +22,5 @@ CONTRIBUTING.md
 .github
 .husky
 examples/
+vitest.config.mts
 vitest.workspace.mts

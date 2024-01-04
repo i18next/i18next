@@ -28,8 +28,8 @@ exclude_paths:
   - 'i18next.min.js'
   - 'index.d.ts'
   - 'rollup.config.js'
-  - 'karma.conf.js'
-  - 'karma.backward.conf.js'
+  - 'vitest.config.mts'
+  - 'vitest.workspace.mts'
 checks:
   file-lines:
     config:
