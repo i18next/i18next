@@ -1,4 +1,4 @@
-name: Lint & test
+name: Lint & Test
 
 on:
   push:
@@ -29,8 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint
-        run: npm run lint
+      # lint is included in pretest
+      # - name: Lint
+      #   run: npm run lint
 
       - name: Test
         run: npm test
