@@ -23,6 +23,10 @@ By making a contribution to this project, I certify that:
 
 ## Testing
 
+### `test/runtime/**/*.test.local.*`
+
+The test files with the following pattern are meant to be executed and not on ci/cd envs.
+
 ### Typescript
 
 To run all typescript test run

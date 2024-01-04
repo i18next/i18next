@@ -4,6 +4,7 @@ import Interpolator from '../../../src/Interpolator.js';
 import ResourceStore from '../../../src/ResourceStore.js';
 import BackendMock from './backendMock.js';
 
+/** Those are just skipped for ci/cd, but occasionally we run them locally */
 describe('BackendConnector performance (retry) test', () => {
   /** @type {BackendConnector} */
   let connector;
