@@ -7,8 +7,7 @@ export default defineWorkspace([
   {
     test: {
       name: 'runtime',
-      dir: './test',
-      exclude: ['**/typescript/**', '**/backward/**'],
+      dir: './test/runtime',
     },
   },
 
