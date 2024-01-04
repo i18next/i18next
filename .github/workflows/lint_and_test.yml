@@ -35,5 +35,8 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Coverage
-        run: npm run test:coverage && cat ./coverage/lcov.info | npx coveralls --verbose
+      - name: Run test to generate coverage
+        run: npm run test:coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
