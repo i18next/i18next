@@ -22,5 +22,4 @@ CONTRIBUTING.md
 .github
 .husky
 examples/
-vitest.config.mts
-vitest.workspace.mts
+vitest.*.mts
