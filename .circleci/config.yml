@@ -38,6 +38,9 @@ jobs:
       - run:
           name: Test
           command: npm test
+      - run
+          name: Coverage
+          command: npm run test:coverage && cat ./coverage/lcov.info | npx coveralls --verbose
 
 workflows:
   lint_and_test:
