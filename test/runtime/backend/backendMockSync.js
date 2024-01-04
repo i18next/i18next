@@ -9,6 +9,7 @@ class BackendMockSync {
     this.created = {};
   }
 
+  // eslint-disable-next-line class-methods-use-this
   read(language, namespace) {
     return { status: 'ok', language, namespace };
   }

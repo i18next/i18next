@@ -25,11 +25,11 @@ describe('exposed', () => {
     type Callback = (lng: string, ns: string) => void;
 
     expectTypeOf(resourceStore.on).parameters.toMatchTypeOf<['added' | 'removed', Callback]>();
-    expectTypeOf(resourceStore.on).returns.toBeVoid;
+    expectTypeOf(resourceStore.on).returns.toBeVoid();
 
     expectTypeOf(resourceStore.off).parameter(0).toMatchTypeOf<'added' | 'removed'>();
     expectTypeOf(resourceStore.off).parameter(1).toMatchTypeOf<Callback | undefined>();
-    expectTypeOf(resourceStore.off).returns.toBeVoid;
+    expectTypeOf(resourceStore.off).returns.toBeVoid();
   });
 
   describe('formatter', () => {
@@ -37,22 +37,22 @@ describe('exposed', () => {
 
     assertType<Formatter | undefined>(formatter);
 
-    expectTypeOf(formatter!.add).parameters.toMatchTypeOf<
+    expectTypeOf(formatter?.add).parameters.toMatchTypeOf<
       [string, (value: any, lng: string | undefined, options: any) => string]
     >();
-    expectTypeOf(formatter!.add).returns.toBeVoid();
+    expectTypeOf(formatter?.add).returns.toBeVoid();
 
-    expectTypeOf(formatter!.addCached).parameters.toMatchTypeOf<
+    expectTypeOf(formatter?.addCached).parameters.toMatchTypeOf<
       [string, (lng: string | undefined, options: any) => (value: any) => string]
     >();
-    expectTypeOf(formatter!.addCached).returns.toBeVoid();
+    expectTypeOf(formatter?.addCached).returns.toBeVoid();
   });
 
   describe('eventEmitter', () => {
     expectTypeOf(i18next.on).parameters.toMatchTypeOf<[string, (...args: unknown[]) => void]>();
-    expectTypeOf(i18next.on).returns.toBeVoid;
+    expectTypeOf(i18next.on).returns.toBeVoid();
 
     expectTypeOf(i18next.emit).parameters.toMatchTypeOf<[string, ...unknown[]]>();
-    expectTypeOf(i18next.emit).returns.toBeVoid;
+    expectTypeOf(i18next.emit).returns.toBeVoid();
   });
 });

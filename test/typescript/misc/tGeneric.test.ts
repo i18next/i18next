@@ -5,7 +5,7 @@ describe('tGeneric', () => {
   type Keys = 'friend' | 'tree';
 
   it('should accept keys via generic', () => {
-    const t = i18next.t<Keys, {}, string>;
+    const t = i18next.t<Keys, Record<string, unknown>, string>;
 
     expectTypeOf(t).parameter(0).toMatchTypeOf<string | string[]>();
     expectTypeOf(t).parameter(1).extract<object>().toMatchTypeOf<TOptions>();
@@ -15,7 +15,7 @@ describe('tGeneric', () => {
   });
 
   it('should work with interpolation values', () => {
-    const t = i18next.t<Keys, {}, '{{myVar}}'>;
+    const t = i18next.t<Keys, Record<string, unknown>, '{{myVar}}'>;
 
     expectTypeOf(t).parameter(0).toMatchTypeOf<string | string[]>();
     expectTypeOf(t).parameter(1).extract<object>().toMatchTypeOf<Record<string, unknown>>();

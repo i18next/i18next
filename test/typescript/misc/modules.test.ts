@@ -88,11 +88,17 @@ describe('modules', () => {
         // exercise class usage
         // Need both static and member definitions of type to satisfy use() signature, see #1442
         class MyLoggerModule implements LoggerModule {
-          static type: 'logger' = 'logger';
-          type: 'logger' = 'logger';
+          static type = 'logger' as const;
+
+          type = 'logger' as const;
+
+          /* eslint-disable class-methods-use-this */
           log = () => null;
+
           warn = () => null;
+
           error = () => null;
+          /* eslint-enable class-methods-use-this */
         }
 
         expectTypeOf(i18next.use<MyLoggerModule>)

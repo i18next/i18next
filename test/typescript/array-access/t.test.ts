@@ -19,22 +19,22 @@ describe('main', () => {
   });
 
   it('should throw an error when key is not present', () => {
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfStrings.2'));
 
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfObjects.0.food'));
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfObjects.0.fizz'));
 
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfObjects.2'));
 
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfObjects.2.bar'));
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfObjects.2.sub.deep'));
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('arrayOfObjects.2.test'));
   });
 
@@ -78,7 +78,7 @@ describe("don't break prefixes", () => {
     const t = (() => '') as TFunction<'prefix', 'deep'>;
     expectTypeOf(t('deep.deep')).toEqualTypeOf<string>();
 
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(t('morning'));
   });
 
@@ -99,7 +99,7 @@ describe("don't break prefixes", () => {
 
     expectTypeOf(use).toEqualTypeOf<{ t: TFunction<'prefix', 'deep'> }>();
 
-    // @ts-expect-error expected error
+    // @ts-expect-error
     assertType(use.t('morning'));
   });
 });

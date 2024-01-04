@@ -338,57 +338,27 @@ describe('Interpolator', () => {
 
     const tests = [
       {
-        args: [
-          'test $t(test)',
-          function () {
-            return 'success';
-          },
-        ],
+        args: ['test $t(test)', () => 'success'],
         expected: 'test success',
       },
       {
-        args: [
-          '$t(test, {"key": "success"})',
-          function (key, opts) {
-            return `test ${opts.key}`;
-          },
-        ],
+        args: ['$t(test, {"key": "success"})', (key, opts) => `test ${opts.key}`],
         expected: 'test success',
       },
       {
-        args: [
-          "$t(test, {'key': 'success'})",
-          function (key, opts) {
-            return `test ${opts.key}`;
-          },
-        ],
+        args: ["$t(test, {'key': 'success'})", (key, opts) => `test ${opts.key}`],
         expected: 'test success',
       },
       {
-        args: [
-          '$t(test, is, {"key": "success"})',
-          function (key, opts) {
-            return `test, is ${opts.key}`;
-          },
-        ],
+        args: ['$t(test, is, {"key": "success"})', (key, opts) => `test, is ${opts.key}`],
         expected: 'test, is success',
       },
       {
-        args: [
-          '$t(test, is, ok)',
-          function () {
-            return 'test, is, ok';
-          },
-        ],
+        args: ['$t(test, is, ok)', () => 'test, is, ok'],
         expected: 'test, is, ok',
       },
       {
-        args: [
-          '$t(ns:test)',
-          function () {
-            return 'test from ns';
-          },
-        ],
+        args: ['$t(ns:test)', () => 'test from ns'],
         expected: 'test from ns',
       },
     ];

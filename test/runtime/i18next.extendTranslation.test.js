@@ -38,8 +38,8 @@ describe('extendTranslation', () => {
       },
     ];
 
-    tests.forEach((test, i) => {
-      it('it ' + test.name, () => {
+    tests.forEach((test) => {
+      it(`it ${test.name}`, () => {
         instance
           .use({
             type: 'i18nFormat',
