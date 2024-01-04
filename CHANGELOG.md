@@ -1,3 +1,8 @@
+## 23.7.16
+
+- fix: Use Typescript 5 types with Typescript 5+ [2108](https://github.com/i18next/i18next/pull/2108)
+  - Hint: If you're using TypeScript 4 and you navigate to the type definitions in your code editor, it might be you will see the TypeScript 5 types, but the TS compiler should use the correct types.
+
 ## 23.7.15
 
 - types: simplifies types for array access and fixes [2103](https://github.com/i18next/i18next/issues/2103)
