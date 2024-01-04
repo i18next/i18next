@@ -1,4 +1,4 @@
-name: node
+name: Lint & test
 
 on:
   push:
@@ -32,8 +32,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      # - name: Test
-      #   run: npm test
+      - name: Test
+        run: npm test
 
-      # - name: Coverage
-      #   run: npm run test:coverage && cat ./coverage/lcov.info | npx coveralls --verbose
+      - name: Coverage
+        run: npm run test:coverage && cat ./coverage/lcov.info | npx coveralls --verbose
