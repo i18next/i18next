@@ -23,9 +23,16 @@ By making a contribution to this project, I certify that:
 
 ## Testing
 
-### `test/runtime/**/*.test.local.*`
+### Local tests
 
-The test files with the following pattern are meant to be executed and not on ci/cd envs.
+The test files within `test/local` are not meant to be executed on ci/cd envs
+so they have a separate vitest workspace definition: `vitest.workspace.local.mts`
+
+To run them simply use:
+
+```bash
+npm run test:local
+```
 
 ### Typescript
 

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, vitest } from 'vitest';
 import BackendConnector from '../../../src/BackendConnector.js';
 import Interpolator from '../../../src/Interpolator.js';
 import ResourceStore from '../../../src/ResourceStore.js';
-import BackendMock from './backendMock.js';
+import BackendMock from '../../runtime/backend/backendMock.js';
 
 /** Those are just skipped for ci/cd, but occasionally we run them locally */
 describe('BackendConnector load retry', () => {
