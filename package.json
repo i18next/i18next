@@ -101,7 +101,7 @@
     "vitest": "1.1.0"
   },
   "scripts": {
-    "lint": "eslint src typescript \"./*.{ts,mts}\"",
+    "lint": "eslint src typescript test \"./*.{ts,mts}\"",
     "pretest": "npm run generate_ts_v4_index && npm run lint",
     "test": "vitest --typecheck --workspace vitest.workspace.mts --run",
     "test:runtime": "vitest --workspace vitest.workspace.mts --project runtime",

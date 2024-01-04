@@ -9,6 +9,7 @@ class BackendMockPromise {
     this.created = {};
   }
 
+  // eslint-disable-next-line class-methods-use-this
   read(language, namespace) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -34,7 +35,9 @@ class BackendMockPromise {
         options,
       };
     });
-    return new Promise((resolve) => setTimeout(() => resolve(), 15));
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(), 15);
+    });
   }
 }
 

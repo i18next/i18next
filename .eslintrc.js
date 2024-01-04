@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
   env: {
@@ -41,45 +42,58 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
 
-    // Turned off due to codeclimate lacking support for this rules
-    '@typescript-eslint/naming-convention': 'off',
-    // '@typescript-eslint/naming-convention': [
-    //   'error',
-    //   {
-    //     selector: 'default',
-    //     format: ['camelCase'],
-    //     leadingUnderscore: 'allow',
-    //     trailingUnderscore: 'allow',
-    //   },
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'default',
+        format: ['camelCase'],
+        leadingUnderscore: 'allow',
+        trailingUnderscore: 'allow',
+      },
 
-    //   {
-    //     selector: ['import', 'parameter'],
-    //     format: ['camelCase', 'PascalCase'],
-    //   },
+      {
+        selector: ['import', 'parameter'],
+        format: ['camelCase', 'PascalCase'],
+      },
 
-    //   {
-    //     selector: 'variable',
-    //     format: ['camelCase', 'UPPER_CASE'],
-    //     leadingUnderscore: 'allow',
-    //     trailingUnderscore: 'allow',
-    //   },
+      {
+        selector: 'variable',
+        format: ['camelCase', 'UPPER_CASE'],
+        leadingUnderscore: 'allow',
+        trailingUnderscore: 'allow',
+      },
 
-    //   {
-    //     selector: 'typeLike',
-    //     format: ['PascalCase'],
-    //   },
+      {
+        selector: 'typeLike',
+        format: ['PascalCase'],
+      },
 
-    //   {
-    //     selector: 'interface',
-    //     format: ['PascalCase'],
-    //     filter: 'i18n',
-    //   },
+      {
+        selector: 'interface',
+        format: ['PascalCase'],
+        filter: 'i18n',
+      },
 
-    //   {
-    //     selector: 'typeAlias',
-    //     format: ['PascalCase'],
-    //     leadingUnderscore: 'allow',
-    //   },
-    // ],
+      {
+        selector: 'typeAlias',
+        format: ['PascalCase'],
+        leadingUnderscore: 'allow',
+      },
+    ],
   },
+  overrides: [
+    {
+      files: ['./test/**/*'],
+      rules: {
+        '@typescript-eslint/naming-convention': 'off',
+        '@typescript-eslint/ban-ts-comment': [
+          'error',
+          {
+            // this is used for typechecking tests
+            'ts-expect-error': false,
+          },
+        ],
+      },
+    },
+  ],
 };

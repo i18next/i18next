@@ -1,5 +1,5 @@
-import { describe, it, assertType, expectTypeOf } from 'vitest';
-import i18next, { InterpolationMap, TFunction } from 'i18next';
+import { describe, it, expectTypeOf } from 'vitest';
+import i18next, { TFunction } from 'i18next';
 
 describe('t', () => {
   it('basic usage', () => {
@@ -31,8 +31,7 @@ describe('t', () => {
       object | string[] | object[]
     >();
 
-    // @ts-expect-error
-    // this is not a string
+    // @ts-expect-error this is not a string
     expectTypeOf(t('friend', { returnObjects: true })).toEqualTypeOf<string>();
   });
 

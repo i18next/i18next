@@ -47,7 +47,7 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    var tests = [
+    const tests = [
       { args: ['translation:test'], expected: true },
       { args: ['translation:test', { lngs: ['en-US', 'en'] }], expected: true },
       { args: ['translation:test', { lngs: ['de'] }], expected: true },
@@ -60,7 +60,7 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
         expect(t.exists.apply(t, test.args)).toEqual(test.expected);
       });
     });
@@ -69,7 +69,7 @@ describe('Translator', () => {
 
     nullishArgs.forEach((nullishArg) => {
       it(`should return false if a "${nullishArg}" key is passed as an argument`, () => {
-        expect(t.exists(nullishArg)).to.false;
+        expect(t.exists(nullishArg)).toBeFalsy();
       });
     });
   });

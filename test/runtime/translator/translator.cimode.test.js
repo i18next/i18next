@@ -42,7 +42,7 @@ describe('Translator', () => {
       t.changeLanguage('cimode');
     });
 
-    var tests = [
+    const tests = [
       {
         args: [
           'translation:test',
@@ -68,7 +68,7 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly return key for ' + JSON.stringify(test.args) + ' args in cimode', () => {
+      it(`correctly return key for ${JSON.stringify(test.args)} args in cimode`, () => {
         expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });

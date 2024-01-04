@@ -53,7 +53,7 @@ describe('Translator', () => {
       t.changeLanguage('en');
     });
 
-    var tests = [
+    const tests = [
       { args: ['translation:::test'], expected: 'test_en' },
       { args: ['translation2:::test'], expected: 'test2_en' },
       { args: ['translation:::deep::test'], expected: 'testDeep_en' },
@@ -71,7 +71,7 @@ describe('Translator', () => {
     ];
 
     tests.forEach((test) => {
-      it('correctly translates for ' + JSON.stringify(test.args) + ' args', () => {
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
         expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
