@@ -1,4 +1,10 @@
-import type { $OmitArrayKeys, $PreservedValue, $Dictionary, $SpecialObject } from './helpers.js';
+import type {
+  $ConcatArray,
+  $OmitArrayKeys,
+  $PreservedValue,
+  $Dictionary,
+  $SpecialObject,
+} from './helpers.js';
 import type {
   TypeOptions,
   Namespace,
@@ -11,6 +17,7 @@ import type {
 /* eslint @typescript-eslint/ban-types: ['error', { types: { "{}": false } }] */
 
 // Type Options
+type _JoinArrays = TypeOptions['joinArrays'];
 type _ReturnObjects = TypeOptions['returnObjects'];
 type _ReturnNull = TypeOptions['returnNull'];
 type _KeySeparator = TypeOptions['keySeparator'];
@@ -83,7 +90,9 @@ type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extend
 /** **********************************************************************
  * Parse t function keys based on the namespace, options and key prefix *
  *********************************************************************** */
-export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
+export type KeysByTOptions<TOpt extends TOptions> = TOpt['joinArrays'] extends string
+  ? ResourceKeys<true>
+  : TOpt['returnObjects'] extends true
   ? ResourceKeys<true>
   : ResourceKeys;
 
@@ -157,6 +166,10 @@ type ParseTReturnPluralOrdinal<
     string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
 > = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
 
+type ParseTReturnJoinArrays<Ret, TOpt extends TOptions = {}> = TOpt['joinArrays'] extends string
+  ? $ConcatArray<Ret, TOpt['joinArrays']>
+  : Ret;
+
 type ParseTReturn<
   Key,
   Res,
@@ -166,17 +179,21 @@ type ParseTReturn<
   : // Process plurals only if count is provided inside options
   TOpt['count'] extends number
   ? TOpt['ordinal'] extends boolean
-    ? ParseTReturnPluralOrdinal<Res, Key>
-    : ParseTReturnPlural<Res, Key>
+    ? ParseTReturnJoinArrays<ParseTReturnPluralOrdinal<Res, Key>, TOpt>
+    : ParseTReturnJoinArrays<ParseTReturnPlural<Res, Key>, TOpt>
   : // otherwise access plain key without adding plural and ordinal suffixes
   Res extends readonly unknown[]
   ? Key extends `${infer NKey extends number}`
-    ? Res[NKey]
+    ? ParseTReturnJoinArrays<Res[NKey], TOpt>
     : never
-  : Res[Key & keyof Res];
+  : ParseTReturnJoinArrays<Res[Key & keyof Res], TOpt>;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
-type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
+type TReturnOptionalObjects<TOpt extends TOptions> = _JoinArrays extends string
+  ? string
+  : TOpt['joinArrays'] extends string
+  ? string
+  : _ReturnObjects extends true
   ? $SpecialObject | string
   : TOpt['returnObjects'] extends true
   ? $SpecialObject

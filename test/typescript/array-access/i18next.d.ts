@@ -12,6 +12,11 @@ declare module 'i18next' {
           { fizz: 'buzz' },
           [{ test: 'success'; sub: { deep: 'still success' } }],
         ];
+        arrayJoinWithInterpolation_one: ['{{myName}}, You have', '{{count}}', 'email'];
+        arrayJoinWithInterpolation_other: ['{{myName}}, You have', '{{count}}', 'emails'];
+        key_one: 'item';
+        key_other: 'items';
+        nestedArrayJoin: [['line1', 'line2', 'line3']];
       };
       ctx: {
         dessert: [

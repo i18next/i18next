@@ -101,6 +101,11 @@ export type TypeOptions = $MergeBy<
      * Suffix for interpolation
      */
     interpolationSuffix: '}}';
+
+    /**
+     * A string to separate each pair of adjacent elements of the array
+     */
+    joinArrays: false;
   },
   CustomTypeOptions
 >;
