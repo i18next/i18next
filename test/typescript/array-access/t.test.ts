@@ -46,6 +46,24 @@ describe('main', () => {
     expectTypeOf(t('arrayOfObjects.0', { returnObjects: true })).toEqualTypeOf<{ foo: 'bar' }>();
   });
 
+  it('should work with `count`', () => {
+    expectTypeOf(t('key', { count: 1 })).toEqualTypeOf<'item' | 'items'>();
+  });
+
+  it('should work with `joinArrays`', () => {
+    expectTypeOf(t('arrayOfStrings', { joinArrays: '+' })).toEqualTypeOf<'zero+one'>();
+    expectTypeOf(t('arrayOfObjects', { joinArrays: '+' })).toEqualTypeOf<never>();
+    expectTypeOf(t('nestedArrayJoin.0', { joinArrays: '/' })).toEqualTypeOf<'line1/line2/line3'>();
+    expectTypeOf(
+      t('arrayJoinWithInterpolation', { count: 2, myName: 'Claude', joinArrays: ' ' }),
+    ).toEqualTypeOf<
+      '{{myName}}, You have {{count}} email' | '{{myName}}, You have {{count}} emails'
+    >();
+    expectTypeOf(
+      t('readonlyArrayOfStrings', { joinArrays: ',' }),
+    ).toEqualTypeOf<'readonly zero,readonly one'>();
+  });
+
   it('should work with const keys', () => {
     const alternateTranslationKeys = ['arrayOfStrings.0', 'arrayOfObjects.0.foo'] as const;
 
