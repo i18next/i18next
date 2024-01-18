@@ -12,7 +12,7 @@ import type {
   ResourceLanguage,
   TOptions,
 } from './typescript/options.js';
-import type { KeyPrefix, TFunction } from './typescript/t.js';
+import type { $FirstNamespace, KeyPrefix, TFunction } from './typescript/t.js';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
@@ -222,7 +222,12 @@ export interface CustomInstanceExtenstions {}
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface i18n extends CustomInstanceExtenstions {
   // Expose parameterized t in the i18next interface hierarchy
-  t: TFunction<[DefaultNamespace, ...Exclude<FlatNamespace, DefaultNamespace>[]]>;
+  t: TFunction<
+    [
+      $FirstNamespace<DefaultNamespace>,
+      ...Exclude<FlatNamespace, $FirstNamespace<DefaultNamespace>>[],
+    ]
+  >;
 
   /**
    * The default of the i18next module is an i18next instance ready to be initialized by calling init.
