@@ -41,7 +41,7 @@ export default defineWorkspace([
         workspaces.push({
           test: {
             dir: `./${dirPath}`,
-            name: `typescript-${workspaceName}`,
+            name: `ts-${workspaceName}`,
             typecheck: {
               enabled: true,
               include: [`**/${dirPath}/*.test.ts`],

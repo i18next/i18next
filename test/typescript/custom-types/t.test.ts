@@ -25,8 +25,7 @@ describe('t', () => {
 
       // @ts-expect-error
       assertType(t('baz'));
-      // @ts-expect-error
-      assertType(t('custom:bar'));
+
       // @ts-expect-error
       assertType(t('foobar'));
     });

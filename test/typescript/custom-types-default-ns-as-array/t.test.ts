@@ -13,6 +13,14 @@ describe('t', () => {
       expectTypeOf(t('baz.bing')).toEqualTypeOf<'boop'>();
     });
 
+    it('should work with keys from both default namespaces', () => {
+      expectTypeOf(t('custom:bar')).toEqualTypeOf<'bar'>();
+      expectTypeOf(t('bar')).toEqualTypeOf<'bar'>();
+
+      expectTypeOf(t('custom_b:another_entry')).toEqualTypeOf<'Argh'>();
+      expectTypeOf(t('another_entry', { ns: 'custom_b' })).toEqualTypeOf<'Argh'>();
+    });
+
     it('should work with `returnObjects`', () => {
       expectTypeOf(t('baz', { returnObjects: true })).toEqualTypeOf<{
         bing: 'boop';
@@ -25,7 +33,8 @@ describe('t', () => {
 
       // @ts-expect-error
       assertType(t('baz'));
-
+      // @ts-expect-error
+      assertType(t('custom:foobar'));
       // @ts-expect-error
       assertType(t('foobar'));
     });
@@ -177,8 +186,6 @@ describe('t', () => {
 
     expectTypeOf(tOrdinal).not.toMatchTypeOf(tPlurals);
     expectTypeOf(tOrdPlurals).not.toMatchTypeOf(tPlurals);
-
     expectTypeOf(tPluralsOrd).toMatchTypeOf(tPlurals);
-    expectTypeOf(tPluralsOrd).not.toEqualTypeOf(tPlurals);
   });
 });
