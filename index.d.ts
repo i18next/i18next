@@ -217,7 +217,7 @@ export interface CloneOptions extends InitOptions {
   forkResourceStore?: boolean;
 }
 
-export interface CustomInstanceExtenstions {}
+export interface CustomInstanceExtensions {}
 
 // Used just here to exclude `DefaultNamespace` which can be both string or array from `FlatNamespace`
 // in TFunction declaration below.
@@ -225,7 +225,7 @@ export interface CustomInstanceExtenstions {}
 type InferArrayValuesElseReturnType<T> = T extends (infer A)[] ? A : T;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export interface i18n extends CustomInstanceExtenstions {
+export interface i18n extends CustomInstanceExtensions {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<
     [
