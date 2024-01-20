@@ -12,4 +12,4 @@ export type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof a
 
 export type $PreservedValue<Value, Fallback> = [Value] extends [never] ? Fallback : Value;
 
-export type $NormalizeIntoArray<T extends unknown | unknown[]> = T extends unknown[] ? T : [T];
+export type $NormalizeIntoArray<T extends unknown | readonly unknown[]> = T extends readonly unknown[] ? T : [T];

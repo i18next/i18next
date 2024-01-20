@@ -12,7 +12,7 @@ import {
 
 declare module 'i18next' {
   interface CustomTypeOptions {
-    defaultNS: ['custom', 'custom_b'];
+    defaultNS: Readonly<['custom', 'custom_b']>;
     fallbackNS: 'fallback';
     resources: {
       custom: TestNamespaceCustom;
