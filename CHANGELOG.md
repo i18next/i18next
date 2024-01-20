@@ -1,6 +1,6 @@
 ## 23.7.17
 
-- types: fix support for defaultNS as array (fixes [2118](<(https://github.com/i18next/i18next/issues/2118)>)) [2121](https://github.com/i18next/i18next/pull/2121)
+- types: fix support for defaultNS as array (fixes [2118](https://github.com/i18next/i18next/issues/2118)) [2121](https://github.com/i18next/i18next/pull/2121)
 - types: fix typo in `CustomInstanceExtensions` [2122](https://github.com/i18next/i18next/pull/2122)
 
 ## 23.7.16
