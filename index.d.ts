@@ -217,10 +217,10 @@ export interface CloneOptions extends InitOptions {
   forkResourceStore?: boolean;
 }
 
-export interface CustomInstanceExtenstions {}
+export interface CustomInstanceExtensions {}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export interface i18n extends CustomInstanceExtenstions {
+export interface i18n extends CustomInstanceExtensions {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<[DefaultNamespace, ...Exclude<FlatNamespace, DefaultNamespace>[]]>;
 
