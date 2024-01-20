@@ -67,17 +67,20 @@ it('should work with context', () => {
 it('should process ordinal plurals', () => {
   const t = (() => '') as TFunction<'ord'>;
 
-  expectTypeOf(t('ord.0.place', { ordinal: true, count: 1 })).toBeString();
-  expectTypeOf(t('ord.0.place', { ordinal: true, count: 2 })).toBeString();
-  expectTypeOf(t('ord.0.place', { ordinal: true, count: 3 })).toBeString();
-  expectTypeOf(t('ord.0.place', { ordinal: true, count: 4 })).toBeString();
+  expectTypeOf(t('list.0.place', { ordinal: true, count: 1 })).toBeString();
+  expectTypeOf(t('list.0.place', { ordinal: true, count: 2 })).toBeString();
+  expectTypeOf(t('list.0.place', { ordinal: true, count: 3 })).toBeString();
+  expectTypeOf(t('list.0.place', { ordinal: true, count: 4 })).toBeString();
 });
 
 describe("don't break prefixes", () => {
-  it('does not allow access to morning', () => {
-    const t = (() => '') as TFunction<'prefix', 'deep'>;
-    expectTypeOf(t('deep.deep')).toEqualTypeOf<string>();
+  const t = (() => '') as TFunction<'prefix', 'deep'>;
 
+  it('should work with key prefix', () => {
+    expectTypeOf(t('deeper.extra_deep')).toEqualTypeOf<string>();
+  });
+
+  it('does not allow access to key not existing in prefix', () => {
     // @ts-expect-error
     assertType(t('morning'));
   });
