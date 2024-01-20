@@ -1,3 +1,7 @@
+## 23.7.18
+
+- types: support readonly defaultNS [2123](https://github.com/i18next/i18next/pull/2123)
+
 ## 23.7.17
 
 - types: fix support for defaultNS as array (fixes [2118](https://github.com/i18next/i18next/issues/2118)) [2121](https://github.com/i18next/i18next/pull/2121)
