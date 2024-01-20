@@ -1,5 +1,5 @@
 // Internal Helpers
-import type { $Dictionary } from './typescript/helpers.js';
+import type { $Dictionary, $NormalizeIntoArray } from './typescript/helpers.js';
 import type {
   DefaultNamespace,
   FlatNamespace,
@@ -219,10 +219,20 @@ export interface CloneOptions extends InitOptions {
 
 export interface CustomInstanceExtenstions {}
 
+// Used just here to exclude `DefaultNamespace` which can be both string or array from `FlatNamespace`
+// in TFunction declaration below.
+// Due to this only very special usage I'm not moving this inside helpers.
+type InferArrayValuesElseReturnType<T> = T extends (infer A)[] ? A : T;
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface i18n extends CustomInstanceExtenstions {
   // Expose parameterized t in the i18next interface hierarchy
-  t: TFunction<[DefaultNamespace, ...Exclude<FlatNamespace, DefaultNamespace>[]]>;
+  t: TFunction<
+    [
+      ...$NormalizeIntoArray<DefaultNamespace>,
+      ...Exclude<FlatNamespace, InferArrayValuesElseReturnType<DefaultNamespace>>[],
+    ]
+  >;
 
   /**
    * The default of the i18next module is an i18next instance ready to be initialized by calling init.

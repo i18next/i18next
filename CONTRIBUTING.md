@@ -36,16 +36,11 @@ npm run test:local
 
 ### Typescript
 
-To run all typescript test run
+If you want to run only a specific project use `--project` flag.
+As value provide `ts-` followed by the folder name
 
 ```bash
-npm run test:typescript
-```
-
-If you want to run only a specific project
-
-```bash
-npm run test:typescript -- --project many-keys
+npx vitest --project ts-custom-types
 ```
 
 #### New Test scenario

@@ -12,20 +12,24 @@ import {
 
 declare module 'i18next' {
   interface CustomTypeOptions {
-    defaultNS: 'custom';
+    defaultNS: ['custom', 'custom_b'];
     fallbackNS: 'fallback';
     resources: {
       custom: TestNamespaceCustom;
+
+      custom_b: {
+        another_entry: 'Argh';
+      };
 
       alternate: TestNamespaceCustomAlternate;
 
       fallback: TestNamespaceFallback;
 
-      ctx: TestNamespaceContext;
-
       plurals: TestNamespacePlurals;
 
       nonPlurals: TestNamespaceNonPlurals;
+
+      ctx: TestNamespaceContext;
 
       ord: TestNamespaceOrdinal;
     };

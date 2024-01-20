@@ -13,6 +13,7 @@ declare module 'i18next' {
           [{ test: 'success'; sub: { deep: 'still success' } }],
         ];
       };
+
       ctx: {
         dessert: [
           {
@@ -24,24 +25,15 @@ declare module 'i18next' {
       };
 
       prefix: {
-        greeting: string;
-        timeOfDay: {
-          morning: string;
-          afternoon: string;
-        };
-        parent: {
-          parent: string;
-          other: string;
-        };
         deep: {
-          deep: {
-            deep: string;
+          deeper: {
+            extra_deep: string;
           };
         };
       };
 
       ord: {
-        ord: [
+        list: [
           {
             place_ordinal_one: '1st place';
             place_ordinal_two: '2nd place';

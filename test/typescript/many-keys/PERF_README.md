@@ -13,7 +13,7 @@ cd test/typescript/many-keys
 Then run tsc
 
 ```bash
-tsc time tsc --noEmit
+time tsc --noEmit
 ```
 
 Alternatively you can also debug using [ts trace](https://github.com/microsoft/typescript-analyze-trace)
