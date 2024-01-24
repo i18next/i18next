@@ -219,7 +219,13 @@ class Translator extends EventEmitter {
         options.ordinal && needsPluralHandling
           ? this.pluralResolver.getSuffix(lng, options.count, { ordinal: false })
           : '';
+      const needsZeroSuffixLookup =
+        needsPluralHandling &&
+        !options.ordinal &&
+        options.count === 0 &&
+        this.pluralResolver.shouldUseIntlApi();
       const defaultValue =
+        (needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`]) ||
         options[`defaultValue${defaultValueSuffix}`] ||
         options[`defaultValue${defaultValueSuffixOrdinalFallback}`] ||
         options.defaultValue;

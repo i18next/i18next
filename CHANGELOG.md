@@ -1,3 +1,7 @@
+## 23.7.19
+
+- fix: consistent \_zero special handling also for defaultValue_zero [2124](https://github.com/i18next/i18next/issues/2124)
+
 ## 23.7.18
 
 - types: support readonly defaultNS [2123](https://github.com/i18next/i18next/pull/2123)

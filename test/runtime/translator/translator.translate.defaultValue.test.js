@@ -32,6 +32,7 @@ describe('Translator', () => {
             interpolateDefaultValue: true,
             interpolateKey: true,
           },
+          pluralSeparator: '_',
         },
       );
       t.changeLanguage('en');
@@ -46,6 +47,18 @@ describe('Translator', () => {
           { defaultValue_other: 'test_en_plural', defaultValue_one: 'test_en', count: 10 },
         ],
         expected: 'test_en_plural',
+      },
+      {
+        args: [
+          'translation:testMe',
+          {
+            defaultValue_other: 'test_en_plural',
+            defaultValue_one: 'test_en',
+            defaultValue_zero: 'test_en_zero',
+            count: 0,
+          },
+        ],
+        expected: 'test_en_zero',
       },
     ];
 
