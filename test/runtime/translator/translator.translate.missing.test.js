@@ -128,11 +128,12 @@ describe('Translator', () => {
       });
       t.changeLanguage('ar');
 
-      t.translate('translation:test.missing', {
+      const tr = t.translate('translation:test.missing', {
         count: 0,
         defaultValue_zero: 'default0',
         defaultValue_one: 'default1',
       });
+      expect(tr).toEqual('default0');
     });
 
     it('correctly sends missing resolved value', () => {

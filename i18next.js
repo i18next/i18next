@@ -610,7 +610,11 @@
           if (this.options.saveMissing) {
             if (this.options.saveMissingPlurals && needsPluralHandling) {
               lngs.forEach(language => {
-                this.pluralResolver.getSuffixes(language, options).forEach(suffix => {
+                const suffixes = this.pluralResolver.getSuffixes(language, options);
+                if (needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`] && suffixes.indexOf(`${this.options.pluralSeparator}zero`) < 0) {
+                  suffixes.push(`${this.options.pluralSeparator}zero`);
+                }
+                suffixes.forEach(suffix => {
                   send([language], key + suffix, options[`defaultValue${suffix}`] || defaultValue);
                 });
               });
@@ -1133,7 +1137,7 @@
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (this.shouldUseIntlApi()) {
         try {
-          return new Intl.PluralRules(getCleanedCode(code), {
+          return new Intl.PluralRules(getCleanedCode(code === 'dev' ? 'en' : code), {
             type: options.ordinal ? 'ordinal' : 'cardinal'
           });
         } catch (err) {

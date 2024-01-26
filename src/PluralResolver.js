@@ -111,7 +111,7 @@ class PluralResolver {
   getRule(code, options = {}) {
     if (this.shouldUseIntlApi()) {
       try {
-        return new Intl.PluralRules(getCleanedCode(code), { type: options.ordinal ? 'ordinal' : 'cardinal' });
+        return new Intl.PluralRules(getCleanedCode(code === 'dev' ? 'en' : code), { type: options.ordinal ? 'ordinal' : 'cardinal' });
       } catch (err) {
         return;
       }
