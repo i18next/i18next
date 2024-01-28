@@ -26,20 +26,26 @@ export function copy(a, s, t) {
   });
 }
 
+// We extract out the RegExp definition to improve performance with React Native Android, which has poor RegExp
+// initialization performance
+const lastOfPathSeparatorRegExp = /###/g;
+
 function getLastOfPath(object, path, Empty) {
   function cleanKey(key) {
-    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
+    return key && key.indexOf('###') > -1 ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
   }
 
   function canNotTraverseDeeper() {
     return !object || typeof object === 'string';
   }
 
-  const stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
-  while (stack.length > 1) {
+  const stack = typeof path !== 'string' ? path : path.split('.');
+  let stackIndex = 0;
+  // iterate through the stack, but leave the last item
+  while (stackIndex < stack.length - 1) {
     if (canNotTraverseDeeper()) return {};
 
-    const key = cleanKey(stack.shift());
+    const key = cleanKey(stack[stackIndex]);
     if (!object[key] && Empty) object[key] = new Empty();
     // prevent prototype pollution
     if (Object.prototype.hasOwnProperty.call(object, key)) {
@@ -47,12 +53,13 @@ function getLastOfPath(object, path, Empty) {
     } else {
       object = {};
     }
+    ++stackIndex;
   }
 
   if (canNotTraverseDeeper()) return {};
   return {
     obj: object,
-    k: cleanKey(stack.shift()),
+    k: cleanKey(stack[stackIndex]),
   };
 }
 
@@ -134,7 +141,40 @@ export function escape(data) {
   return data;
 }
 
+/**
+ * This is a reusable regular expression cache class. Given a certain maximum number of regular expressions we're
+ * allowed to store in the cache, it provides a way to avoid recreating regular expression objects over and over.
+ * When it needs to evict something, it evicts the oldest one.
+ */
+class RegExpCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.regExpMap = new Map();
+    // Since our capacity tends to be fairly small, `.shift()` will be fairly quick despite being O(n). We just use a
+    // normal array to keep it simple.
+    this.regExpQueue = [];
+  }
+
+  getRegExp(pattern) {
+    const regExpFromCache = this.regExpMap.get(pattern);
+    if (regExpFromCache !== undefined) {
+      return regExpFromCache;
+    }
+    const regExpNew = new RegExp(pattern);
+    if (this.regExpQueue.length === this.capacity) {
+      this.regExpMap.delete(this.regExpQueue.shift());
+    }
+    this.regExpMap.set(pattern, regExpNew);
+    this.regExpQueue.push(pattern);
+    return regExpNew;
+  }
+}
+
 const chars = [' ', ',', '?', '!', ';'];
+// We cache RegExps to improve performance with React Native Android, which has poor RegExp initialization performance.
+// Capacity of 20 should be plenty, as nsSeparator/keySeparator don't tend to vary much across calls.
+const looksLikeObjectPathRegExpCache = new RegExpCache(20);
+
 export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
   nsSeparator = nsSeparator || '';
   keySeparator = keySeparator || '';
@@ -142,7 +182,9 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
     (c) => nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0,
   );
   if (possibleChars.length === 0) return true;
-  const r = new RegExp(`(${possibleChars.map((c) => (c === '?' ? '\\?' : c)).join('|')})`);
+  const r = looksLikeObjectPathRegExpCache.getRegExp(
+    `(${possibleChars.map((c) => (c === '?' ? '\\?' : c)).join('|')})`,
+  );
   let matched = !r.test(key);
   if (!matched) {
     const ki = key.indexOf(keySeparator);
@@ -153,36 +195,39 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
   return matched;
 }
 
+/**
+ * Given
+ *
+ * 1. a top level object obj, and
+ * 2. a path to a deeply nested string or object within it
+ *
+ * Find and return that deeply nested string or object. The caveat is that the keys of objects within the nesting chain
+ * may contain period characters. Therefore, we need to DFS and explore all possible keys at each step until we find the
+ * deeply nested string or object.
+ */
 export function deepFind(obj, path, keySeparator = '.') {
   if (!obj) return undefined;
   if (obj[path]) return obj[path];
-  const paths = path.split(keySeparator);
+  const tokens = path.split(keySeparator);
   let current = obj;
-  for (let i = 0; i < paths.length; ++i) {
-    if (!current) return undefined;
-    if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
+  for (let i = 0; i < tokens.length; ) {
+    if (!current || typeof current !== 'object') {
       return undefined;
     }
-    if (current[paths[i]] === undefined) {
-      let j = 2;
-      let p = paths.slice(i, i + j).join(keySeparator);
-      let mix = current[p];
-      while (mix === undefined && paths.length > i + j) {
-        j++;
-        p = paths.slice(i, i + j).join(keySeparator);
-        mix = current[p];
+    let next;
+    let nextPath = '';
+    for (let j = i; j < tokens.length; ++j) {
+      if (j !== i) {
+        nextPath += keySeparator;
       }
-      if (mix === undefined) return undefined;
-      if (mix === null) return null;
-      if (path.endsWith(p)) {
-        if (typeof mix === 'string') return mix;
-        if (p && typeof mix[p] === 'string') return mix[p];
+      nextPath += tokens[j];
+      next = current[nextPath];
+      if (next !== undefined) {
+        i += j - i + 1;
+        break;
       }
-      const joinedPath = paths.slice(i + j).join(keySeparator);
-      if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
-      return undefined;
     }
-    current = current[paths[i]];
+    current = next;
   }
   return current;
 }

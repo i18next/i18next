@@ -1,12 +1,21 @@
 class EventEmitter {
   constructor() {
+    // This is an Object containing Maps:
+    //
+    // { [event: string]: Map<listener: function, numTimesAdded: number> }
+    //
+    // We use a Map for O(1) insertion/deletion and because it can have functions as keys.
+    //
+    // We keep track of numTimesAdded (the number of times it was added) because if you attach the same listener twice,
+    // we should actually call it twice for each emitted event.
     this.observers = {};
   }
 
   on(events, listener) {
     events.split(' ').forEach((event) => {
-      this.observers[event] = this.observers[event] || [];
-      this.observers[event].push(listener);
+      if (!this.observers[event]) this.observers[event] = new Map();
+      const numListeners = this.observers[event].get(listener) || 0;
+      this.observers[event].set(listener, numListeners + 1);
     });
     return this;
   }
@@ -18,22 +27,24 @@ class EventEmitter {
       return;
     }
 
-    this.observers[event] = this.observers[event].filter((l) => l !== listener);
+    this.observers[event].delete(listener);
   }
 
   emit(event, ...args) {
     if (this.observers[event]) {
-      const cloned = [].concat(this.observers[event]);
-      cloned.forEach((observer) => {
-        observer(...args);
-      });
+      for (const [observer, numTimesAdded] of this.observers[event].entries()) {
+        for (let i = 0; i < numTimesAdded; i++) {
+          observer(...args);
+        }
+      }
     }
 
     if (this.observers['*']) {
-      const cloned = [].concat(this.observers['*']);
-      cloned.forEach((observer) => {
-        observer.apply(observer, [event, ...args]);
-      });
+      for (const [observer, numTimesAdded] of this.observers['*'].entries()) {
+        for (let i = 0; i < numTimesAdded; i++) {
+          observer.apply(observer, [event, ...args]);
+        }
+      }
     }
   }
 }

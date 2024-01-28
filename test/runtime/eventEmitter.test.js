@@ -27,6 +27,19 @@ describe('i18next', () => {
       expect(disabledHandler).not.toHaveBeenCalled();
     });
 
+    it('should emit twice if a handler was attached twice', () => {
+      const calls = [];
+      const listener = (payload) => {
+        calls.push(payload);
+      };
+
+      emitter.on('events', listener);
+      emitter.on('events', listener);
+      emitter.emit('events', 1);
+
+      expect(calls).toEqual([1, 1]);
+    });
+
     it('it should emit wildcard', () => {
       expect.assertions(2);
 
