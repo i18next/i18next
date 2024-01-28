@@ -70,15 +70,23 @@ class Interpolator {
   }
 
   resetRegExp() {
-    // the regexp
-    const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
-    this.regexp = new RegExp(regexpStr, 'g');
+    const getOrResetRegExp = (existingRegExp, pattern) => {
+      if (existingRegExp && existingRegExp.source === pattern) {
+        existingRegExp.lastIndex = 0;
+        return existingRegExp;
+      }
+      return new RegExp(pattern, 'g');
+    };
 
-    const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
-    this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
-
-    const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
-    this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
+    this.regexp = getOrResetRegExp(this.regexp, `${this.prefix}(.+?)${this.suffix}`);
+    this.regexpUnescape = getOrResetRegExp(
+      this.regexpUnescape,
+      `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`,
+    );
+    this.nestingRegexp = getOrResetRegExp(
+      this.nestingRegexp,
+      `${this.nestingPrefix}(.+?)${this.nestingSuffix}`,
+    );
   }
 
   interpolate(str, data, lng, options) {

@@ -37,13 +37,20 @@ class ResourceStore extends EventEmitter {
         ? options.ignoreJSONStructure
         : this.options.ignoreJSONStructure;
 
-    let path = [lng, ns];
-    if (key && typeof key !== 'string') path = path.concat(key);
-    if (key && typeof key === 'string')
-      path = path.concat(keySeparator ? key.split(keySeparator) : key);
-
+    let path;
     if (lng.indexOf('.') > -1) {
       path = lng.split('.');
+    } else {
+      path = [lng, ns];
+      if (key) {
+        if (Array.isArray(key)) {
+          path.push(...key);
+        } else if (typeof key === 'string' && keySeparator) {
+          path.push(...key.split(keySeparator));
+        } else {
+          path.push(key);
+        }
+      }
     }
 
     const result = utils.getPath(this.data, path);
