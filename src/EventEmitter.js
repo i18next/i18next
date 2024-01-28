@@ -32,19 +32,21 @@ class EventEmitter {
 
   emit(event, ...args) {
     if (this.observers[event]) {
-      for (const [observer, numTimesAdded] of this.observers[event].entries()) {
+      const cloned = Array.from(this.observers[event].entries());
+      cloned.forEach(([observer, numTimesAdded]) => {
         for (let i = 0; i < numTimesAdded; i++) {
           observer(...args);
         }
-      }
+      });
     }
 
     if (this.observers['*']) {
-      for (const [observer, numTimesAdded] of this.observers['*'].entries()) {
+      const cloned = Array.from(this.observers['*'].entries());
+      cloned.forEach(([observer, numTimesAdded]) => {
         for (let i = 0; i < numTimesAdded; i++) {
           observer.apply(observer, [event, ...args]);
         }
-      }
+      });
     }
   }
 }
