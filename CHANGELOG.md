@@ -1,3 +1,7 @@
+## 23.8.0
+
+- improve performance by reducing array slices and RegExp recreation [2128](https://github.com/i18next/i18next/pull/2128)
+
 ## 23.7.20
 
 - optimize: consistent \_zero special handling also for defaultValue_zero [2124](https://github.com/i18next/i18next/issues/2124)

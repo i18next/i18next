@@ -82,8 +82,9 @@
     }
     on(events, listener) {
       events.split(' ').forEach(event => {
-        this.observers[event] = this.observers[event] || [];
-        this.observers[event].push(listener);
+        if (!this.observers[event]) this.observers[event] = new Map();
+        const numListeners = this.observers[event].get(listener) || 0;
+        this.observers[event].set(listener, numListeners + 1);
       });
       return this;
     }
@@ -93,22 +94,28 @@
         delete this.observers[event];
         return;
       }
-      this.observers[event] = this.observers[event].filter(l => l !== listener);
+      this.observers[event].delete(listener);
     }
     emit(event) {
       for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
       if (this.observers[event]) {
-        const cloned = [].concat(this.observers[event]);
-        cloned.forEach(observer => {
-          observer(...args);
+        const cloned = Array.from(this.observers[event].entries());
+        cloned.forEach(_ref => {
+          let [observer, numTimesAdded] = _ref;
+          for (let i = 0; i < numTimesAdded; i++) {
+            observer(...args);
+          }
         });
       }
       if (this.observers['*']) {
-        const cloned = [].concat(this.observers['*']);
-        cloned.forEach(observer => {
-          observer.apply(observer, [event, ...args]);
+        const cloned = Array.from(this.observers['*'].entries());
+        cloned.forEach(_ref2 => {
+          let [observer, numTimesAdded] = _ref2;
+          for (let i = 0; i < numTimesAdded; i++) {
+            observer.apply(observer, [event, ...args]);
+          }
         });
       }
     }
@@ -134,28 +141,31 @@
       if (s[m]) t[m] = s[m];
     });
   }
+  const lastOfPathSeparatorRegExp = /###/g;
   function getLastOfPath(object, path, Empty) {
     function cleanKey(key) {
-      return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
+      return key && key.indexOf('###') > -1 ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
     }
     function canNotTraverseDeeper() {
       return !object || typeof object === 'string';
     }
-    const stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
-    while (stack.length > 1) {
+    const stack = typeof path !== 'string' ? path : path.split('.');
+    let stackIndex = 0;
+    while (stackIndex < stack.length - 1) {
       if (canNotTraverseDeeper()) return {};
-      const key = cleanKey(stack.shift());
+      const key = cleanKey(stack[stackIndex]);
       if (!object[key] && Empty) object[key] = new Empty();
       if (Object.prototype.hasOwnProperty.call(object, key)) {
         object = object[key];
       } else {
         object = {};
       }
+      ++stackIndex;
     }
     if (canNotTraverseDeeper()) return {};
     return {
       obj: object,
-      k: cleanKey(stack.shift())
+      k: cleanKey(stack[stackIndex])
     };
   }
   function setPath(object, path, newValue) {
@@ -222,13 +232,34 @@
     }
     return data;
   }
+  class RegExpCache {
+    constructor(capacity) {
+      this.capacity = capacity;
+      this.regExpMap = new Map();
+      this.regExpQueue = [];
+    }
+    getRegExp(pattern) {
+      const regExpFromCache = this.regExpMap.get(pattern);
+      if (regExpFromCache !== undefined) {
+        return regExpFromCache;
+      }
+      const regExpNew = new RegExp(pattern);
+      if (this.regExpQueue.length === this.capacity) {
+        this.regExpMap.delete(this.regExpQueue.shift());
+      }
+      this.regExpMap.set(pattern, regExpNew);
+      this.regExpQueue.push(pattern);
+      return regExpNew;
+    }
+  }
   const chars = [' ', ',', '?', '!', ';'];
+  const looksLikeObjectPathRegExpCache = new RegExpCache(20);
   function looksLikeObjectPath(key, nsSeparator, keySeparator) {
     nsSeparator = nsSeparator || '';
     keySeparator = keySeparator || '';
     const possibleChars = chars.filter(c => nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0);
     if (possibleChars.length === 0) return true;
-    const r = new RegExp(`(${possibleChars.map(c => c === '?' ? '\\?' : c).join('|')})`);
+    const r = looksLikeObjectPathRegExpCache.getRegExp(`(${possibleChars.map(c => c === '?' ? '\\?' : c).join('|')})`);
     let matched = !r.test(key);
     if (!matched) {
       const ki = key.indexOf(keySeparator);
@@ -242,33 +273,26 @@
     let keySeparator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '.';
     if (!obj) return undefined;
     if (obj[path]) return obj[path];
-    const paths = path.split(keySeparator);
+    const tokens = path.split(keySeparator);
     let current = obj;
-    for (let i = 0; i < paths.length; ++i) {
-      if (!current) return undefined;
-      if (typeof current[paths[i]] === 'string' && i + 1 < paths.length) {
+    for (let i = 0; i < tokens.length;) {
+      if (!current || typeof current !== 'object') {
         return undefined;
       }
-      if (current[paths[i]] === undefined) {
-        let j = 2;
-        let p = paths.slice(i, i + j).join(keySeparator);
-        let mix = current[p];
-        while (mix === undefined && paths.length > i + j) {
-          j++;
-          p = paths.slice(i, i + j).join(keySeparator);
-          mix = current[p];
+      let next;
+      let nextPath = '';
+      for (let j = i; j < tokens.length; ++j) {
+        if (j !== i) {
+          nextPath += keySeparator;
         }
-        if (mix === undefined) return undefined;
-        if (mix === null) return null;
-        if (path.endsWith(p)) {
-          if (typeof mix === 'string') return mix;
-          if (p && typeof mix[p] === 'string') return mix[p];
+        nextPath += tokens[j];
+        next = current[nextPath];
+        if (next !== undefined) {
+          i += j - i + 1;
+          break;
         }
-        const joinedPath = paths.slice(i + j).join(keySeparator);
-        if (joinedPath) return deepFind(mix, joinedPath, keySeparator);
-        return undefined;
       }
-      current = current[paths[i]];
+      current = next;
     }
     return current;
   }
@@ -308,11 +332,20 @@
       let options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
       const ignoreJSONStructure = options.ignoreJSONStructure !== undefined ? options.ignoreJSONStructure : this.options.ignoreJSONStructure;
-      let path = [lng, ns];
-      if (key && typeof key !== 'string') path = path.concat(key);
-      if (key && typeof key === 'string') path = path.concat(keySeparator ? key.split(keySeparator) : key);
+      let path;
       if (lng.indexOf('.') > -1) {
         path = lng.split('.');
+      } else {
+        path = [lng, ns];
+        if (key) {
+          if (Array.isArray(key)) {
+            path.push(...key);
+          } else if (typeof key === 'string' && keySeparator) {
+            path.push(...key.split(keySeparator));
+          } else {
+            path.push(key);
+          }
+        }
       }
       const result = getPath(this.data, path);
       if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
@@ -1251,12 +1284,16 @@
       if (this.options) this.init(this.options);
     }
     resetRegExp() {
-      const regexpStr = `${this.prefix}(.+?)${this.suffix}`;
-      this.regexp = new RegExp(regexpStr, 'g');
-      const regexpUnescapeStr = `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`;
-      this.regexpUnescape = new RegExp(regexpUnescapeStr, 'g');
-      const nestingRegexpStr = `${this.nestingPrefix}(.+?)${this.nestingSuffix}`;
-      this.nestingRegexp = new RegExp(nestingRegexpStr, 'g');
+      const getOrResetRegExp = (existingRegExp, pattern) => {
+        if (existingRegExp && existingRegExp.source === pattern) {
+          existingRegExp.lastIndex = 0;
+          return existingRegExp;
+        }
+        return new RegExp(pattern, 'g');
+      };
+      this.regexp = getOrResetRegExp(this.regexp, `${this.prefix}(.+?)${this.suffix}`);
+      this.regexpUnescape = getOrResetRegExp(this.regexpUnescape, `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`);
+      this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}(.+?)${this.nestingSuffix}`);
     }
     interpolate(str, data, lng, options) {
       let match;
