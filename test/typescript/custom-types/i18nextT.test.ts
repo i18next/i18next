@@ -69,13 +69,17 @@ describe('i18next.t', () => {
     expectTypeOf(i18next.t('bar', 'some default value')).toMatchTypeOf<unknown>();
   });
 
-  it('should accept any key if default vale is provided', () => {
+  it('should accept any key if default value is provided', () => {
     const str: string = i18next.t('unknown-ns:unknown-key', 'default value');
     assertType<string>(str);
   });
 
-  it('should work with null translations', () => {
-    expectTypeOf(i18next.t('nullKey')).toBeNull();
+  it('should fallback for null translations with unset returnNull in config', () => {
+    expectTypeOf(i18next.t('nullKey')).toEqualTypeOf<'nullKey'>();
+  });
+
+  it('should accept empty string translations with returnEmpty with unset returnEmpty in config', () => {
+    expectTypeOf(i18next.t('empty string with {{val}}')).toEqualTypeOf<''>('');
   });
 
   it('should work with plurals', () => {

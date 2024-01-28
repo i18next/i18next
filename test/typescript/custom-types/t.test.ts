@@ -19,7 +19,7 @@ describe('t', () => {
       }>();
     });
 
-    it('should trow an error when keys are not defined', () => {
+    it('should throw an error when keys are not defined', () => {
       // @ts-expect-error
       assertType(t('inter', { wrongOrNoValPassed: 'xx' }));
 
