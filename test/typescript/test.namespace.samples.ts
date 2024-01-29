@@ -7,6 +7,7 @@ export type TestNamespaceCustom = {
   qux: 'some {{val, number}}';
   inter: 'some {{val}}';
   nullKey: null;
+  'empty string with {{val}}': '';
 };
 
 export type TestNamespaceCustomAlternate = {

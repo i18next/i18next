@@ -12,6 +12,7 @@ import type {
 
 // Type Options
 type _ReturnObjects = TypeOptions['returnObjects'];
+type _ReturnEmptyString = TypeOptions['returnEmptyString'];
 type _ReturnNull = TypeOptions['returnNull'];
 type _KeySeparator = TypeOptions['keySeparator'];
 type _NsSeparator = TypeOptions['nsSeparator'];
@@ -157,23 +158,32 @@ type ParseTReturnPluralOrdinal<
     string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
 > = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
 
-type ParseTReturn<
+type ParseTReturnWithFallback<Key, Val> = Val extends ''
+  ? _ReturnEmptyString extends true
+    ? ''
+    : Key
+  : Val extends null
+  ? _ReturnNull extends true
+    ? null
+    : Key
+  : Val;
+
+type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallback<
   Key,
-  Res,
-  TOpt extends TOptions = {},
-> = Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
-  ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt>
-  : // Process plurals only if count is provided inside options
-  TOpt['count'] extends number
-  ? TOpt['ordinal'] extends boolean
-    ? ParseTReturnPluralOrdinal<Res, Key>
-    : ParseTReturnPlural<Res, Key>
-  : // otherwise access plain key without adding plural and ordinal suffixes
-  Res extends readonly unknown[]
-  ? Key extends `${infer NKey extends number}`
-    ? Res[NKey]
-    : never
-  : Res[Key & keyof Res];
+  Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
+    ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt>
+    : // Process plurals only if count is provided inside options
+    TOpt['count'] extends number
+    ? TOpt['ordinal'] extends boolean
+      ? ParseTReturnPluralOrdinal<Res, Key>
+      : ParseTReturnPlural<Res, Key>
+    : // otherwise access plain key without adding plural and ordinal suffixes
+    Res extends readonly unknown[]
+    ? Key extends `${infer NKey extends number}`
+      ? Res[NKey]
+      : never
+    : Res[Key & keyof Res]
+>;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true

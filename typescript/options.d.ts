@@ -40,6 +40,11 @@ export type TypeOptions = $MergeBy<
     returnNull: false;
 
     /**
+     * Allows empty string as valid translation
+     */
+    returnEmptyString: true;
+
+    /**
      * Allows objects as valid translation result
      */
     returnObjects: false;
