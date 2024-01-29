@@ -1,3 +1,7 @@
+## 23.8.1
+
+- types: support stricter typechecking for returnEmptyString and returnNull [2129](https://github.com/i18next/i18next/pull/2129)
+
 ## 23.8.0
 
 - improve performance by reducing array slices and RegExp recreation [2128](https://github.com/i18next/i18next/pull/2128)
