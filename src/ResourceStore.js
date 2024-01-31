@@ -54,6 +54,11 @@ class ResourceStore extends EventEmitter {
     }
 
     const result = utils.getPath(this.data, path);
+    if (!result && !ns && !key && lng.indexOf('.') > -1) {
+      lng = path[0];
+      ns = path[1];
+      key = path.slice(2).join('.');
+    }
     if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
 
     return utils.deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);

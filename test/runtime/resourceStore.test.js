@@ -123,6 +123,21 @@ describe('ResourceStore', () => {
         );
         expect(spy).not.toHaveBeenCalled();
       });
+
+      it('it should also addResources nested in wrong way', () => {
+        rs.addResources('fr', 'translation', {
+          'a.key': 'first',
+          'a.key.deep': 'second',
+          'a.key.deep.deeper': 'third',
+          'a.key.deeper': 'fourth',
+          'b.k': 'fifth',
+        });
+        expect(rs.getResource('fr.translation.a.key')).to.eql('first');
+        expect(rs.getResource('fr.translation.a.key.deep')).to.eql('second');
+        expect(rs.getResource('fr.translation.a.key.deep.deeper')).to.eql('third');
+        expect(rs.getResource('fr.translation.a.key.deeper')).to.eql('fourth');
+        expect(rs.getResource('fr.translation.b.k')).to.eql('fifth');
+      });
     });
 
     describe('can extend resources bundle', () => {

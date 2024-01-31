@@ -65,8 +65,23 @@ function getLastOfPath(object, path, Empty) {
 
 export function setPath(object, path, newValue) {
   const { obj, k } = getLastOfPath(object, path, Object);
+  if (obj !== undefined || path.length === 1) {
+    obj[k] = newValue;
+    return;
+  }
 
-  obj[k] = newValue;
+  let e = path[path.length - 1];
+  let p = path.slice(0, path.length - 1);
+  let last = getLastOfPath(object, p, Object);
+  while (last.obj === undefined && p.length) {
+    e = `${p[p.length - 1]}.${e}`;
+    p = p.slice(0, p.length - 1);
+    last = getLastOfPath(object, p, Object);
+    if (last && last.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
+      last.obj = undefined;
+    }
+  }
+  last.obj[`${last.k}.${e}`] = newValue;
 }
 
 export function pushPath(object, path, newValue, concat) {
@@ -223,6 +238,9 @@ export function deepFind(obj, path, keySeparator = '.') {
       nextPath += tokens[j];
       next = current[nextPath];
       if (next !== undefined) {
+        if (['string', 'number', 'boolean'].indexOf(typeof next) > -1 && j < tokens.length - 1) {
+          continue;
+        }
         i += j - i + 1;
         break;
       }

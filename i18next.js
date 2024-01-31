@@ -173,7 +173,22 @@
       obj,
       k
     } = getLastOfPath(object, path, Object);
-    obj[k] = newValue;
+    if (obj !== undefined || path.length === 1) {
+      obj[k] = newValue;
+      return;
+    }
+    let e = path[path.length - 1];
+    let p = path.slice(0, path.length - 1);
+    let last = getLastOfPath(object, p, Object);
+    while (last.obj === undefined && p.length) {
+      e = `${p[p.length - 1]}.${e}`;
+      p = p.slice(0, p.length - 1);
+      last = getLastOfPath(object, p, Object);
+      if (last && last.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
+        last.obj = undefined;
+      }
+    }
+    last.obj[`${last.k}.${e}`] = newValue;
   }
   function pushPath(object, path, newValue, concat) {
     const {
@@ -288,6 +303,9 @@
         nextPath += tokens[j];
         next = current[nextPath];
         if (next !== undefined) {
+          if (['string', 'number', 'boolean'].indexOf(typeof next) > -1 && j < tokens.length - 1) {
+            continue;
+          }
           i += j - i + 1;
           break;
         }
@@ -348,6 +366,11 @@
         }
       }
       const result = getPath(this.data, path);
+      if (!result && !ns && !key && lng.indexOf('.') > -1) {
+        lng = path[0];
+        ns = path[1];
+        key = path.slice(2).join('.');
+      }
       if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
       return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
     }

@@ -1,3 +1,7 @@
+## 23.8.2
+
+- optimize `addResources` to address [2130](https://github.com/i18next/i18next/issues/2130)
+
 ## 23.8.1
 
 - types: support stricter typechecking for returnEmptyString and returnNull [2129](https://github.com/i18next/i18next/pull/2129)

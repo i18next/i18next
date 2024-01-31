@@ -46,9 +46,13 @@ describe('utils', () => {
     });
 
     it('finds value for a key that has a dot', () => {
-      const obj = { a: { 'b.b': { c: 1 } } };
+      const obj = { a: { b: 'zero', 'b.b': { c: 1 } } };
       const value = utils.deepFind(obj, 'a.b.b.c');
       expect(value).toEqual(1);
+      const value2 = utils.deepFind(obj, 'a.b');
+      expect(value2).toEqual('zero');
+      const value3 = utils.deepFind(obj, 'a.b.b');
+      expect(value3).toEqual({ c: 1 });
     });
 
     it('finds value for an array index', () => {
