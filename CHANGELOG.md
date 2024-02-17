@@ -1,3 +1,7 @@
+## 23.8.3
+
+- prevent resource mutation when using `addResourceBundle` [2081](https://github.com/i18next/i18next/issues/2081)
+
 ## 23.8.2
 
 - optimize `addResources` to address [2130](https://github.com/i18next/i18next/issues/2130)

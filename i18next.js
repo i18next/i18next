@@ -403,7 +403,8 @@
     }
     addResourceBundle(lng, ns, resources, deep, overwrite) {
       let options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {
-        silent: false
+        silent: false,
+        skipCopy: false
       };
       let path = [lng, ns];
       if (lng.indexOf('.') > -1) {
@@ -414,6 +415,7 @@
       }
       this.addNamespaces(ns);
       let pack = getPath(this.data, path) || {};
+      if (!options.skipCopy) resources = JSON.parse(JSON.stringify(resources));
       if (deep) {
         deepExtend(pack, resources, overwrite);
       } else {
@@ -1653,7 +1655,9 @@
       const ns = s[1];
       if (err) this.emit('failedLoading', lng, ns, err);
       if (data) {
-        this.store.addResourceBundle(lng, ns, data);
+        this.store.addResourceBundle(lng, ns, data, undefined, undefined, {
+          skipCopy: true
+        });
       }
       this.state[name] = err ? -1 : 2;
       const loaded = {};

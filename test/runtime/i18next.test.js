@@ -191,6 +191,19 @@ describe('i18next', () => {
         });
       });
 
+      it('it adds resources by addResourceBundle without mutating the input resources', () => {
+        const base = { k1: { k2: 'v' } };
+        i18next.addResourceBundle('en', 'ns1', base);
+        expect(base.k1.k2).to.eql('v');
+        i18next.addResourceBundle('en', 'ns1', { k1: { k2: 'v for ns1' } }, true, true);
+        expect(base.k1.k2).to.eql('v');
+        i18next.addResourceBundle('en', 'ns2', base);
+        expect(base.k1.k2).to.eql('v');
+        i18next.addResourceBundle('en', 'ns2', { k1: { k2: 'v for ns2' } }, true, true);
+        expect(base.k1.k2).to.eql('v');
+        expect(i18next.t('ns1:k1.k2')).to.eql('v for ns1');
+      });
+
       describe('can remove resources bundle', () => {
         it('it removes resources by removeResourceBundle', () => {
           i18next.removeResourceBundle('en', 'translation');

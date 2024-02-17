@@ -94,7 +94,7 @@ class Connector extends EventEmitter {
     if (err) this.emit('failedLoading', lng, ns, err);
 
     if (data) {
-      this.store.addResourceBundle(lng, ns, data);
+      this.store.addResourceBundle(lng, ns, data, undefined, undefined, { skipCopy: true });
     }
 
     // set loaded

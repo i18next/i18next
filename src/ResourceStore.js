@@ -96,7 +96,14 @@ class ResourceStore extends EventEmitter {
     if (!options.silent) this.emit('added', lng, ns, resources);
   }
 
-  addResourceBundle(lng, ns, resources, deep, overwrite, options = { silent: false }) {
+  addResourceBundle(
+    lng,
+    ns,
+    resources,
+    deep,
+    overwrite,
+    options = { silent: false, skipCopy: false },
+  ) {
     let path = [lng, ns];
     if (lng.indexOf('.') > -1) {
       path = lng.split('.');
@@ -108,6 +115,8 @@ class ResourceStore extends EventEmitter {
     this.addNamespaces(ns);
 
     let pack = utils.getPath(this.data, path) || {};
+
+    if (!options.skipCopy) resources = JSON.parse(JSON.stringify(resources)); // make a copy to fix #2081
 
     if (deep) {
       utils.deepExtend(pack, resources, overwrite);
