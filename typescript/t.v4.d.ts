@@ -1,4 +1,10 @@
-import type { $OmitArrayKeys, $PreservedValue, $Dictionary, $SpecialObject } from './helpers.js';
+import type {
+  $OmitArrayKeys,
+  $PreservedValue,
+  $Dictionary,
+  $SpecialObject,
+  $StringKeyPathToRecord,
+} from './helpers.js';
 import type {
   TypeOptions,
   Namespace,
@@ -6,6 +12,9 @@ import type {
   DefaultNamespace,
   TOptions,
 } from './options.js';
+
+/** @todo consider to replace {} with Record<string, never> */
+/* eslint @typescript-eslint/ban-types: ['error', { types: { "{}": false } }] */
 
 // Type Options
 type _ReturnObjects = TypeOptions['returnObjects'];
@@ -20,9 +29,6 @@ type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
-
-/** @todo consider to replace {} with Record<string, never> */
-/* eslint @typescript-eslint/ban-types: ['error', { types: { "{}": false } }] */
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -140,9 +146,10 @@ type ParseInterpolationValues<Ret> =
         | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
         | ParseInterpolationValues<Rest>
     : never;
-type InterpolationMap<Ret> = Record<
-  $PreservedValue<ParseInterpolationValues<Ret>, string>,
-  unknown
+
+type InterpolationMap<Ret> = $PreservedValue<
+  $StringKeyPathToRecord<ParseInterpolationValues<Ret>, unknown>,
+  Record<string, unknown>
 >;
 
 type ParseTReturnPlural<

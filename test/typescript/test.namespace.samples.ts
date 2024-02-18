@@ -55,3 +55,17 @@ export type TestNamespaceNonPlurals = {
     title: 'title';
   };
 };
+
+export type TestNamespaceInterpolators = {
+  just_a_string: string;
+
+  simple: 'This is {{olim}}';
+  simple_with_format: 'This is {{olim, format}}';
+  simple_multiple_keys: 'This has {{more}} than {{one}}';
+
+  keypath: 'Give me one day {{out.there}}';
+  keypath_with_format: 'Give me one day {{out.there, format}}';
+  keypath_multiple: '{{some.thing}} asd {{some.else}}';
+
+  keypath_deep: '{{living.in.the}} in the sun';
+};
