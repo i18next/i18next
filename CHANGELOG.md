@@ -1,3 +1,7 @@
+## 23.9.0
+
+- types: support nested keys in `InterpolationMap` [2140](https://github.com/i18next/i18next/pull/2140) fixes [2014](https://github.com/i18next/i18next/issues/2014)
+
 ## 23.8.3
 
 - prevent resource mutation when using `addResourceBundle` [2081](https://github.com/i18next/i18next/issues/2081)
