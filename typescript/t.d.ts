@@ -1,4 +1,10 @@
-import type { $OmitArrayKeys, $PreservedValue, $Dictionary, $SpecialObject } from './helpers.js';
+import type {
+  $OmitArrayKeys,
+  $PreservedValue,
+  $Dictionary,
+  $SpecialObject,
+  $StringKeyPathToRecord,
+} from './helpers.js';
 import type {
   TypeOptions,
   Namespace,
@@ -140,9 +146,10 @@ type ParseInterpolationValues<Ret> =
         | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
         | ParseInterpolationValues<Rest>
     : never;
-type InterpolationMap<Ret> = Record<
-  $PreservedValue<ParseInterpolationValues<Ret>, string>,
-  unknown
+
+type InterpolationMap<Ret> = $PreservedValue<
+  $StringKeyPathToRecord<ParseInterpolationValues<Ret>, unknown>,
+  Record<string, unknown>
 >;
 
 type ParseTReturnPlural<

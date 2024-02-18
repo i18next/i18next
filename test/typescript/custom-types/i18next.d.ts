@@ -8,6 +8,7 @@ import {
   TestNamespaceCustomAlternate,
   TestNamespaceFallback,
   TestNamespaceNonPlurals,
+  TestNamespaceInterpolators,
 } from '../test.namespace.samples';
 
 declare module 'i18next' {
@@ -28,6 +29,8 @@ declare module 'i18next' {
       nonPlurals: TestNamespaceNonPlurals;
 
       ord: TestNamespaceOrdinal;
+
+      interpolator: TestNamespaceInterpolators;
     };
   }
 }

@@ -21,7 +21,7 @@ describe('t', () => {
 
     it('should throw an error when keys are not defined', () => {
       // @ts-expect-error
-      assertType(t('inter', { wrongOrNoValPassed: 'xx' }));
+      assertType(t('do_not_exists', { wrongOrNoValPassed: 'xx' }));
 
       // @ts-expect-error
       assertType(t('baz'));
@@ -178,5 +178,49 @@ describe('t', () => {
     expectTypeOf(tOrdinal).not.toMatchTypeOf(tPlurals);
     expectTypeOf(tOrdPlurals).not.toMatchTypeOf(tPlurals);
     expectTypeOf(tPluralsOrd).toMatchTypeOf(tPlurals);
+  });
+
+  describe('should work with `InterpolatorMap`', () => {
+    const t = (() => '') as TFunction<['interpolator']>;
+
+    it('should allow anything when key is a string', () => {
+      expectTypeOf(t('just_a_string', { asd: '', beep: 'boop' }));
+    });
+
+    it('simple key', () => {
+      expectTypeOf(t('simple', { olim: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
+
+      // @ts-expect-error because nope isn't a valid key
+      expectTypeOf(t('simple', { nope: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
+    });
+
+    it('simple key (multiple)', () => {
+      type Expected = 'This has {{more}} than {{one}}';
+      expectTypeOf(t('simple_multiple_keys', { more: '', one: '' })).toEqualTypeOf<Expected>();
+
+      // @ts-expect-error one of the required keys is missing
+      expectTypeOf(t('simple_multiple_keys', { less: '', one: '' })).toEqualTypeOf<Expected>();
+    });
+
+    it('keypath', () => {
+      expectTypeOf(
+        t('keypath', { out: { there: 'yes' } }),
+      ).toEqualTypeOf<'Give me one day {{out.there}}'>();
+
+      expectTypeOf(
+        t('keypath_with_format', { out: { there: 'yes' } }),
+      ).toEqualTypeOf<'Give me one day {{out.there, format}}'>();
+    });
+
+    it('keypath deep', () => {
+      type Expected = '{{living.in.the}} in the sun';
+
+      expectTypeOf(t('keypath_deep', { living: { in: { the: 'yes' } } })).toEqualTypeOf<Expected>();
+
+      expectTypeOf(
+        // @ts-expect-error one of the required keys is missing
+        t('keypath_deep', { suffering: { in: { the: 'yes' } } }),
+      ).toEqualTypeOf<Expected>();
+    });
   });
 });
