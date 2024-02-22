@@ -503,6 +503,11 @@ export interface i18n extends CustomInstanceExtensions {
   isInitialized: boolean;
 
   /**
+   * Is initializing
+   */
+  isInitializing: boolean;
+
+  /**
    * Store was initialized
    */
   initializedStoreOnce: boolean;

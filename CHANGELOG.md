@@ -1,3 +1,7 @@
+## 23.10.0
+
+- Add 'isInitializing' property so we're able to detect init() was already called [2141](https://github.com/i18next/i18next/issues/2141)
+
 ## 23.9.0
 
 - types: support nested keys in `InterpolationMap` [2140](https://github.com/i18next/i18next/pull/2140) fixes [2014](https://github.com/i18next/i18next/issues/2014)

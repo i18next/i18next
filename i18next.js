@@ -1916,6 +1916,7 @@
       var _this = this;
       let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       let callback = arguments.length > 1 ? arguments[1] : undefined;
+      this.isInitializing = true;
       if (typeof options === 'function') {
         callback = options;
         options = {};
@@ -2033,6 +2034,7 @@
       const deferred = defer();
       const load = () => {
         const finish = (err, t) => {
+          this.isInitializing = false;
           if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn('init: i18next is already initialized. You should call init just once!');
           this.isInitialized = true;
           if (!this.options.isClone) this.logger.log('initialized', this.options);

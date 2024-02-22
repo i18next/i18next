@@ -48,6 +48,7 @@ class I18n extends EventEmitter {
   }
 
   init(options = {}, callback) {
+    this.isInitializing = true;
     if (typeof options === 'function') {
       callback = options;
       options = {};
@@ -189,6 +190,7 @@ class I18n extends EventEmitter {
 
     const load = () => {
       const finish = (err, t) => {
+        this.isInitializing = false;
         if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn('init: i18next is already initialized. You should call init just once!');
         this.isInitialized = true;
         if (!this.options.isClone) this.logger.log('initialized', this.options);

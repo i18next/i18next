@@ -69,7 +69,13 @@ describe('i18next', () => {
 
     describe('called init() not detecting lng', () => {
       it('it should ok - but warn about issue', async () => {
-        await i18n.init({ debug: true, saveMissing: true });
+        expect(i18n.isInitialized).toBeFalsy();
+        expect(i18n.isInitializing).toBeFalsy();
+        const prom = i18n.init({ debug: true, saveMissing: true });
+        expect(i18n.isInitializing).toBeTruthy();
+        expect(i18n.isInitialized).toBeFalsy();
+        await prom;
+        expect(i18n.isInitializing).toBeFalsy();
         expect(i18n.isInitialized).toBeTruthy();
 
         expect(i18n.hasLoadedNamespace('translation')).to.equal(false);
