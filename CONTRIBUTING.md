@@ -37,10 +37,9 @@ npm run test:local
 ### Typescript
 
 If you want to run only a specific project use `--project` flag.
-As value provide `ts-` followed by the folder name
 
 ```bash
-npx vitest --project ts-custom-types
+npm run test:typescript -- --project custom-types
 ```
 
 #### New Test scenario
@@ -51,4 +50,4 @@ If you need to create a new typescript test scenario:
 2. Create a `tsconfig.json` and a `i18next.d.ts` with the relevant properties inside `CustomOptions`
 3. If you need to test multiple tsconfig within the same scenario you can create another `tsconfig.json` but with a semantic name between tsconfig and json.
    E.g.: `tsconfig.nonEsModuleInterop.json` inside `test/typescript/misc`
-4. For more information about workspace setup check `vitest.workspace.mts`
+4. For more information about workspace setup check `vitest.workspace.typescript.mts`
