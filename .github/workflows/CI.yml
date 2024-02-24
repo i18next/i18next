@@ -28,7 +28,7 @@ jobs:
       - name: Format check
         run: npm run format
 
-      - name: Format check
+      - name: Lint
         run: npm run lint
 
   build:
@@ -56,6 +56,12 @@ jobs:
       matrix:
         node: [ '20.x', '18.x' ]
         os: [ubuntu-latest]
+        # Collect coverage only for node 20 and ubuntu-latest, no need to run it twice
+        # @see https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#expanding-or-adding-matrix-configurations
+        include:
+          - collectCoverage: true
+            node: '20.x'  
+            os: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -69,10 +75,31 @@ jobs:
         run: npm install
 
       - name: Test
+        if: ${{ !matrix.collectCoverage }}
         run: npm test
 
-      - name: Run test to generate coverage
+      - name: Test with coverage
+        if: ${{ matrix.collectCoverage }}
         run: npm run test:coverage
 
       - name: Coveralls
+        if: ${{ matrix.collectCoverage }}
         uses: coverallsapp/github-action@v2
+
+  testTypescript:
+    name: Test typescript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test 
+        run: npm run test:typescript
