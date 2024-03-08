@@ -1200,6 +1200,7 @@
             type: options.ordinal ? 'ordinal' : 'cardinal'
           });
         } catch (err) {
+          this.logger.warn(err);
           return;
         }
       }
