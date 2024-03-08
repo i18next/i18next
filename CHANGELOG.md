@@ -1,3 +1,7 @@
+## 23.10.1
+
+- optimize getBestMatchFromCodes for https://github.com/i18next/i18next-browser-languageDetector/issues/281
+
 ## 23.10.0
 
 - Add 'isInitializing' property so we're able to detect init() was already called [2141](https://github.com/i18next/i18next/issues/2141)
