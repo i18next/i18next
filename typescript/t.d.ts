@@ -116,8 +116,8 @@ type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extend
   ? Keys[UnionFallbackNs]
   : Keys[_FallbackNamespace & string];
 
-type FilterKeysByContext<Keys, TOpt extends TOptions> = TOpt['context'] extends string
-  ? Keys extends `${infer Prefix}${_ContextSeparator}${TOpt['context']}${infer Suffix}`
+type FilterKeysByContext<Keys, Context> = Context extends string
+  ? Keys extends `${infer Prefix}${_ContextSeparator}${Context}${infer Suffix}`
     ? `${Prefix}${Suffix}`
     : never
   : Keys;
@@ -128,12 +128,13 @@ export type ParseKeys<
   KPrefix = undefined,
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
+  const Context extends TOpt['context'] = TOpt['context'],
 > = $IsResourcesDefined extends true
   ? FilterKeysByContext<
       | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
       | ParseKeysByNamespaces<ActualNS, Keys>
       | ParseKeysByFallbackNs<Keys>,
-      TOpt
+      Context
     >
   : string;
 
