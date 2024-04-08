@@ -1,3 +1,7 @@
+## 23.11.0
+
+- Fix typing performance regression [2166](https://github.com/i18next/i18next/pull/2166)
+
 ## 23.10.1
 
 - optimize getBestMatchFromCodes for https://github.com/i18next/i18next-browser-languageDetector/issues/281
