@@ -128,7 +128,7 @@ export type ParseKeys<
   KPrefix = undefined,
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
-  const Context extends TOpt['context'] = TOpt['context'],
+  Context extends TOpt['context'] = TOpt['context'],
 > = $IsResourcesDefined extends true
   ? FilterKeysByContext<
       | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
