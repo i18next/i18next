@@ -1,3 +1,7 @@
+## 23.11.1
+
+- types: remove const from ParseKeys Context type parameter and disable `skipLibCheck` [2169](https://github.com/i18next/i18next/pull/2169)
+
 ## 23.11.0
 
 - Fix typing performance regression [2166](https://github.com/i18next/i18next/pull/2166)
