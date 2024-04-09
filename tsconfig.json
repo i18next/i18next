@@ -1,17 +1,24 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "lib": ["es6", "dom"],
+    "module": "ES6",
+    "target": "ES5",
+    "lib": ["ES6", "DOM"],
     "jsx": "react",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noEmit": true,
     "baseUrl": ".",
-    "paths": { "i18next": ["./index.d.mts"] },
+    "paths": {
+      "i18next": ["./index.d.mts"]
+    },
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+
+    /**
+     * setting this to `false` to throw an error when d.ts file trow an error
+     * @see https://github.com/i18next/i18next/issues/2168
+     */
+    "skipLibCheck": false
   }
 }
