@@ -140,17 +140,56 @@ describe('t', () => {
     expectTypeOf(t('place', { ordinal: true, count: 4 })).toBeString();
   });
 
-  it('should work with context', () => {
+  describe('context', () => {
     const t = (() => '') as TFunction<'ctx'>;
 
-    expectTypeOf(t('dessert', { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
+    it('should work with basic usage', () => {
+      expectTypeOf(t('dessert', { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
 
-    // context + plural
-    expectTypeOf(t('dessert', { context: 'muffin', count: 3 })).toMatchTypeOf<string>();
+      // context + plural
+      expectTypeOf(t('dessert', { context: 'muffin', count: 3 })).toMatchTypeOf<string>();
 
-    // @ts-expect-error
-    // valid key with invalid context
-    assertType(t('foo', { context: 'cake' }));
+      // @ts-expect-error
+      // valid key with invalid context
+      assertType(t('foo', { context: 'cake' }));
+    });
+
+    it('should work with enum as a context value', () => {
+      enum Dessert {
+        CAKE = 'cake',
+        MUFFIN = 'muffin',
+      }
+
+      const ctx = Dessert.CAKE;
+
+      expectTypeOf(t('dessert', { context: ctx })).toMatchTypeOf<string>();
+
+      enum DessertMissingValue {
+        COOKIE = 'cookie',
+        CAKE = 'cake',
+        MUFFIN = 'muffin',
+        ANOTHER = 'another',
+      }
+
+      const ctxMissingValue = DessertMissingValue.ANOTHER;
+
+      // @ts-expect-error Dessert.ANOTHER is not mapped so it must give a type error
+      expectTypeOf(t('dessert', { context: ctxMissingValue })).toMatchTypeOf<string>();
+    });
+
+    it('should work with string union as a context value', () => {
+      expectTypeOf(
+        t('dessert', { context: 'muffin' as 'muffin' | 'cake' }),
+      ).toMatchTypeOf<string>();
+    });
+
+    // @see https://github.com/i18next/i18next/issues/2172
+    // it('should trow error with string union with missing context value', () => {
+    //   expectTypeOf(
+    //     // @ts-expect-error
+    //     t('dessert', { context: 'muffin' as 'muffin' | 'cake' | 'pippo' }),
+    //   ).toMatchTypeOf<string>();
+    // });
   });
 
   it('should work with false plural usage', () => {
