@@ -234,7 +234,8 @@ class Interpolator {
       }
 
       // assert we do not get a endless loop on interpolating defaultValue again and again
-      delete clonedOptions.defaultValue;
+      if (clonedOptions.defaultValue && clonedOptions.defaultValue.indexOf(this.prefix) > -1)
+        delete clonedOptions.defaultValue;
       return key;
     }
 

@@ -41,6 +41,12 @@ describe('Translator', () => {
             friend_female_zero: 'no girlfriend',
             friend_female_one: 'a girlfriend',
             friend_female_other: '{{count}} girlfriends',
+
+            message:
+              'Something went wrong: $t(error_code.{{error_type}}, {"defaultValue": "Unknown error"})',
+            error_code: {
+              it_error: 'it went wrong',
+            },
           },
         },
       });
@@ -113,6 +119,15 @@ describe('Translator', () => {
       {
         args: ['noKeyFoundTestingDefault_1', { defaultValue: '{{val}} bar', val: '$t(foo)' }],
         expected: 'foo bar',
+      },
+
+      {
+        args: ['message', { error_type: 'it_error' }],
+        expected: 'Something went wrong: it went wrong',
+      },
+      {
+        args: ['message', { error_type: 'other_error' }],
+        expected: 'Something went wrong: Unknown error',
       },
     ];
 

@@ -1,3 +1,7 @@
+## 23.11.2
+
+- allow defaultValue in nested translation [2174](https://github.com/i18next/i18next/issues/2174)
+
 ## 23.11.1
 
 - types: remove const from ParseKeys Context type parameter and disable `skipLibCheck` [2169](https://github.com/i18next/i18next/pull/2169)
