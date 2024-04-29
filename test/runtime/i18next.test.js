@@ -338,4 +338,59 @@ describe('i18next', () => {
       });
     });
   });
+
+  describe('#loadLanguages()', () => {
+    describe('with supportedLngs', () => {
+      /** @type {import('i18next').i18n} */
+      let newInstance;
+      beforeAll(async () => {
+        newInstance = i18next.createInstance({
+          fallbackLng: 'en',
+          supportedLngs: ['en', 'de', 'it'],
+          preload: ['en', 'de'],
+        });
+        await newInstance.init();
+      });
+
+      describe('passing a supported lng', () => {
+        it('it should extend preload', () => {
+          newInstance.loadLanguages('it');
+          expect(newInstance.options.preload).to.include('it');
+        });
+      });
+
+      describe('passing a non supported lng', () => {
+        it('it should extend preload', () => {
+          newInstance.loadLanguages('es');
+          expect(newInstance.options.preload).not.to.include('es');
+        });
+      });
+    });
+
+    describe('without supportedLngs', () => {
+      /** @type {import('i18next').i18n} */
+      let newInstance;
+      beforeAll(async () => {
+        newInstance = i18next.createInstance({
+          fallbackLng: 'en',
+          preload: ['en', 'de'],
+        });
+        await newInstance.init();
+      });
+
+      describe('passing a supported lng', () => {
+        it('it should extend preload', () => {
+          newInstance.loadLanguages('it');
+          expect(newInstance.options.preload).to.include('it');
+        });
+      });
+
+      describe('passing a non supported lng', () => {
+        it('it should extend preload', () => {
+          newInstance.loadLanguages('es');
+          expect(newInstance.options.preload).to.include('es');
+        });
+      });
+    });
+  });
 });

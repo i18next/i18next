@@ -1,3 +1,7 @@
+## 23.11.3
+
+- fix: Unsupported language is automatically added to preload option [2178](https://github.com/i18next/i18next/issues/2178)
+
 ## 23.11.2
 
 - allow defaultValue in nested translation [2174](https://github.com/i18next/i18next/issues/2174)

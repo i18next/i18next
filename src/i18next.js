@@ -490,7 +490,7 @@ class I18n extends EventEmitter {
     if (typeof lngs === 'string') lngs = [lngs];
     const preloaded = this.options.preload || [];
 
-    const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0);
+    const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng));
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
       if (callback) callback();
