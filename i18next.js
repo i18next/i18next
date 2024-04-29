@@ -2283,7 +2283,7 @@
       const deferred = defer();
       if (typeof lngs === 'string') lngs = [lngs];
       const preloaded = this.options.preload || [];
-      const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0);
+      const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng));
       if (!newLngs.length) {
         if (callback) callback();
         return Promise.resolve();
