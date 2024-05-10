@@ -21,7 +21,7 @@ class Interpolator {
     this.logger = baseLogger.create('interpolator');
 
     this.options = options;
-    this.format = (options.interpolation && options.interpolation.format) || ((value) => value);
+    this.format = options.interpolation?.format || ((value) => value);
     this.init(options);
   }
 
@@ -29,37 +29,50 @@ class Interpolator {
   init(options = {}) {
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
-    const iOpts = options.interpolation;
+    const {
+      escape,
+      escapeValue,
+      useRawValueToEscape,
+      prefix,
+      prefixEscaped,
+      suffix,
+      suffixEscaped,
+      formatSeparator,
+      unescapeSuffix,
+      unescapePrefix,
+      nestingPrefix,
+      nestingPrefixEscaped,
+      nestingSuffix,
+      nestingSuffixEscaped,
+      nestingOptionsSeparator,
+      maxReplaces,
+      alwaysFormat,
+    } = options.interpolation;
 
-    this.escape = iOpts.escape !== undefined ? iOpts.escape : utils.escape;
-    this.escapeValue = iOpts.escapeValue !== undefined ? iOpts.escapeValue : true;
-    this.useRawValueToEscape =
-      iOpts.useRawValueToEscape !== undefined ? iOpts.useRawValueToEscape : false;
+    this.escape = escape !== undefined ? escape : utils.escape;
+    this.escapeValue = escapeValue !== undefined ? escapeValue : true;
+    this.useRawValueToEscape = useRawValueToEscape !== undefined ? useRawValueToEscape : false;
 
-    this.prefix = iOpts.prefix ? utils.regexEscape(iOpts.prefix) : iOpts.prefixEscaped || '{{';
-    this.suffix = iOpts.suffix ? utils.regexEscape(iOpts.suffix) : iOpts.suffixEscaped || '}}';
+    this.prefix = prefix ? utils.regexEscape(prefix) : prefixEscaped || '{{';
+    this.suffix = suffix ? utils.regexEscape(suffix) : suffixEscaped || '}}';
 
-    this.formatSeparator = iOpts.formatSeparator
-      ? iOpts.formatSeparator
-      : iOpts.formatSeparator || ',';
+    this.formatSeparator = formatSeparator || ',';
 
-    this.unescapePrefix = iOpts.unescapeSuffix ? '' : iOpts.unescapePrefix || '-';
-    this.unescapeSuffix = this.unescapePrefix ? '' : iOpts.unescapeSuffix || '';
+    this.unescapePrefix = unescapeSuffix ? '' : unescapePrefix || '-';
+    this.unescapeSuffix = this.unescapePrefix ? '' : unescapeSuffix || '';
 
-    this.nestingPrefix = iOpts.nestingPrefix
-      ? utils.regexEscape(iOpts.nestingPrefix)
-      : iOpts.nestingPrefixEscaped || utils.regexEscape('$t(');
-    this.nestingSuffix = iOpts.nestingSuffix
-      ? utils.regexEscape(iOpts.nestingSuffix)
-      : iOpts.nestingSuffixEscaped || utils.regexEscape(')');
+    this.nestingPrefix = nestingPrefix
+      ? utils.regexEscape(nestingPrefix)
+      : nestingPrefixEscaped || utils.regexEscape('$t(');
+    this.nestingSuffix = nestingSuffix
+      ? utils.regexEscape(nestingSuffix)
+      : nestingSuffixEscaped || utils.regexEscape(')');
 
-    this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator
-      ? iOpts.nestingOptionsSeparator
-      : iOpts.nestingOptionsSeparator || ',';
+    this.nestingOptionsSeparator = nestingOptionsSeparator || ',';
 
-    this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
+    this.maxReplaces = maxReplaces || 1000;
 
-    this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false;
+    this.alwaysFormat = alwaysFormat !== undefined ? alwaysFormat : false;
 
     // the regexp
     this.resetRegExp();
@@ -71,7 +84,7 @@ class Interpolator {
 
   resetRegExp() {
     const getOrResetRegExp = (existingRegExp, pattern) => {
-      if (existingRegExp && existingRegExp.source === pattern) {
+      if (existingRegExp?.source === pattern) {
         existingRegExp.lastIndex = 0;
         return existingRegExp;
       }
@@ -94,9 +107,7 @@ class Interpolator {
     let value;
     let replaces;
 
-    const defaultData =
-      (this.options && this.options.interpolation && this.options.interpolation.defaultVariables) ||
-      {};
+    const defaultData = this.options?.interpolation?.defaultVariables || {};
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -141,12 +152,10 @@ class Interpolator {
     this.resetRegExp();
 
     const missingInterpolationHandler =
-      (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
+      options?.missingInterpolationHandler || this.options.missingInterpolationHandler;
 
     const skipOnVariables =
-      options && options.interpolation && options.interpolation.skipOnVariables !== undefined
-        ? options.interpolation.skipOnVariables
-        : this.options.interpolation.skipOnVariables;
+      options?.interpolation?.skipOnVariables ?? this.options.interpolation.skipOnVariables;
 
     const todos = [
       {
