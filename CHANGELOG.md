@@ -1,3 +1,7 @@
+## 23.11.4
+
+- perf(interpolator): use object deconstruction [2181](https://github.com/i18next/i18next/pull/2181)
+
 ## 23.11.3
 
 - fix: Unsupported language is automatically added to preload option [2178](https://github.com/i18next/i18next/issues/2178)
