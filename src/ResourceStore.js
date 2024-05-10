@@ -61,7 +61,7 @@ class ResourceStore extends EventEmitter {
     }
     if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
 
-    return utils.deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
+    return utils.deepFind(this.data?.[lng]?.[ns], key, keySeparator);
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {

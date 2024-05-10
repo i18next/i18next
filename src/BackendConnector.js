@@ -30,9 +30,7 @@ class Connector extends EventEmitter {
     this.state = {};
     this.queue = [];
 
-    if (this.backend && this.backend.init) {
-      this.backend.init(services, options.backend, options);
-    }
+    this.backend?.init?.(services, options.backend, options);
   }
 
   queueLoad(languages, namespaces, options, callback) {
@@ -234,9 +232,8 @@ class Connector extends EventEmitter {
 
   saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}, clb = () => {}) {
     if (
-      this.services.utils &&
-      this.services.utils.hasLoadedNamespace &&
-      !this.services.utils.hasLoadedNamespace(namespace)
+      this.services?.utils?.hasLoadedNamespace &&
+      !this.services?.utils?.hasLoadedNamespace(namespace)
     ) {
       this.logger.warn(
         `did not save key "${key}" as the namespace "${namespace}" was not yet loaded`,
@@ -248,7 +245,7 @@ class Connector extends EventEmitter {
     // ignore non valid keys
     if (key === undefined || key === null || key === '') return;
 
-    if (this.backend && this.backend.create) {
+    if (this.backend?.create) {
       const opts = {
         ...options,
         isUpdate,

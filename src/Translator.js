@@ -41,7 +41,7 @@ class Translator extends EventEmitter {
     }
 
     const resolved = this.resolve(key, options);
-    return resolved && resolved.res !== undefined;
+    return resolved?.res !== undefined;
   }
 
   extractFromKey(key, options) {
@@ -111,7 +111,7 @@ class Translator extends EventEmitter {
     const lng = options.lng || this.language;
     const appendNamespaceToCIMode =
       options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
-    if (lng && lng.toLowerCase() === 'cimode') {
+    if (lng?.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
         if (returnDetails) {
@@ -142,9 +142,9 @@ class Translator extends EventEmitter {
 
     // resolve from store
     const resolved = this.resolve(keys, options);
-    let res = resolved && resolved.res;
-    const resUsedKey = (resolved && resolved.usedKey) || key;
-    const resExactUsedKey = (resolved && resolved.exactUsedKey) || key;
+    let res = resolved?.res;
+    const resUsedKey = resolved?.usedKey || key;
+    const resExactUsedKey = resolved?.exactUsedKey || key;
 
     const resType = Object.prototype.toString.apply(res);
     const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -289,7 +289,7 @@ class Translator extends EventEmitter {
               updateMissing,
               options,
             );
-          } else if (this.backendConnector && this.backendConnector.saveMissing) {
+          } else if (this.backendConnector?.saveMissing) {
             this.backendConnector.saveMissing(
               l,
               namespace,
@@ -353,7 +353,7 @@ class Translator extends EventEmitter {
   }
 
   extendTranslation(res, key, options, resolved, lastKey) {
-    if (this.i18nFormat && this.i18nFormat.parse) {
+    if (this.i18nFormat?.parse) {
       res = this.i18nFormat.parse(
         res,
         { ...this.options.interpolation.defaultVariables, ...options },
@@ -371,7 +371,7 @@ class Translator extends EventEmitter {
         });
       const skipOnVariables =
         typeof res === 'string' &&
-        (options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+        (options?.interpolation?.skipOnVariables !== undefined
           ? options.interpolation.skipOnVariables
           : this.options.interpolation.skipOnVariables);
       let nestBef;
@@ -400,7 +400,7 @@ class Translator extends EventEmitter {
         res = this.interpolator.nest(
           res,
           (...args) => {
-            if (lastKey && lastKey[0] === args[0] && !options.context) {
+            if (lastKey?.[0] === args[0] && !options.context) {
               this.logger.warn(
                 `It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`,
               );
@@ -421,8 +421,7 @@ class Translator extends EventEmitter {
     if (
       res !== undefined &&
       res !== null &&
-      postProcessorNames &&
-      postProcessorNames.length &&
+      postProcessorNames?.length &&
       options.applyPostProcessor !== false
     ) {
       res = postProcessor.handle(
@@ -481,9 +480,8 @@ class Translator extends EventEmitter {
 
         if (
           !checkedLoadedFor[`${codes[0]}-${ns}`] &&
-          this.utils &&
-          this.utils.hasLoadedNamespace &&
-          !this.utils.hasLoadedNamespace(usedNS)
+          this.utils?.hasLoadedNamespace &&
+          !this.utils?.hasLoadedNamespace(usedNS)
         ) {
           checkedLoadedFor[`${codes[0]}-${ns}`] = true;
           this.logger.warn(
@@ -500,7 +498,7 @@ class Translator extends EventEmitter {
 
           const finalKeys = [key];
 
-          if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
+          if (this.i18nFormat?.addLookupKeys) {
             this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
           } else {
             let pluralSuffix;
@@ -566,8 +564,7 @@ class Translator extends EventEmitter {
   }
 
   getResource(code, ns, key, options = {}) {
-    if (this.i18nFormat && this.i18nFormat.getResource)
-      return this.i18nFormat.getResource(code, ns, key, options);
+    if (this.i18nFormat?.getResource) return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
   }
 

@@ -124,10 +124,10 @@ class PluralResolver {
     const rule = this.getRule(code, options);
 
     if (this.shouldUseIntlApi()) {
-      return rule && rule.resolvedOptions().pluralCategories.length > 1;
+      return rule?.resolvedOptions().pluralCategories.length > 1;
     }
 
-    return rule && rule.numbers.length > 1;
+    return rule?.numbers.length > 1;
   }
 
   getPluralFormsOfKey(code, key, options = {}) {

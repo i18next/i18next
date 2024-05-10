@@ -77,7 +77,7 @@ export function setPath(object, path, newValue) {
     e = `${p[p.length - 1]}.${e}`;
     p = p.slice(0, p.length - 1);
     last = getLastOfPath(object, p, Object);
-    if (last && last.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
+    if (last?.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
       last.obj = undefined;
     }
   }
@@ -251,6 +251,6 @@ export function deepFind(obj, path, keySeparator = '.') {
 }
 
 export function getCleanedCode(code) {
-  if (code && code.indexOf('_') > 0) return code.replace('_', '-');
+  if (code?.indexOf('_') > 0) return code.replace('_', '-');
   return code;
 }
