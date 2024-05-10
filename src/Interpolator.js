@@ -21,7 +21,7 @@ class Interpolator {
     this.logger = baseLogger.create('interpolator');
 
     this.options = options;
-    this.format = options.interpolation?.format || ((value) => value);
+    this.format = (options.interpolation && options.interpolation.format) || ((value) => value);
     this.init(options);
   }
 
@@ -84,7 +84,7 @@ class Interpolator {
 
   resetRegExp() {
     const getOrResetRegExp = (existingRegExp, pattern) => {
-      if (existingRegExp?.source === pattern) {
+      if (existingRegExp && existingRegExp.source === pattern) {
         existingRegExp.lastIndex = 0;
         return existingRegExp;
       }
@@ -107,7 +107,9 @@ class Interpolator {
     let value;
     let replaces;
 
-    const defaultData = this.options?.interpolation?.defaultVariables || {};
+    const defaultData =
+      (this.options && this.options.interpolation && this.options.interpolation.defaultVariables) ||
+      {};
 
     function regexSafe(val) {
       return val.replace(/\$/g, '$$$$');
@@ -152,10 +154,12 @@ class Interpolator {
     this.resetRegExp();
 
     const missingInterpolationHandler =
-      options?.missingInterpolationHandler || this.options.missingInterpolationHandler;
+      (options && options.missingInterpolationHandler) || this.options.missingInterpolationHandler;
 
     const skipOnVariables =
-      options?.interpolation?.skipOnVariables ?? this.options.interpolation.skipOnVariables;
+      options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+        ? options.interpolation.skipOnVariables
+        : this.options.interpolation.skipOnVariables;
 
     const todos = [
       {
