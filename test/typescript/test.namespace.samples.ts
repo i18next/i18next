@@ -37,6 +37,10 @@ export type TestNamespaceContext = {
   dessert_cake: 'a nice cake';
   dessert_muffin_one: 'a nice muffin';
   dessert_muffin_other: '{{count}} nice muffins';
+
+  beverage: 'a classic beverage';
+  beverage_beer: 'fresh beer';
+  beverage_water: 'cold water';
 };
 
 export type TestNamespacePlurals = {
