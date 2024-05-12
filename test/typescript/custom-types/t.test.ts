@@ -154,6 +154,15 @@ describe('t', () => {
       assertType(t('foo', { context: 'cake' }));
     });
 
+    it('should accept a default context key as a valid `t` function key', () => {
+      expectTypeOf(t('beverage')).toMatchTypeOf('cold water');
+    });
+
+    it('should throw error when no `context` is provided using and the context key has no default value ', () => {
+      // @ts-expect-error dessert has no default value, it needs a context
+      expectTypeOf(t('dessert')).toMatchTypeOf('error');
+    });
+
     it('should work with enum as a context value', () => {
       enum Dessert {
         CAKE = 'cake',
@@ -163,7 +172,9 @@ describe('t', () => {
       const ctx = Dessert.CAKE;
 
       expectTypeOf(t('dessert', { context: ctx })).toMatchTypeOf<string>();
+    });
 
+    it('should trow error with string union with missing context value', () => {
       enum DessertMissingValue {
         COOKIE = 'cookie',
         CAKE = 'cake',
