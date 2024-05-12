@@ -2,6 +2,7 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
+  reportUnusedDisableDirectives: true,
   env: {
     mocha: true,
     browser: true,
@@ -30,6 +31,10 @@ module.exports = {
     'consistent-return': 'off',
 
     'import/extensions': 'off',
+    'import/no-extraneous-dependencies': [
+      'error',
+      { devDependencies: ['./vitest.*.mts', 'rollup.config.mjs', './test/**'] },
+    ],
 
     /** @todo consider to replace `any` with `unknown` */
     '@typescript-eslint/no-explicit-any': 'off',
