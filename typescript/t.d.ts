@@ -206,15 +206,17 @@ export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends
   : Key;
 
 type ContextOfKey<
-  Key extends string,
+  Key,
   Ns extends Namespace = DefaultNamespace,
   TOpt extends TOptions = {},
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
   ActualKeys = Keys[$FirstNamespace<ActualNS>],
 > = $IsResourcesDefined extends true
-  ? ActualKeys extends `${Key}${_ContextSeparator}${infer Context}`
-    ? Context
+  ? Key extends string
+    ? ActualKeys extends `${Key}${_ContextSeparator}${infer Context}`
+      ? Context
+      : never
     : never
   : string;
 
@@ -274,16 +276,15 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
-    const ActualOptions extends Omit<TOpt, 'context'> &
-      InterpolationMap<Ret> & {
-        context?: Key extends string ? ContextOfKey<Key, Ns, TOpt> : never;
-      } = TOpt &
-      InterpolationMap<Ret> & {
-        context?: Key extends string ? ContextOfKey<Key, Ns, TOpt> : never;
-      },
+    const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
   >(
     ...args:
-      | [key: Key | Key[], options?: ActualOptions]
+      | [
+          key: Key | Key[],
+          options?: Omit<ActualOptions, 'context'> & {
+            context?: ContextOfKey<Key, Ns, TOpt>;
+          },
+        ]
       | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: string }]
       | [key: string | string[], defaultValue: string, options?: TOpt & $Dictionary]
   ): TFunctionReturnOptionalDetails<Ret, TOpt>;
