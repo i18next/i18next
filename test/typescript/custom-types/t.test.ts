@@ -182,10 +182,16 @@ describe('t', () => {
         ANOTHER = 'another',
       }
 
-      const ctxMissingValue = DessertMissingValue.ANOTHER;
+      const getRandomDesert = (): DessertMissingValue =>
+        Math.random() < 0.5 ? DessertMissingValue.CAKE : DessertMissingValue.ANOTHER;
+
+      const ctxRandomValue: DessertMissingValue = getRandomDesert();
 
       // @ts-expect-error Dessert.ANOTHER is not mapped so it must give a type error
-      expectTypeOf(t('dessert', { context: ctxMissingValue })).toMatchTypeOf<string>();
+      expectTypeOf(t('dessert', { context: ctxRandomValue })).toMatchTypeOf<string>();
+
+      // @ts-expect-error Dessert.ANOTHER is not mapped so it must give a type error
+      expectTypeOf(t('dessert', { context: DessertMissingValue.ANOTHER })).toMatchTypeOf<string>();
     });
 
     it('should work with string union as a context value', () => {
@@ -195,12 +201,12 @@ describe('t', () => {
     });
 
     // @see https://github.com/i18next/i18next/issues/2172
-    // it('should trow error with string union with missing context value', () => {
-    //   expectTypeOf(
-    //     // @ts-expect-error
-    //     t('dessert', { context: 'muffin' as 'muffin' | 'cake' | 'pippo' }),
-    //   ).toMatchTypeOf<string>();
-    // });
+    it('should trow error with string union with missing context value', () => {
+      expectTypeOf(
+        // @ts-expect-error
+        t('dessert', { context: 'muffin' as 'muffin' | 'cake' | 'pippo' }),
+      ).toMatchTypeOf<string>();
+    });
   });
 
   it('should work with false plural usage', () => {

@@ -205,7 +205,7 @@ export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
   : Key;
 
-export type ContextOfKey<
+type ContextOfKey<
   Key extends string,
   Ns extends Namespace = DefaultNamespace,
   TOpt extends TOptions = {},
