@@ -156,11 +156,16 @@ describe('t', () => {
 
     it('should accept a default context key as a valid `t` function key', () => {
       expectTypeOf(t('beverage')).toMatchTypeOf('cold water');
+
+      expectTypeOf(t('beverage', { context: undefined })).toMatchTypeOf('cold water');
     });
 
     it('should throw error when no `context` is provided using and the context key has no default value ', () => {
       // @ts-expect-error dessert has no default value, it needs a context
       expectTypeOf(t('dessert')).toMatchTypeOf('error');
+
+      // @ts-expect-error dessert has no default value, it needs a context
+      expectTypeOf(t('dessert', { context: undefined })).toMatchTypeOf('error');
     });
 
     it('should work with enum as a context value', () => {
@@ -174,7 +179,7 @@ describe('t', () => {
       expectTypeOf(t('dessert', { context: ctx })).toMatchTypeOf<string>();
     });
 
-    it('should trow error with string union with missing context value', () => {
+    it('should throw error with string union with missing context value', () => {
       enum DessertMissingValue {
         COOKIE = 'cookie',
         CAKE = 'cake',
@@ -182,16 +187,53 @@ describe('t', () => {
         ANOTHER = 'another',
       }
 
-      const getRandomDesert = (): DessertMissingValue =>
+      const getRandomDessert = (): DessertMissingValue =>
         Math.random() < 0.5 ? DessertMissingValue.CAKE : DessertMissingValue.ANOTHER;
 
-      const ctxRandomValue: DessertMissingValue = getRandomDesert();
+      const ctxRandomValue: DessertMissingValue = getRandomDessert();
 
       // @ts-expect-error Dessert.ANOTHER is not mapped so it must give a type error
       expectTypeOf(t('dessert', { context: ctxRandomValue })).toMatchTypeOf<string>();
 
       // @ts-expect-error Dessert.ANOTHER is not mapped so it must give a type error
       expectTypeOf(t('dessert', { context: DessertMissingValue.ANOTHER })).toMatchTypeOf<string>();
+
+      expectTypeOf(
+        // @ts-expect-error no default context so it must give a type error
+        t('dessert', { context: 'cookie' as 'cookie' | 'another' }),
+      ).toEqualTypeOf<never>();
+
+      expectTypeOf(
+        // @ts-expect-error no default context so it must give a type error
+        t('dessert', { context: 'cookie' as 'cookie' | undefined }),
+      ).toEqualTypeOf<unknown>();
+
+      expectTypeOf(
+        // @ts-expect-error no default context so it must give a type error
+        t('dessert', { context: undefined }),
+      ).toEqualTypeOf<unknown>();
+    });
+
+    it('should not throw error with string union with undefined context value if it has a default context', () => {
+      enum BeverageValue {
+        BEER = 'beer',
+        WATER = 'water',
+      }
+
+      const getRandomDessert = (): BeverageValue | undefined =>
+        Math.random() < 0.5 ? BeverageValue.BEER : undefined;
+
+      const ctxRandomValue = getRandomDessert();
+
+      expectTypeOf(
+        t('beverage', { context: ctxRandomValue }),
+      ).toMatchTypeOf<'a classic beverage'>();
+
+      expectTypeOf(
+        t('beverage', { context: 'beer' as 'beer' | 'water' | undefined }),
+      ).toEqualTypeOf<'a classic beverage'>();
+
+      expectTypeOf(t('beverage', { context: undefined })).toEqualTypeOf<'a classic beverage'>();
     });
 
     it('should work with string union as a context value', () => {
