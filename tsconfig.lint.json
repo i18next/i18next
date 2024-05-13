@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["./typescript", "./test", "./index.*", ".eslintrc.js", "vitest.*.mts"]
+  "include": [
+    "./typescript",
+    "./test",
+    "./index.*",
+    ".eslintrc.js",
+    "vitest.*.mts",
+    "rollup.config.mjs"
+  ]
 }
