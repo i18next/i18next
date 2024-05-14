@@ -166,6 +166,12 @@ describe('t', () => {
 
       // @ts-expect-error dessert has no default value, it needs a context
       expectTypeOf(t('dessert', { context: undefined })).toMatchTypeOf('error');
+
+      // TODO: edge case which is not correctly detected currently
+      // expectTypeOf(
+      //   // @ts-expect-error no default context so it must give a type error
+      //   t('dessert', { context: undefined as 'cake' | undefined }),
+      // ).toMatchTypeOf<never>();
     });
 
     it('should work with enum as a context value', () => {
@@ -201,17 +207,6 @@ describe('t', () => {
         // @ts-expect-error 'another' is not mapped so it must give a type error
         t('dessert', { context: 'cake' as 'cake' | 'another' }),
       ).toEqualTypeOf<'a nice cake'>();
-
-      // TODO: edge case which is not correctly detected currently
-      // expectTypeOf(
-      //   // @ts-expect-error no default context so it must give a type error
-      //   t('dessert', { context: 'cake' as 'cake' | undefined }),
-      // ).toEqualTypeOf<never>();
-
-      expectTypeOf(
-        // @ts-expect-error no default context so it must give a type error
-        t('dessert', { context: undefined }),
-      ).toEqualTypeOf<unknown>();
     });
 
     it('should not throw error with string union with undefined context value if it has a default context', () => {

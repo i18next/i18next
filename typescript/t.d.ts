@@ -206,15 +206,19 @@ export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends
   : Key;
 
 type ContextOfKey<
+  Ns extends Namespace,
   Key,
-  Ns extends Namespace = DefaultNamespace,
-  TOpt extends TOptions = {},
+  TOpt extends TOptions,
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
   ActualKeys = Keys[$FirstNamespace<ActualNS>],
 > = $IsResourcesDefined extends true
   ? Key extends string
-    ? ActualKeys extends `${Key}${_ContextSeparator}${infer Context}`
+    ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
+      ? Nsp extends Namespace
+        ? ContextOfKey<Nsp, RestKey, TOpt>
+        : never
+      : ActualKeys extends `${Key}${_ContextSeparator}${infer Context}`
       ? Context
       : never
     : never
@@ -282,7 +286,7 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
       | [
           key: Key | Key[],
           options?: Omit<ActualOptions, 'context'> & {
-            context?: ContextOfKey<Key, Ns, TOpt>;
+            context?: ContextOfKey<Ns, Key, TOpt>;
           },
         ]
       | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: string }]
