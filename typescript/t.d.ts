@@ -213,14 +213,12 @@ type ContextOfKey<
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
   ActualKeys = Keys[$FirstNamespace<ActualNS>],
 > = $IsResourcesDefined extends true
-  ? Key extends string
-    ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
-      ? Nsp extends Namespace
-        ? ContextOfKey<Nsp, RestKey, TOpt>
-        : never
-      : ActualKeys extends `${Key}${_ContextSeparator}${infer Context}`
-      ? Context
+  ? Key extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
+    ? Nsp extends Namespace
+      ? ContextOfKey<Nsp, RestKey, TOpt>
       : never
+    : ActualKeys extends `${Key extends string ? Key : never}${_ContextSeparator}${infer Context}`
+    ? Context
     : never
   : string;
 
