@@ -43,6 +43,12 @@ export type TestNamespaceContext = {
   beverage_water: 'cold water';
 };
 
+export type TestNamespaceContextAlternate = {
+  game: 'A fun game';
+  game_chess: 'Chess';
+  game_monopoly: 'Monopoly';
+};
+
 export type TestNamespacePlurals = {
   foo_zero: 'foo';
   foo_one: 'foo';
