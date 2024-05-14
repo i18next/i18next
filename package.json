@@ -74,13 +74,13 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "0.4.4",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
+    "@typescript-eslint/eslint-plugin": "7.8.0",
+    "@typescript-eslint/parser": "7.8.0",
     "@vitest/coverage-v8": "^1.1.1",
     "babelify": "^10.0.0",
     "coveralls": "3.1.1",
     "cpy-cli": "^5.0.0",
-    "eslint": "8.53.0",
+    "eslint": "8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -101,9 +101,9 @@
     "vitest": "1.1.0"
   },
   "scripts": {
-    "lint": "eslint src typescript test \"./*.{ts,mts}\"",
-    "format": "prettier \"{,**/}*.{ts,tsx,mts,js,json,md}\" --check",
-    "format:fix": "prettier \"{,**/}*.{ts,tsx,mts,js,json,md}\" --write",
+    "lint": "eslint src typescript test \"./*.{ts,mts,mjs}\"",
+    "format": "prettier \"{,**/}*.{ts,tsx,mts,js,mjs,json,md}\" --check",
+    "format:fix": "prettier \"{,**/}*.{ts,tsx,mts,js,mjs,json,md}\" --write",
     "pretest": "npm run generate_ts_v4_index",
     "pretest:typescript": "npm run generate_ts_v4_index",
     "test": "vitest --run",
@@ -123,6 +123,6 @@
   "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
   "license": "MIT",
   "lint-staged": {
-    "*.{ts,tsx,mts,js,json,md}": "prettier --write"
+    "*.{ts,tsx,mts,js,mjs,json,md}": "prettier --write"
   }
 }

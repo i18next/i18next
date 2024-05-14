@@ -9,6 +9,7 @@ import {
   TestNamespaceFallback,
   TestNamespaceNonPlurals,
   TestNamespaceInterpolators,
+  TestNamespaceContextAlternate,
 } from '../test.namespace.samples';
 
 declare module 'i18next' {
@@ -23,6 +24,7 @@ declare module 'i18next' {
       fallback: TestNamespaceFallback;
 
       ctx: TestNamespaceContext;
+      ctxAlternate: TestNamespaceContextAlternate;
 
       plurals: TestNamespacePlurals;
 
