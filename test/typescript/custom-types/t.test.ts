@@ -203,6 +203,41 @@ describe('t', () => {
     // });
   });
 
+  describe('context + explicit namespace', () => {
+    const t = (() => '') as TFunction<['ctx']>;
+
+    it('should work with basic usage', () => {
+      expectTypeOf(t('ctx:dessert', { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
+
+      // context + plural
+      expectTypeOf(t('ctx:dessert', { context: 'muffin', count: 3 })).toMatchTypeOf<string>();
+
+      // @ts-expect-error
+      // valid key with invalid context
+      assertType(t('ctx:foo', { context: 'cake' }));
+    });
+  });
+
+  describe('context with `t` function with multiple namespaces', () => {
+    const t = (() => '') as TFunction<['ctx', 'ctxAlternate']>;
+
+    it('should work with basic usage', () => {
+      expectTypeOf(t('ctx:dessert', { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
+
+      // context + plural
+      expectTypeOf(t('ctx:dessert', { context: 'muffin', count: 3 })).toMatchTypeOf<string>();
+
+      // @ts-expect-error
+      // valid key with invalid context
+      assertType(t('ctx:foo', { context: 'cake' }));
+    });
+
+    it('should work with text value from another namespace', () => {
+      expectTypeOf(t('ctxAlternate:game')).toMatchTypeOf<string>();
+      expectTypeOf(t('ctxAlternate:game', { context: 'monopoly' })).toMatchTypeOf<string>();
+    });
+  });
+
   it('should work with false plural usage', () => {
     const t = (() => '') as TFunction<'nonPlurals'>;
 
