@@ -167,6 +167,11 @@ describe('t', () => {
       // @ts-expect-error dessert has no default value, it needs a context
       expectTypeOf(t('dessert', { context: undefined })).toMatchTypeOf('error');
 
+      // @ts-expect-error dessert has no default value, it needs a context
+      expectTypeOf(t('dessert', { context: false as false | '' | 0 | null })).toMatchTypeOf(
+        'error',
+      );
+
       // TODO: edge case which is not correctly detected currently
       // expectTypeOf(
       //   // @ts-expect-error no default context so it must give a type error
@@ -209,7 +214,7 @@ describe('t', () => {
       ).toEqualTypeOf<'a nice cake'>();
     });
 
-    it('should not throw error with string union with undefined context value if it has a default context', () => {
+    it('should not throw error with string union with falsy context value if it has a default context', () => {
       enum BeverageValue {
         BEER = 'beer',
         WATER = 'water',
@@ -229,6 +234,10 @@ describe('t', () => {
       ).toEqualTypeOf<'a classic beverage'>();
 
       expectTypeOf(t('beverage', { context: undefined })).toEqualTypeOf<'a classic beverage'>();
+
+      expectTypeOf(
+        t('beverage', { context: false as false | '' | 0 | null }),
+      ).toEqualTypeOf<'a classic beverage'>();
     });
 
     it('should work with string union as a context value', () => {

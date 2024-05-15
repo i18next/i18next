@@ -284,7 +284,7 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
       | [
           key: Key | Key[],
           options?: Omit<ActualOptions, 'context'> & {
-            context?: ContextOfKey<Ns, Key, TOpt>;
+            context?: ContextOfKey<Ns, Key, TOpt> | false | '' | 0 | null;
           },
         ]
       | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: string }]
