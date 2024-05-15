@@ -167,10 +167,10 @@ describe('t', () => {
       // @ts-expect-error dessert has no default value, it needs a context
       expectTypeOf(t('dessert', { context: undefined })).toMatchTypeOf('error');
 
-      // @ts-expect-error dessert has no default value, it needs a context
-      expectTypeOf(t('dessert', { context: false as false | '' | 0 | null })).toMatchTypeOf(
-        'error',
-      );
+      expectTypeOf(
+        // @ts-expect-error dessert has no default value, it needs a context
+        t('dessert', { context: false as false | '' | 0 | null }),
+      ).toMatchTypeOf<unknown>();
 
       // TODO: edge case which is not correctly detected currently
       // expectTypeOf(
