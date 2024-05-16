@@ -154,6 +154,12 @@ describe('t', () => {
       assertType(t('foo', { context: 'cake' }));
     });
 
+    it('should accept not mapped context if a fallback key is present', () => {
+      // wine is not mapped
+      const currentTheme = 'wine' as 'wine' | 'beer' | 'water';
+      expectTypeOf(t('beverage', { context: currentTheme })).toMatchTypeOf<string>();
+    });
+
     it('should accept a default context key as a valid `t` function key', () => {
       expectTypeOf(t('beverage')).toMatchTypeOf('cold water');
     });
