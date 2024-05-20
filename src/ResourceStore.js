@@ -87,10 +87,7 @@ class ResourceStore extends EventEmitter {
   addResources(lng, ns, resources, options = { silent: false }) {
     /* eslint no-restricted-syntax: 0 */
     for (const m in resources) {
-      if (
-        typeof resources[m] === 'string' ||
-        Object.prototype.toString.apply(resources[m]) === '[object Array]'
-      )
+      if (typeof resources[m] === 'string' || Array.isArray(resources[m]))
         this.addResource(lng, ns, m, resources[m], { silent: true });
     }
     if (!options.silent) this.emit('added', lng, ns, resources);

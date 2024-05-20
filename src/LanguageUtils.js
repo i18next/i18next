@@ -118,7 +118,7 @@ class LanguageUtil {
     if (!fallbacks) return [];
     if (typeof fallbacks === 'function') fallbacks = fallbacks(code);
     if (typeof fallbacks === 'string') fallbacks = [fallbacks];
-    if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
+    if (Array.isArray(fallbacks)) return fallbacks;
 
     if (!code) return fallbacks.default || [];
 
