@@ -395,7 +395,7 @@
         silent: false
       };
       for (const m in resources) {
-        if (typeof resources[m] === 'string' || Object.prototype.toString.apply(resources[m]) === '[object Array]') this.addResource(lng, ns, m, resources[m], {
+        if (typeof resources[m] === 'string' || Array.isArray(resources[m])) this.addResource(lng, ns, m, resources[m], {
           silent: true
         });
       }
@@ -576,7 +576,7 @@
       const joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
       const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
       const handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
-      if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(typeof joinArrays === 'string' && resType === '[object Array]')) {
+      if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(typeof joinArrays === 'string' && Array.isArray(res))) {
         if (!options.returnObjects && !this.options.returnObjects) {
           if (!this.options.returnedObjectHandler) {
             this.logger.warn('accessing an object - but returnObjects options is not enabled!');
@@ -593,7 +593,7 @@
           return r;
         }
         if (keySeparator) {
-          const resTypeIsArray = resType === '[object Array]';
+          const resTypeIsArray = Array.isArray(res);
           const copy = resTypeIsArray ? [] : {};
           const newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
           for (const m in res) {
@@ -611,7 +611,7 @@
           }
           res = copy;
         }
-      } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && resType === '[object Array]') {
+      } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && Array.isArray(res)) {
         res = res.join(joinArrays);
         if (res) res = this.extendTranslation(res, keys, options, lastKey);
       } else {
@@ -960,7 +960,7 @@
       if (!fallbacks) return [];
       if (typeof fallbacks === 'function') fallbacks = fallbacks(code);
       if (typeof fallbacks === 'string') fallbacks = [fallbacks];
-      if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
+      if (Array.isArray(fallbacks)) return fallbacks;
       if (!code) return fallbacks.default || [];
       let found = fallbacks[code];
       if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
@@ -1491,13 +1491,15 @@
       } else {
         const opts = optStr.split(';');
         opts.forEach(opt => {
-          if (!opt) return;
-          const [key, ...rest] = opt.split(':');
-          const val = rest.join(':').trim().replace(/^'+|'+$/g, '');
-          if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val;
-          if (val === 'false') formatOptions[key.trim()] = false;
-          if (val === 'true') formatOptions[key.trim()] = true;
-          if (!isNaN(val)) formatOptions[key.trim()] = parseInt(val, 10);
+          if (opt) {
+            const [key, ...rest] = opt.split(':');
+            const val = rest.join(':').trim().replace(/^'+|'+$/g, '');
+            const trimmedKey = key.trim();
+            if (!formatOptions[trimmedKey]) formatOptions[trimmedKey] = val;
+            if (val === 'false') formatOptions[trimmedKey] = false;
+            if (val === 'true') formatOptions[trimmedKey] = true;
+            if (!isNaN(val)) formatOptions[trimmedKey] = parseInt(val, 10);
+          }
         });
       }
     }
