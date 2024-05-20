@@ -19,18 +19,21 @@ function parseFormatStr(formatStr) {
       const opts = optStr.split(';');
 
       opts.forEach((opt) => {
-        if (!opt) return;
-        const [key, ...rest] = opt.split(':');
-        const val = rest
-          .join(':')
-          .trim()
-          .replace(/^'+|'+$/g, ''); // trim and replace ''
+        if (opt) {
+          const [key, ...rest] = opt.split(':');
+          const val = rest
+            .join(':')
+            .trim()
+            .replace(/^'+|'+$/g, ''); // trim and replace ''
 
-        if (!formatOptions[key.trim()]) formatOptions[key.trim()] = val;
-        if (val === 'false') formatOptions[key.trim()] = false;
-        if (val === 'true') formatOptions[key.trim()] = true;
-        // eslint-disable-next-line no-restricted-globals
-        if (!isNaN(val)) formatOptions[key.trim()] = parseInt(val, 10);
+          const trimmedKey = key.trim();
+
+          if (!formatOptions[trimmedKey]) formatOptions[trimmedKey] = val;
+          if (val === 'false') formatOptions[trimmedKey] = false;
+          if (val === 'true') formatOptions[trimmedKey] = true;
+          // eslint-disable-next-line no-restricted-globals
+          if (!isNaN(val)) formatOptions[trimmedKey] = parseInt(val, 10);
+        }
       });
     }
   }
