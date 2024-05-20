@@ -160,7 +160,7 @@ class Translator extends EventEmitter {
       res &&
       handleAsObject &&
       noObject.indexOf(resType) < 0 &&
-      !(typeof joinArrays === 'string' && resType === '[object Array]')
+      !(typeof joinArrays === 'string' && Array.isArray(res))
     ) {
       if (!options.returnObjects && !this.options.returnObjects) {
         if (!this.options.returnedObjectHandler) {
@@ -180,7 +180,7 @@ class Translator extends EventEmitter {
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
       if (keySeparator) {
-        const resTypeIsArray = resType === '[object Array]';
+        const resTypeIsArray = Array.isArray(res);
         const copy = resTypeIsArray ? [] : {}; // apply child translation on a copy
 
         /* eslint no-restricted-syntax: 0 */
@@ -197,11 +197,7 @@ class Translator extends EventEmitter {
         }
         res = copy;
       }
-    } else if (
-      handleAsObjectInI18nFormat &&
-      typeof joinArrays === 'string' &&
-      resType === '[object Array]'
-    ) {
+    } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && Array.isArray(res)) {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options, lastKey);
