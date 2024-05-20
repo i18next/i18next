@@ -1,3 +1,8 @@
+## 23.11.5
+
+- perf: use Array.isArray() [2193](https://github.com/i18next/i18next/pull/2193)
+- perf: trim keys once [2194](https://github.com/i18next/i18next/pull/2194)
+
 ## 23.11.4
 
 - perf(interpolator): use object deconstruction [2181](https://github.com/i18next/i18next/pull/2181)
