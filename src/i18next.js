@@ -193,7 +193,12 @@ class I18n extends EventEmitter {
         this.isInitializing = false;
         if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn('init: i18next is already initialized. You should call init just once!');
         this.isInitialized = true;
-        if (!this.options.isClone) this.logger.log('initialized', this.options);
+        if (!this.options.isClone) {
+          this.logger.log(
+            'initialized',
+            typeof this.options.debugOptionsFilter === 'function' ? this.options.debugOptionsFilter(this.options) : this.options
+          );
+        }
         this.emit('initialized', this.options);
 
         deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)

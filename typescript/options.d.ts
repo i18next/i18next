@@ -351,6 +351,12 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   debug?: boolean;
 
   /**
+   * Filter function that allows changing the logged option value when `debug` is set to true.
+   * @default undefined
+   */
+  debugOptionsFilter?: (options: InitOptions<T>) => unknown;
+
+  /**
    * Resources to initialize with (if not using loading or not appending using addResourceBundle)
    * @default undefined
    */
