@@ -1,7 +1,7 @@
 export function get() {
   return {
     debug: false,
-    initImmediate: true,
+    initAsync: true,
 
     ns: ['translation'],
     defaultNS: ['translation'],
@@ -80,6 +80,9 @@ export function transformOptions(options) {
   if (typeof options.ns === 'string') options.ns = [options.ns];
   if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
   if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
+
+  // for backward compatibility, assign initImmediate to initAsync (if set)
+  if (typeof options.initImmediate === 'boolean') options.initAsync = options.initImmediate;
 
   // extend supportedLngs with cimode
   if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
