@@ -3,6 +3,12 @@ import i18next, { InitOptions, TFunction, createInstance } from 'i18next';
 
 describe('init', () => {
   describe('initOptions', () => {
+    it('should accept `initAsync`', () => {
+      expectTypeOf(i18next.init).toBeCallableWith({
+        initAsync: false,
+      });
+    });
+
     it('should accept `initImmediate`', () => {
       expectTypeOf(i18next.init).toBeCallableWith({
         initImmediate: false,
