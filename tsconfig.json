@@ -15,6 +15,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
+    "skipDefaultLibCheck": true,
     /**
      * setting this to `false` to throw an error when d.ts file have invalid code
      * @see https://github.com/i18next/i18next/issues/2168
