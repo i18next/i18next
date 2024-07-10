@@ -327,13 +327,21 @@ export interface i18n extends CustomInstanceExtensions {
     ns: string | readonly string[],
     options?: {
       lng?: string | readonly string[];
-      precheck: (
+      fallbackLng?: InitOptions['fallbackLng'];
+      /**
+       * if `undefined` is returned default checks are performed.
+       */
+      precheck?: (
         i18n: i18n,
+        /**
+         * Check if the language namespace provided are not in loading status:
+         * returns `true` if load is completed successfully or with an error.
+         */
         loadNotPending: (
           lng: string | readonly string[],
           ns: string | readonly string[],
         ) => boolean,
-      ) => boolean;
+      ) => boolean | undefined;
     },
   ): boolean;
 
@@ -361,11 +369,6 @@ export interface i18n extends CustomInstanceExtensions {
    * Changes the default namespace.
    */
   setDefaultNamespace(ns: string): void;
-
-  /**
-   * Checks if a namespace has been loaded.
-   */
-  hasLoadedNamespace(ns: string, options?: Pick<InitOptions, 'fallbackLng'>): boolean;
 
   /**
    * Returns rtl or ltr depending on languages read direction.

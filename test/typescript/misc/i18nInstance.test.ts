@@ -1,7 +1,7 @@
 import { describe, it, assertType, expectTypeOf } from 'vitest';
-import i18next, { InitOptions, TFunction, createInstance } from 'i18next';
+import i18next, { InitOptions, TFunction, createInstance, i18n } from 'i18next';
 
-describe('init', () => {
+describe('i18nInstance', () => {
   describe('initOptions', () => {
     it('should accept `initImmediate`', () => {
       expectTypeOf(i18next.init).toBeCallableWith({
@@ -394,5 +394,36 @@ describe('init', () => {
         assertType<TFunction>(t);
       },
     );
+  });
+
+  it('`hasLoadedNamespace`', () => {
+    expectTypeOf(i18next.hasLoadedNamespace).toBeCallableWith('test-ns');
+
+    expectTypeOf(i18next.hasLoadedNamespace).toBeCallableWith('test-ns', {
+      lng: 'en',
+    });
+
+    expectTypeOf(i18next.hasLoadedNamespace).toBeCallableWith('test-ns', {
+      lng: 'it',
+      fallbackLng: 'en',
+    });
+
+    expectTypeOf(i18next.hasLoadedNamespace).toBeCallableWith('test-ns', {
+      lng: 'it',
+      fallbackLng: 'en',
+      precheck(i18nPreCheck, loadNotPending) {
+        assertType<i18n>(i18nPreCheck);
+
+        type ExpectedLoadNotPending = (
+          lng: string | readonly string[],
+          ns: string | readonly string[],
+        ) => boolean | undefined;
+        assertType<ExpectedLoadNotPending>(loadNotPending);
+
+        return false;
+      },
+    });
+
+    expectTypeOf(i18next.hasLoadedNamespace('test-ns')).toBeBoolean();
   });
 });
