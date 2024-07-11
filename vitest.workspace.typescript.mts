@@ -23,17 +23,30 @@ export default defineWorkspace(
             ? dir.name
             : `${dir.name}-${tsConfigFileName.split('.')[1]}`;
 
-        workspaces.push({
+        const workspaceConfig: UserProjectConfigExport = {
           test: {
             dir: `./${dirPath}`,
             name: workspaceName,
+            alias: {
+              /**
+               * From `vitest` >= 2 imports are resolved even if we are running only typecheck tests.
+               * This will result in:
+               * ```text
+               * Error: Failed to resolve entry for package "i18next". The package may have incorrect main/module/exports specified in its package.json.
+               * ```
+               * To avoid a useless build process before running these tests an empty alias to `i18n` is added.
+               */
+              i18next: '',
+            },
             typecheck: {
               enabled: true,
-              include: [`**/${dirPath}/*.test.ts`],
+              only: true,
+              include: ['**/*.test.ts'],
               tsconfig: `./${dirPath}/${tsConfigFileName}`,
             },
           },
-        });
+        };
+        workspaces.push(workspaceConfig);
       });
 
       return workspaces;

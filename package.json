@@ -74,9 +74,10 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "0.4.4",
+    "@types/node": "20.14.10",
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
-    "@vitest/coverage-v8": "^1.1.1",
+    "@vitest/coverage-v8": "2.0.2",
     "babelify": "^10.0.0",
     "coveralls": "3.1.1",
     "cpy-cli": "^5.0.0",
@@ -98,7 +99,7 @@
     "rollup": "^4.3.0",
     "sinon": "17.0.1",
     "typescript": "5.4.4",
-    "vitest": "1.1.0"
+    "vitest": "2.0.2"
   },
   "scripts": {
     "lint": "eslint src typescript test \"./*.{ts,mts,mjs}\"",
