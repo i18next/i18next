@@ -1,5 +1,5 @@
 import EventEmitter from './EventEmitter.js';
-import * as utils from './utils.js';
+import { getPath, deepFind, setPath, deepExtend } from './utils.js';
 
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
@@ -53,7 +53,7 @@ class ResourceStore extends EventEmitter {
       }
     }
 
-    const result = utils.getPath(this.data, path);
+    const result = getPath(this.data, path);
     if (!result && !ns && !key && lng.indexOf('.') > -1) {
       lng = path[0];
       ns = path[1];
@@ -61,7 +61,7 @@ class ResourceStore extends EventEmitter {
     }
     if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
 
-    return utils.deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
+    return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {
@@ -79,7 +79,7 @@ class ResourceStore extends EventEmitter {
 
     this.addNamespaces(ns);
 
-    utils.setPath(this.data, path, value);
+    setPath(this.data, path, value);
 
     if (!options.silent) this.emit('added', lng, ns, key, value);
   }
@@ -111,17 +111,17 @@ class ResourceStore extends EventEmitter {
 
     this.addNamespaces(ns);
 
-    let pack = utils.getPath(this.data, path) || {};
+    let pack = getPath(this.data, path) || {};
 
     if (!options.skipCopy) resources = JSON.parse(JSON.stringify(resources)); // make a copy to fix #2081
 
     if (deep) {
-      utils.deepExtend(pack, resources, overwrite);
+      deepExtend(pack, resources, overwrite);
     } else {
       pack = { ...pack, ...resources };
     }
 
-    utils.setPath(this.data, path, pack);
+    setPath(this.data, path, pack);
 
     if (!options.silent) this.emit('added', lng, ns, resources);
   }
