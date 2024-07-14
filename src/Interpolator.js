@@ -1,4 +1,10 @@
-import * as utils from './utils.js';
+import {
+  getPathWithDefaults,
+  deepFind,
+  escape as utilsEscape,
+  regexEscape,
+  makeString,
+} from './utils.js';
 import baseLogger from './logger.js';
 
 function deepFindWithDefaults(
@@ -8,10 +14,10 @@ function deepFindWithDefaults(
   keySeparator = '.',
   ignoreJSONStructure = true,
 ) {
-  let path = utils.getPathWithDefaults(data, defaultData, key);
+  let path = getPathWithDefaults(data, defaultData, key);
   if (!path && ignoreJSONStructure && typeof key === 'string') {
-    path = utils.deepFind(data, key, keySeparator);
-    if (path === undefined) path = utils.deepFind(defaultData, key, keySeparator);
+    path = deepFind(data, key, keySeparator);
+    if (path === undefined) path = deepFind(defaultData, key, keySeparator);
   }
   return path;
 }
@@ -49,12 +55,12 @@ class Interpolator {
       alwaysFormat,
     } = options.interpolation;
 
-    this.escape = escape !== undefined ? escape : utils.escape;
+    this.escape = escape !== undefined ? escape : utilsEscape;
     this.escapeValue = escapeValue !== undefined ? escapeValue : true;
     this.useRawValueToEscape = useRawValueToEscape !== undefined ? useRawValueToEscape : false;
 
-    this.prefix = prefix ? utils.regexEscape(prefix) : prefixEscaped || '{{';
-    this.suffix = suffix ? utils.regexEscape(suffix) : suffixEscaped || '}}';
+    this.prefix = prefix ? regexEscape(prefix) : prefixEscaped || '{{';
+    this.suffix = suffix ? regexEscape(suffix) : suffixEscaped || '}}';
 
     this.formatSeparator = formatSeparator || ',';
 
@@ -62,11 +68,11 @@ class Interpolator {
     this.unescapeSuffix = this.unescapePrefix ? '' : unescapeSuffix || '';
 
     this.nestingPrefix = nestingPrefix
-      ? utils.regexEscape(nestingPrefix)
-      : nestingPrefixEscaped || utils.regexEscape('$t(');
+      ? regexEscape(nestingPrefix)
+      : nestingPrefixEscaped || regexEscape('$t(');
     this.nestingSuffix = nestingSuffix
-      ? utils.regexEscape(nestingSuffix)
-      : nestingSuffixEscaped || utils.regexEscape(')');
+      ? regexEscape(nestingSuffix)
+      : nestingSuffixEscaped || regexEscape(')');
 
     this.nestingOptionsSeparator = nestingOptionsSeparator || ',';
 
@@ -193,7 +199,7 @@ class Interpolator {
             value = '';
           }
         } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-          value = utils.makeString(value);
+          value = makeString(value);
         }
         const safeValue = todo.safeValue(value);
         str = str.replace(match[0], safeValue);
@@ -287,7 +293,7 @@ class Interpolator {
       if (value && match[0] === str && typeof value !== 'string') return value;
 
       // no string to include or empty
-      if (typeof value !== 'string') value = utils.makeString(value);
+      if (typeof value !== 'string') value = makeString(value);
       if (!value) {
         this.logger.warn(`missed to resolve ${match[1]} for nesting ${str}`);
         value = '';

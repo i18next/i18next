@@ -1,7 +1,7 @@
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 import postProcessor from './postProcessor.js';
-import * as utils from './utils.js';
+import { copy as utilsCopy, looksLikeObjectPath } from './utils.js';
 
 const checkedLoadedFor = {};
 
@@ -9,7 +9,7 @@ class Translator extends EventEmitter {
   constructor(services, options = {}) {
     super();
 
-    utils.copy(
+    utilsCopy(
       [
         'resourceStore',
         'languageUtils',
@@ -59,7 +59,7 @@ class Translator extends EventEmitter {
       !options.keySeparator &&
       !this.options.userDefinedNsSeparator &&
       !options.nsSeparator &&
-      !utils.looksLikeObjectPath(key, nsSeparator, keySeparator);
+      !looksLikeObjectPath(key, nsSeparator, keySeparator);
     if (wouldCheckForNsInKey && !seemsNaturalLanguage) {
       const m = key.match(this.interpolator.nestingRegexp);
       if (m && m.length > 0) {

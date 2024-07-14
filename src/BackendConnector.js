@@ -1,4 +1,4 @@
-import * as utils from './utils.js';
+import { pushPath } from './utils.js';
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
@@ -105,7 +105,7 @@ class Connector extends EventEmitter {
 
     // callback if ready
     this.queue.forEach((q) => {
-      utils.pushPath(q.loaded, [lng], ns);
+      pushPath(q.loaded, [lng], ns);
       removePending(q, name);
 
       if (err) q.errors.push(err);
