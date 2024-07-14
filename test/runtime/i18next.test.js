@@ -144,6 +144,17 @@ describe('i18next', () => {
         expect(t('nested.key', { keyPrefix: 'deeply' })).to.equal('quì!');
         expect(t.keyPrefix).to.equal('deeply.nested');
       });
+      it('should apply keyPrefix and also be able to "reset" it', () => {
+        i18next.addResource('pt', 'translation', 'deeply.nested.key', 'quì!');
+        const t = i18next.getFixedT('pt', null, 'deeply.nested');
+        expect(t('nested.key', { keyPrefix: 'deeply' })).to.equal('quì!');
+        expect(t.keyPrefix).to.equal('deeply.nested');
+        expect(t('deeply.nested.key', { keyPrefix: 'deeply' })).to.equal(
+          'deeply.deeply.nested.key',
+        );
+        expect(t('deeply.nested.key', { keyPrefix: '' })).to.equal('quì!');
+        expect(t.keyPrefix).to.equal('deeply.nested');
+      });
       it('should apply keyPrefix also for fallback keys', () => {
         i18next.addResource('fr', 'translation', 'group.key1', 'Translation 1');
         i18next.addResource('fr', 'translation', 'group.key2', 'Translation 2');

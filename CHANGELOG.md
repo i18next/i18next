@@ -1,3 +1,7 @@
+## 23.12.0
+
+- feat: Add posibility to override keyPrefix for certain translation. [2211](https://github.com/i18next/i18next/issues/2211)
+
 ## 23.11.5
 
 - perf: use Array.isArray() [2193](https://github.com/i18next/i18next/pull/2193)
