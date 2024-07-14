@@ -196,8 +196,7 @@
       k
     } = getLastOfPath(object, path, Object);
     obj[k] = obj[k] || [];
-    if (concat) obj[k] = obj[k].concat(newValue);
-    if (!concat) obj[k].push(newValue);
+    obj[k].push(newValue);
   }
   function getPath(object, path) {
     const {
