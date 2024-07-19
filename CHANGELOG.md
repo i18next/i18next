@@ -1,3 +1,7 @@
+## 23.12.2
+
+- fix: Nested translation resolution between languages uses the fallback language for nested translations [2216](https://github.com/i18next/i18next/issues/2216) by preserving issue fix "`lng` is undefined when formatter used in `$t( )`" [1938](https://github.com/i18next/i18next/issues/1938)
+
 ## 23.12.1
 
 - Use explicit imports for utils [2212](https://github.com/i18next/i18next/pull/2212)
