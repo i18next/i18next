@@ -2,12 +2,12 @@ import { pushPath } from './utils.js';
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
-function removePending(q, name) {
+const removePending = (q, name) => {
   if (q.pending[name] !== undefined) {
     delete q.pending[name];
     q.pendingCount--;
   }
-}
+};
 
 class Connector extends EventEmitter {
   constructor(backend, store, services, options = {}) {

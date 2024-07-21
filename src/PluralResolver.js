@@ -76,7 +76,7 @@ const suffixesOrder = {
   other: 5,
 };
 
-function createRules() {
+const createRules = () => {
   const rules = {};
   sets.forEach((set) => {
     set.lngs.forEach((l) => {

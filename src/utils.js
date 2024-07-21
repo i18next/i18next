@@ -1,5 +1,5 @@
 // http://lea.verou.me/2016/12/resolve-promises-externally-with-this-one-weird-trick/
-export function defer() {
+export const defer = () => {
   let res;
   let rej;
 
@@ -12,38 +12,35 @@ export function defer() {
   promise.reject = rej;
 
   return promise;
-}
+};
 
-export function makeString(object) {
+export const makeString = (object) => {
   if (object == null) return '';
   /* eslint prefer-template: 0 */
   return '' + object;
-}
+};
 
-export function copy(a, s, t) {
+export const copy = (a, s, t) => {
   a.forEach((m) => {
     if (s[m]) t[m] = s[m];
   });
-}
+};
 
 // We extract out the RegExp definition to improve performance with React Native Android, which has poor RegExp
 // initialization performance
 const lastOfPathSeparatorRegExp = /###/g;
 
-function getLastOfPath(object, path, Empty) {
-  function cleanKey(key) {
-    return key && key.indexOf('###') > -1 ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
-  }
+const cleanKey = (key) =>
+  key && key.indexOf('###') > -1 ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
 
-  function canNotTraverseDeeper() {
-    return !object || typeof object === 'string';
-  }
+const canNotTraverseDeeper = (object) => !object || typeof object === 'string';
 
+const getLastOfPath = (object, path, Empty) => {
   const stack = typeof path !== 'string' ? path : path.split('.');
   let stackIndex = 0;
   // iterate through the stack, but leave the last item
   while (stackIndex < stack.length - 1) {
-    if (canNotTraverseDeeper()) return {};
+    if (canNotTraverseDeeper(object)) return {};
 
     const key = cleanKey(stack[stackIndex]);
     if (!object[key] && Empty) object[key] = new Empty();
@@ -56,14 +53,14 @@ function getLastOfPath(object, path, Empty) {
     ++stackIndex;
   }
 
-  if (canNotTraverseDeeper()) return {};
+  if (canNotTraverseDeeper(object)) return {};
   return {
     obj: object,
     k: cleanKey(stack[stackIndex]),
   };
-}
+};
 
-export function setPath(object, path, newValue) {
+export const setPath = (object, path, newValue) => {
   const { obj, k } = getLastOfPath(object, path, Object);
   if (obj !== undefined || path.length === 1) {
     obj[k] = newValue;
@@ -82,33 +79,33 @@ export function setPath(object, path, newValue) {
     }
   }
   last.obj[`${last.k}.${e}`] = newValue;
-}
+};
 
-export function pushPath(object, path, newValue, concat) {
+export const pushPath = (object, path, newValue, concat) => {
   const { obj, k } = getLastOfPath(object, path, Object);
 
   obj[k] = obj[k] || [];
   if (concat) obj[k] = obj[k].concat(newValue);
   if (!concat) obj[k].push(newValue);
-}
+};
 
-export function getPath(object, path) {
+export const getPath = (object, path) => {
   const { obj, k } = getLastOfPath(object, path);
 
   if (!obj) return undefined;
   return obj[k];
-}
+};
 
-export function getPathWithDefaults(data, defaultData, key) {
+export const getPathWithDefaults = (data, defaultData, key) => {
   const value = getPath(data, key);
   if (value !== undefined) {
     return value;
   }
   // Fallback to default values
   return getPath(defaultData, key);
-}
+};
 
-export function deepExtend(target, source, overwrite) {
+export const deepExtend = (target, source, overwrite) => {
   /* eslint no-restricted-syntax: 0 */
   for (const prop in source) {
     if (prop !== '__proto__' && prop !== 'constructor') {
@@ -130,12 +127,11 @@ export function deepExtend(target, source, overwrite) {
     }
   }
   return target;
-}
+};
 
-export function regexEscape(str) {
+export const regexEscape = (str) =>
   /* eslint no-useless-escape: 0 */
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-}
+  str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 /* eslint-disable */
 var _entityMap = {
@@ -148,13 +144,13 @@ var _entityMap = {
 };
 /* eslint-enable */
 
-export function escape(data) {
+export const escape = (data) => {
   if (typeof data === 'string') {
     return data.replace(/[&<>"'\/]/g, (s) => _entityMap[s]);
   }
 
   return data;
-}
+};
 
 /**
  * This is a reusable regular expression cache class. Given a certain maximum number of regular expressions we're
@@ -190,7 +186,7 @@ const chars = [' ', ',', '?', '!', ';'];
 // Capacity of 20 should be plenty, as nsSeparator/keySeparator don't tend to vary much across calls.
 const looksLikeObjectPathRegExpCache = new RegExpCache(20);
 
-export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
+export const looksLikeObjectPath = (key, nsSeparator, keySeparator) => {
   nsSeparator = nsSeparator || '';
   keySeparator = keySeparator || '';
   const possibleChars = chars.filter(
@@ -208,7 +204,7 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
     }
   }
   return matched;
-}
+};
 
 /**
  * Given
@@ -220,7 +216,7 @@ export function looksLikeObjectPath(key, nsSeparator, keySeparator) {
  * may contain period characters. Therefore, we need to DFS and explore all possible keys at each step until we find the
  * deeply nested string or object.
  */
-export function deepFind(obj, path, keySeparator = '.') {
+export const deepFind = (obj, path, keySeparator = '.') => {
   if (!obj) return undefined;
   if (obj[path]) return obj[path];
   const tokens = path.split(keySeparator);
@@ -248,9 +244,9 @@ export function deepFind(obj, path, keySeparator = '.') {
     current = next;
   }
   return current;
-}
+};
 
-export function getCleanedCode(code) {
+export const getCleanedCode = (code) => {
   if (code && code.indexOf('_') > 0) return code.replace('_', '-');
   return code;
-}
+};

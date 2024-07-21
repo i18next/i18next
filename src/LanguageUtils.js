@@ -1,9 +1,7 @@
 import baseLogger from './logger.js';
 import { getCleanedCode } from './utils.js';
 
-function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
+const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 class LanguageUtil {
   constructor(options) {

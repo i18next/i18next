@@ -7,20 +7,22 @@ import {
 } from './utils.js';
 import baseLogger from './logger.js';
 
-function deepFindWithDefaults(
+const deepFindWithDefaults = (
   data,
   defaultData,
   key,
   keySeparator = '.',
   ignoreJSONStructure = true,
-) {
+) => {
   let path = getPathWithDefaults(data, defaultData, key);
   if (!path && ignoreJSONStructure && typeof key === 'string') {
     path = deepFind(data, key, keySeparator);
     if (path === undefined) path = deepFind(defaultData, key, keySeparator);
   }
   return path;
-}
+};
+
+const regexSafe = (val) => val.replace(/\$/g, '$$$$');
 
 class Interpolator {
   constructor(options = {}) {
@@ -116,10 +118,6 @@ class Interpolator {
     const defaultData =
       (this.options && this.options.interpolation && this.options.interpolation.defaultVariables) ||
       {};
-
-    function regexSafe(val) {
-      return val.replace(/\$/g, '$$$$');
-    }
 
     const handleFormat = (key) => {
       if (key.indexOf(this.formatSeparator) < 0) {
@@ -225,7 +223,7 @@ class Interpolator {
     let clonedOptions;
 
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
-    function handleHasOptions(key, inheritedOptions) {
+    const handleHasOptions = (key, inheritedOptions) => {
       const sep = this.nestingOptionsSeparator;
       if (key.indexOf(sep) < 0) return key;
 
@@ -256,7 +254,7 @@ class Interpolator {
       if (clonedOptions.defaultValue && clonedOptions.defaultValue.indexOf(this.prefix) > -1)
         delete clonedOptions.defaultValue;
       return key;
-    }
+    };
 
     // regular escape on demand
     while ((match = this.nestingRegexp.exec(str))) {
