@@ -11,11 +11,11 @@ import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
 import { defer } from './utils.js';
 
-function noop() { }
+const noop = () => {}
 
 // Binds the member functions of the given class instance so that they can be
 // destructured or used as callbacks.
-function bindMemberFunctions(inst) {
+const bindMemberFunctions = (inst) => {
   const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst))
   mems.forEach((mem) => {
     if (typeof inst[mem] === 'function') {
@@ -74,7 +74,7 @@ class I18n extends EventEmitter {
       this.options.userDefinedNsSeparator = options.nsSeparator;
     }
 
-    function createClassOnDemand(ClassOrObject) {
+    const createClassOnDemand = (ClassOrObject) => {
       if (!ClassOrObject) return null;
       if (typeof ClassOrObject === 'function') return new ClassOrObject();
       return ClassOrObject;

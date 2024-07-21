@@ -1,7 +1,7 @@
 import baseLogger from './logger.js';
 import { getCleanedCode } from './utils.js';
 
-function parseFormatStr(formatStr) {
+const parseFormatStr = (formatStr) => {
   let formatName = formatStr.toLowerCase().trim();
   const formatOptions = {};
   if (formatStr.indexOf('(') > -1) {
@@ -42,11 +42,11 @@ function parseFormatStr(formatStr) {
     formatName,
     formatOptions,
   };
-}
+};
 
-function createCachedFormatter(fn) {
+const createCachedFormatter = (fn) => {
   const cache = {};
-  return function invokeFormatter(val, lng, options) {
+  return (val, lng, options) => {
     const key = lng + JSON.stringify(options);
     let formatter = cache[key];
     if (!formatter) {
@@ -55,7 +55,7 @@ function createCachedFormatter(fn) {
     }
     return formatter(val);
   };
-}
+};
 
 class Formatter {
   constructor(options = {}) {
