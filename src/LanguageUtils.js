@@ -77,7 +77,10 @@ class LanguageUtil {
     // pick first supported code or if no restriction pick the first one (highest prio)
     codes.forEach((code) => {
       if (found) return;
-      const cleanedLng = this.formatLanguageCode(code);
+      const cleanedLng =
+        this.options.load === 'languageOnly'
+          ? this.getLanguagePartFromCode(code)
+          : this.formatLanguageCode(code);
       if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
     });
 
