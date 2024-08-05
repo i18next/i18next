@@ -936,7 +936,7 @@
       let found;
       codes.forEach(code => {
         if (found) return;
-        const cleanedLng = this.formatLanguageCode(code);
+        const cleanedLng = this.options.load === 'languageOnly' ? this.getLanguagePartFromCode(code) : this.formatLanguageCode(code);
         if (!this.options.supportedLngs || this.isSupportedCode(cleanedLng)) found = cleanedLng;
       });
       if (!found && this.options.supportedLngs) {
