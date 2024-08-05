@@ -328,6 +328,35 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('getBestMatchFromCodes() with languageOnly', () => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
+      cu = new LanguageUtils({
+        fallbackLng: ['en'],
+        supportedLngs: ['fr', 'en'],
+      });
+    });
+
+    const tests = [
+      { args: [['en']], expected: 'en' },
+      { args: [['ru', 'en']], expected: 'en' },
+      { args: [['en-GB']], expected: 'en' },
+      { args: [['ru', 'en-US']], expected: 'en' },
+      { args: [['de-CH']], expected: 'en' },
+      { args: [['fr']], expected: 'fr' },
+      { args: [['fr-FR']], expected: 'fr' },
+      { args: [['e']], expected: 'en' },
+      { args: [[]], expected: 'en' },
+    ];
+
+    tests.forEach((test) => {
+      it(`correctly get best match for ${JSON.stringify(test.args)} args`, () => {
+        expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('getBestMatchFromCodes() with dev', () => {
     /** @type {LanguageUtils} */
     let cu;
