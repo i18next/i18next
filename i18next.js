@@ -1575,6 +1575,10 @@
     format(value, format, lng) {
       let options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       const formats = format.split(this.formatSeparator);
+      if (formats.length > 1 && formats[0].indexOf('(') > 1 && formats[0].indexOf(')') < 0 && formats.find(f => f.indexOf(')') > -1)) {
+        const lastIndex = formats.findIndex(f => f.indexOf(')') > -1);
+        formats[0] = [formats[0], ...formats.splice(1, lastIndex)].join(this.formatSeparator);
+      }
       const result = formats.reduce((mem, f) => {
         const {
           formatName,
