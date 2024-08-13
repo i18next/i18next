@@ -1135,6 +1135,7 @@
         this.logger.error('Your environment seems not to be Intl API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
       }
       this.rules = createRules();
+      this.pluralRulesCache = new Map();
     }
     addRule(lng, obj) {
       this.rules[lng] = obj;
@@ -1143,9 +1144,20 @@
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (this.shouldUseIntlApi()) {
         try {
-          return new Intl.PluralRules(getCleanedCode(code === 'dev' ? 'en' : code), {
-            type: options.ordinal ? 'ordinal' : 'cardinal'
+          const locales = getCleanedCode(code === 'dev' ? 'en' : code);
+          const type = options.ordinal ? 'ordinal' : 'cardinal';
+          const cacheKey = JSON.stringify({
+            locales,
+            type
           });
+          if (this.pluralRulesCache.has(cacheKey)) {
+            return this.pluralRulesCache.get(cacheKey);
+          }
+          const rule = new Intl.PluralRules(locales, {
+            type
+          });
+          this.pluralRulesCache.set(cacheKey, rule);
+          return rule;
         } catch (err) {
           return;
         }
