@@ -47,11 +47,6 @@ const parseFormatStr = (formatStr) => {
 const createCachedFormatter = (fn) => {
   const cache = {};
   return (val, lng, options) => {
-    console.log(
-      `count of objects: ${Object.keys(cache).length}`,
-      process.memoryUsage().heapUsed / 1024 / 1024,
-    );
-
     let optForCache = options;
     if (
       options &&
