@@ -48,6 +48,7 @@ const createCachedFormatter = (fn) => {
   const cache = {};
   return (val, lng, options) => {
     let optForCache = options;
+    // this cache optimization will only work for keys having 1 interpolated value
     if (
       options &&
       options.interpolationkey &&
@@ -56,10 +57,8 @@ const createCachedFormatter = (fn) => {
       options[options.interpolationkey]
     ) {
       optForCache = {
-        formatParams: {
-          [options.interpolationkey]: options.formatParams[options.interpolationkey],
-        },
-        interpolationKey: options.interpolationkey,
+        ...optForCache,
+        [options.interpolationkey]: undefined,
       };
     }
     const key = lng + JSON.stringify(optForCache);

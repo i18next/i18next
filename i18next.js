@@ -1459,10 +1459,8 @@
       let optForCache = options;
       if (options && options.interpolationkey && options.formatParams && options.formatParams[options.interpolationkey] && options[options.interpolationkey]) {
         optForCache = {
-          formatParams: {
-            [options.interpolationkey]: options.formatParams[options.interpolationkey]
-          },
-          interpolationKey: options.interpolationkey
+          ...optForCache,
+          [options.interpolationkey]: undefined
         };
       }
       const key = lng + JSON.stringify(optForCache);

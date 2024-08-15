@@ -1,3 +1,7 @@
+## 23.12.7
+
+- revert last optimization to address [2227](https://github.com/i18next/i18next/issues/2227)
+
 ## 23.12.6
 
 - remove console.log statement [2227](https://github.com/i18next/i18next/issues/2227)
