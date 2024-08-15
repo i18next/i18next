@@ -1,3 +1,7 @@
+## 23.12.4
+
+- try to address [2227](https://github.com/i18next/i18next/issues/2227) without the removal of cached formatter for in-built formatters
+
 ## 23.12.3
 
 - fix: Using a comma in a formatter parameter [2225](https://github.com/i18next/i18next/issues/2225)

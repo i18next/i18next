@@ -1456,7 +1456,14 @@
   const createCachedFormatter = fn => {
     const cache = {};
     return (val, lng, options) => {
-      const key = lng + JSON.stringify(options);
+      let optForCache = options;
+      if (options && options.interpolationkey && options.formatParams && options.formatParams[options.interpolationkey] && options[options.interpolationkey]) {
+        optForCache = {
+          ...optForCache,
+          [options.interpolationkey]: undefined
+        };
+      }
+      const key = lng + JSON.stringify(optForCache);
       let formatter = cache[key];
       if (!formatter) {
         formatter = fn(getCleanedCode(lng), options);
