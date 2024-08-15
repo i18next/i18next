@@ -1,3 +1,7 @@
+## 23.12.5
+
+- try to optimize last fix for [2227](https://github.com/i18next/i18next/issues/2227)
+
 ## 23.12.4
 
 - try to address [2227](https://github.com/i18next/i18next/issues/2227) without the removal of cached formatter for in-built formatters

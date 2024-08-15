@@ -1456,11 +1456,14 @@
   const createCachedFormatter = fn => {
     const cache = {};
     return (val, lng, options) => {
+      console.log(`count of objects: ${Object.keys(cache).length}`, process.memoryUsage().heapUsed / 1024 / 1024);
       let optForCache = options;
       if (options && options.interpolationkey && options.formatParams && options.formatParams[options.interpolationkey] && options[options.interpolationkey]) {
         optForCache = {
-          ...optForCache,
-          [options.interpolationkey]: undefined
+          formatParams: {
+            [options.interpolationkey]: options.formatParams[options.interpolationkey]
+          },
+          interpolationKey: options.interpolationkey
         };
       }
       const key = lng + JSON.stringify(optForCache);
