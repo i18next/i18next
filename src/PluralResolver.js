@@ -102,16 +102,32 @@ class PluralResolver {
     }
 
     this.rules = createRules();
+
+    // Cache calls to Intl.PluralRules, since repeated calls can be slow in runtimes like React Native
+    // and the memory usage difference is negligible
+    this.pluralRulesCache = {};
   }
 
   addRule(lng, obj) {
     this.rules[lng] = obj;
   }
 
+  clearCache() {
+    this.pluralRulesCache = {};
+  }
+
   getRule(code, options = {}) {
     if (this.shouldUseIntlApi()) {
       try {
-        return new Intl.PluralRules(getCleanedCode(code === 'dev' ? 'en' : code), { type: options.ordinal ? 'ordinal' : 'cardinal' });
+        const cleanedCode = getCleanedCode(code === 'dev' ? 'en' : code);
+        const type = options.ordinal ? 'ordinal' : 'cardinal';
+        const cacheKey = JSON.stringify({ cleanedCode, type });
+        if (cacheKey in this.pluralRulesCache) {
+          return this.pluralRulesCache[cacheKey];
+        }
+        const rule = new Intl.PluralRules(cleanedCode, { type });
+        this.pluralRulesCache[cacheKey] = rule;
+        return rule;
       } catch (err) {
         return;
       }

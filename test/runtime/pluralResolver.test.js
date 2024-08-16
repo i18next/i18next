@@ -30,6 +30,7 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns getRule for an unsupported locale', () => {
+      pr.clearCache();
       const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockImplementation(() => {
         throw Error('mock error');
       });
