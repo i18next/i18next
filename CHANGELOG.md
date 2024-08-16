@@ -1,3 +1,7 @@
+## 23.13.0
+
+- Cache output of getRule to optimize performance [2226](https://github.com/i18next/i18next/pull/2226)
+
 ## 23.12.7
 
 - revert last optimization to address [2227](https://github.com/i18next/i18next/issues/2227)
