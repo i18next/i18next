@@ -93,12 +93,13 @@ class Connector extends EventEmitter {
 
     if (err) this.emit('failedLoading', lng, ns, err);
 
-    if (data) {
+    if (!err && data) {
       this.store.addResourceBundle(lng, ns, data, undefined, undefined, { skipCopy: true });
     }
 
     // set loaded
     this.state[name] = err ? -1 : 2;
+    if (err && data) this.state[name] = 0;
 
     // consolidated loading done in this run - only emit once for a loaded namespace
     const loaded = {};

@@ -1646,12 +1646,13 @@
       const lng = s[0];
       const ns = s[1];
       if (err) this.emit('failedLoading', lng, ns, err);
-      if (data) {
+      if (!err && data) {
         this.store.addResourceBundle(lng, ns, data, undefined, undefined, {
           skipCopy: true
         });
       }
       this.state[name] = err ? -1 : 2;
+      if (err && data) this.state[name] = 0;
       const loaded = {};
       this.queue.forEach(q => {
         pushPath(q.loaded, [lng], ns);
@@ -2078,6 +2079,14 @@
     }
     reloadResources(lngs, ns, callback) {
       const deferred = defer();
+      if (typeof lngs === 'function') {
+        callback = lngs;
+        lngs = undefined;
+      }
+      if (typeof ns === 'function') {
+        callback = ns;
+        ns = undefined;
+      }
       if (!lngs) lngs = this.languages;
       if (!ns) ns = this.options.ns;
       if (!callback) callback = noop;
@@ -2241,7 +2250,7 @@
       if (lng.toLowerCase() === 'cimode') return true;
       const loadNotPending = (l, n) => {
         const loadState = this.services.backendConnector.state[`${l}|${n}`];
-        return loadState === -1 || loadState === 2;
+        return loadState === -1 || loadState === 0 || loadState === 2;
       };
       if (options.precheck) {
         const preResult = options.precheck(this, loadNotPending);

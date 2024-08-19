@@ -1,3 +1,7 @@
+## 23.14.0
+
+- If backend errors with retry flag, set internal state to 0, so reloadingResources should work [147](https://github.com/i18next/i18next-http-backend/issues/147)
+
 ## 23.13.0
 
 - Cache output of getRule to optimize performance [2226](https://github.com/i18next/i18next/pull/2226)

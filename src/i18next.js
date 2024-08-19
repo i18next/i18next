@@ -257,6 +257,14 @@ class I18n extends EventEmitter {
 
   reloadResources(lngs, ns, callback) {
     const deferred = defer();
+    if (typeof lngs === 'function') {
+      callback = lngs;
+      lngs = undefined;
+    }
+    if (typeof ns === 'function') {
+      callback = ns;
+      ns = undefined;
+    }
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
     if (!callback) callback = noop;
@@ -442,7 +450,7 @@ class I18n extends EventEmitter {
 
     const loadNotPending = (l, n) => {
       const loadState = this.services.backendConnector.state[`${l}|${n}`];
-      return loadState === -1 || loadState === 2;
+      return loadState === -1 || loadState === 0 || loadState === 2;
     };
 
     // optional injected check
