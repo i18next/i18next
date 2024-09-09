@@ -6,6 +6,9 @@ export type TestNamespaceCustom = {
   };
   qux: 'some {{val, number}}';
   inter: 'some {{val}}';
+  interUnescaped: 'some unescaped {{- val}}';
+  interUnescapedNoSpace: 'some unescaped {{-val}}';
+  interUnescapedFormatted: 'some unescaped {- val, number}}';
   nullKey: null;
   'empty string with {{val}}': '';
 };

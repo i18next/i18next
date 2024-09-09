@@ -29,6 +29,8 @@ type _Resources = TypeOptions['resources'];
 type _JSONFormat = TypeOptions['jsonFormat'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
+type _UnescapePrefix = TypeOptions['unescapePrefix'];
+type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -52,6 +54,14 @@ type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' | 'v3'
 
 type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
 type AppendNamespace<Ns, Keys> = `${Ns & string}${_NsSeparator}${Keys & string}`;
+
+type TrimSpaces<T extends string, Acc extends string = ''> = T extends `${infer Char}${infer Rest}`
+  ? Char extends ' '
+    ? TrimSpaces<Rest, Acc>
+    : TrimSpaces<Rest, `${Acc}${Char}`>
+  : T extends ''
+  ? Acc
+  : never;
 
 /** ****************************************************
  * Build all keys and key prefixes based on Resources *
@@ -140,10 +150,16 @@ export type ParseKeys<
 /** *******************************************************
  * Parse t function return type and interpolation values *
  ******************************************************** */
+type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}${_UnescapeSuffix}`
+  ? TrimSpaces<ActualValue>
+  : Ret;
+
 type ParseInterpolationValues<Ret> =
   Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
     ?
-        | (Value extends `${infer ActualValue},${string}` ? ActualValue : Value)
+        | (Value extends `${infer ActualValue},${string}`
+            ? ParseActualValue<ActualValue>
+            : ParseActualValue<Value>)
         | ParseInterpolationValues<Rest>
     : never;
 

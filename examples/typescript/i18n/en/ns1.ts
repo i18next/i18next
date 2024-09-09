@@ -5,11 +5,13 @@ const ns1 = {
     part2: '😉',
   },
   inter: 'interpolated {{val}}',
+  interUnescaped: 'interpolated and unescaped {{- val}}',
   some: 'ctx',
   some_me: 'ctx2',
   some_1234: 'ctx3',
   pl_one: 'sing',
   pl_other: '{{count}} plur',
+  lastChanged: 'Last changed {{- date}}',
 } as const;
 
 export default ns1;
