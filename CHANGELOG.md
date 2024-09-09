@@ -1,3 +1,7 @@
+## 23.15.0
+
+- support unescaped variables in TypeScript [2233](https://github.com/i18next/i18next/pull/2233)
+
 ## 23.14.0
 
 - If backend errors with retry flag, set internal state to 0, so reloadingResources should work [147](https://github.com/i18next/i18next-http-backend/issues/147)
