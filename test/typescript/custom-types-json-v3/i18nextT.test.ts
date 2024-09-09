@@ -49,6 +49,15 @@ describe('i18next.t', () => {
       ).toEqualTypeOf<'some {{val}}'>();
       expectTypeOf(i18next.t('inter', { val: 'asdf' })).toEqualTypeOf<'some {{val}}'>();
       expectTypeOf(i18next.t('qux', { val: 'asdf' })).toEqualTypeOf<'some {{val, number}}'>();
+      expectTypeOf(
+        i18next.t('interUnescaped', { val: 'asdf' }),
+      ).toEqualTypeOf<'some unescaped {{- val}}'>();
+      expectTypeOf(
+        i18next.t('interUnescapedNoSpace', { val: 'asdf' }),
+      ).toEqualTypeOf<'some unescaped {{-val}}'>();
+      expectTypeOf(
+        i18next.t('interUnescapedFormatted', { val: 'asdf' }),
+      ).toEqualTypeOf<'some unescaped {- val, number}}'>();
     });
 
     it('should throw an error when value is not present inside key', () => {

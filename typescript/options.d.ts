@@ -106,6 +106,16 @@ export type TypeOptions = $MergeBy<
      * Suffix for interpolation
      */
     interpolationSuffix: '}}';
+
+    /**
+     * Prefix for unescaped interpolation
+     */
+    unescapePrefix: '-';
+
+    /**
+     * Suffix for unescaped interpolation
+     */
+    unescapeSuffix: '';
   },
   CustomTypeOptions
 >;

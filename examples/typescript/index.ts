@@ -20,6 +20,9 @@ const l = i18next.language;
 // interpolation
 i18next.t('inter', { val: 'xx' });
 
+// interpolation and unescaped
+i18next.t('interUnescaped', { val: 'xx' });
+
 // this ts error occurs only if resources are imported:
 //   1) as const (ts file)
 //   or
