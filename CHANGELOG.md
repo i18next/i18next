@@ -1,3 +1,7 @@
+## 23.15.1
+
+- types(TFunction): make return not inferrable and use defaultValue as return when provided [2234](https://github.com/i18next/i18next/pull/2234)
+
 ## 23.15.0
 
 - support unescaped variables in TypeScript [2233](https://github.com/i18next/i18next/pull/2233)
