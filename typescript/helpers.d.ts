@@ -58,3 +58,11 @@ type $StringKeyPathToRecordUnion<
 export type $StringKeyPathToRecord<TPath extends string, TValue> = $UnionToIntersection<
   $StringKeyPathToRecordUnion<TPath, TValue>
 >;
+
+/**
+ * We could use NoInfer typescript build-in utility,
+ * however this project still supports ts < 5.4.
+ *
+ * @see https://github.com/millsp/ts-toolbelt/blob/master/sources/Function/NoInfer.ts
+ */
+export type $NoInfer<A> = [A][A extends any ? 0 : never];

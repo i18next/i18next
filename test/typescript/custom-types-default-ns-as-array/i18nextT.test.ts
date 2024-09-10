@@ -70,8 +70,7 @@ describe('i18next.t', () => {
   });
 
   it('should accept any key if default value is provided', () => {
-    const str: string = i18next.t('unknown-ns:unknown-key', 'default value');
-    assertType<string>(str);
+    assertType<'default value'>(i18next.t('unknown-ns:unknown-key', 'default value'));
   });
 
   it('should work with plurals', () => {

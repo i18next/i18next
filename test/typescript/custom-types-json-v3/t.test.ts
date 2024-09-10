@@ -88,8 +88,8 @@ describe('t', () => {
       expectTypeOf(
         t('foobar.barfoo', { defaultValue: 'some default value' }),
       ).toMatchTypeOf<unknown>();
-      expectTypeOf(t('new.key', { defaultValue: 'some default value' })).toEqualTypeOf<unknown>();
-      expectTypeOf(t('new.key', 'some default value')).toEqualTypeOf<unknown>();
+      expectTypeOf(t('new.key', { defaultValue: 'some default value' })).toMatchTypeOf<string>();
+      expectTypeOf(t('new.key', 'some default value')).toMatchTypeOf<string>();
     });
   });
 
