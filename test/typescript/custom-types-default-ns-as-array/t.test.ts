@@ -93,12 +93,12 @@ describe('t', () => {
       assertType<string[]>(result);
     });
 
-    it('should not throw an error when `defaultValue` is provided', () => {
+    it('should not throw an error when `defaultValue` is provided and value should be equal to DefaultValue', () => {
       expectTypeOf(
         t('foobar.barfoo', { defaultValue: 'some default value' }),
-      ).toMatchTypeOf<unknown>();
-      expectTypeOf(t('new.key', { defaultValue: 'some default value' })).toEqualTypeOf<unknown>();
-      expectTypeOf(t('new.key', 'some default value')).toEqualTypeOf<unknown>();
+      ).toMatchTypeOf<string>();
+      expectTypeOf(t('new.key', { defaultValue: 'some default value' })).toMatchTypeOf<string>();
+      expectTypeOf(t('new.key', 'some default value')).toMatchTypeOf<string>();
     });
   });
 

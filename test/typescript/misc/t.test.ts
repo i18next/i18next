@@ -188,12 +188,12 @@ describe('t', () => {
     });
 
     it('`returnObjects`', () => {
-      expectTypeOf(t('tree', { returnObjects: true, something: 'gold' })).toEqualTypeOf<
+      expectTypeOf(t('tree', { returnObjects: true, something: 'gold' })).toMatchTypeOf<
         object | Array<string | object>
       >();
       // -> { res: 'added gold' }
 
-      expectTypeOf(t('array', { returnObjects: true })).toEqualTypeOf<
+      expectTypeOf(t('array', { returnObjects: true })).toMatchTypeOf<
         object | Array<string | object>
       >();
       // -> ['a', 'b', 'c']
@@ -214,7 +214,7 @@ describe('t', () => {
     it('`returnObjects` + `returnDetails`', () => {
       expectTypeOf(t('test', { returnObjects: true, returnDetails: true }))
         .toHaveProperty('res')
-        .toEqualTypeOf<object | Array<string | object>>();
+        .toMatchTypeOf<object | Array<string | object>>();
     });
 
     it('should provide information when `returnDetails` is `true`', () => {

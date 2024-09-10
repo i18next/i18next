@@ -4,6 +4,7 @@ import type {
   $Dictionary,
   $SpecialObject,
   $StringKeyPathToRecord,
+  $NoInfer,
 } from './helpers.js';
 import type {
   TypeOptions,
@@ -260,6 +261,12 @@ export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
   usedParams: InterpolationMap<T> & { count?: TOpt['count'] };
 };
 
+type TFunctionProcessReturnValue<Ret, DefaultValue> = Ret extends string | $SpecialObject | null
+  ? Ret
+  : [DefaultValue] extends [never]
+  ? Ret
+  : DefaultValue;
+
 type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true
   ? TFunctionDetailedResult<Ret, TOpt>
   : Ret;
@@ -278,12 +285,13 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
     const TOpt extends TOptions,
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
     const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
+    DefaultValue extends string = never,
   >(
     ...args:
       | [key: Key | Key[], options?: ActualOptions]
-      | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: string }]
-      | [key: string | string[], defaultValue: string, options?: TOpt & $Dictionary]
-  ): TFunctionReturnOptionalDetails<Ret, TOpt>;
+      | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
+      | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
