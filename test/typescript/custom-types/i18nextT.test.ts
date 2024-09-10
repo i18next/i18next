@@ -51,26 +51,44 @@ describe('i18next.t', () => {
       expectTypeOf(i18next.t('qux', { val: 'asdf' })).toEqualTypeOf<'some {{val, number}}'>();
     });
 
+    it('should work when using unescaped values', () => {
+      expectTypeOf(
+        i18next.t('interUnescaped', { val: 'asdf' }),
+      ).toEqualTypeOf<'some unescaped {{- val}}'>();
+      expectTypeOf(
+        i18next.t('interUnescapedNoSpace', { val: 'asdf' }),
+      ).toEqualTypeOf<'some unescaped {{-val}}'>();
+      expectTypeOf(
+        i18next.t('interUnescapedFormatted', { val: 'asdf' }),
+      ).toEqualTypeOf<'some unescaped {- val, number}}'>();
+    });
+
     it('should throw an error when value is not present inside key', () => {
       // @ts-expect-error
       assertType(i18next.t('custom:inter', { foo: 'asdf' }));
     });
   });
 
-  it('should work with default value', () => {
-    expectTypeOf(
-      i18next.t('custom:bar', { defaultValue: 'some default value' }),
-    ).toMatchTypeOf<unknown>();
-    expectTypeOf(i18next.t('custom:bar', 'some default value')).toMatchTypeOf<unknown>();
-    expectTypeOf(
-      i18next.t('bar', { ns: 'custom', defaultValue: 'some default value' }),
-    ).toMatchTypeOf<unknown>();
-    expectTypeOf(i18next.t('bar', { defaultValue: 'some default value' })).toMatchTypeOf<unknown>();
-    expectTypeOf(i18next.t('bar', 'some default value')).toMatchTypeOf<unknown>();
-  });
+  describe('defaultValue', () => {
+    it('should work with default value for existing keys', () => {
+      expectTypeOf(
+        i18next.t('custom:bar', { defaultValue: 'some default value' }),
+      ).toEqualTypeOf<'bar'>();
+      expectTypeOf(i18next.t('custom:bar', 'some default value')).toEqualTypeOf<'bar'>();
+      expectTypeOf(
+        i18next.t('bar', { ns: 'custom', defaultValue: 'some default value' }),
+      ).toEqualTypeOf<'bar'>();
 
-  it('should accept any key if default value is provided', () => {
-    assertType<'default value'>(i18next.t('unknown-ns:unknown-key', 'default value'));
+      expectTypeOf(i18next.t('bar', { defaultValue: 'some default value' })).toEqualTypeOf<'bar'>();
+      expectTypeOf(i18next.t('bar', 'some default value')).toEqualTypeOf<'bar'>();
+    });
+
+    it('should accept any key if default value is provided, return type must the type of defaultValue', () => {
+      assertType<'default value'>(i18next.t('unknown-ns:unknown-key', 'default value'));
+      assertType<'default value'>(
+        i18next.t('unknown-ns:unknown-key', { defaultValue: 'default value' }),
+      );
+    });
   });
 
   it('should fallback for null translations with unset returnNull in config', () => {
@@ -78,7 +96,7 @@ describe('i18next.t', () => {
   });
 
   it('should accept empty string translations with returnEmpty with unset returnEmpty in config', () => {
-    expectTypeOf(i18next.t('empty string with {{val}}')).toEqualTypeOf<''>('');
+    expectTypeOf(i18next.t('empty string with {{val}}')).toEqualTypeOf<''>();
   });
 
   it('should work with plurals', () => {
