@@ -11,18 +11,18 @@ import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
 import { defer } from './utils.js';
 
-const noop = () => {}
+const noop = () => {};
 
 // Binds the member functions of the given class instance so that they can be
 // destructured or used as callbacks.
 const bindMemberFunctions = (inst) => {
-  const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst))
+  const mems = Object.getOwnPropertyNames(Object.getPrototypeOf(inst));
   mems.forEach((mem) => {
     if (typeof inst[mem] === 'function') {
-      inst[mem] = inst[mem].bind(inst)
+      inst[mem] = inst[mem].bind(inst);
     }
-  })
-}
+  });
+};
 
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
@@ -78,7 +78,7 @@ class I18n extends EventEmitter {
       if (!ClassOrObject) return null;
       if (typeof ClassOrObject === 'function') return new ClassOrObject();
       return ClassOrObject;
-    }
+    };
 
     // init services
     if (!this.options.isClone) {
@@ -108,7 +108,11 @@ class I18n extends EventEmitter {
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
 
-      if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
+      if (
+        formatter &&
+        (!this.options.interpolation.format ||
+          this.options.interpolation.format === defOpts.interpolation.format)
+      ) {
         s.formatter = createClassOnDemand(formatter);
         s.formatter.init(s, this.options);
 
@@ -117,8 +121,8 @@ class I18n extends EventEmitter {
 
       s.interpolator = new Interpolator(this.options);
       s.utils = {
-        hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
-      }
+        hasLoadedNamespace: this.hasLoadedNamespace.bind(this),
+      };
 
       s.backendConnector = new BackendConnector(
         createClassOnDemand(this.modules.backend),
@@ -133,7 +137,8 @@ class I18n extends EventEmitter {
 
       if (this.modules.languageDetector) {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
-        if (s.languageDetector.init) s.languageDetector.init(s, this.options.detection, this.options);
+        if (s.languageDetector.init)
+          s.languageDetector.init(s, this.options.detection, this.options);
       }
 
       if (this.modules.i18nFormat) {
@@ -147,7 +152,7 @@ class I18n extends EventEmitter {
         this.emit(event, ...args);
       });
 
-      this.modules.external.forEach(m => {
+      this.modules.external.forEach((m) => {
         if (m.init) m.init(this);
       });
     }
@@ -156,38 +161,40 @@ class I18n extends EventEmitter {
     if (!callback) callback = noop;
 
     if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
-      const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng)
-      if (codes.length > 0 && codes[0] !== 'dev') this.options.lng = codes[0]
+      const codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+      if (codes.length > 0 && codes[0] !== 'dev') this.options.lng = codes[0];
     }
     if (!this.services.languageDetector && !this.options.lng) {
       this.logger.warn('init: no languageDetector is used and no lng is defined');
     }
-   
-    if(this.options.supportedLngs &&this.options.supportedLngs.length && this.options.fallbackLng && this.options.fallbackLng.length){
+
+    if (
+      this.options.supportedLngs &&
+      this.options.supportedLngs.length &&
+      this.options.fallbackLng &&
+      this.options.fallbackLng.length
+    ) {
       const invalidFallbacks = [];
-      this.options.fallbackLng.forEach(fallback => {
+      for (const fallback of this.options.fallbackLng) {
         // Continue if fallback is "dev"
-        if(fallback === "dev") return;
+        if (fallback === 'dev') continue;
         // Check if fallback is included in supportedLanguages
-        if(!this.options.supportedLngs.includes(fallback)){
+        if (!this.options.supportedLngs.includes(fallback)) {
           invalidFallbacks.push(fallback);
         }
-      });
-     
-      // Log a warning if used has provided invalid fallback languages
-      if(invalidFallbacks.length){
-        this.logger.warn(`init: fallbackLanguage ${invalidFallbacks.join(', ')} ${invalidFallbacks.length > 1 ? "are" : "is"} not included in supportedLanguages.`);
       }
-      
+      // Log a warning if used has provided invalid fallback languages
+      if (invalidFallbacks.length) {
+        this.logger.warn(
+          `init: fallbackLanguage ${invalidFallbacks.join(', ')} ${
+            invalidFallbacks.length > 1 ? 'are' : 'is'
+          } not included in supportedLanguages.`,
+        );
+      }
     }
     // append api
-    const storeApi = [
-      'getResource',
-      'hasResourceBundle',
-      'getResourceBundle',
-      'getDataByLanguage',
-    ];
-    storeApi.forEach(fcName => {
+    const storeApi = ['getResource', 'hasResourceBundle', 'getResourceBundle', 'getDataByLanguage'];
+    storeApi.forEach((fcName) => {
       this[fcName] = (...args) => this.store[fcName](...args);
     });
     const storeApiChained = [
@@ -196,7 +203,7 @@ class I18n extends EventEmitter {
       'addResourceBundle',
       'removeResourceBundle',
     ];
-    storeApiChained.forEach(fcName => {
+    storeApiChained.forEach((fcName) => {
       this[fcName] = (...args) => {
         this.store[fcName](...args);
         return this;
@@ -208,7 +215,8 @@ class I18n extends EventEmitter {
     const load = () => {
       const finish = (err, t) => {
         this.isInitializing = false;
-        if (this.isInitialized && !this.initializedStoreOnce) this.logger.warn('init: i18next is already initialized. You should call init just once!');
+        if (this.isInitialized && !this.initializedStoreOnce)
+          this.logger.warn('init: i18next is already initialized. You should call init just once!');
         this.isInitialized = true;
         if (!this.options.isClone) this.logger.log('initialized', this.options);
         this.emit('initialized', this.options);
@@ -217,7 +225,8 @@ class I18n extends EventEmitter {
         callback(err, t);
       };
       // fix for use cases when calling changeLanguage before finished to initialized (i.e. https://github.com/i18next/i18next/issues/1552)
-      if (this.languages && this.options.compatibilityAPI !== 'v1' && !this.isInitialized) return finish(null, this.t.bind(this));
+      if (this.languages && this.options.compatibilityAPI !== 'v1' && !this.isInitialized)
+        return finish(null, this.t.bind(this));
       this.changeLanguage(this.options.lng, finish);
     };
 
@@ -237,15 +246,20 @@ class I18n extends EventEmitter {
     if (typeof language === 'function') usedCallback = language;
 
     if (!this.options.resources || this.options.partialBundledLanguages) {
-      if (usedLng && usedLng.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback(); // avoid loading resources for cimode
+      if (
+        usedLng &&
+        usedLng.toLowerCase() === 'cimode' &&
+        (!this.options.preload || this.options.preload.length === 0)
+      )
+        return usedCallback(); // avoid loading resources for cimode
 
       const toLoad = [];
 
-      const append = lng => {
+      const append = (lng) => {
         if (!lng) return;
         if (lng === 'cimode') return;
         const lngs = this.services.languageUtils.toResolveHierarchy(lng);
-        lngs.forEach(l => {
+        lngs.forEach((l) => {
           if (l === 'cimode') return;
           if (toLoad.indexOf(l) < 0) toLoad.push(l);
         });
@@ -254,13 +268,13 @@ class I18n extends EventEmitter {
       if (!usedLng) {
         // at least load fallbacks in this case
         const fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
-        fallbacks.forEach(l => append(l));
+        fallbacks.forEach((l) => append(l));
       } else {
         append(usedLng);
       }
 
       if (this.options.preload) {
-        this.options.preload.forEach(l => append(l));
+        this.options.preload.forEach((l) => append(l));
       }
 
       this.services.backendConnector.load(toLoad, this.options.ns, (e) => {
@@ -285,7 +299,7 @@ class I18n extends EventEmitter {
     if (!lngs) lngs = this.languages;
     if (!ns) ns = this.options.ns;
     if (!callback) callback = noop;
-    this.services.backendConnector.reload(lngs, ns, err => {
+    this.services.backendConnector.reload(lngs, ns, (err) => {
       deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
       callback(err);
     });
@@ -293,8 +307,14 @@ class I18n extends EventEmitter {
   }
 
   use(module) {
-    if (!module) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()')
-    if (!module.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()')
+    if (!module)
+      throw new Error(
+        'You are passing an undefined module! Please check the object you are passing to i18next.use()',
+      );
+    if (!module.type)
+      throw new Error(
+        'You are passing a wrong module! Please check the object you are passing to i18next.use()',
+      );
 
     if (module.type === 'backend') {
       this.modules.backend = module;
@@ -368,11 +388,12 @@ class I18n extends EventEmitter {
       if (callback) callback(err, (...args) => this.t(...args));
     };
 
-    const setLng = lngs => {
+    const setLng = (lngs) => {
       // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
       if (!lng && !lngs && this.services.languageDetector) lngs = [];
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
-      const l = typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
+      const l =
+        typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
 
       if (l) {
         if (!this.language) {
@@ -380,10 +401,11 @@ class I18n extends EventEmitter {
         }
         if (!this.translator.language) this.translator.changeLanguage(l);
 
-        if (this.services.languageDetector && this.services.languageDetector.cacheUserLanguage) this.services.languageDetector.cacheUserLanguage(l);
+        if (this.services.languageDetector && this.services.languageDetector.cacheUserLanguage)
+          this.services.languageDetector.cacheUserLanguage(l);
       }
 
-      this.loadResources(l, err => {
+      this.loadResources(l, (err) => {
         done(err, l);
       });
     };
@@ -415,12 +437,13 @@ class I18n extends EventEmitter {
       options.lng = options.lng || fixedT.lng;
       options.lngs = options.lngs || fixedT.lngs;
       options.ns = options.ns || fixedT.ns;
-      if (options.keyPrefix !== '') options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
+      if (options.keyPrefix !== '')
+        options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
 
       const keySeparator = this.options.keySeparator || '.';
-      let resultKey
+      let resultKey;
       if (options.keyPrefix && Array.isArray(key)) {
-        resultKey = key.map(k => `${options.keyPrefix}${keySeparator}${k}`);
+        resultKey = key.map((k) => `${options.keyPrefix}${keySeparator}${k}`);
       } else {
         resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
       }
@@ -454,7 +477,10 @@ class I18n extends EventEmitter {
       return false;
     }
     if (!this.languages || !this.languages.length) {
-      this.logger.warn('hasLoadedNamespace: i18n.languages were undefined or empty', this.languages);
+      this.logger.warn(
+        'hasLoadedNamespace: i18n.languages were undefined or empty',
+        this.languages,
+      );
       return false;
     }
 
@@ -480,7 +506,11 @@ class I18n extends EventEmitter {
     if (this.hasResourceBundle(lng, ns)) return true;
 
     // were not loading at all -> SEMI SUCCESS
-    if (!this.services.backendConnector.backend || (this.options.resources && !this.options.partialBundledLanguages)) return true;
+    if (
+      !this.services.backendConnector.backend ||
+      (this.options.resources && !this.options.partialBundledLanguages)
+    )
+      return true;
 
     // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
     if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
@@ -497,11 +527,11 @@ class I18n extends EventEmitter {
     }
     if (typeof ns === 'string') ns = [ns];
 
-    ns.forEach(n => {
+    ns.forEach((n) => {
       if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
     });
 
-    this.loadResources(err => {
+    this.loadResources((err) => {
       deferred.resolve();
       if (callback) callback(err);
     });
@@ -515,7 +545,9 @@ class I18n extends EventEmitter {
     if (typeof lngs === 'string') lngs = [lngs];
     const preloaded = this.options.preload || [];
 
-    const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng));
+    const newLngs = lngs.filter(
+      (lng) => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng),
+    );
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
       if (callback) callback();
@@ -523,7 +555,7 @@ class I18n extends EventEmitter {
     }
 
     this.options.preload = preloaded.concat(newLngs);
-    this.loadResources(err => {
+    this.loadResources((err) => {
       deferred.resolve();
       if (callback) callback(err);
     });
@@ -532,7 +564,10 @@ class I18n extends EventEmitter {
   }
 
   dir(lng) {
-    if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
+    if (!lng)
+      lng =
+        this.resolvedLanguage ||
+        (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
     if (!lng) return 'rtl';
 
     const rtlLngs = [
@@ -597,33 +632,37 @@ class I18n extends EventEmitter {
       'prs',
       'dv',
       'sam',
-      'ckb'
+      'ckb',
     ];
 
-    const languageUtils = (this.services && this.services.languageUtils) || new LanguageUtils(getDefaults()) // for uninitialized usage
+    const languageUtils =
+      (this.services && this.services.languageUtils) || new LanguageUtils(getDefaults()); // for uninitialized usage
 
-    return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
+    return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 ||
+      lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'
       : 'ltr';
   }
 
-  static createInstance(options = {}, callback) { return new I18n(options, callback) }
+  static createInstance(options = {}, callback) {
+    return new I18n(options, callback);
+  }
 
   cloneInstance(options = {}, callback = noop) {
     const forkResourceStore = options.forkResourceStore;
     if (forkResourceStore) delete options.forkResourceStore;
     const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
-    if ((options.debug !== undefined || options.prefix !== undefined)) {
+    if (options.debug !== undefined || options.prefix !== undefined) {
       clone.logger = clone.logger.clone(options);
     }
     const membersToCopy = ['store', 'services', 'language'];
-    membersToCopy.forEach(m => {
+    membersToCopy.forEach((m) => {
       clone[m] = this[m];
     });
     clone.services = { ...this.services };
     clone.services.utils = {
-      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone),
     };
     if (forkResourceStore) {
       clone.store = new ResourceStore(this.store.data, mergedOptions);
@@ -636,7 +675,7 @@ class I18n extends EventEmitter {
     clone.init(mergedOptions, callback);
     clone.translator.options = mergedOptions; // sync options
     clone.translator.backendConnector.services.utils = {
-      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone),
     };
 
     return clone;
@@ -648,7 +687,7 @@ class I18n extends EventEmitter {
       store: this.store,
       language: this.language,
       languages: this.languages,
-      resolvedLanguage: this.resolvedLanguage
+      resolvedLanguage: this.resolvedLanguage,
     };
   }
 }
