@@ -162,7 +162,23 @@ class I18n extends EventEmitter {
     if (!this.services.languageDetector && !this.options.lng) {
       this.logger.warn('init: no languageDetector is used and no lng is defined');
     }
-
+   
+    if(this.options.supportedLngs &&this.options.supportedLngs.length && this.options.fallbackLng && this.options.fallbackLng.length){
+      const invalidFallbacks = [];
+      for(const fallback of this.options.fallbackLng){
+        // Continue if fallback is "dev"
+        if(fallback === "dev") continue;
+        // Check if fallback is included in supportedLanguages
+        if(!this.options.supportedLngs.includes(fallback)){
+          invalidFallbacks.push(fallback);
+        }
+      }
+      // Log a warning if used has provided invalid fallback languages
+      if(invalidFallbacks.length){
+        this.logger.warn(`init: fallbackLanguage ${invalidFallbacks.join(', ')} ${invalidFallbacks.length > 1 ? "are" : "is"} not included in supportedLanguages.`);
+      }
+      
+    }
     // append api
     const storeApi = [
       'getResource',
