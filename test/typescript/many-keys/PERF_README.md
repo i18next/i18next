@@ -13,14 +13,13 @@ cd test/typescript/many-keys
 Then run tsc
 
 ```bash
-time tsc --noEmit
+time npx tsc --noEmit
 ```
 
 Alternatively you can also debug using [ts trace](https://github.com/microsoft/typescript-analyze-trace)
 
 ```bash
-tsc -p tsconfig.json --generateTrace traceDir && analyze-trace traceDir
+npx tsc -p tsconfig.json --generateTrace traceDir && analyze-trace traceDir
 ```
 
-Or you can debug using `chrome://tracing`. A guide can be found here:
-https://github.com/microsoft/TypeScript/wiki/Performance#performance-tracing
+Or you can debug using `chrome://tracing`. A guide can be on the [Typescript repository wiki](https://github.com/microsoft/TypeScript/wiki/Performance#performance-tracing).

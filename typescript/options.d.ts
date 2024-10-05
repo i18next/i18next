@@ -712,7 +712,7 @@ export interface TOptionsBase {
   /**
    * Used for contexts (eg. male\female)
    */
-  context?: any;
+  context?: unknown;
   /**
    * Object with vars for interpolation - or put them directly in options
    */
