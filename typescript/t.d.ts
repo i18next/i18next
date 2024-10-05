@@ -127,9 +127,11 @@ type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extend
   ? Keys[UnionFallbackNs]
   : Keys[_FallbackNamespace & string];
 
-type FilterKeysByContext<Keys, Context> = Context extends string
-  ? Keys extends `${infer Prefix}${_ContextSeparator}${Context}${infer Suffix}`
-    ? `${Prefix}${Suffix}`
+export type FilterKeysByContext<Keys, Context> = Context extends string
+  ? Keys extends
+      | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+      | `${infer Prefix}${_ContextSeparator}${Context}`
+    ? Prefix
     : never
   : Keys;
 

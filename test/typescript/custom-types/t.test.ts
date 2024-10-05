@@ -175,9 +175,16 @@ describe('t', () => {
         MUFFIN = 'muffin',
       }
 
-      const ctx = Dessert.CAKE;
+      expectTypeOf(t('dessert', { context: Dessert.CAKE })).toMatchTypeOf<string>();
 
+      const ctx: Dessert = Dessert.CAKE;
       expectTypeOf(t('dessert', { context: ctx })).toMatchTypeOf<string>();
+    });
+
+    it('should not provide partial match as option when keys include context separator', () => {
+      // https://github.com/i18next/i18next/issues/2242
+      // @ts-expect-error
+      t('beverageater');
     });
 
     it('should trow error with string union with missing context value', () => {
