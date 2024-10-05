@@ -1,3 +1,7 @@
+## 23.15.2
+
+- fix(types): make context related keys detection stricter [2243](https://github.com/i18next/i18next/pull/2243) fixes [2242](https://github.com/i18next/i18next/issues/2242)
+
 ## 23.15.1
 
 - types(TFunction): make return not inferrable and use defaultValue as return when provided [2234](https://github.com/i18next/i18next/pull/2234)
