@@ -307,10 +307,7 @@
     }
     return current;
   };
-  const getCleanedCode = code => {
-    if (code && code.indexOf('_') > 0) return code.replace('_', '-');
-    return code;
-  };
+  const getCleanedCode = code => code && code.replace('_', '-');
 
   class ResourceStore extends EventEmitter {
     constructor(data) {
@@ -898,6 +895,15 @@
     }
     formatLanguageCode(code) {
       if (typeof code === 'string' && code.indexOf('-') > -1) {
+        if (typeof Intl !== 'undefined' && typeof Intl.getCanonicalLocales !== 'undefined') {
+          try {
+            let formattedCode = Intl.getCanonicalLocales(code)[0];
+            if (formattedCode && this.options.lowerCaseLng) {
+              formattedCode = formattedCode.toLowerCase();
+            }
+            if (formattedCode) return formattedCode;
+          } catch (e) {}
+        }
         const specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
         let p = code.split('-');
         if (this.options.lowerCaseLng) {

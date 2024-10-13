@@ -33,6 +33,18 @@ class LanguageUtil {
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
     if (typeof code === 'string' && code.indexOf('-') > -1) {
+      if (typeof Intl !== 'undefined' && typeof Intl.getCanonicalLocales !== 'undefined') {
+        try {
+          let formattedCode = Intl.getCanonicalLocales(code)[0];
+          if (formattedCode && this.options.lowerCaseLng) {
+            formattedCode = formattedCode.toLowerCase();
+          }
+          if (formattedCode) return formattedCode;
+        } catch (e) {
+          /* fall through */
+        }
+      }
+      // fallback for non-Intl environments
       const specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
       let p = code.split('-');
 

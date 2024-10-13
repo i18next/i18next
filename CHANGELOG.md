@@ -1,3 +1,7 @@
+## 23.16.0
+
+- use `Intl.getCanonicalLocales` function if available to format language code, like suggested in [2244](https://github.com/i18next/i18next/pull/2244)
+
 ## 23.15.2
 
 - fix(types): make context related keys detection stricter [2243](https://github.com/i18next/i18next/pull/2243) fixes [2242](https://github.com/i18next/i18next/issues/2242)
