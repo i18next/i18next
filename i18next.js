@@ -1499,37 +1499,22 @@
       this.logger = baseLogger.create('formatter');
       this.options = options;
       this.formats = {
-        number: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.NumberFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val);
-        }),
-        currency: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.NumberFormat(lng, {
-            ...opt,
-            style: 'currency'
-          });
-          return val => formatter.format(val);
-        }),
-        datetime: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.DateTimeFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val);
-        }),
-        relativetime: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.RelativeTimeFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val, opt.range || 'day');
-        }),
-        list: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.ListFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val);
-        })
+        number: createCachedFormatter((lng, opt) => val => new Intl.NumberFormat(lng, {
+          ...opt
+        }).format(val)),
+        currency: createCachedFormatter((lng, opt) => val => new Intl.NumberFormat(lng, {
+          ...opt,
+          style: 'currency'
+        }).format(val)),
+        datetime: createCachedFormatter((lng, opt) => val => new Intl.DateTimeFormat(lng, {
+          ...opt
+        }).format(val)),
+        relativetime: createCachedFormatter((lng, opt) => val => new Intl.RelativeTimeFormat(lng, {
+          ...opt
+        }).format(val, opt.range || 'day')),
+        list: createCachedFormatter((lng, opt) => val => new Intl.ListFormat(lng, {
+          ...opt
+        }).format(val))
       };
       this.init(options);
     }
@@ -1537,8 +1522,7 @@
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
         interpolation: {}
       };
-      const iOpts = options.interpolation;
-      this.formatSeparator = iOpts.formatSeparator ? iOpts.formatSeparator : iOpts.formatSeparator || ',';
+      this.formatSeparator = options.interpolation.formatSeparator || ',';
     }
     add(name, fc) {
       this.formats[name.toLowerCase().trim()] = fc;

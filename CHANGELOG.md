@@ -1,3 +1,7 @@
+## 23.16.1
+
+- perf: Optimize size of Formatter [2247](https://github.com/i18next/i18next/pull/2247)
+
 ## 23.16.0
 
 - use `Intl.getCanonicalLocales` function if available to format language code, like suggested in [2244](https://github.com/i18next/i18next/pull/2244)
