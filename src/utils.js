@@ -1,3 +1,5 @@
+export const isString = (obj) => typeof obj === 'string';
+
 // http://lea.verou.me/2016/12/resolve-promises-externally-with-this-one-weird-trick/
 export const defer = () => {
   let res;
@@ -33,10 +35,10 @@ const lastOfPathSeparatorRegExp = /###/g;
 const cleanKey = (key) =>
   key && key.indexOf('###') > -1 ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
 
-const canNotTraverseDeeper = (object) => !object || typeof object === 'string';
+const canNotTraverseDeeper = (object) => !object || isString(object);
 
 const getLastOfPath = (object, path, Empty) => {
-  const stack = typeof path !== 'string' ? path : path.split('.');
+  const stack = !isString(path) ? path : path.split('.');
   let stackIndex = 0;
   // iterate through the stack, but leave the last item
   while (stackIndex < stack.length - 1) {
@@ -112,9 +114,9 @@ export const deepExtend = (target, source, overwrite) => {
       if (prop in target) {
         // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
         if (
-          typeof target[prop] === 'string' ||
+          isString(target[prop]) ||
           target[prop] instanceof String ||
-          typeof source[prop] === 'string' ||
+          isString(source[prop]) ||
           source[prop] instanceof String
         ) {
           if (overwrite) target[prop] = source[prop];
@@ -145,7 +147,7 @@ var _entityMap = {
 /* eslint-enable */
 
 export const escape = (data) => {
-  if (typeof data === 'string') {
+  if (isString(data)) {
     return data.replace(/[&<>"'\/]/g, (s) => _entityMap[s]);
   }
 

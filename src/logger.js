@@ -1,3 +1,5 @@
+import { isString } from './utils';
+
 const consoleLogger = {
   type: 'logger',
 
@@ -49,7 +51,7 @@ class Logger {
 
   forward(args, lvl, prefix, debugOnly) {
     if (debugOnly && !this.debug) return null;
-    if (typeof args[0] === 'string') args[0] = `${prefix}${this.prefix} ${args[0]}`;
+    if (isString(args[0])) args[0] = `${prefix}${this.prefix} ${args[0]}`;
     return this.logger[lvl](args);
   }
 

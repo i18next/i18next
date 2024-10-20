@@ -1,5 +1,5 @@
 import baseLogger from './logger.js';
-import { getCleanedCode } from './utils.js';
+import { getCleanedCode, isString } from './utils.js';
 
 const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
@@ -32,7 +32,7 @@ class LanguageUtil {
 
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
-    if (typeof code === 'string' && code.indexOf('-') > -1) {
+    if (isString(code) && code.indexOf('-') > -1) {
       if (typeof Intl !== 'undefined' && typeof Intl.getCanonicalLocales !== 'undefined') {
         try {
           let formattedCode = Intl.getCanonicalLocales(code)[0];
@@ -127,7 +127,7 @@ class LanguageUtil {
   getFallbackCodes(fallbacks, code) {
     if (!fallbacks) return [];
     if (typeof fallbacks === 'function') fallbacks = fallbacks(code);
-    if (typeof fallbacks === 'string') fallbacks = [fallbacks];
+    if (isString(fallbacks)) fallbacks = [fallbacks];
     if (Array.isArray(fallbacks)) return fallbacks;
 
     if (!code) return fallbacks.default || [];
@@ -158,12 +158,12 @@ class LanguageUtil {
       }
     };
 
-    if (typeof code === 'string' && (code.indexOf('-') > -1 || code.indexOf('_') > -1)) {
+    if (isString(code) && (code.indexOf('-') > -1 || code.indexOf('_') > -1)) {
       if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
       if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly')
         addCode(this.getScriptPartFromCode(code));
       if (this.options.load !== 'currentOnly') addCode(this.getLanguagePartFromCode(code));
-    } else if (typeof code === 'string') {
+    } else if (isString(code)) {
       addCode(this.formatLanguageCode(code));
     }
 
