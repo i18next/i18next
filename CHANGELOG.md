@@ -1,3 +1,7 @@
+## 23.16.2
+
+- perf(size): Adds a isString utility [2248](https://github.com/i18next/i18next/pull/2248)
+
 ## 23.16.1
 
 - perf: Optimize size of Formatter [2247](https://github.com/i18next/i18next/pull/2247)
