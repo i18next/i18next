@@ -1,3 +1,5 @@
+import { isString } from './utils';
+
 export const get = () => ({
   debug: false,
   initImmediate: true,
@@ -39,8 +41,8 @@ export const get = () => ({
   overloadTranslationOptionHandler: (args) => {
     let ret = {};
     if (typeof args[1] === 'object') ret = args[1];
-    if (typeof args[1] === 'string') ret.defaultValue = args[1];
-    if (typeof args[2] === 'string') ret.tDescription = args[2];
+    if (isString(args[1])) ret.defaultValue = args[1];
+    if (isString(args[2])) ret.tDescription = args[2];
     if (typeof args[2] === 'object' || typeof args[3] === 'object') {
       const options = args[3] || args[2];
       Object.keys(options).forEach((key) => {
@@ -75,9 +77,9 @@ export const get = () => ({
 /* eslint no-param-reassign: 0 */
 export const transformOptions = (options) => {
   // create namespace object if namespace is passed in as string
-  if (typeof options.ns === 'string') options.ns = [options.ns];
-  if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
-  if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
+  if (isString(options.ns)) options.ns = [options.ns];
+  if (isString(options.fallbackLng)) options.fallbackLng = [options.fallbackLng];
+  if (isString(options.fallbackNS)) options.fallbackNS = [options.fallbackNS];
 
   // extend supportedLngs with cimode
   if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {

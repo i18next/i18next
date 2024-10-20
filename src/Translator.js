@@ -1,7 +1,7 @@
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 import postProcessor from './postProcessor.js';
-import { copy as utilsCopy, looksLikeObjectPath } from './utils.js';
+import { copy as utilsCopy, looksLikeObjectPath, isString } from './utils.js';
 
 const checkedLoadedFor = {};
 
@@ -76,7 +76,7 @@ class Translator extends EventEmitter {
         namespaces = parts.shift();
       key = parts.join(keySeparator);
     }
-    if (typeof namespaces === 'string') namespaces = [namespaces];
+    if (isString(namespaces)) namespaces = [namespaces];
 
     return {
       key,
@@ -153,14 +153,13 @@ class Translator extends EventEmitter {
 
     // object
     const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
-    const handleAsObject =
-      typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
+    const handleAsObject = !isString(res) && typeof res !== 'boolean' && typeof res !== 'number';
     if (
       handleAsObjectInI18nFormat &&
       res &&
       handleAsObject &&
       noObject.indexOf(resType) < 0 &&
-      !(typeof joinArrays === 'string' && Array.isArray(res))
+      !(isString(joinArrays) && Array.isArray(res))
     ) {
       if (!options.returnObjects && !this.options.returnObjects) {
         if (!this.options.returnedObjectHandler) {
@@ -197,7 +196,7 @@ class Translator extends EventEmitter {
         }
         res = copy;
       }
-    } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && Array.isArray(res)) {
+    } else if (handleAsObjectInI18nFormat && isString(joinArrays) && Array.isArray(res)) {
       // array special treatment
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, options, lastKey);
@@ -206,7 +205,7 @@ class Translator extends EventEmitter {
       let usedDefault = false;
       let usedKey = false;
 
-      const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+      const needsPluralHandling = options.count !== undefined && !isString(options.count);
       const hasDefaultValue = Translator.hasDefaultValue(options);
       const defaultValueSuffix = needsPluralHandling
         ? this.pluralResolver.getSuffix(lng, options.count, options)
@@ -366,7 +365,7 @@ class Translator extends EventEmitter {
           ...{ interpolation: { ...this.options.interpolation, ...options.interpolation } },
         });
       const skipOnVariables =
-        typeof res === 'string' &&
+        isString(res) &&
         (options && options.interpolation && options.interpolation.skipOnVariables !== undefined
           ? options.interpolation.skipOnVariables
           : this.options.interpolation.skipOnVariables);
@@ -378,7 +377,7 @@ class Translator extends EventEmitter {
       }
 
       // interpolate
-      let data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
+      let data = options.replace && !isString(options.replace) ? options.replace : options;
       if (this.options.interpolation.defaultVariables)
         data = { ...this.options.interpolation.defaultVariables, ...data };
       res = this.interpolator.interpolate(
@@ -417,7 +416,7 @@ class Translator extends EventEmitter {
 
     // post process
     const postProcess = options.postProcess || this.options.postProcess;
-    const postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
+    const postProcessorNames = isString(postProcess) ? [postProcess] : postProcess;
 
     if (
       res !== undefined &&
@@ -450,7 +449,7 @@ class Translator extends EventEmitter {
     let usedLng;
     let usedNS;
 
-    if (typeof keys === 'string') keys = [keys];
+    if (isString(keys)) keys = [keys];
 
     // forEach possible key
     keys.forEach((k) => {
@@ -461,7 +460,7 @@ class Translator extends EventEmitter {
       let namespaces = extracted.namespaces;
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
-      const needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+      const needsPluralHandling = options.count !== undefined && !isString(options.count);
       const needsZeroSuffixLookup =
         needsPluralHandling &&
         !options.ordinal &&
@@ -469,7 +468,7 @@ class Translator extends EventEmitter {
         this.pluralResolver.shouldUseIntlApi();
       const needsContextHandling =
         options.context !== undefined &&
-        (typeof options.context === 'string' || typeof options.context === 'number') &&
+        (isString(options.context) || typeof options.context === 'number') &&
         options.context !== '';
 
       const codes = options.lngs
@@ -592,7 +591,7 @@ class Translator extends EventEmitter {
       'interpolation',
     ];
 
-    const useOptionsReplaceForData = options.replace && typeof options.replace !== 'string';
+    const useOptionsReplaceForData = options.replace && !isString(options.replace);
     let data = useOptionsReplaceForData ? options.replace : options;
     if (useOptionsReplaceForData && typeof options.count !== 'undefined') {
       data.count = options.count;

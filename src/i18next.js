@@ -9,7 +9,7 @@ import Formatter from './Formatter.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
-import { defer } from './utils.js';
+import { defer, isString } from './utils.js';
 
 const noop = () => {}
 
@@ -55,7 +55,7 @@ class I18n extends EventEmitter {
     }
 
     if (!options.defaultNS && options.defaultNS !== false && options.ns) {
-      if (typeof options.ns === 'string') {
+      if (isString(options.ns)) {
         options.defaultNS = options.ns;
       } else if (options.ns.indexOf('translation') < 0) {
         options.defaultNS = options.ns[0];
@@ -216,7 +216,7 @@ class I18n extends EventEmitter {
   /* eslint consistent-return: 0 */
   loadResources(language, callback = noop) {
     let usedCallback = callback;
-    const usedLng = typeof language === 'string' ? language : this.language;
+    const usedLng = isString(language) ? language : this.language;
     if (typeof language === 'function') usedCallback = language;
 
     if (!this.options.resources || this.options.partialBundledLanguages) {
@@ -355,7 +355,7 @@ class I18n extends EventEmitter {
       // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
       if (!lng && !lngs && this.services.languageDetector) lngs = [];
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
-      const l = typeof lngs === 'string' ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
+      const l = isString(lngs) ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
 
       if (l) {
         if (!this.language) {
@@ -409,7 +409,7 @@ class I18n extends EventEmitter {
       }
       return this.t(resultKey, options);
     };
-    if (typeof lng === 'string') {
+    if (isString(lng)) {
       fixedT.lng = lng;
     } else {
       fixedT.lngs = lng;
@@ -478,7 +478,7 @@ class I18n extends EventEmitter {
       if (callback) callback();
       return Promise.resolve();
     }
-    if (typeof ns === 'string') ns = [ns];
+    if (isString(ns)) ns = [ns];
 
     ns.forEach(n => {
       if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
@@ -495,7 +495,7 @@ class I18n extends EventEmitter {
   loadLanguages(lngs, callback) {
     const deferred = defer();
 
-    if (typeof lngs === 'string') lngs = [lngs];
+    if (isString(lngs)) lngs = [lngs];
     const preloaded = this.options.preload || [];
 
     const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng));

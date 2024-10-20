@@ -1,5 +1,5 @@
 import EventEmitter from './EventEmitter.js';
-import { getPath, deepFind, setPath, deepExtend } from './utils.js';
+import { getPath, deepFind, setPath, deepExtend, isString } from './utils.js';
 
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
@@ -45,7 +45,7 @@ class ResourceStore extends EventEmitter {
       if (key) {
         if (Array.isArray(key)) {
           path.push(...key);
-        } else if (typeof key === 'string' && keySeparator) {
+        } else if (isString(key) && keySeparator) {
           path.push(...key.split(keySeparator));
         } else {
           path.push(key);
@@ -59,7 +59,7 @@ class ResourceStore extends EventEmitter {
       ns = path[1];
       key = path.slice(2).join('.');
     }
-    if (result || !ignoreJSONStructure || typeof key !== 'string') return result;
+    if (result || !ignoreJSONStructure || !isString(key)) return result;
 
     return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
   }
@@ -87,7 +87,7 @@ class ResourceStore extends EventEmitter {
   addResources(lng, ns, resources, options = { silent: false }) {
     /* eslint no-restricted-syntax: 0 */
     for (const m in resources) {
-      if (typeof resources[m] === 'string' || Array.isArray(resources[m]))
+      if (isString(resources[m]) || Array.isArray(resources[m]))
         this.addResource(lng, ns, m, resources[m], { silent: true });
     }
     if (!options.silent) this.emit('added', lng, ns, resources);

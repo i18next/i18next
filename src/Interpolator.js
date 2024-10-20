@@ -4,6 +4,7 @@ import {
   escape as utilsEscape,
   regexEscape,
   makeString,
+  isString,
 } from './utils.js';
 import baseLogger from './logger.js';
 
@@ -15,7 +16,7 @@ const deepFindWithDefaults = (
   ignoreJSONStructure = true,
 ) => {
   let path = getPathWithDefaults(data, defaultData, key);
-  if (!path && ignoreJSONStructure && typeof key === 'string') {
+  if (!path && ignoreJSONStructure && isString(key)) {
     path = deepFind(data, key, keySeparator);
     if (path === undefined) path = deepFind(defaultData, key, keySeparator);
   }
@@ -186,7 +187,7 @@ class Interpolator {
         if (value === undefined) {
           if (typeof missingInterpolationHandler === 'function') {
             const temp = missingInterpolationHandler(str, match, options);
-            value = typeof temp === 'string' ? temp : '';
+            value = isString(temp) ? temp : '';
           } else if (options && Object.prototype.hasOwnProperty.call(options, matchedVar)) {
             value = ''; // undefined becomes empty string
           } else if (skipOnVariables) {
@@ -196,7 +197,7 @@ class Interpolator {
             this.logger.warn(`missed to pass in variable ${matchedVar} for interpolating ${str}`);
             value = '';
           }
-        } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
+        } else if (!isString(value) && !this.useRawValueToEscape) {
           value = makeString(value);
         }
         const safeValue = todo.safeValue(value);
@@ -262,7 +263,7 @@ class Interpolator {
 
       clonedOptions = { ...options };
       clonedOptions =
-        clonedOptions.replace && typeof clonedOptions.replace !== 'string'
+        clonedOptions.replace && !isString(clonedOptions.replace)
           ? clonedOptions.replace
           : clonedOptions;
       clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
@@ -288,10 +289,10 @@ class Interpolator {
       value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
 
       // is only the nesting key (key1 = '$(key2)') return the value without stringify
-      if (value && match[0] === str && typeof value !== 'string') return value;
+      if (value && match[0] === str && !isString(value)) return value;
 
       // no string to include or empty
-      if (typeof value !== 'string') value = makeString(value);
+      if (!isString(value)) value = makeString(value);
       if (!value) {
         this.logger.warn(`missed to resolve ${match[1]} for nesting ${str}`);
         value = '';
