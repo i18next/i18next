@@ -1,3 +1,7 @@
+## 23.16.3
+
+- fix utils imports for Deno
+
 ## 23.16.2
 
 - perf(size): Adds a isString utility [2248](https://github.com/i18next/i18next/pull/2248)

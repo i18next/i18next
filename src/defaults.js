@@ -1,4 +1,4 @@
-import { isString } from './utils';
+import { isString } from './utils.js';
 
 export const get = () => ({
   debug: false,
