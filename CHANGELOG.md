@@ -1,6 +1,6 @@
-## 23.16.2
+## 23.16.4
 
-- revert formatter change [2247](https://github.com/i18next/i18next/pull/2247)
+- revert formatter change [2247](https://github.com/i18next/i18next/pull/2247) because of caching not working anymore
 
 ## 23.16.3
 
