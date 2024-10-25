@@ -1,3 +1,7 @@
+## 23.16.2
+
+- revert formatter change [2247](https://github.com/i18next/i18next/pull/2247)
+
 ## 23.16.3
 
 - fix utils imports for Deno
