@@ -499,17 +499,16 @@
         if (m && m.length > 0) {
           return {
             key,
-            namespaces
+            namespaces: isString(namespaces) ? [namespaces] : namespaces
           };
         }
         const parts = key.split(nsSeparator);
         if (nsSeparator !== keySeparator || nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]) > -1) namespaces = parts.shift();
         key = parts.join(keySeparator);
       }
-      if (isString(namespaces)) namespaces = [namespaces];
       return {
         key,
-        namespaces
+        namespaces: isString(namespaces) ? [namespaces] : namespaces
       };
     }
     translate(keys, options, lastKey) {

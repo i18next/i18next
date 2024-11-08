@@ -1,3 +1,7 @@
+## 23.16.5
+
+- fix extractFromKey for use cases like [this](https://github.com/i18next/react-i18next/issues/1810)
+
 ## 23.16.4
 
 - revert formatter change [2247](https://github.com/i18next/i18next/pull/2247) because of caching not working anymore

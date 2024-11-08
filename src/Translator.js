@@ -65,7 +65,7 @@ class Translator extends EventEmitter {
       if (m && m.length > 0) {
         return {
           key,
-          namespaces,
+          namespaces: isString(namespaces) ? [namespaces] : namespaces,
         };
       }
       const parts = key.split(nsSeparator);
@@ -76,11 +76,10 @@ class Translator extends EventEmitter {
         namespaces = parts.shift();
       key = parts.join(keySeparator);
     }
-    if (isString(namespaces)) namespaces = [namespaces];
 
     return {
       key,
-      namespaces,
+      namespaces: isString(namespaces) ? [namespaces] : namespaces,
     };
   }
 
