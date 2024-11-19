@@ -2,6 +2,7 @@ import { isString } from './utils.js';
 
 const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
+// eslint-disable-next-line import/prefer-default-export
 export function formatLanguageCode(code) {
   // http://www.iana.org/assignments/language-tags/language-tags.xhtml
   if (isString(code) && code.indexOf('-') > -1) {
