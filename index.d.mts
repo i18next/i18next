@@ -34,10 +34,10 @@ export type CloneOptions = i18nextMod.CloneOptions;
 export type * from './typescript/options.js';
 export type * from './typescript/t.js';
 
-export interface CustomInstanceExtenstions {}
+export interface CustomInstanceExtensions {}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export interface i18n extends i18nextMod.i18n, CustomInstanceExtenstions {}
+export interface i18n extends i18nextMod.i18n, CustomInstanceExtensions {}
 
 declare const i18next: i18n;
 export default i18next;
