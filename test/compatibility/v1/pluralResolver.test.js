@@ -81,14 +81,12 @@ describe('PluralResolver', () => {
 
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({
-          fallbackLng: 'en',
-          simplifyPluralSuffix: true,
-          compatibilityJSON: 'v3',
-          pluralSeparator: '',
-        });
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
+        simplifyPluralSuffix: true,
+        compatibilityJSON: 'v3',
+        pluralSeparator: '',
+      });
       pr = i18next.services.pluralResolver;
     });
 
@@ -258,14 +256,12 @@ describe('PluralResolver', () => {
 
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({
-          fallbackLng: 'en',
-          simplifyPluralSuffix: true,
-          pluralSeparator: '_',
-          compatibilityJSON: 'v3',
-        });
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
+        simplifyPluralSuffix: true,
+        pluralSeparator: '_',
+        compatibilityJSON: 'v3',
+      });
       pr = i18next.services.pluralResolver;
     });
 
@@ -288,14 +284,12 @@ describe('PluralResolver', () => {
 
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({
-          fallbackLng: 'en',
-          simplifyPluralSuffix: false,
-          pluralSeparator: '_',
-          compatibilityJSON: 'v3',
-        });
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
+        simplifyPluralSuffix: false,
+        pluralSeparator: '_',
+        compatibilityJSON: 'v3',
+      });
       pr = i18next.services.pluralResolver;
     });
 
@@ -318,14 +312,12 @@ describe('PluralResolver', () => {
 
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({
-          fallbackLng: 'en',
-          simplifyPluralSuffix: true,
-          pluralSeparator: '_',
-          compatibilityJSON: 'v3',
-        });
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
+        simplifyPluralSuffix: true,
+        pluralSeparator: '_',
+        compatibilityJSON: 'v3',
+      });
       pr = i18next.services.pluralResolver;
     });
 
