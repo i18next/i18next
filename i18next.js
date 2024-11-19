@@ -64,7 +64,7 @@
       e = `${p[p.length - 1]}.${e}`;
       p = p.slice(0, p.length - 1);
       last = getLastOfPath(object, p, Object);
-      if (last && last.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
+      if (last?.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
         last.obj = undefined;
       }
     }
@@ -191,7 +191,7 @@
     }
     return current;
   };
-  const getCleanedCode = code => code && code.replace('_', '-');
+  const getCleanedCode = code => code?.replace('_', '-');
 
   const consoleLogger = {
     type: 'logger',
@@ -205,7 +205,7 @@
       this.output('error', args);
     },
     output(type, args) {
-      if (console && console[type]) console[type].apply(console, args);
+      console?.[type]?.apply?.(console, args);
     }
   };
   class Logger {
@@ -363,7 +363,7 @@
         key = path.slice(2).join('.');
       }
       if (result || !ignoreJSONStructure || !isString(key)) return result;
-      return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
+      return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
     }
     addResource(lng, ns, key, value) {
       let options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {
@@ -430,10 +430,6 @@
     }
     getResourceBundle(lng, ns) {
       if (!ns) ns = this.options.defaultNS;
-      if (this.options.compatibilityAPI === 'v1') return {
-        ...{},
-        ...this.getResource(lng, ns)
-      };
       return this.getResource(lng, ns);
     }
     getDataByLanguage(lng) {
@@ -456,7 +452,7 @@
     },
     handle(processors, value, key, options, translator) {
       processors.forEach(processor => {
-        if (this.processors[processor]) value = this.processors[processor].process(value, key, options, translator);
+        value = this.processors[processor]?.process(value, key, options, translator) ?? value;
       });
       return value;
     }
@@ -485,7 +481,7 @@
         return false;
       }
       const resolved = this.resolve(key, options);
-      return resolved && resolved.res !== undefined;
+      return resolved?.res !== undefined;
     }
     extractFromKey(key, options) {
       let nsSeparator = options.nsSeparator !== undefined ? options.nsSeparator : this.options.nsSeparator;
@@ -530,7 +526,7 @@
       const namespace = namespaces[namespaces.length - 1];
       const lng = options.lng || this.language;
       const appendNamespaceToCIMode = options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
-      if (lng && lng.toLowerCase() === 'cimode') {
+      if (lng?.toLowerCase() === 'cimode') {
         if (appendNamespaceToCIMode) {
           const nsSeparator = options.nsSeparator || this.options.nsSeparator;
           if (returnDetails) {
@@ -558,9 +554,9 @@
         return key;
       }
       const resolved = this.resolve(keys, options);
-      let res = resolved && resolved.res;
-      const resUsedKey = resolved && resolved.usedKey || key;
-      const resExactUsedKey = resolved && resolved.exactUsedKey || key;
+      let res = resolved?.res;
+      const resUsedKey = resolved?.usedKey || key;
+      const resExactUsedKey = resolved?.exactUsedKey || key;
       const resType = Object.prototype.toString.apply(res);
       const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
       const joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
@@ -613,7 +609,7 @@
         const defaultValueSuffixOrdinalFallback = options.ordinal && needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, {
           ordinal: false
         }) : '';
-        const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0 && this.pluralResolver.shouldUseIntlApi();
+        const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
         const defaultValue = needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`] || options[`defaultValue${defaultValueSuffix}`] || options[`defaultValue${defaultValueSuffixOrdinalFallback}`] || options.defaultValue;
         if (!this.isValidLookup(res) && hasDefaultValue) {
           usedDefault = true;
@@ -650,7 +646,7 @@
             const defaultForMissing = hasDefaultValue && specificDefaultValue !== res ? specificDefaultValue : resForMissing;
             if (this.options.missingKeyHandler) {
               this.options.missingKeyHandler(l, namespace, k, defaultForMissing, updateMissing, options);
-            } else if (this.backendConnector && this.backendConnector.saveMissing) {
+            } else if (this.backendConnector?.saveMissing) {
               this.backendConnector.saveMissing(l, namespace, k, defaultForMissing, updateMissing, options);
             }
             this.emit('missingKey', l, namespace, k, res);
@@ -674,11 +670,7 @@
         res = this.extendTranslation(res, keys, options, resolved, lastKey);
         if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;
         if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
-          if (this.options.compatibilityAPI !== 'v1') {
-            res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key, usedDefault ? res : undefined);
-          } else {
-            res = this.options.parseMissingKeyHandler(res);
-          }
+          res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key, usedDefault ? res : undefined);
         }
       }
       if (returnDetails) {
@@ -690,7 +682,7 @@
     }
     extendTranslation(res, key, options, resolved, lastKey) {
       var _this = this;
-      if (this.i18nFormat && this.i18nFormat.parse) {
+      if (this.i18nFormat?.parse) {
         res = this.i18nFormat.parse(res, {
           ...this.options.interpolation.defaultVariables,
           ...options
@@ -707,7 +699,7 @@
             }
           }
         });
-        const skipOnVariables = isString(res) && (options && options.interpolation && options.interpolation.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables);
+        const skipOnVariables = isString(res) && (options?.interpolation?.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables);
         let nestBef;
         if (skipOnVariables) {
           const nb = res.match(this.interpolator.nestingRegexp);
@@ -724,12 +716,12 @@
           const nestAft = na && na.length;
           if (nestBef < nestAft) options.nest = false;
         }
-        if (!options.lng && this.options.compatibilityAPI !== 'v1' && resolved && resolved.res) options.lng = this.language || resolved.usedLng;
+        if (!options.lng && resolved && resolved.res) options.lng = this.language || resolved.usedLng;
         if (options.nest !== false) res = this.interpolator.nest(res, function () {
           for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
             args[_key] = arguments[_key];
           }
-          if (lastKey && lastKey[0] === args[0] && !options.context) {
+          if (lastKey?.[0] === args[0] && !options.context) {
             _this.logger.warn(`It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`);
             return null;
           }
@@ -739,7 +731,7 @@
       }
       const postProcess = options.postProcess || this.options.postProcess;
       const postProcessorNames = isString(postProcess) ? [postProcess] : postProcess;
-      if (res !== undefined && res !== null && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) {
+      if (res !== undefined && res !== null && postProcessorNames?.length && options.applyPostProcessor !== false) {
         res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? {
           i18nResolved: {
             ...resolved,
@@ -766,13 +758,13 @@
         let namespaces = extracted.namespaces;
         if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
         const needsPluralHandling = options.count !== undefined && !isString(options.count);
-        const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0 && this.pluralResolver.shouldUseIntlApi();
+        const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
         const needsContextHandling = options.context !== undefined && (isString(options.context) || typeof options.context === 'number') && options.context !== '';
         const codes = options.lngs ? options.lngs : this.languageUtils.toResolveHierarchy(options.lng || this.language, options.fallbackLng);
         namespaces.forEach(ns => {
           if (this.isValidLookup(found)) return;
           usedNS = ns;
-          if (!checkedLoadedFor[`${codes[0]}-${ns}`] && this.utils && this.utils.hasLoadedNamespace && !this.utils.hasLoadedNamespace(usedNS)) {
+          if (!checkedLoadedFor[`${codes[0]}-${ns}`] && this.utils?.hasLoadedNamespace && !this.utils?.hasLoadedNamespace(usedNS)) {
             checkedLoadedFor[`${codes[0]}-${ns}`] = true;
             this.logger.warn(`key "${usedKey}" for languages "${codes.join(', ')}" won't get resolved as namespace "${usedNS}" was not yet loaded`, 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
           }
@@ -780,7 +772,7 @@
             if (this.isValidLookup(found)) return;
             usedLng = code;
             const finalKeys = [key];
-            if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
+            if (this.i18nFormat?.addLookupKeys) {
               this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
             } else {
               let pluralSuffix;
@@ -833,7 +825,7 @@
     }
     getResource(code, ns, key) {
       let options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-      if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code, ns, key, options);
+      if (this.i18nFormat?.getResource) return this.i18nFormat.getResource(code, ns, key, options);
       return this.resourceStore.getResource(code, ns, key, options);
     }
     getUsedParamsDetails() {
@@ -871,7 +863,6 @@
     }
   }
 
-  const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
   class LanguageUtil {
     constructor(options) {
       this.options = options;
@@ -895,31 +886,15 @@
     }
     formatLanguageCode(code) {
       if (isString(code) && code.indexOf('-') > -1) {
-        if (typeof Intl !== 'undefined' && typeof Intl.getCanonicalLocales !== 'undefined') {
-          try {
-            let formattedCode = Intl.getCanonicalLocales(code)[0];
-            if (formattedCode && this.options.lowerCaseLng) {
-              formattedCode = formattedCode.toLowerCase();
-            }
-            if (formattedCode) return formattedCode;
-          } catch (e) {}
+        let formattedCode = Intl.getCanonicalLocales(code)[0];
+        if (formattedCode && this.options.lowerCaseLng) {
+          formattedCode = formattedCode.toLowerCase();
         }
-        const specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
-        let p = code.split('-');
+        if (formattedCode) return formattedCode;
         if (this.options.lowerCaseLng) {
-          p = p.map(part => part.toLowerCase());
-        } else if (p.length === 2) {
-          p[0] = p[0].toLowerCase();
-          p[1] = p[1].toUpperCase();
-          if (specialCases.indexOf(p[1].toLowerCase()) > -1) p[1] = capitalize(p[1].toLowerCase());
-        } else if (p.length === 3) {
-          p[0] = p[0].toLowerCase();
-          if (p[1].length === 2) p[1] = p[1].toUpperCase();
-          if (p[0] !== 'sgn' && p[2].length === 2) p[2] = p[2].toUpperCase();
-          if (specialCases.indexOf(p[1].toLowerCase()) > -1) p[1] = capitalize(p[1].toLowerCase());
-          if (specialCases.indexOf(p[2].toLowerCase()) > -1) p[2] = capitalize(p[2].toLowerCase());
+          return code.toLowerCase();
         }
-        return p.join('-');
+        return code;
       }
       return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
     }
@@ -991,125 +966,6 @@
     }
   }
 
-  let sets = [{
-    lngs: ['ach', 'ak', 'am', 'arn', 'br', 'fil', 'gun', 'ln', 'mfe', 'mg', 'mi', 'oc', 'pt', 'pt-BR', 'tg', 'tl', 'ti', 'tr', 'uz', 'wa'],
-    nr: [1, 2],
-    fc: 1
-  }, {
-    lngs: ['af', 'an', 'ast', 'az', 'bg', 'bn', 'ca', 'da', 'de', 'dev', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fi', 'fo', 'fur', 'fy', 'gl', 'gu', 'ha', 'hi', 'hu', 'hy', 'ia', 'it', 'kk', 'kn', 'ku', 'lb', 'mai', 'ml', 'mn', 'mr', 'nah', 'nap', 'nb', 'ne', 'nl', 'nn', 'no', 'nso', 'pa', 'pap', 'pms', 'ps', 'pt-PT', 'rm', 'sco', 'se', 'si', 'so', 'son', 'sq', 'sv', 'sw', 'ta', 'te', 'tk', 'ur', 'yo'],
-    nr: [1, 2],
-    fc: 2
-  }, {
-    lngs: ['ay', 'bo', 'cgg', 'fa', 'ht', 'id', 'ja', 'jbo', 'ka', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'],
-    nr: [1],
-    fc: 3
-  }, {
-    lngs: ['be', 'bs', 'cnr', 'dz', 'hr', 'ru', 'sr', 'uk'],
-    nr: [1, 2, 5],
-    fc: 4
-  }, {
-    lngs: ['ar'],
-    nr: [0, 1, 2, 3, 11, 100],
-    fc: 5
-  }, {
-    lngs: ['cs', 'sk'],
-    nr: [1, 2, 5],
-    fc: 6
-  }, {
-    lngs: ['csb', 'pl'],
-    nr: [1, 2, 5],
-    fc: 7
-  }, {
-    lngs: ['cy'],
-    nr: [1, 2, 3, 8],
-    fc: 8
-  }, {
-    lngs: ['fr'],
-    nr: [1, 2],
-    fc: 9
-  }, {
-    lngs: ['ga'],
-    nr: [1, 2, 3, 7, 11],
-    fc: 10
-  }, {
-    lngs: ['gd'],
-    nr: [1, 2, 3, 20],
-    fc: 11
-  }, {
-    lngs: ['is'],
-    nr: [1, 2],
-    fc: 12
-  }, {
-    lngs: ['jv'],
-    nr: [0, 1],
-    fc: 13
-  }, {
-    lngs: ['kw'],
-    nr: [1, 2, 3, 4],
-    fc: 14
-  }, {
-    lngs: ['lt'],
-    nr: [1, 2, 10],
-    fc: 15
-  }, {
-    lngs: ['lv'],
-    nr: [1, 2, 0],
-    fc: 16
-  }, {
-    lngs: ['mk'],
-    nr: [1, 2],
-    fc: 17
-  }, {
-    lngs: ['mnk'],
-    nr: [0, 1, 2],
-    fc: 18
-  }, {
-    lngs: ['mt'],
-    nr: [1, 2, 11, 20],
-    fc: 19
-  }, {
-    lngs: ['or'],
-    nr: [2, 1],
-    fc: 2
-  }, {
-    lngs: ['ro'],
-    nr: [1, 2, 20],
-    fc: 20
-  }, {
-    lngs: ['sl'],
-    nr: [5, 1, 2, 3],
-    fc: 21
-  }, {
-    lngs: ['he', 'iw'],
-    nr: [1, 2, 20, 21],
-    fc: 22
-  }];
-  let _rulesPluralsTypes = {
-    1: n => Number(n > 1),
-    2: n => Number(n != 1),
-    3: n => 0,
-    4: n => Number(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2),
-    5: n => Number(n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5),
-    6: n => Number(n == 1 ? 0 : n >= 2 && n <= 4 ? 1 : 2),
-    7: n => Number(n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2),
-    8: n => Number(n == 1 ? 0 : n == 2 ? 1 : n != 8 && n != 11 ? 2 : 3),
-    9: n => Number(n >= 2),
-    10: n => Number(n == 1 ? 0 : n == 2 ? 1 : n < 7 ? 2 : n < 11 ? 3 : 4),
-    11: n => Number(n == 1 || n == 11 ? 0 : n == 2 || n == 12 ? 1 : n > 2 && n < 20 ? 2 : 3),
-    12: n => Number(n % 10 != 1 || n % 100 == 11),
-    13: n => Number(n !== 0),
-    14: n => Number(n == 1 ? 0 : n == 2 ? 1 : n == 3 ? 2 : 3),
-    15: n => Number(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2),
-    16: n => Number(n % 10 == 1 && n % 100 != 11 ? 0 : n !== 0 ? 1 : 2),
-    17: n => Number(n == 1 || n % 10 == 1 && n % 100 != 11 ? 0 : 1),
-    18: n => Number(n == 0 ? 0 : n == 1 ? 1 : 2),
-    19: n => Number(n == 1 ? 0 : n == 0 || n % 100 > 1 && n % 100 < 11 ? 1 : n % 100 > 10 && n % 100 < 20 ? 2 : 3),
-    20: n => Number(n == 1 ? 0 : n == 0 || n % 100 > 0 && n % 100 < 20 ? 1 : 2),
-    21: n => Number(n % 100 == 1 ? 1 : n % 100 == 2 ? 2 : n % 100 == 3 || n % 100 == 4 ? 3 : 0),
-    22: n => Number(n == 1 ? 0 : n == 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3)
-  };
-  const nonIntlVersions = ['v1', 'v2', 'v3'];
-  const intlVersions = ['v4'];
   const suffixesOrder = {
     zero: 0,
     one: 1,
@@ -1118,29 +974,12 @@
     many: 4,
     other: 5
   };
-  const createRules = () => {
-    const rules = {};
-    sets.forEach(set => {
-      set.lngs.forEach(l => {
-        rules[l] = {
-          numbers: set.nr,
-          plurals: _rulesPluralsTypes[set.fc]
-        };
-      });
-    });
-    return rules;
-  };
   class PluralResolver {
     constructor(languageUtils) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       this.languageUtils = languageUtils;
       this.options = options;
       this.logger = baseLogger.create('pluralResolver');
-      if ((!this.options.compatibilityJSON || intlVersions.includes(this.options.compatibilityJSON)) && (typeof Intl === 'undefined' || !Intl.PluralRules)) {
-        this.options.compatibilityJSON = 'v3';
-        this.logger.error('Your environment seems not to be Intl API compatible, use an Intl.PluralRules polyfill. Will fallback to the compatibilityJSON v3 format handling.');
-      }
-      this.rules = createRules();
       this.pluralRulesCache = {};
     }
     addRule(lng, obj) {
@@ -1151,37 +990,29 @@
     }
     getRule(code) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      if (this.shouldUseIntlApi()) {
-        try {
-          const cleanedCode = getCleanedCode(code === 'dev' ? 'en' : code);
-          const type = options.ordinal ? 'ordinal' : 'cardinal';
-          const cacheKey = JSON.stringify({
-            cleanedCode,
-            type
-          });
-          if (cacheKey in this.pluralRulesCache) {
-            return this.pluralRulesCache[cacheKey];
-          }
-          const rule = new Intl.PluralRules(cleanedCode, {
-            type
-          });
-          this.pluralRulesCache[cacheKey] = rule;
-          return rule;
-        } catch (err) {
-          if (!code.match(/-|_/)) return;
-          const lngPart = this.languageUtils.getLanguagePartFromCode(code);
-          return this.getRule(lngPart, options);
+      try {
+        const cleanedCode = getCleanedCode(code === 'dev' ? 'en' : code);
+        const type = options.ordinal ? 'ordinal' : 'cardinal';
+        const cacheKey = JSON.stringify({
+          cleanedCode,
+          type
+        });
+        if (cacheKey in this.pluralRulesCache) {
+          return this.pluralRulesCache[cacheKey];
         }
+        const rule = new Intl.PluralRules(cleanedCode, {
+          type
+        });
+        this.pluralRulesCache[cacheKey] = rule;
+        return rule;
+      } catch (err) {
+        return undefined;
       }
-      return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
     }
     needsPlural(code) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       const rule = this.getRule(code, options);
-      if (this.shouldUseIntlApi()) {
-        return rule && rule.resolvedOptions().pluralCategories.length > 1;
-      }
-      return rule && rule.numbers.length > 1;
+      return rule?.resolvedOptions().pluralCategories.length > 1;
     }
     getPluralFormsOfKey(code, key) {
       let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -1193,47 +1024,22 @@
       if (!rule) {
         return [];
       }
-      if (this.shouldUseIntlApi()) {
-        return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map(pluralCategory => `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${pluralCategory}`);
-      }
-      return rule.numbers.map(number => this.getSuffix(code, number, options));
+      return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map(pluralCategory => `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${pluralCategory}`);
     }
     getSuffix(code, count) {
       let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       const rule = this.getRule(code, options);
       if (rule) {
-        if (this.shouldUseIntlApi()) {
-          return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(count)}`;
-        }
-        return this.getSuffixRetroCompatible(rule, count);
+        return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(count)}`;
       }
       this.logger.warn(`no plural rule found for: ${code}`);
       return '';
     }
     getSuffixRetroCompatible(rule, count) {
       const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-      let suffix = rule.numbers[idx];
-      if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-        if (suffix === 2) {
-          suffix = 'plural';
-        } else if (suffix === 1) {
-          suffix = '';
-        }
-      }
-      const returnSuffix = () => this.options.prepend && suffix.toString() ? this.options.prepend + suffix.toString() : suffix.toString();
-      if (this.options.compatibilityJSON === 'v1') {
-        if (suffix === 1) return '';
-        if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
-        return returnSuffix();
-      } else if (this.options.compatibilityJSON === 'v2') {
-        return returnSuffix();
-      } else if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-        return returnSuffix();
-      }
+      rule.numbers[idx];
+      if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) ;
       return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
-    }
-    shouldUseIntlApi() {
-      return !nonIntlVersions.includes(this.options.compatibilityJSON);
     }
   }
 
@@ -1253,7 +1059,7 @@
       let options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.logger = baseLogger.create('interpolator');
       this.options = options;
-      this.format = options.interpolation && options.interpolation.format || (value => value);
+      this.format = options?.interpolation?.format || (value => value);
       this.init(options);
     }
     init() {
@@ -1300,7 +1106,7 @@
     }
     resetRegExp() {
       const getOrResetRegExp = (existingRegExp, pattern) => {
-        if (existingRegExp && existingRegExp.source === pattern) {
+        if (existingRegExp?.source === pattern) {
           existingRegExp.lastIndex = 0;
           return existingRegExp;
         }
@@ -1334,8 +1140,8 @@
         });
       };
       this.resetRegExp();
-      const missingInterpolationHandler = options && options.missingInterpolationHandler || this.options.missingInterpolationHandler;
-      const skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
+      const missingInterpolationHandler = options?.missingInterpolationHandler || this.options.missingInterpolationHandler;
+      const skipOnVariables = options?.interpolation?.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
       const todos = [{
         regex: this.regexpUnescape,
         safeValue: val => regexSafe(val)
@@ -1394,7 +1200,7 @@
         optionsString = this.interpolate(optionsString, clonedOptions);
         const matchedSingleQuotes = optionsString.match(/'/g);
         const matchedDoubleQuotes = optionsString.match(/"/g);
-        if (matchedSingleQuotes && matchedSingleQuotes.length % 2 === 0 && !matchedDoubleQuotes || matchedDoubleQuotes.length % 2 !== 0) {
+        if ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes || matchedDoubleQuotes.length % 2 !== 0) {
           optionsString = optionsString.replace(/'/g, '"');
         }
         try {
@@ -1562,7 +1368,7 @@
         if (this.formats[formatName]) {
           let formatted = mem;
           try {
-            const valOptions = options && options.formatParams && options.formatParams[options.interpolationkey] || {};
+            const valOptions = options?.formatParams?.[options.interpolationkey] || {};
             const l = valOptions.locale || valOptions.lng || options.locale || options.lng || lng;
             formatted = this.formats[formatName](mem, l, {
               ...formatOptions,
@@ -1605,9 +1411,7 @@
       this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
       this.state = {};
       this.queue = [];
-      if (this.backend && this.backend.init) {
-        this.backend.init(services, options.backend, options);
-      }
+      this.backend?.init?.(services, options.backend, options);
     }
     queueLoad(languages, namespaces, options, callback) {
       const toLoad = {};
@@ -1773,12 +1577,12 @@
     saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
       let options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
       let clb = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : () => {};
-      if (this.services.utils && this.services.utils.hasLoadedNamespace && !this.services.utils.hasLoadedNamespace(namespace)) {
+      if (this.services?.utils?.hasLoadedNamespace && !this.services?.utils?.hasLoadedNamespace(namespace)) {
         this.logger.warn(`did not save key "${key}" as the namespace "${namespace}" was not yet loaded`, 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
         return;
       }
       if (key === undefined || key === null || key === '') return;
-      if (this.backend && this.backend.create) {
+      if (this.backend?.create) {
         const opts = {
           ...options,
           isUpdate
@@ -1873,7 +1677,7 @@
     if (isString(options.ns)) options.ns = [options.ns];
     if (isString(options.fallbackLng)) options.fallbackLng = [options.fallbackLng];
     if (isString(options.fallbackNS)) options.fallbackNS = [options.fallbackNS];
-    if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
+    if (options.supportedLngs?.indexOf?.('cimode') < 0) {
       options.supportedLngs = options.supportedLngs.concat(['cimode']);
     }
     return options;
@@ -1932,12 +1736,10 @@
         ...this.options,
         ...transformOptions(options)
       };
-      if (this.options.compatibilityAPI !== 'v1') {
-        this.options.interpolation = {
-          ...defOpts.interpolation,
-          ...this.options.interpolation
-        };
-      }
+      this.options.interpolation = {
+        ...defOpts.interpolation,
+        ...this.options.interpolation
+      };
       if (options.keySeparator !== undefined) {
         this.options.userDefinedKeySeparator = options.keySeparator;
       }
@@ -1958,7 +1760,7 @@
         let formatter;
         if (this.modules.formatter) {
           formatter = this.modules.formatter;
-        } else if (typeof Intl !== 'undefined') {
+        } else {
           formatter = Formatter;
         }
         const lu = new LanguageUtil(this.options);
@@ -1969,7 +1771,6 @@
         s.languageUtils = lu;
         s.pluralResolver = new PluralResolver(lu, {
           prepend: this.options.pluralSeparator,
-          compatibilityJSON: this.options.compatibilityJSON,
           simplifyPluralSuffix: this.options.simplifyPluralSuffix
         });
         if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
@@ -2040,7 +1841,7 @@
           deferred.resolve(t);
           callback(err, t);
         };
-        if (this.languages && this.options.compatibilityAPI !== 'v1' && !this.isInitialized) return finish(null, this.t.bind(this));
+        if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
         this.changeLanguage(this.options.lng, finish);
       };
       if (this.options.resources || !this.options.initImmediate) {
@@ -2056,7 +1857,7 @@
       const usedLng = isString(language) ? language : this.language;
       if (typeof language === 'function') usedCallback = language;
       if (!this.options.resources || this.options.partialBundledLanguages) {
-        if (usedLng && usedLng.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback();
+        if (usedLng?.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback();
         const toLoad = [];
         const append = lng => {
           if (!lng) return;
@@ -2073,9 +1874,7 @@
         } else {
           append(usedLng);
         }
-        if (this.options.preload) {
-          this.options.preload.forEach(l => append(l));
-        }
+        this.options.preload?.forEach?.(l => append(l));
         this.services.backendConnector.load(toLoad, this.options.ns, e => {
           if (!e && !this.resolvedLanguage && this.language) this.setResolvedLanguage(this.language);
           usedCallback(e);
@@ -2177,7 +1976,7 @@
             setLngProps(l);
           }
           if (!this.translator.language) this.translator.changeLanguage(l);
-          if (this.services.languageDetector && this.services.languageDetector.cacheUserLanguage) this.services.languageDetector.cacheUserLanguage(l);
+          this.services.languageDetector?.cacheUserLanguage?.(l);
         }
         this.loadResources(l, err => {
           done(err, l);
@@ -2233,10 +2032,16 @@
       return fixedT;
     }
     t() {
-      return this.translator && this.translator.translate(...arguments);
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+      return this.translator?.translate(...args);
     }
     exists() {
-      return this.translator && this.translator.exists(...arguments);
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+      return this.translator?.exists(...args);
     }
     setDefaultNamespace(ns) {
       this.options.defaultNS = ns;
@@ -2301,10 +2106,10 @@
       return deferred;
     }
     dir(lng) {
-      if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
+      if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
       if (!lng) return 'rtl';
       const rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam', 'ckb'];
-      const languageUtils = this.services && this.services.languageUtils || new LanguageUtil(get());
+      const languageUtils = this.services?.languageUtils || new LanguageUtil(get());
       return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
     }
     static createInstance() {
@@ -2344,8 +2149,8 @@
       }
       clone.translator = new Translator(clone.services, mergedOptions);
       clone.translator.on('*', function (event) {
-        for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-          args[_key4 - 1] = arguments[_key4];
+        for (var _len6 = arguments.length, args = new Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
+          args[_key6 - 1] = arguments[_key6];
         }
         clone.emit(event, ...args);
       });

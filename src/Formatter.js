@@ -133,9 +133,7 @@ class Formatter {
         let formatted = mem;
         try {
           // options passed explicit for that formatted value
-          const valOptions =
-            (options && options.formatParams && options.formatParams[options.interpolationkey]) ||
-            {};
+          const valOptions = options?.formatParams?.[options.interpolationkey] || {};
 
           // language
           const l = valOptions.locale || valOptions.lng || options.locale || options.lng || lng;

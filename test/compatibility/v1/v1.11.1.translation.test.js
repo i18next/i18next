@@ -545,7 +545,7 @@ describe('v1.11.1 translation', () => {
       it('it should replace passed in key/values', () => {
         expect(i18n.t('interpolationTest1', { toAdd: 'something' })).to.equal('added something');
         expect(i18n.t('interpolationTest1', { toAdd: null })).to.equal('added ');
-        expect(i18n.t('interpolationTest1', {})).to.equal('added ');
+        // expect(i18n.t('interpolationTest1', {})).to.equal('added '); // does not work anymore since removal of compatibilityAPI === v1
         expect(i18n.t('interpolationTest2', { toAdd: 'something' })).to.equal(
           'added something something twice',
         );
@@ -739,11 +739,11 @@ describe('v1.11.1 translation', () => {
         ).to.equal('added <html> &lt;html&gt;');
       });
 
-      it('should not accept interpolations from inside interpolations', () => {
-        expect(
-          i18n.t('interpolationTest8', { toAdd1: '__toAdd2HTML__', toAdd2: '<html>' }),
-        ).to.equal('added  &lt;html&gt;');
-      });
+      // it('should not accept interpolations from inside interpolations', () => { // does not work anymore since removal of compatibilityAPI === v1
+      //   expect(
+      //     i18n.t('interpolationTest8', { toAdd1: '__toAdd2HTML__', toAdd2: '<html>' }),
+      //   ).to.equal('added  &lt;html&gt;');
+      // });
 
       it('it should escape dollar signs in replacement values', () => {
         expect(i18n.t('interpolationTest1', { toAdd: '$&' })).to.equal('added $&amp;');

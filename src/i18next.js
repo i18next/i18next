@@ -64,9 +64,7 @@ class I18n extends EventEmitter {
 
     const defOpts = getDefaults();
     this.options = { ...defOpts, ...this.options, ...transformOptions(options) };
-    if (this.options.compatibilityAPI !== 'v1') {
-      this.options.interpolation = { ...defOpts.interpolation, ...this.options.interpolation }; // do not use reference
-    }
+    this.options.interpolation = { ...defOpts.interpolation, ...this.options.interpolation }; // do not use reference
     if (options.keySeparator !== undefined) {
       this.options.userDefinedKeySeparator = options.keySeparator;
     }
@@ -91,7 +89,7 @@ class I18n extends EventEmitter {
       let formatter;
       if (this.modules.formatter) {
         formatter = this.modules.formatter;
-      } else if (typeof Intl !== 'undefined') {
+      } else {
         formatter = Formatter;
       }
 
@@ -104,7 +102,6 @@ class I18n extends EventEmitter {
       s.languageUtils = lu;
       s.pluralResolver = new PluralResolver(lu, {
         prepend: this.options.pluralSeparator,
-        compatibilityJSON: this.options.compatibilityJSON,
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
 
@@ -200,7 +197,7 @@ class I18n extends EventEmitter {
         callback(err, t);
       };
       // fix for use cases when calling changeLanguage before finished to initialized (i.e. https://github.com/i18next/i18next/issues/1552)
-      if (this.languages && this.options.compatibilityAPI !== 'v1' && !this.isInitialized) return finish(null, this.t.bind(this));
+      if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
       this.changeLanguage(this.options.lng, finish);
     };
 
@@ -220,7 +217,7 @@ class I18n extends EventEmitter {
     if (typeof language === 'function') usedCallback = language;
 
     if (!this.options.resources || this.options.partialBundledLanguages) {
-      if (usedLng && usedLng.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback(); // avoid loading resources for cimode
+      if (usedLng?.toLowerCase() === 'cimode' && (!this.options.preload || this.options.preload.length === 0)) return usedCallback(); // avoid loading resources for cimode
 
       const toLoad = [];
 
@@ -242,9 +239,7 @@ class I18n extends EventEmitter {
         append(usedLng);
       }
 
-      if (this.options.preload) {
-        this.options.preload.forEach(l => append(l));
-      }
+      this.options.preload?.forEach?.(l => append(l));
 
       this.services.backendConnector.load(toLoad, this.options.ns, (e) => {
         if (!e && !this.resolvedLanguage && this.language) this.setResolvedLanguage(this.language);
@@ -363,7 +358,7 @@ class I18n extends EventEmitter {
         }
         if (!this.translator.language) this.translator.changeLanguage(l);
 
-        if (this.services.languageDetector && this.services.languageDetector.cacheUserLanguage) this.services.languageDetector.cacheUserLanguage(l);
+        this.services.languageDetector?.cacheUserLanguage?.(l);
       }
 
       this.loadResources(l, err => {
@@ -420,11 +415,11 @@ class I18n extends EventEmitter {
   }
 
   t(...args) {
-    return this.translator && this.translator.translate(...args);
+    return this.translator?.translate(...args);
   }
 
   exists(...args) {
-    return this.translator && this.translator.exists(...args);
+    return this.translator?.exists(...args);
   }
 
   setDefaultNamespace(ns) {
@@ -515,7 +510,7 @@ class I18n extends EventEmitter {
   }
 
   dir(lng) {
-    if (!lng) lng = this.resolvedLanguage || (this.languages && this.languages.length > 0 ? this.languages[0] : this.language);
+    if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
     if (!lng) return 'rtl';
 
     const rtlLngs = [
@@ -583,7 +578,7 @@ class I18n extends EventEmitter {
       'ckb'
     ];
 
-    const languageUtils = (this.services && this.services.languageUtils) || new LanguageUtils(getDefaults()) // for uninitialized usage
+    const languageUtils = this.services?.languageUtils || new LanguageUtils(getDefaults()) // for uninitialized usage
 
     return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'

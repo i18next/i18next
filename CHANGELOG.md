@@ -1,3 +1,13 @@
+## 24.0.0
+
+**This is a major breaking release:**
+
+- remove support for older environments
+- remove old i18next JSON formats
+- remove support for copatibility to v1 API
+- Intl API is mandatory now and will not fallback anymore
+- possible compatibility layer for older formats: `test/compatibility/v4/v4Compatibility.js`
+
 ## 23.16.7
 
 - if plural rule is not found, try to search with language only code [2252](https://github.com/i18next/i18next/issues/2252)

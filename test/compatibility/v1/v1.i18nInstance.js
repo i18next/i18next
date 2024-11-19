@@ -4,7 +4,8 @@ import Cache from 'i18next-localstorage-cache';
 import sprintf from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import i18n from '../../src/i18next.js';
+import i18n from '../../../src/i18next.js';
+import compatibilityLayer from '../v4/v4Compatibility';
 
 import * as compat from './v1.js';
 
@@ -30,7 +31,7 @@ const httpApi = new HttpApi();
 const cache = new Cache();
 cache.debouncedStore = cache.store; // store without debounce
 
-i18n.use(httpApi).use(cache).use(new LanguageDetector()).use(sprintf);
+i18n.use(compatibilityLayer).use(httpApi).use(cache).use(new LanguageDetector()).use(sprintf);
 
 compat.appendBackwardsAPI(i18n);
 

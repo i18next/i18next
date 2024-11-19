@@ -76,7 +76,7 @@ export const setPath = (object, path, newValue) => {
     e = `${p[p.length - 1]}.${e}`;
     p = p.slice(0, p.length - 1);
     last = getLastOfPath(object, p, Object);
-    if (last && last.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
+    if (last?.obj && typeof last.obj[`${last.k}.${e}`] !== 'undefined') {
       last.obj = undefined;
     }
   }
@@ -248,4 +248,4 @@ export const deepFind = (obj, path, keySeparator = '.') => {
   return current;
 };
 
-export const getCleanedCode = (code) => code && code.replace('_', '-');
+export const getCleanedCode = (code) => code?.replace('_', '-');

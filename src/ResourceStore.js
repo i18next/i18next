@@ -61,7 +61,7 @@ class ResourceStore extends EventEmitter {
     }
     if (result || !ignoreJSONStructure || !isString(key)) return result;
 
-    return deepFind(this.data && this.data[lng] && this.data[lng][ns], key, keySeparator);
+    return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {
@@ -141,10 +141,6 @@ class ResourceStore extends EventEmitter {
 
   getResourceBundle(lng, ns) {
     if (!ns) ns = this.options.defaultNS;
-
-    // COMPATIBILITY: remove extend in v2.1.0
-    if (this.options.compatibilityAPI === 'v1') return { ...{}, ...this.getResource(lng, ns) };
-
     return this.getResource(lng, ns);
   }
 

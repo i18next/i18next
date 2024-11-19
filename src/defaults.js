@@ -82,7 +82,7 @@ export const transformOptions = (options) => {
   if (isString(options.fallbackNS)) options.fallbackNS = [options.fallbackNS];
 
   // extend supportedLngs with cimode
-  if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
+  if (options.supportedLngs?.indexOf?.('cimode') < 0) {
     options.supportedLngs = options.supportedLngs.concat(['cimode']);
   }
 
