@@ -7,6 +7,7 @@
 - remove support for copatibility to v1 API
 - Intl API is mandatory now and will not fallback anymore
 - possible compatibility layer for older formats: `test/compatibility/v4/v4Compatibility.js`
+- addresses [2244](https://github.com/i18next/i18next/pull/2244), [2184](https://github.com/i18next/i18next/pull/2184), [2213](https://github.com/i18next/i18next/issues/2213)
 
 ## 23.16.7
 
