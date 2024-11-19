@@ -64,7 +64,8 @@ describe('BackendConnector load all fail - 1 namespace', () => {
         return new Promise((resolve) => {
           connector.load(['en'], ['fail'], (err) => {
             expect(err).toEqual(['failed loading']);
-            expect(connector.store.getResourceBundle('en', 'fail')).toEqual({});
+            // expect(connector.store.getResourceBundle('en', 'fail')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'fail')).toEqual(undefined);
             resolve();
           });
         });
@@ -124,7 +125,8 @@ describe('BackendConnector load all fail - 10 namespaces', () => {
                 'failed loading',
                 'failed loading',
               ]);
-              expect(connector.store.getResourceBundle('en', 'fail1')).toEqual({});
+              // expect(connector.store.getResourceBundle('en', 'fail1')).toEqual({});
+              expect(connector.store.getResourceBundle('en', 'fail1')).toEqual(undefined);
               resolve();
             },
           );
@@ -160,8 +162,10 @@ describe('BackendConnector load only one succeeds', () => {
         return new Promise((resolve) => {
           connector.load(['en'], ['fail', 'fail2', 'concurrently'], (err) => {
             expect(err).toEqual(['failed loading', 'failed loading']);
-            expect(connector.store.getResourceBundle('en', 'fail')).toEqual({});
-            expect(connector.store.getResourceBundle('en', 'fail2')).toEqual({});
+            // expect(connector.store.getResourceBundle('en', 'fail')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'fail')).toEqual(undefined);
+            // expect(connector.store.getResourceBundle('en', 'fail2')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'fail2')).toEqual(undefined);
             expect(connector.store.getResourceBundle('en', 'concurrently')).toEqual({
               status: 'ok',
               namespace: 'concurrently',
@@ -199,8 +203,10 @@ describe('BackendConnector load only one succeeds with retries', () => {
         return new Promise((resolve) => {
           connector.load(['en'], ['fail', 'fail2', 'concurrently', 'retry2'], (err) => {
             expect(err).toEqual(['failed loading', 'failed loading']);
-            expect(connector.store.getResourceBundle('en', 'fail')).toEqual({});
-            expect(connector.store.getResourceBundle('en', 'fail2')).toEqual({});
+            // expect(connector.store.getResourceBundle('en', 'fail')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'fail')).toEqual(undefined);
+            // expect(connector.store.getResourceBundle('en', 'fail2')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'fail2')).toEqual(undefined);
             expect(connector.store.getResourceBundle('en', 'concurrently')).toEqual({
               status: 'ok',
               namespace: 'concurrently',
@@ -310,7 +316,8 @@ describe('BackendConnector retry with default maxRetries=5', () => {
         return new Promise((resolve) => {
           connector.load(['en'], ['retry6'], (err) => {
             expect(err).toEqual(['failed loading']);
-            expect(connector.store.getResourceBundle('en', 'retry6')).toEqual({});
+            // expect(connector.store.getResourceBundle('en', 'retry6')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'retry6')).toEqual(undefined);
             resolve();
           });
         });
@@ -407,7 +414,8 @@ describe('BackendConnector retry with maxRetries=6', () => {
         return new Promise((resolve) => {
           connector.load(['en'], ['retry7'], (err) => {
             expect(err).toEqual(['failed loading']);
-            expect(connector.store.getResourceBundle('en', 'retry7')).toEqual({});
+            // expect(connector.store.getResourceBundle('en', 'retry7')).toEqual({});
+            expect(connector.store.getResourceBundle('en', 'retry7')).toEqual(undefined);
             resolve();
           });
         });
@@ -531,7 +539,8 @@ describe('BackendConnector retry with default maxRetries=0', () => {
         await vitest.waitFor(() => expect(callback).toHaveBeenCalled());
 
         expect(callback).toHaveBeenCalledWith(['failed loading']);
-        expect(connector.store.getResourceBundle('en', 'retry0')).toEqual({});
+        // expect(connector.store.getResourceBundle('en', 'retry0')).toEqual({});
+        expect(connector.store.getResourceBundle('en', 'retry0')).toEqual(undefined);
       },
       {
         timeout: 10850,

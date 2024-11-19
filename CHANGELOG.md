@@ -1,3 +1,7 @@
+## 23.16.6
+
+- fix: Small typo in the type definitions [2250](https://github.com/i18next/i18next/pull/2250)
+
 ## 23.16.5
 
 - fix extractFromKey for use cases like [this](https://github.com/i18next/react-i18next/issues/1810)
