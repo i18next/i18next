@@ -41,7 +41,7 @@ class Translator extends EventEmitter {
     }
 
     const resolved = this.resolve(key, options);
-    return resolved && resolved.res !== undefined;
+    return resolved?.res !== undefined;
   }
 
   extractFromKey(key, options) {
@@ -110,7 +110,7 @@ class Translator extends EventEmitter {
     const lng = options.lng || this.language;
     const appendNamespaceToCIMode =
       options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
-    if (lng && lng.toLowerCase() === 'cimode') {
+    if (lng?.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
         const nsSeparator = options.nsSeparator || this.options.nsSeparator;
         if (returnDetails) {
@@ -141,9 +141,9 @@ class Translator extends EventEmitter {
 
     // resolve from store
     const resolved = this.resolve(keys, options);
-    let res = resolved && resolved.res;
-    const resUsedKey = (resolved && resolved.usedKey) || key;
-    const resExactUsedKey = (resolved && resolved.exactUsedKey) || key;
+    let res = resolved?.res;
+    const resUsedKey = resolved?.usedKey || key;
+    const resExactUsedKey = resolved?.exactUsedKey || key;
 
     const resType = Object.prototype.toString.apply(res);
     const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -213,11 +213,7 @@ class Translator extends EventEmitter {
         options.ordinal && needsPluralHandling
           ? this.pluralResolver.getSuffix(lng, options.count, { ordinal: false })
           : '';
-      const needsZeroSuffixLookup =
-        needsPluralHandling &&
-        !options.ordinal &&
-        options.count === 0 &&
-        this.pluralResolver.shouldUseIntlApi();
+      const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
       const defaultValue =
         (needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`]) ||
         options[`defaultValue${defaultValueSuffix}`] ||
@@ -283,7 +279,7 @@ class Translator extends EventEmitter {
               updateMissing,
               options,
             );
-          } else if (this.backendConnector && this.backendConnector.saveMissing) {
+          } else if (this.backendConnector?.saveMissing) {
             this.backendConnector.saveMissing(
               l,
               namespace,
@@ -326,14 +322,10 @@ class Translator extends EventEmitter {
 
       // parseMissingKeyHandler
       if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
-        if (this.options.compatibilityAPI !== 'v1') {
-          res = this.options.parseMissingKeyHandler(
-            this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key,
-            usedDefault ? res : undefined,
-          );
-        } else {
-          res = this.options.parseMissingKeyHandler(res);
-        }
+        res = this.options.parseMissingKeyHandler(
+          this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key,
+          usedDefault ? res : undefined,
+        );
       }
     }
 
@@ -347,7 +339,7 @@ class Translator extends EventEmitter {
   }
 
   extendTranslation(res, key, options, resolved, lastKey) {
-    if (this.i18nFormat && this.i18nFormat.parse) {
+    if (this.i18nFormat?.parse) {
       res = this.i18nFormat.parse(
         res,
         { ...this.options.interpolation.defaultVariables, ...options },
@@ -365,7 +357,7 @@ class Translator extends EventEmitter {
         });
       const skipOnVariables =
         isString(res) &&
-        (options && options.interpolation && options.interpolation.skipOnVariables !== undefined
+        (options?.interpolation?.skipOnVariables !== undefined
           ? options.interpolation.skipOnVariables
           : this.options.interpolation.skipOnVariables);
       let nestBef;
@@ -393,13 +385,12 @@ class Translator extends EventEmitter {
         const nestAft = na && na.length;
         if (nestBef < nestAft) options.nest = false;
       }
-      if (!options.lng && this.options.compatibilityAPI !== 'v1' && resolved && resolved.res)
-        options.lng = this.language || resolved.usedLng;
+      if (!options.lng && resolved && resolved.res) options.lng = this.language || resolved.usedLng;
       if (options.nest !== false)
         res = this.interpolator.nest(
           res,
           (...args) => {
-            if (lastKey && lastKey[0] === args[0] && !options.context) {
+            if (lastKey?.[0] === args[0] && !options.context) {
               this.logger.warn(
                 `It seems you are nesting recursively key: ${args[0]} in key: ${key[0]}`,
               );
@@ -420,8 +411,7 @@ class Translator extends EventEmitter {
     if (
       res !== undefined &&
       res !== null &&
-      postProcessorNames &&
-      postProcessorNames.length &&
+      postProcessorNames?.length &&
       options.applyPostProcessor !== false
     ) {
       res = postProcessor.handle(
@@ -460,11 +450,7 @@ class Translator extends EventEmitter {
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
       const needsPluralHandling = options.count !== undefined && !isString(options.count);
-      const needsZeroSuffixLookup =
-        needsPluralHandling &&
-        !options.ordinal &&
-        options.count === 0 &&
-        this.pluralResolver.shouldUseIntlApi();
+      const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
       const needsContextHandling =
         options.context !== undefined &&
         (isString(options.context) || typeof options.context === 'number') &&
@@ -480,9 +466,8 @@ class Translator extends EventEmitter {
 
         if (
           !checkedLoadedFor[`${codes[0]}-${ns}`] &&
-          this.utils &&
-          this.utils.hasLoadedNamespace &&
-          !this.utils.hasLoadedNamespace(usedNS)
+          this.utils?.hasLoadedNamespace &&
+          !this.utils?.hasLoadedNamespace(usedNS)
         ) {
           checkedLoadedFor[`${codes[0]}-${ns}`] = true;
           this.logger.warn(
@@ -499,7 +484,7 @@ class Translator extends EventEmitter {
 
           const finalKeys = [key];
 
-          if (this.i18nFormat && this.i18nFormat.addLookupKeys) {
+          if (this.i18nFormat?.addLookupKeys) {
             this.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
           } else {
             let pluralSuffix;
@@ -565,8 +550,7 @@ class Translator extends EventEmitter {
   }
 
   getResource(code, ns, key, options = {}) {
-    if (this.i18nFormat && this.i18nFormat.getResource)
-      return this.i18nFormat.getResource(code, ns, key, options);
+    if (this.i18nFormat?.getResource) return this.i18nFormat.getResource(code, ns, key, options);
     return this.resourceStore.getResource(code, ns, key, options);
   }
 
