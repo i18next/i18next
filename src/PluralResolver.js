@@ -118,21 +118,26 @@ class PluralResolver {
 
   getRule(code, options = {}) {
     if (this.shouldUseIntlApi()) {
+      const cleanedCode = getCleanedCode(code === 'dev' ? 'en' : code);
+      const type = options.ordinal ? 'ordinal' : 'cardinal';
+      const cacheKey = JSON.stringify({ cleanedCode, type });
+
+      if (cacheKey in this.pluralRulesCache) {
+        return this.pluralRulesCache[cacheKey];
+      }
+
+      let rule;
+
       try {
-        const cleanedCode = getCleanedCode(code === 'dev' ? 'en' : code);
-        const type = options.ordinal ? 'ordinal' : 'cardinal';
-        const cacheKey = JSON.stringify({ cleanedCode, type });
-        if (cacheKey in this.pluralRulesCache) {
-          return this.pluralRulesCache[cacheKey];
-        }
-        const rule = new Intl.PluralRules(cleanedCode, { type });
-        this.pluralRulesCache[cacheKey] = rule;
-        return rule;
+        rule = new Intl.PluralRules(cleanedCode, { type });
       } catch (err) {
         if (!code.match(/-|_/)) return;
         const lngPart = this.languageUtils.getLanguagePartFromCode(code);
-        return this.getRule(lngPart, options);
+        rule = this.getRule(lngPart, options);
       }
+
+      this.pluralRulesCache[cacheKey] = rule;
+      return rule;
     }
 
     return this.rules[code] || this.rules[this.languageUtils.getLanguagePartFromCode(code)];
