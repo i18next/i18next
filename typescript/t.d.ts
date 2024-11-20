@@ -27,7 +27,7 @@ type _PluralSeparator = TypeOptions['pluralSeparator'];
 type _ContextSeparator = TypeOptions['contextSeparator'];
 type _FallbackNamespace = TypeOptions['fallbackNS'];
 type _Resources = TypeOptions['resources'];
-type _JSONFormat = TypeOptions['jsonFormat'];
+type _CompatibilityJSON = TypeOptions['compatibilityJSON'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
@@ -43,7 +43,7 @@ type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
 
 type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
 
-type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4'
+type WithOrWithoutPlural<Key> = _CompatibilityJSON extends 'v4'
   ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
     ? KeyWithoutOrdinalPlural | Key
     : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
