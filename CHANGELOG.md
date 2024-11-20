@@ -4,6 +4,7 @@
 
 - remove support for older environments
 - remove old i18next JSON formats
+  - To convert your existing v3 translations to the v4 format, have a look at [i18next-v4-format-converter](https://github.com/i18next/i18next-v4-format-converter) or this [web tool](https://i18next.github.io/i18next-v4-format-converter-web/).
 - remove support for copatibility to v1 API
 - Intl API is mandatory now and will not fallback anymore
 - possible compatibility layer for older formats: `test/compatibility/v4/v4Compatibility.js`
@@ -13,6 +14,9 @@
   - [2184](https://github.com/i18next/i18next/pull/2184)
   - [2213](https://github.com/i18next/i18next/issues/2213)
   - [2206](https://github.com/i18next/i18next/pull/2206)
+
+➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v23.x.x-to-v24.0.0)
+
 
 ## 23.16.7
 
