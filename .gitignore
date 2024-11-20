@@ -21,8 +21,5 @@ dist/**/*
 # Ignore IntelliJ based IDEs project files
 .idea
 
-# is generated on build
-index.v4.d.ts
-
 # vitest temp / cache files
 tsconfig.vitest-temp.json
