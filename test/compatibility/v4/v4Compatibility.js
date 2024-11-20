@@ -2,6 +2,10 @@ import { formatLanguageCode } from './lib/languageUtils.js';
 import PluralResolver from './lib/PluralResolver.js';
 import { getResourceBundle } from './lib/resourceStore.js';
 
+// pass this module to the use function of i18next
+// and also a dummy furmatter, if there is no Intl support
+// .use({ type: 'formatter', init: () => {}, format: (v) => v })
+
 export default {
   type: '3rdParty',
 

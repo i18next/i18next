@@ -11,6 +11,7 @@ describe('PluralResolver', () => {
       const i18next = createInstance();
       i18next
         .use(compatibilityLayer)
+        .use({ type: 'formatter', init: () => {}, format: (v) => v })
         .init({ fallbackLng: 'en', simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
       pr = i18next.services.pluralResolver;
     });
