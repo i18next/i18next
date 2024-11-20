@@ -2,7 +2,7 @@ import { isString } from './utils.js';
 
 export const get = () => ({
   debug: false,
-  initImmediate: true,
+  initAsync: true,
 
   ns: ['translation'],
   defaultNS: ['translation'],
@@ -85,6 +85,9 @@ export const transformOptions = (options) => {
   if (options.supportedLngs?.indexOf?.('cimode') < 0) {
     options.supportedLngs = options.supportedLngs.concat(['cimode']);
   }
+
+  // for backward compatibility, assign initImmediate to initAsync (if set)
+  if (typeof options.initImmediate === 'boolean') options.initAsync = options.initImmediate;
 
   return options;
 };
