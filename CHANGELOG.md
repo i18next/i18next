@@ -5,12 +5,12 @@
 - remove support for older environments
 - remove old i18next JSON formats
   - To convert your existing v3 translations to the v4 format, have a look at [i18next-v4-format-converter](https://github.com/i18next/i18next-v4-format-converter) or this [web tool](https://i18next.github.io/i18next-v4-format-converter-web/).
-- remove support for copatibility to v1 API
+- remove support for compatibility to v1 API
 - Intl API is mandatory now and will not fallback anymore
 - possible compatibility layer for older formats: `test/compatibility/v4/v4Compatibility.js`
 - rename `initImmediate` to `initAsync`
 - fallback to `dev` language if plural rule not found
-- removed support for TypeScript v4
+- remove TypeScript v4 support. TypeScript v5 is now an optional peer dependency
 - addresses
   - [2244](https://github.com/i18next/i18next/pull/2244)
   - [2184](https://github.com/i18next/i18next/pull/2184)
