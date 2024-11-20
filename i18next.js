@@ -1006,12 +1006,15 @@
         this.pluralRulesCache[cacheKey] = rule;
         return rule;
       } catch (err) {
-        return undefined;
+        if (!code.match(/-|_/)) return;
+        const lngPart = this.languageUtils.getLanguagePartFromCode(code);
+        return this.getRule(lngPart, options);
       }
     }
     needsPlural(code) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      const rule = this.getRule(code, options);
+      let rule = this.getRule(code, options);
+      if (!rule) rule = this.getRule('dev', options);
       return rule?.resolvedOptions().pluralCategories.length > 1;
     }
     getPluralFormsOfKey(code, key) {
@@ -1020,10 +1023,9 @@
     }
     getSuffixes(code) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      const rule = this.getRule(code, options);
-      if (!rule) {
-        return [];
-      }
+      let rule = this.getRule(code, options);
+      if (!rule) rule = this.getRule('dev', options);
+      if (!rule) return [];
       return rule.resolvedOptions().pluralCategories.sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2]).map(pluralCategory => `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${pluralCategory}`);
     }
     getSuffix(code, count) {
@@ -1033,7 +1035,7 @@
         return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(count)}`;
       }
       this.logger.warn(`no plural rule found for: ${code}`);
-      return '';
+      return this.getSuffix('dev', count, options);
     }
     getSuffixRetroCompatible(rule, count) {
       const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));

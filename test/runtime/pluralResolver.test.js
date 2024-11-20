@@ -128,7 +128,7 @@ describe('PluralResolver', () => {
         throw Error('mock error');
       });
 
-      expect(pr.getSuffix(locale, 10.5)).toEqual('');
+      expect(pr.getSuffix(locale, 10.5)).toEqual('_other');
       expect(pluralRulesSpy).toHaveBeenCalledOnce();
       expect(pluralRulesSpy).toHaveBeenCalledWith(
         locale,

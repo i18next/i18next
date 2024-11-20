@@ -129,7 +129,7 @@ describe('PluralResolver', () => {
     });
 
     it('correctly returns suffix for an unsupported locale', () => {
-      const locale = 'non-existent';
+      const locale = 'nonexistent';
 
       const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockImplementation(() => {
         throw Error('mock error');

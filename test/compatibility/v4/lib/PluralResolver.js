@@ -280,7 +280,9 @@ class PluralResolver {
         this.pluralRulesCache[cacheKey] = rule;
         return rule;
       } catch (err) {
-        return;
+        if (!code.match(/-|_/)) return;
+        const lngPart = this.languageUtils.getLanguagePartFromCode(code);
+        return this.getRule(lngPart, options);
       }
     }
 
