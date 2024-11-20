@@ -37,7 +37,7 @@ class I18n extends EventEmitter {
 
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
-      if (!this.options.initImmediate) {
+      if (!this.options.initAsync) {
         this.init(options, callback);
         return this;
       }
@@ -201,7 +201,7 @@ class I18n extends EventEmitter {
       this.changeLanguage(this.options.lng, finish);
     };
 
-    if (this.options.resources || !this.options.initImmediate) {
+    if (this.options.resources || !this.options.initAsync) {
       load();
     } else {
       setTimeout(load, 0);

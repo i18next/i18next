@@ -1618,7 +1618,7 @@
 
   const get = () => ({
     debug: false,
-    initImmediate: true,
+    initAsync: true,
     ns: ['translation'],
     defaultNS: ['translation'],
     fallbackLng: ['dev'],
@@ -1683,6 +1683,7 @@
     if (options.supportedLngs?.indexOf?.('cimode') < 0) {
       options.supportedLngs = options.supportedLngs.concat(['cimode']);
     }
+    if (typeof options.initImmediate === 'boolean') options.initAsync = options.initImmediate;
     return options;
   };
 
@@ -1708,7 +1709,7 @@
       };
       bindMemberFunctions(this);
       if (callback && !this.isInitialized && !options.isClone) {
-        if (!this.options.initImmediate) {
+        if (!this.options.initAsync) {
           this.init(options, callback);
           return this;
         }
@@ -1847,7 +1848,7 @@
         if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
         this.changeLanguage(this.options.lng, finish);
       };
-      if (this.options.resources || !this.options.initImmediate) {
+      if (this.options.resources || !this.options.initAsync) {
         load();
       } else {
         setTimeout(load, 0);

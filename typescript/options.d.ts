@@ -584,6 +584,11 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * init is possible without relaying on the init callback.
    * @default true
    */
+  initAsync?: boolean;
+
+  /**
+   * @deprecated Use initAsync instead.
+   */
   initImmediate?: boolean;
 
   /**
