@@ -41,11 +41,9 @@ type $FirstNamespace<Ns extends Namespace> = Ns extends readonly any[] ? Ns[0] :
 
 type Resources = $ValueIfResourcesDefined<_Resources, $Dictionary<string>>;
 
-type PluralSuffix = _JSONFormat extends 'v4'
-  ? 'zero' | 'one' | 'two' | 'few' | 'many' | 'other'
-  : number | 'plural';
+type PluralSuffix = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
 
-type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4' | 'v3'
+type WithOrWithoutPlural<Key> = _JSONFormat extends 'v4'
   ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
     ? KeyWithoutOrdinalPlural | Key
     : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
