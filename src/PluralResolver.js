@@ -54,7 +54,8 @@ class PluralResolver {
   }
 
   needsPlural(code, options = {}) {
-    const rule = this.getRule(code, options);
+    let rule = this.getRule(code, options);
+    if (!rule) rule = this.getRule('dev', options);
     return rule?.resolvedOptions().pluralCategories.length > 1;
   }
 
@@ -63,11 +64,9 @@ class PluralResolver {
   }
 
   getSuffixes(code, options = {}) {
-    const rule = this.getRule(code, options);
-
-    if (!rule) {
-      return [];
-    }
+    let rule = this.getRule(code, options);
+    if (!rule) rule = this.getRule('dev', options);
+    if (!rule) return [];
 
     return rule.resolvedOptions().pluralCategories
       .sort((pluralCategory1, pluralCategory2) => suffixesOrder[pluralCategory1] - suffixesOrder[pluralCategory2])
@@ -82,7 +81,7 @@ class PluralResolver {
     }
 
     this.logger.warn(`no plural rule found for: ${code}`);
-    return '';
+    return this.getSuffix('dev', count, options);
   }
 
   getSuffixRetroCompatible(rule, count) {
