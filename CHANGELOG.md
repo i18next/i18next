@@ -1,3 +1,7 @@
+## 23.16.7
+
+- if plural rule is not found, try to search with language only code [2252](https://github.com/i18next/i18next/issues/2252)
+
 ## 23.16.6
 
 - fix: Small typo in the type definitions [2250](https://github.com/i18next/i18next/pull/2250)
