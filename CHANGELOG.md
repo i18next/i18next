@@ -1,3 +1,7 @@
+## 23.16.8
+
+- fix(plural): Create cache entry for PluralRules created as part of the fallback flow [2256](https://github.com/i18next/i18next/pull/2256)
+
 ## 23.16.7
 
 - if plural rule is not found, try to search with language only code [2252](https://github.com/i18next/i18next/issues/2252)
