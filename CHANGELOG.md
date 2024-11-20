@@ -14,6 +14,7 @@
   - [2184](https://github.com/i18next/i18next/pull/2184)
   - [2213](https://github.com/i18next/i18next/issues/2213)
   - [2206](https://github.com/i18next/i18next/pull/2206)
+  - [2208](https://github.com/i18next/i18next/issues/2208)
 
 ➡️ check out the [migration guide](https://www.i18next.com/misc/migration-guide#v23.x.x-to-v24.0.0)
 

@@ -368,7 +368,7 @@ export interface i18n extends CustomInstanceExtensions {
   /**
    * Changes the default namespace.
    */
-  setDefaultNamespace(ns: string): void;
+  setDefaultNamespace(ns: string | readonly string[]): void;
 
   /**
    * Returns rtl or ltr depending on languages read direction.
