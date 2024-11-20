@@ -31,7 +31,13 @@ const httpApi = new HttpApi();
 const cache = new Cache();
 cache.debouncedStore = cache.store; // store without debounce
 
-i18n.use(compatibilityLayer).use(httpApi).use(cache).use(new LanguageDetector()).use(sprintf);
+i18n
+  .use({ type: 'formatter', init: () => {}, format: (v) => v })
+  .use(compatibilityLayer)
+  .use(httpApi)
+  .use(cache)
+  .use(new LanguageDetector())
+  .use(sprintf);
 
 compat.appendBackwardsAPI(i18n);
 

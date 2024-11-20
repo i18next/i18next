@@ -9,7 +9,10 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
+      i18next
+        .use({ type: 'formatter', init: () => {}, format: (v) => v })
+        .use(compatibilityLayer)
+        .init({ fallbackLng: 'en' });
       pr = i18next.services.pluralResolver;
     });
 
