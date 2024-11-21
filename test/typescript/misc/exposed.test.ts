@@ -49,7 +49,9 @@ describe('exposed', () => {
   });
 
   describe('eventEmitter', () => {
-    expectTypeOf(i18next.on).parameters.toMatchTypeOf<[string, (...args: unknown[]) => void]>();
+    expectTypeOf(i18next.on).toMatchTypeOf<
+      (event: string, callback: (...args: unknown[]) => void) => void
+    >();
     expectTypeOf(i18next.on).returns.toBeVoid();
 
     expectTypeOf(i18next.emit).parameters.toMatchTypeOf<[string, ...unknown[]]>();
