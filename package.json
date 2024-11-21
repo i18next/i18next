@@ -75,7 +75,7 @@
     "@types/node": "20.14.10",
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
-    "@vitest/coverage-v8": "2.0.2",
+    "@vitest/coverage-v8": "2.1.5",
     "babelify": "^10.0.0",
     "coveralls": "3.1.1",
     "cpy-cli": "^5.0.0",
@@ -91,13 +91,13 @@
     "i18next-http-backend": "2.3.1",
     "i18next-localstorage-cache": "1.1.1",
     "i18next-sprintf-postprocessor": "0.2.2",
-    "lint-staged": "^15.0.2",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.0.3",
     "rimraf": "5.0.5",
-    "rollup": "^4.3.0",
+    "rollup": "^4.22.4",
     "sinon": "17.0.1",
     "typescript": "5.4.4",
-    "vitest": "2.0.2"
+    "vitest": "2.1.5"
   },
   "scripts": {
     "lint": "eslint src typescript test \"./*.{ts,mts,mjs}\"",
