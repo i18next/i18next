@@ -49,8 +49,14 @@ describe('exposed', () => {
   });
 
   describe('eventEmitter', () => {
-    expectTypeOf(i18next.on).parameters.toMatchTypeOf<[string, (...args: unknown[]) => void]>();
-    expectTypeOf(i18next.on).returns.toBeVoid();
+    /**
+     * After vitest 2.1 update accessing `parameters` of this `i18next.on` reports an error.
+     * Probably it is related to the fact that the function has different overrides.
+     * As a workaround we perform the assertions on the "full" function type
+     */
+    expectTypeOf(i18next.on).toMatchTypeOf<
+      (event: string, callback: (...args: unknown[]) => void) => void
+    >();
 
     expectTypeOf(i18next.emit).parameters.toMatchTypeOf<[string, ...unknown[]]>();
     expectTypeOf(i18next.emit).returns.toBeVoid();

@@ -1,15 +1,19 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 
-import PluralResolver from '../../src/PluralResolver';
-import LanguageUtils from '../../src/LanguageUtils';
+import { createInstance } from '../../../src/index';
+import compatibilityLayer from '../v4/v4Compatibility';
 
 describe('PluralResolver', () => {
   describe('getRule()', () => {
     let pr;
 
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+      const i18next = createInstance();
+      i18next
+        .use(compatibilityLayer)
+        .use({ type: 'formatter', init: () => {}, format: (v) => v })
+        .init({ fallbackLng: 'en', simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+      pr = i18next.services.pluralResolver;
     });
 
     it('correctly returns getRule for a supported locale', () => {
@@ -28,8 +32,11 @@ describe('PluralResolver', () => {
     let pr;
 
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+      const i18next = createInstance();
+      i18next
+        .use(compatibilityLayer)
+        .init({ fallbackLng: 'en', simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+      pr = i18next.services.pluralResolver;
     });
 
     const tests = [
@@ -71,12 +78,17 @@ describe('PluralResolver', () => {
   });
 
   describe('getSuffix()', () => {
-    let cu;
     let pr;
 
     beforeAll(() => {
-      cu = new LanguageUtils({ fallbackCode: 'en' });
-      pr = new PluralResolver(cu, { simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
+        simplifyPluralSuffix: true,
+        compatibilityJSON: 'v3',
+        pluralSeparator: '',
+      });
+      pr = i18next.services.pluralResolver;
     });
 
     const tests = [
@@ -244,12 +256,14 @@ describe('PluralResolver', () => {
     let pr;
 
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, {
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
         simplifyPluralSuffix: true,
-        prepend: '_',
+        pluralSeparator: '_',
         compatibilityJSON: 'v3',
       });
+      pr = i18next.services.pluralResolver;
     });
 
     const tests = [
@@ -270,12 +284,14 @@ describe('PluralResolver', () => {
     let pr;
 
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, {
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
         simplifyPluralSuffix: false,
-        prepend: '_',
+        pluralSeparator: '_',
         compatibilityJSON: 'v3',
       });
+      pr = i18next.services.pluralResolver;
     });
 
     const tests = [
@@ -296,12 +312,14 @@ describe('PluralResolver', () => {
     let pr;
 
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, {
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({
+        fallbackLng: 'en',
         simplifyPluralSuffix: true,
-        prepend: '_',
+        pluralSeparator: '_',
         compatibilityJSON: 'v3',
       });
+      pr = i18next.services.pluralResolver;
     });
 
     const tests = [

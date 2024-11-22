@@ -14,7 +14,7 @@ import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.js';
  *     returnObjects: false;
  *     nsSeparator: ':';
  *     keySeparator: '.';
- *     jsonFormat: 'v4';
+ *     compatibilityJSON: 'v4';
  *     allowObjectInHTMLChildren: false;
  *     resources: {
  *       custom: {
@@ -34,60 +34,37 @@ export interface CustomPluginOptions {}
 
 export type TypeOptions = $MergeBy<
   {
-    /**
-     * Allows null values as valid translation
-     */
+    /** @see {InitOptions.returnNull} */
     returnNull: false;
 
-    /**
-     * Allows empty string as valid translation
-     */
+    /** @see {InitOptions.returnEmptyString} */
     returnEmptyString: true;
 
-    /**
-     * Allows objects as valid translation result
-     */
+    /** @see {InitOptions.returnObjects} */
     returnObjects: false;
 
-    /**
-     * Char to separate keys
-     */
+    /** @see {InitOptions.keySeparator} */
     keySeparator: '.';
 
-    /**
-     * Char to split namespace from key
-     */
+    /** @see {InitOptions.nsSeparator} */
     nsSeparator: ':';
 
-    /**
-     * Char to split plural from key
-     */
+    /** @see {InitOptions.pluralSeparator} */
     pluralSeparator: '_';
 
-    /**
-     * Char to split context from key
-     */
+    /** @see {InitOptions.contextSeparator} */
     contextSeparator: '_';
 
-    /**
-     * Default namespace used if not passed to translation function
-     */
+    /** @see {InitOptions.defaultNS} */
     defaultNS: 'translation';
 
-    /**
-     * Fallback namespace used if translation not found in given namespace
-     * @default false
-     */
+    /** @see {InitOptions.fallbackNS} */
     fallbackNS: false;
 
-    /**
-     * Json Format Version - V4 allows plural suffixes
-     */
-    jsonFormat: 'v4';
+    /** @see {InitOptions.compatibilityJSON} */
+    compatibilityJSON: 'v4';
 
-    /**
-     * Resources to initialize with
-     */
+    /** @see {InitOptions.resources} */
     resources: object;
 
     /**
@@ -107,14 +84,10 @@ export type TypeOptions = $MergeBy<
      */
     interpolationSuffix: '}}';
 
-    /**
-     * Prefix for unescaped interpolation
-     */
+    /** @see {InterpolationOptions.unescapePrefix} */
     unescapePrefix: '-';
 
-    /**
-     * Suffix for unescaped interpolation
-     */
+    /** @see {InterpolationOptions.unescapeSuffix} */
     unescapeSuffix: '';
   },
   CustomTypeOptions
@@ -584,6 +557,11 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * init is possible without relaying on the init callback.
    * @default true
    */
+  initAsync?: boolean;
+
+  /**
+   * @deprecated Use initAsync instead.
+   */
   initImmediate?: boolean;
 
   /**
@@ -618,9 +596,10 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Compatibility JSON version
+   * @warning only `v4` is available and supported by typescript
    * @default 'v4'
    */
-  compatibilityJSON?: 'v1' | 'v2' | 'v3' | 'v4';
+  compatibilityJSON?: 'v4';
 
   /**
    * Options for https://github.com/locize/locize-lastused

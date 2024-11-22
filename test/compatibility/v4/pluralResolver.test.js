@@ -1,14 +1,19 @@
 import { describe, it, expect, beforeAll, vitest } from 'vitest';
-import PluralResolver from '../../src/PluralResolver';
-import LanguageUtils from '../../src/LanguageUtils';
+import PluralResolver from './lib/PluralResolver';
+import { createInstance } from '../../../src/index';
+import compatibilityLayer from './v4Compatibility';
 
 describe('PluralResolver', () => {
   describe('getRule()', () => {
     /** @type {PluralResolver} */
     let pr;
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, {});
+      const i18next = createInstance();
+      i18next
+        .use({ type: 'formatter', init: () => {}, format: (v) => v })
+        .use(compatibilityLayer)
+        .init({ fallbackLng: 'en' });
+      pr = i18next.services.pluralResolver;
     });
 
     it('correctly returns getRule for a supported locale', () => {
@@ -52,8 +57,9 @@ describe('PluralResolver', () => {
     /** @type {PluralResolver} */
     let pr;
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, {});
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
+      pr = i18next.services.pluralResolver;
     });
 
     it('correctly returns needsPlural for locale with more than one plural form', () => {
@@ -95,8 +101,9 @@ describe('PluralResolver', () => {
     /** @type {PluralResolver} */
     let pr;
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { prepend: '_' });
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
+      pr = i18next.services.pluralResolver;
     });
 
     it('correctly returns suffix for a supported locale', () => {
@@ -128,7 +135,7 @@ describe('PluralResolver', () => {
         throw Error('mock error');
       });
 
-      expect(pr.getSuffix(locale, 10.5)).toEqual('_other');
+      expect(pr.getSuffix(locale, 10.5)).toEqual('');
       expect(pluralRulesSpy).toHaveBeenCalledOnce();
       expect(pluralRulesSpy).toHaveBeenCalledWith(
         locale,
@@ -143,8 +150,9 @@ describe('PluralResolver', () => {
     /** @type {PluralResolver} */
     let pr;
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { prepend: '_' });
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
+      pr = i18next.services.pluralResolver;
     });
 
     it('correctly returns plural forms for a given key', () => {
@@ -169,8 +177,9 @@ describe('PluralResolver', () => {
     /** @type {PluralResolver} */
     let pr;
     beforeAll(() => {
-      const lu = new LanguageUtils({ fallbackLng: 'en' });
-      pr = new PluralResolver(lu, { prepend: '_' });
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
+      pr = i18next.services.pluralResolver;
     });
 
     it('correctly returns plural suffixes for a given key', () => {
@@ -197,6 +206,34 @@ describe('PluralResolver', () => {
       );
 
       pluralRulesSpy.mockReset();
+    });
+  });
+
+  describe('shouldUseIntlApi()', () => {
+    /** @type {LanguageUtils} */
+    let lu;
+    let logger;
+    beforeAll(() => {
+      const i18next = createInstance();
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
+      lu = i18next.services.languageUtils;
+      logger = i18next.services.logger;
+    });
+
+    const tests = [
+      { compatibilityJSON: 'v1', expected: false },
+      { compatibilityJSON: 'v2', expected: false },
+      { compatibilityJSON: 'v3', expected: false },
+      { compatibilityJSON: 'v4', expected: true },
+      { expected: true },
+    ];
+
+    tests.forEach(({ compatibilityJSON, expected }) => {
+      it(`correctly returns shouldUseIntlApi for compatibilityJSON set to ${compatibilityJSON}`, () => {
+        const pr = new PluralResolver(lu, { compatibilityJSON }, logger);
+
+        expect(pr.shouldUseIntlApi()).to.equal(expected);
+      });
     });
   });
 });

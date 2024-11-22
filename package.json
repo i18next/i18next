@@ -5,16 +5,6 @@
   "main": "./dist/cjs/i18next.js",
   "module": "./dist/esm/i18next.js",
   "types": "./index.d.ts",
-  "typesVersions": {
-    "<5.0": {
-      "typescript/t.d.ts": [
-        "typescript/t.v4.d.ts"
-      ],
-      "index.d.ts": [
-        "index.v4.d.ts"
-      ]
-    }
-  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -61,6 +51,14 @@
   "dependencies": {
     "@babel/runtime": "^7.23.2"
   },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/plugin-proposal-async-generator-functions": "^7.20.7",
@@ -77,7 +75,7 @@
     "@types/node": "20.14.10",
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
-    "@vitest/coverage-v8": "2.0.2",
+    "@vitest/coverage-v8": "2.1.5",
     "babelify": "^10.0.0",
     "coveralls": "3.1.1",
     "cpy-cli": "^5.0.0",
@@ -93,20 +91,18 @@
     "i18next-http-backend": "2.3.1",
     "i18next-localstorage-cache": "1.1.1",
     "i18next-sprintf-postprocessor": "0.2.2",
-    "lint-staged": "^15.0.2",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.0.3",
     "rimraf": "5.0.5",
-    "rollup": "^4.3.0",
+    "rollup": "^4.27.3",
     "sinon": "17.0.1",
-    "typescript": "5.4.4",
-    "vitest": "2.0.2"
+    "typescript": "5.6.3",
+    "vitest": "2.1.5"
   },
   "scripts": {
     "lint": "eslint src typescript test \"./*.{ts,mts,mjs}\"",
     "format": "prettier \"{,**/}*.{ts,tsx,mts,js,mjs,json,md}\" --check",
     "format:fix": "prettier \"{,**/}*.{ts,tsx,mts,js,mjs,json,md}\" --write",
-    "pretest": "npm run generate_ts_v4_index",
-    "pretest:typescript": "npm run generate_ts_v4_index",
     "test": "vitest --run",
     "test:coverage": "vitest --coverage --run",
     "test:runtime": "vitest --project runtime",
@@ -114,7 +110,6 @@
     "test:typescript": "vitest --workspace vitest.workspace.typescript.mts",
     "test:local": "vitest --workspace vitest.workspace.local.mts",
     "build": "rimraf dist && rollup -c && echo '{\"type\":\"module\"}' > dist/esm/package.json && cpy \"./dist/umd/*.js\" ./",
-    "generate_ts_v4_index": "cp index.d.ts index.v4.d.ts && node -e \"fs.writeFileSync('index.v4.d.ts', fs.readFileSync('index.v4.d.ts').toString().replace(/t.js/g, 't.v4.js').replace(/export type \\* /g, '// export type * '))\"",
     "fix_dist_package": "node -e 'console.log(`{\"type\":\"module\",\"version\":\"${process.env.npm_package_version}\"}`)' > dist/esm/package.json",
     "preversion": "npm run test && npm run build && git push",
     "postversion": "npm run fix_dist_package && git push && git push --tags && npm run release",
