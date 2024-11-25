@@ -1,3 +1,7 @@
+## 24.0.2
+
+- if no Intl api, log error and use dummy rule
+
 ## 24.0.1
 
 - early return and log error, if no Intl api

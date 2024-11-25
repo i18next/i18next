@@ -974,6 +974,12 @@
     many: 4,
     other: 5
   };
+  const dummyRule = {
+    select: count => count === 1 ? 'one' : 'other',
+    resolvedOptions: () => ({
+      pluralCategories: ['one', 'other']
+    })
+  };
   class PluralResolver {
     constructor(languageUtils) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -1005,8 +1011,11 @@
           type
         });
       } catch (err) {
-        if (!Intl) return this.logger.error('No Intl support, please use an Intl polyfill!');
-        if (!code.match(/-|_/)) return;
+        if (!Intl) {
+          this.logger.error('No Intl support, please use an Intl polyfill!');
+          return dummyRule;
+        }
+        if (!code.match(/-|_/)) return dummyRule;
         const lngPart = this.languageUtils.getLanguagePartFromCode(code);
         rule = this.getRule(lngPart, options);
       }
@@ -1038,12 +1047,6 @@
       }
       this.logger.warn(`no plural rule found for: ${code}`);
       return this.getSuffix('dev', count, options);
-    }
-    getSuffixRetroCompatible(rule, count) {
-      const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-      rule.numbers[idx];
-      if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) ;
-      return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
     }
   }
 

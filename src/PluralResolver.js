@@ -10,6 +10,13 @@ const suffixesOrder = {
   other: 5,
 };
 
+const dummyRule = {
+  select: (count) => count === 1 ? 'one' : 'other',
+  resolvedOptions: () => ({
+    pluralCategories: ['one', 'other']
+  })
+};
+
 class PluralResolver {
   constructor(languageUtils, options = {}) {
     this.languageUtils = languageUtils;
@@ -44,8 +51,11 @@ class PluralResolver {
     try {
       rule = new Intl.PluralRules(cleanedCode, { type });
     } catch (err) {
-      if (!Intl) return this.logger.error('No Intl support, please use an Intl polyfill!');
-      if (!code.match(/-|_/)) return;
+      if (!Intl) {
+        this.logger.error('No Intl support, please use an Intl polyfill!');
+        return dummyRule;
+      }
+      if (!code.match(/-|_/)) return dummyRule;
       const lngPart = this.languageUtils.getLanguagePartFromCode(code);
       rule = this.getRule(lngPart, options);
     }
@@ -83,22 +93,6 @@ class PluralResolver {
 
     this.logger.warn(`no plural rule found for: ${code}`);
     return this.getSuffix('dev', count, options);
-  }
-
-  getSuffixRetroCompatible(rule, count) {
-    const idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-    let suffix = rule.numbers[idx];
-
-    // special treatment for lngs only having singular and plural
-    if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
-      if (suffix === 2) {
-        suffix = 'plural';
-      } else if (suffix === 1) {
-        suffix = '';
-      }
-    }
-
-    return this.options.prepend && idx.toString() ? this.options.prepend + idx.toString() : idx.toString();
   }
 }
 

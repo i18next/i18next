@@ -37,7 +37,7 @@ describe('PluralResolver', () => {
 
       const locale = 'en';
 
-      expect(pr.getRule(locale)).toBeUndefined();
+      expect(pr.getRule(locale)).not.toBeUndefined(); // we return dummy rule
       expect(pluralRulesSpy).toHaveBeenCalledOnce();
       expect(pluralRulesSpy).toHaveBeenCalledWith(
         locale,
