@@ -1,3 +1,7 @@
+## 24.0.1
+
+- early return and log error, if no Intl api
+
 ## 24.0.0
 
 **This is a major breaking release:**

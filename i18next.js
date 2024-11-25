@@ -1005,6 +1005,7 @@
           type
         });
       } catch (err) {
+        if (!Intl) return this.logger.error('No Intl support, please use an Intl polyfill!');
         if (!code.match(/-|_/)) return;
         const lngPart = this.languageUtils.getLanguagePartFromCode(code);
         rule = this.getRule(lngPart, options);
