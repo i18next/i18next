@@ -31,7 +31,16 @@ class LanguageUtil {
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
     if (isString(code) && code.indexOf('-') > -1) {
-      let formattedCode = Intl.getCanonicalLocales(code)[0];
+      let formattedCode;
+      try {
+        formattedCode = Intl.getCanonicalLocales(code)[0];
+      } catch (e) {
+        // this can happen if the detected language is not valid
+        // for example: if the path detector is used and the requested path is `/providers`
+        if (!(e instanceof RangeError) || e.message !== 'Incorrect locale information provided') {
+          throw e;
+        }
+      }
       if (formattedCode && this.options.lowerCaseLng) {
         formattedCode = formattedCode.toLowerCase();
       }
