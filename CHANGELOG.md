@@ -1,3 +1,7 @@
+## 24.0.4
+
+- simplify fix: incorrect locale detected [2268](https://github.com/i18next/i18next/pull/2268)
+
 ## 24.0.3
 
 - fix: incorrect locale detected [2268](https://github.com/i18next/i18next/pull/2268)

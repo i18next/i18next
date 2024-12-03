@@ -890,9 +890,7 @@
         try {
           formattedCode = Intl.getCanonicalLocales(code)[0];
         } catch (e) {
-          if (!(e instanceof RangeError) || e.message !== 'Incorrect locale information provided') {
-            throw e;
-          }
+          this.logger.warn(`failed to format code: ${code}`);
         }
         if (formattedCode && this.options.lowerCaseLng) {
           formattedCode = formattedCode.toLowerCase();
