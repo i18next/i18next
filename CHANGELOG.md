@@ -1,3 +1,8 @@
+## 24.0.3
+
+- fix: incorrect locale detected [2268](https://github.com/i18next/i18next/pull/2268)
+- fix: Intl.getCanonicalLocales throws with custom regions [2267](https://github.com/i18next/i18next/issues/2267)
+
 ## 24.0.2
 
 - if no Intl api, log error and use dummy rule

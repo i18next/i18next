@@ -886,7 +886,14 @@
     }
     formatLanguageCode(code) {
       if (isString(code) && code.indexOf('-') > -1) {
-        let formattedCode = Intl.getCanonicalLocales(code)[0];
+        let formattedCode;
+        try {
+          formattedCode = Intl.getCanonicalLocales(code)[0];
+        } catch (e) {
+          if (!(e instanceof RangeError) || e.message !== 'Incorrect locale information provided') {
+            throw e;
+          }
+        }
         if (formattedCode && this.options.lowerCaseLng) {
           formattedCode = formattedCode.toLowerCase();
         }
