@@ -318,6 +318,8 @@ describe('LanguageUtils', () => {
       { args: [['ru']], expected: 'en' },
       { args: [['c']], expected: 'en' },
       { args: [['e']], expected: 'en' },
+      { args: [['user-id']], expected: 'en' },
+      { args: [['en-AU-SA']], expected: 'en' },
       { args: [[]], expected: 'en' },
     ];
 
