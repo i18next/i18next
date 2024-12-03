@@ -889,9 +889,7 @@
         let formattedCode;
         try {
           formattedCode = Intl.getCanonicalLocales(code)[0];
-        } catch (e) {
-          this.logger.warn(`failed to format code: ${code}`);
-        }
+        } catch (e) {}
         if (formattedCode && this.options.lowerCaseLng) {
           formattedCode = formattedCode.toLowerCase();
         }

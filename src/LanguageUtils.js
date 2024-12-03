@@ -35,7 +35,6 @@ class LanguageUtil {
       try {
         formattedCode = Intl.getCanonicalLocales(code)[0];
       } catch (e) {
-        this.logger.warn(`failed to format code: ${code}`);
         /* fall through */
       }
       if (formattedCode && this.options.lowerCaseLng) {
