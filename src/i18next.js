@@ -608,7 +608,7 @@ class I18n extends EventEmitter {
       const clonedData = Object.keys(this.store.data).reduce((prev, l) => {
         prev[l] = { ...this.store.data[l] };
         return Object.keys(prev[l]).reduce((acc, n) => {
-          acc[n] = { ...prev[l][n] }
+          acc[n] = { ...prev[l][n] };
           return acc;
         }, {});
       }, {});
