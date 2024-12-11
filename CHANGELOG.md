@@ -1,3 +1,7 @@
+## 24.1.0
+
+- try to address [2270](https://github.com/i18next/i18next/issues/2270) by cloning the store data [2271](https://github.com/i18next/i18next/pull/2271)
+
 ## 24.0.5
 
 - remove extra log for [2268](https://github.com/i18next/i18next/pull/2268)

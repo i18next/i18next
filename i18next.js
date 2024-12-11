@@ -2155,7 +2155,18 @@
         hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
       };
       if (forkResourceStore) {
-        clone.store = new ResourceStore(this.store.data, mergedOptions);
+        const clonedData = Object.keys(this.store.data).reduce((prev, l) => {
+          prev[l] = {
+            ...this.store.data[l]
+          };
+          return Object.keys(prev[l]).reduce((acc, n) => {
+            acc[n] = {
+              ...prev[l][n]
+            };
+            return acc;
+          }, {});
+        }, {});
+        clone.store = new ResourceStore(clonedData, mergedOptions);
         clone.services.resourceStore = clone.store;
       }
       clone.translator = new Translator(clone.services, mergedOptions);
