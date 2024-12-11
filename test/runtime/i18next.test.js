@@ -99,14 +99,16 @@ describe('i18next', () => {
           },
         });
         newInstance = orgInstance.cloneInstance({ forkResourceStore: true, keySeparator: '__' });
+        newInstance.addResourceBundle('en', 'translation', {
+          deeper: { key: 'value here cloned' },
+        });
       });
 
       it('it not has shared instance of resource store', () => {
         expect(newInstance.store).not.to.equal(orgInstance.store);
         expect(orgInstance.t('deeper.key')).to.equal('value here');
         expect(orgInstance.t('deeper.key')).not.to.equal(newInstance.t('deeper.key'));
-        expect(newInstance.t('deeper__key')).to.equal('value here');
-        expect(orgInstance.t('deeper.key')).to.equal(newInstance.t('deeper__key'));
+        expect(newInstance.t('deeper__key')).to.equal('value here cloned');
       });
     });
   });
