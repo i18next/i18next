@@ -221,7 +221,10 @@ export const looksLikeObjectPath = (key, nsSeparator, keySeparator) => {
  */
 export const deepFind = (obj, path, keySeparator = '.') => {
   if (!obj) return undefined;
-  if (obj[path]) return obj[path];
+  if (obj[path]) {
+    if (!Object.prototype.hasOwnProperty.call(obj, path)) return undefined;
+    return obj[path];
+  }
   const tokens = path.split(keySeparator);
   let current = obj;
   for (let i = 0; i < tokens.length; ) {

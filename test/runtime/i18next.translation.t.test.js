@@ -25,4 +25,15 @@ describe('i18next t default returns', () => {
     expect(i18n.t('keyNull')).to.equal('keyNull');
     expect(i18n.t('keyEmpty')).to.equal('');
   });
+
+  it('it should not return Object prototype stuff', () => {
+    expect(i18n.t('constructor')).to.equal('constructor');
+    expect(i18n.t('constructor_test')).to.equal('constructor_test');
+    expect(i18n.t('hasOwnProperty')).to.equal('hasOwnProperty');
+    expect(i18n.t('__defineGetter__')).to.equal('__defineGetter__');
+    expect(i18n.t('__defineSetter__')).to.equal('__defineSetter__');
+    expect(i18n.t('__lookupGetter__')).to.equal('__lookupGetter__');
+    expect(i18n.t('__lookupSetter__')).to.equal('__lookupSetter__');
+    expect(i18n.t('__proto__')).to.equal('__proto__');
+  });
 });

@@ -1,3 +1,7 @@
+## 24.1.2
+
+- optimize fix: Bug Report: Unsafe Behavior in i18n.t Function Leading to Potential Code Execution [2273](https://github.com/i18next/i18next/issues/2273)
+
 ## 24.1.1
 
 - fix: Bug Report: Unsafe Behavior in i18n.t Function Leading to Potential Code Execution [2273](https://github.com/i18next/i18next/issues/2273)
