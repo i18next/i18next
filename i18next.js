@@ -84,6 +84,7 @@
       k
     } = getLastOfPath(object, path);
     if (!obj) return undefined;
+    if (!Object.prototype.hasOwnProperty.call(obj, k)) return undefined;
     return obj[k];
   };
   const getPathWithDefaults = (data, defaultData, key) => {

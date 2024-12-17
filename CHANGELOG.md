@@ -1,3 +1,7 @@
+## 24.1.1
+
+- fix: Bug Report: Unsafe Behavior in i18n.t Function Leading to Potential Code Execution [2273](https://github.com/i18next/i18next/issues/2273)
+
 ## 24.1.0
 
 - try to address [2270](https://github.com/i18next/i18next/issues/2270) by cloning the store data [2271](https://github.com/i18next/i18next/pull/2271)
