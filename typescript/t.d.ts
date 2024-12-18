@@ -32,6 +32,7 @@ type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
+type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -287,10 +288,16 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
     const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
     DefaultValue extends string = never,
   >(
-    ...args:
-      | [key: Key | Key[], options?: ActualOptions]
-      | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
-      | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+    ...args: _StrictKeyChecks extends true
+      ? [
+          key: Key | Key[],
+          optionsOrDefaultValue?: ActualOptions | string,
+          options?: TOpt & $Dictionary,
+        ]
+      :
+          | [key: Key | Key[], options?: ActualOptions]
+          | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
+          | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
