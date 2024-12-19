@@ -291,7 +291,7 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
     ...args: _StrictKeyChecks extends true
       ? [
           key: Key | Key[],
-          optionsOrDefaultValue?: ActualOptions | string,
+          optionsOrDefaultValue?: (TOpt & $Dictionary) | string,
           options?: TOpt & $Dictionary,
         ]
       :

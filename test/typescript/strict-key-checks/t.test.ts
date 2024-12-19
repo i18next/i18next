@@ -21,3 +21,18 @@ describe('t defaultValue with strictKeyChecks == true', () => {
     assertType(t('new.key', { defaultValue: 'some default value' }));
   });
 });
+
+describe('t defaultValue with strictKeyChecks == true and `returnObjects`', () => {
+  const t = (() => '') as unknown as TFunction<'alternate'>;
+
+  it('should work alongside `returnObjects`', () => {
+    expectTypeOf(t('foobar', { returnObjects: true })).toMatchTypeOf<{
+      barfoo: 'barfoo';
+      deep: {
+        deeper: {
+          deeeeeper: 'foobar';
+        };
+      };
+    }>();
+  });
+});
