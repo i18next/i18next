@@ -279,26 +279,71 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
 /** ************************
  * T function declaration *
  ************************* */
-export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+type BaseArgs<Key, ActualOptions> = [key: Key | Key[], options?: ActualOptions];
+
+type WithDefaultArgsStrict<Key, TOpt> = [
+  key: Key | Key[],
+  defaultValue: string,
+  options?: TOpt & $Dictionary,
+];
+
+type BaseArgsWithDefaultNonStrict<TOpt, DefaultValue> = [
+  key: string | string[],
+  options: TOpt & $Dictionary & { defaultValue: DefaultValue },
+];
+
+type WithDefaultArgsNonStrict<TOpt, DefaultValue> = [
+  key: string | string[],
+  defaultValue: DefaultValue,
+  options?: TOpt & $Dictionary,
+];
+
+/**
+ * TFunction Signature when `strictKeyChecks` is enabled, ignoring whatever defaultValue is provided.
+ */
+interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    const Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    options?: TOpt & InterpolationMap<Ret>,
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<Ret, string>, TOpt>;
+  <
+    const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    const Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+  >(
+    key: Key | Key[],
+    defaultValue: string,
+    options?: TOpt & $Dictionary,
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<Ret, string>, TOpt>;
+}
+
+/**
+ * TFunction Signature when `strictKeyChecks` is enabled, which takes into account the defaultValue provided.
+ */
+interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+  $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+  <
+    const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    const Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
     const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
     DefaultValue extends string = never,
   >(
-    ...args: _StrictKeyChecks extends true
-      ? [
-          key: Key | Key[],
-          optionsOrDefaultValue?: (TOpt & $Dictionary) | string,
-          options?: TOpt & $Dictionary,
-        ]
-      :
-          | [key: Key | Key[], options?: ActualOptions]
-          | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
-          | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+    ...args:
+      | BaseArgs<Key, ActualOptions>
+      | BaseArgsWithDefaultNonStrict<TOpt, DefaultValue>
+      | WithDefaultArgsNonStrict<TOpt, DefaultValue>
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
+
+export type TFunction<
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix = undefined,
+> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;

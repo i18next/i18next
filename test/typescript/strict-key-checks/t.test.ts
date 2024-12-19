@@ -37,7 +37,7 @@ describe('interpolation values with strictKeyChecks == true', () => {
   const t = (() => '') as unknown as TFunction<'interpolators'>;
 
   it('single interpolation value', () => {
-    expectTypeOf(t('simple', { olim: 'val' })).toMatchTypeOf<string>();
+    expectTypeOf(t('simple', { olim: 'val' })).toMatchTypeOf<'This is {{olim}}'>();
     // @ts-expect-error val interpolation value is missing
     expectTypeOf(t('simple', { notPresent: 'notPresent' })).toMatchTypeOf<string>();
   });
