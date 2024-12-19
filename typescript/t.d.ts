@@ -297,7 +297,7 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   >(
     key: Key | Key[],
     defaultValue: string,
-    options?: TOpt & $Dictionary,
+    options?: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<Ret, string>, TOpt>;
 }
 

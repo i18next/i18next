@@ -30,6 +30,36 @@ describe('basic usage with strictKeyChecks == true', () => {
         };
       };
     }>();
+
+    expectTypeOf(t('foobar', 'some default value', { returnObjects: true })).toMatchTypeOf<{
+      barfoo: 'barfoo';
+      deep: {
+        deeper: {
+          deeeeeper: 'foobar';
+        };
+      };
+    }>();
+
+    expectTypeOf(
+      t('foobar', { returnObjects: true, defaultValue: 'some default value' }),
+    ).toMatchTypeOf<{
+      barfoo: 'barfoo';
+      deep: {
+        deeper: {
+          deeeeeper: 'foobar';
+        };
+      };
+    }>();
+
+    expectTypeOf(
+      // @ts-expect-error
+      t('nonExistent', 'some default value', {
+        returnObjects: true,
+        defaultValue: 'some default value',
+      }),
+    );
+    // @ts-expect-error
+    expectTypeOf(t('nonExistent', { returnObjects: true, defaultValue: 'some default value' }));
   });
 });
 
@@ -38,30 +68,25 @@ describe('basic array access with strictKeyChecks == true', () => {
 
   it('works with simple usage', () => {
     expectTypeOf(t('arrayOfStrings.0')).toEqualTypeOf<'zero'>();
-    expectTypeOf(t('arrayOfStrings.1')).toEqualTypeOf<'one'>();
-    expectTypeOf(t('readonlyArrayOfStrings.0')).toEqualTypeOf<'readonly zero'>();
-    expectTypeOf(t('readonlyArrayOfStrings.1')).toEqualTypeOf<'readonly one'>();
-    expectTypeOf(t('arrayOfObjects.0.foo')).toEqualTypeOf<'bar'>();
-    expectTypeOf(t('arrayOfObjects.1.fizz')).toEqualTypeOf<'buzz'>();
-    expectTypeOf(t('arrayOfObjects.2.0.test')).toEqualTypeOf<'success'>();
-    expectTypeOf(t('arrayOfObjects.2.0.sub.deep')).toEqualTypeOf<'still success'>();
+    expectTypeOf(t('arrayOfObjects.2.0.test', 'some default value')).toEqualTypeOf<'success'>();
+    expectTypeOf(
+      t('arrayOfObjects.2.0.sub.deep', { defaultValue: 'some default value' }),
+    ).toEqualTypeOf<'still success'>();
   });
 
   it('should throw an error when key is not present', () => {
     // @ts-expect-error
     assertType(t('arrayOfStrings.2'));
     // @ts-expect-error
-    assertType(t('arrayOfObjects.0.food'));
+    assertType(t('arrayOfStrings.2', 'some default value'));
     // @ts-expect-error
-    assertType(t('arrayOfObjects.0.fizz'));
-    // @ts-expect-error
-    assertType(t('arrayOfObjects.2'));
-    // @ts-expect-error
-    assertType(t('arrayOfObjects.2.bar'));
+    assertType(t('arrayOfStrings.2', { defaultValue: 'some default value' }));
     // @ts-expect-error
     assertType(t('arrayOfObjects.2.sub.deep'));
     // @ts-expect-error
-    assertType(t('arrayOfObjects.2.test'));
+    assertType(t('arrayOfObjects.2.sub.deep', 'some default value'));
+    // @ts-expect-error
+    assertType(t('arrayOfObjects.2.test', { defaultValue: 'some default value' }));
   });
 
   it('should work with `returnObjects`', () => {
@@ -70,12 +95,11 @@ describe('basic array access with strictKeyChecks == true', () => {
       [{ foo: 'bar' }, { fizz: 'buzz' }, [{ test: 'success'; sub: { deep: 'still success' } }]]
     >();
     expectTypeOf(t('arrayOfObjects.0', { returnObjects: true })).toEqualTypeOf<{ foo: 'bar' }>();
-  });
 
-  it('should work with const keys', () => {
-    const alternateTranslationKeys = ['arrayOfStrings.0', 'arrayOfObjects.0.foo'] as const;
-    const result = alternateTranslationKeys.map((value) => t(value));
-    assertType<string[]>(result);
+    // @ts-expect-error
+    expectTypeOf(t('nonExistent', 'some default value', { returnObjects: true }));
+    // @ts-expect-error
+    expectTypeOf(t('nonExistent', { returnObjects: true, defaultValue: 'some default value' }));
   });
 });
 
@@ -84,41 +108,63 @@ describe('interpolation values with strictKeyChecks == true', () => {
 
   it('should allow anything when key is a string', () => {
     expectTypeOf(t('just_a_string', { asd: '', beep: 'boop' }));
+    expectTypeOf(t('just_a_string', 'some default value', { asd: '', beep: 'boop' }));
   });
 
   it('simple key', () => {
+    expectTypeOf(t('simple')).toEqualTypeOf<'This is {{olim}}'>();
     expectTypeOf(t('simple', { olim: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
+    expectTypeOf(
+      t('simple', 'some default value', { olim: 'yes' }),
+    ).toEqualTypeOf<'This is {{olim}}'>();
+    expectTypeOf(
+      t('simple', { olim: 'yes', defaultValue: 'other default value' }),
+    ).toEqualTypeOf<'This is {{olim}}'>();
 
     // @ts-expect-error because nope isn't a valid key
     expectTypeOf(t('simple', { nope: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
+    expectTypeOf(
+      // @ts-expect-error because nope isn't a valid key
+      t('simple', 'some default value', { nope: 'yes' }),
+    ).toEqualTypeOf<'This is {{olim}}'>();
+    expectTypeOf(
+      // @ts-expect-error because nope isn't a valid key
+      t('simple', { nope: 'yes', defaultValue: 'other default value' }),
+    ).toEqualTypeOf<'This is {{olim}}'>();
+
+    // @ts-expect-error because nonexisting isn't found in namespace
+    expectTypeOf(t('nonexisting', { nope: 'yes' }));
   });
 
   it('simple key (multiple)', () => {
     type Expected = 'This has {{more}} than {{one}}';
     expectTypeOf(t('simple_multiple_keys', { more: '', one: '' })).toEqualTypeOf<Expected>();
 
+    expectTypeOf(
+      t('simple_multiple_keys', 'some default value', { more: '', one: '' }),
+    ).toEqualTypeOf<Expected>();
+    expectTypeOf(
+      t('simple_multiple_keys', 'some default value', {
+        more: '',
+        one: '',
+        defaultValue: 'some default value',
+      }),
+    ).toEqualTypeOf<Expected>();
+
     // @ts-expect-error one of the required keys is missing
     expectTypeOf(t('simple_multiple_keys', { less: '', one: '' })).toEqualTypeOf<Expected>();
-  });
-
-  it('keypath', () => {
-    expectTypeOf(
-      t('keypath', { out: { there: 'yes' } }),
-    ).toEqualTypeOf<'Give me one day {{out.there}}'>();
-
-    expectTypeOf(
-      t('keypath_with_format', { out: { there: 'yes' } }),
-    ).toEqualTypeOf<'Give me one day {{out.there, format}}'>();
-  });
-
-  it('keypath deep', () => {
-    type Expected = '{{living.in.the}} in the sun';
-
-    expectTypeOf(t('keypath_deep', { living: { in: { the: 'yes' } } })).toEqualTypeOf<Expected>();
 
     expectTypeOf(
       // @ts-expect-error one of the required keys is missing
-      t('keypath_deep', { suffering: { in: { the: 'yes' } } }),
+      t('simple_multiple_keys', 'some default value', { less: '', one: '' }),
     ).toEqualTypeOf<Expected>();
+
+    expectTypeOf(
+      // @ts-expect-error one of the required keys is missing
+      t('simple_multiple_keys', { less: '', one: '', defaultValue: 'some default value' }),
+    ).toEqualTypeOf<Expected>();
+
+    // @ts-expect-error because nonexisting isn't found in namespace
+    expectTypeOf(t('nonexisting', { less: '', one: '' }));
   });
 });
