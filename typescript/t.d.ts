@@ -289,7 +289,7 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   >(
     key: Key | Key[],
     options?: TOpt & InterpolationMap<Ret>,
-  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<Ret, string>, TOpt>;
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
@@ -298,7 +298,7 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
     key: Key | Key[],
     defaultValue: string,
     options?: TOpt & InterpolationMap<Ret>,
-  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<Ret, string>, TOpt>;
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
 }
 
 interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
