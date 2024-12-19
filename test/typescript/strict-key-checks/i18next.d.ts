@@ -17,6 +17,15 @@ declare module 'i18next' {
       alternate: TestNamespaceCustomAlternate;
       fallback: TestNamespaceFallback;
       interpolators: TestNamespaceInterpolators;
+      arrayKeys: {
+        arrayOfStrings: ['zero', 'one'];
+        readonlyArrayOfStrings: readonly ['readonly zero', 'readonly one'];
+        arrayOfObjects: [
+          { foo: 'bar' },
+          { fizz: 'buzz' },
+          [{ test: 'success'; sub: { deep: 'still success' } }],
+        ];
+      };
     };
   }
 }
