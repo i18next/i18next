@@ -75,6 +75,12 @@ export type TypeOptions = $MergeBy<
     allowObjectInHTMLChildren: false;
 
     /**
+     * Flag that enables strict key checking even if a `defaultValue` has been provided.
+     * This ensures all calls of `t` function don't accidentally use implicitly missing keys.
+     */
+    strictKeyChecks: false;
+
+    /**
      * Prefix for interpolation
      */
     interpolationPrefix: '{{';

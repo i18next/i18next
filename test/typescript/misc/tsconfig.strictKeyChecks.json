@@ -1,5 +1,5 @@
 {
   "extends": "../../../tsconfig.json",
-  "include": ["./**/*", "!i18next.strictKeyChecks.d.ts"],
+  "include": ["./**/*"],
   "exclude": []
 }
