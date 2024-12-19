@@ -285,7 +285,7 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
-    const Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     options?: TOpt & InterpolationMap<Ret>,
@@ -293,7 +293,7 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
-    const Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
   >(
     key: Key | Key[],
     defaultValue: string,
@@ -306,13 +306,13 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
-    const Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
     const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
     DefaultValue extends string = never,
   >(
     ...args:
       | [key: Key | Key[], options?: ActualOptions]
-      | [key: Key | Key[], defaultValue: string, options?: TOpt & $Dictionary]
+      | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
       | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
