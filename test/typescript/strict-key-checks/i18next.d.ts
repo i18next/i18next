@@ -4,6 +4,7 @@ import {
   TestNamespaceCustom,
   TestNamespaceCustomAlternate,
   TestNamespaceFallback,
+  TestNamespaceInterpolators,
 } from '../test.namespace.samples';
 
 declare module 'i18next' {
@@ -15,6 +16,7 @@ declare module 'i18next' {
       custom: TestNamespaceCustom;
       alternate: TestNamespaceCustomAlternate;
       fallback: TestNamespaceFallback;
+      interpolators: TestNamespaceInterpolators;
     };
   }
 }

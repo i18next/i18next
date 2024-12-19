@@ -20,10 +20,6 @@ describe('t defaultValue with strictKeyChecks == true', () => {
     // @ts-expect-error
     assertType(t('new.key', { defaultValue: 'some default value' }));
   });
-});
-
-describe('t defaultValue with strictKeyChecks == true and `returnObjects`', () => {
-  const t = (() => '') as unknown as TFunction<'alternate'>;
 
   it('should work alongside `returnObjects`', () => {
     expectTypeOf(t('foobar', { returnObjects: true })).toMatchTypeOf<{
@@ -34,5 +30,22 @@ describe('t defaultValue with strictKeyChecks == true and `returnObjects`', () =
         };
       };
     }>();
+  });
+});
+
+describe('interpolation values with strictKeyChecks == true', () => {
+  const t = (() => '') as unknown as TFunction<'interpolators'>;
+
+  it('single interpolation value', () => {
+    expectTypeOf(t('simple', { olim: 'val' })).toMatchTypeOf<string>();
+    // @ts-expect-error val interpolation value is missing
+    expectTypeOf(t('simple', { notPresent: 'notPresent' })).toMatchTypeOf<string>();
+  });
+
+  it('multiple interpolation values', () => {
+    type Expected = 'This has {{more}} than {{one}}';
+    expectTypeOf(t('simple_multiple_keys', { more: '', one: '' })).toEqualTypeOf<Expected>();
+    // @ts-expect-error "more" required key is missing
+    expectTypeOf(t('simple_multiple_keys', { less: '', one: '' })).toEqualTypeOf<Expected>();
   });
 });
