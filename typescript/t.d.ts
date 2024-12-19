@@ -279,28 +279,7 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
 /** ************************
  * T function declaration *
  ************************* */
-type BaseArgs<Key, ActualOptions> = [key: Key | Key[], options?: ActualOptions];
 
-type WithDefaultArgsStrict<Key, TOpt> = [
-  key: Key | Key[],
-  defaultValue: string,
-  options?: TOpt & $Dictionary,
-];
-
-type BaseArgsWithDefaultNonStrict<TOpt, DefaultValue> = [
-  key: string | string[],
-  options: TOpt & $Dictionary & { defaultValue: DefaultValue },
-];
-
-type WithDefaultArgsNonStrict<TOpt, DefaultValue> = [
-  key: string | string[],
-  defaultValue: DefaultValue,
-  options?: TOpt & $Dictionary,
-];
-
-/**
- * TFunction Signature when `strictKeyChecks` is enabled, ignoring whatever defaultValue is provided.
- */
 interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
   <
@@ -322,9 +301,6 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<Ret, string>, TOpt>;
 }
 
-/**
- * TFunction Signature when `strictKeyChecks` is enabled, which takes into account the defaultValue provided.
- */
 interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
   <
@@ -335,9 +311,9 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
     DefaultValue extends string = never,
   >(
     ...args:
-      | BaseArgs<Key, ActualOptions>
-      | BaseArgsWithDefaultNonStrict<TOpt, DefaultValue>
-      | WithDefaultArgsNonStrict<TOpt, DefaultValue>
+      | [key: Key | Key[], options?: ActualOptions]
+      | [key: Key | Key[], defaultValue: string, options?: TOpt & $Dictionary]
+      | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 

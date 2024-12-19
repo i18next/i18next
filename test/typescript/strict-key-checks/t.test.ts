@@ -79,7 +79,7 @@ describe('basic array access with strictKeyChecks == true', () => {
   });
 });
 
-describe('should work with `InterpolatorMap`', () => {
+describe('interpolation values with strictKeyChecks == true', () => {
   const t = (() => '') as unknown as TFunction<['interpolators']>;
 
   it('should allow anything when key is a string', () => {
