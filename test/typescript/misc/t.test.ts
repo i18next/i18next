@@ -3,7 +3,7 @@ import i18next, { TFunction } from 'i18next';
 
 describe('t', () => {
   it('basic usage', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     expectTypeOf(t('friend')).toEqualTypeOf<string>();
     expectTypeOf(t`friend`).toEqualTypeOf<string>();
@@ -13,7 +13,7 @@ describe('t', () => {
   });
 
   it('overloaded usage', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     expectTypeOf(t('friend', 'test {{myVar}}', { myVar: 'someValue' })).toEqualTypeOf<string>();
     expectTypeOf(
@@ -22,7 +22,7 @@ describe('t', () => {
   });
 
   it('return cast', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     expectTypeOf(t('friend')).toEqualTypeOf<string>();
     expectTypeOf(t`friend`).toEqualTypeOf<string>();
@@ -36,7 +36,7 @@ describe('t', () => {
   });
 
   it('default value', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     expectTypeOf(t('translation:test', { defaultValue: 'test_en' })).toEqualTypeOf<string>();
     expectTypeOf(
@@ -57,7 +57,7 @@ describe('t', () => {
   });
 
   describe('`t` result as function arg', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     it('call method with optional null arg', () => {
       type DisplayHint = (hint?: string | null) => string;
@@ -79,7 +79,7 @@ describe('t', () => {
   });
 
   describe('keys', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     it('array key', () => {
       const error404 = '404';
@@ -105,7 +105,7 @@ describe('t', () => {
   });
 
   it('using `t` function inside another `t` function', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     expectTypeOf(t('foobar', { defaultValue: t('inter') })).toEqualTypeOf<string>();
     expectTypeOf(
@@ -115,7 +115,7 @@ describe('t', () => {
   });
 
   describe('interpolation', () => {
-    const t = (() => '') as TFunction;
+    const t = (() => '') as unknown as TFunction;
 
     it('simple', () => {
       // key = 'hello {{what}}'
