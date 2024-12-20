@@ -1,3 +1,7 @@
+## 24.x.y (next)
+
+- Standardize null/undefined checks across codebase [2275](https://github.com/i18next/i18next/pull/2275)
+
 ## 24.2.0
 
 - feat(typescript): Add strictKeyChecks option to enforce checking key existence when defaultValue is used [2274](https://github.com/i18next/i18next/pull/2274), fixes [2043](https://github.com/i18next/i18next/issues/2043)
