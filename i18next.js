@@ -481,7 +481,7 @@
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
         interpolation: {}
       };
-      if (key === undefined || key === null) {
+      if (key == null) {
         return false;
       }
       const resolved = this.resolve(key, options);
@@ -519,7 +519,7 @@
         ...options
       };
       if (!options) options = {};
-      if (keys === undefined || keys === null) return '';
+      if (keys == null) return '';
       if (!Array.isArray(keys)) keys = [String(keys)];
       const returnDetails = options.returnDetails !== undefined ? options.returnDetails : this.options.returnDetails;
       const keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
@@ -735,7 +735,7 @@
       }
       const postProcess = options.postProcess || this.options.postProcess;
       const postProcessorNames = isString(postProcess) ? [postProcess] : postProcess;
-      if (res !== undefined && res !== null && postProcessorNames?.length && options.applyPostProcessor !== false) {
+      if (res != null && postProcessorNames?.length && options.applyPostProcessor !== false) {
         res = postProcessor.handle(postProcessorNames, res, key, this.options && this.options.postProcessPassResolved ? {
           i18nResolved: {
             ...resolved,
@@ -1738,7 +1738,7 @@
         callback = options;
         options = {};
       }
-      if (!options.defaultNS && options.defaultNS !== false && options.ns) {
+      if (options.defaultNS == null && options.ns) {
         if (isString(options.ns)) {
           options.defaultNS = options.ns;
         } else if (options.ns.indexOf('translation') < 0) {
