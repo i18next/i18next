@@ -7,6 +7,7 @@ declare module 'i18next' {
     defaultNS: 'generic';
     returnObjects: false;
     returnNull: false;
+    strictKeyChecks: true;
     resources: {
       generic: TestNamespaceManyKeys;
     };
