@@ -72,5 +72,11 @@ describe('Translator', () => {
         expect(t.exists(nullishArg)).toBeFalsy();
       });
     });
+
+    it('it should not crash for undefined or null keys', () => {
+      expect(t.exists(null)).to.equal(false);
+      expect(t.exists(undefined)).to.equal(false);
+      expect(t.exists()).to.equal(false);
+    });
   });
 });

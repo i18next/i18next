@@ -36,4 +36,10 @@ describe('i18next t default returns', () => {
     expect(i18n.t('__lookupSetter__')).to.equal('__lookupSetter__');
     expect(i18n.t('__proto__')).to.equal('__proto__');
   });
+
+  it('it should not crash for undefined or null keys', () => {
+    expect(i18n.t(null)).to.equal('');
+    expect(i18n.t(undefined)).to.equal('');
+    expect(i18n.t()).to.equal('');
+  });
 });

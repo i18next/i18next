@@ -1,3 +1,7 @@
+## 24.2.0
+
+- feat(typescript): Add strictKeyChecks option to enforce checking key existence when defaultValue is used [2274](https://github.com/i18next/i18next/pull/2274), fixes [2043](https://github.com/i18next/i18next/issues/2043)
+
 ## 24.1.2
 
 - optimize fix: Bug Report: Unsafe Behavior in i18n.t Function Leading to Potential Code Execution [2273](https://github.com/i18next/i18next/issues/2273)
