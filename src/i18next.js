@@ -54,7 +54,7 @@ class I18n extends EventEmitter {
       options = {};
     }
 
-    if (!options.defaultNS && options.defaultNS !== false && options.ns) {
+    if (options.defaultNS == null && options.ns) {
       if (isString(options.ns)) {
         options.defaultNS = options.ns;
       } else if (options.ns.indexOf('translation') < 0) {

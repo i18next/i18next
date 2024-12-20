@@ -36,7 +36,7 @@ class Translator extends EventEmitter {
   }
 
   exists(key, options = { interpolation: {} }) {
-    if (key === undefined || key === null) {
+    if (key == null) {
       return false;
     }
 
@@ -92,7 +92,7 @@ class Translator extends EventEmitter {
     if (!options) options = {};
 
     // non valid keys handling
-    if (keys === undefined || keys === null /* || keys === '' */) return '';
+    if (keys == null /* || keys === '' */) return '';
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     const returnDetails =
@@ -408,12 +408,7 @@ class Translator extends EventEmitter {
     const postProcess = options.postProcess || this.options.postProcess;
     const postProcessorNames = isString(postProcess) ? [postProcess] : postProcess;
 
-    if (
-      res !== undefined &&
-      res !== null &&
-      postProcessorNames?.length &&
-      options.applyPostProcessor !== false
-    ) {
+    if (res != null && postProcessorNames?.length && options.applyPostProcessor !== false) {
       res = postProcessor.handle(
         postProcessorNames,
         res,
