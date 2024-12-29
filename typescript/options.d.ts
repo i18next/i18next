@@ -316,6 +316,13 @@ export interface ReactOptions {
    * by default it unescapes some basic html entities
    */
   unescape?(str: string): string;
+  /**
+   * Silence warning about interpolation.
+   * N.B. These warnings are relevant and you should look to fix them.
+   * This option is provided as a temporary measure to ease the development phase.
+   * @default undefined (false)
+   */
+  silentReactInterpolationWarning?: boolean;
 }
 
 export type ResourceKey =
