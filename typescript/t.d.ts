@@ -317,9 +317,12 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
-export type TFunction<
+type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
 > = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+
+export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
+  extends TFunctionSignature<Ns, KPrefix> {}
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
