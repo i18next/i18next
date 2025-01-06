@@ -1,6 +1,7 @@
-## 24.x.y (next)
+## 24.2.1
 
 - Standardize null/undefined checks across codebase [2275](https://github.com/i18next/i18next/pull/2275)
+- fix(typescript): make TFunction augmentable again [2279](https://github.com/i18next/i18next/pull/2279), fixes [2278](https://github.com/i18next/i18next/issues/2278)
 
 ## 24.2.0
 
