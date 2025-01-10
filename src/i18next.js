@@ -94,6 +94,18 @@ class I18n extends EventEmitter {
       }
 
       const lu = new LanguageUtils(this.options);
+
+      // if (this.options.resources) {
+      //   Object.keys(this.options.resources).forEach((lng) => {
+      //     const fLng = lu.formatLanguageCode(lng);
+      //     if (fLng !== lng) {
+      //       this.options.resources[fLng] = this.options.resources[lng];
+      //       delete this.options.resources[lng];
+      //       this.logger.warn(`init: lng in resource is not valid, mapping ${lng} to ${fLng}`);
+      //     }
+      //   })
+      // }
+
       this.store = new ResourceStore(this.options.resources, this.options);
 
       const s = this.services;
