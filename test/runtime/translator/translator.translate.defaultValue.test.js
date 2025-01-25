@@ -60,6 +60,20 @@ describe('Translator', () => {
         ],
         expected: 'test_en_zero',
       },
+      {
+        args: [
+          'translation:testArr',
+          { defaultValue: ['some {{ value }}'], value: 'text', returnObjects: true },
+        ],
+        expected: ['some text'],
+      },
+      {
+        args: [
+          'translation:testObj',
+          { defaultValue: { o: 'some {{ value }}' }, value: 'text', returnObjects: true },
+        ],
+        expected: { o: 'some text' },
+      },
     ];
 
     tests.forEach((test) => {

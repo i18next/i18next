@@ -463,6 +463,7 @@
   };
 
   const checkedLoadedFor = {};
+  const shouldHandleAsObject = res => !isString(res) && typeof res !== 'boolean' && typeof res !== 'number';
   class Translator extends EventEmitter {
     constructor(services) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -561,17 +562,29 @@
       let res = resolved?.res;
       const resUsedKey = resolved?.usedKey || key;
       const resExactUsedKey = resolved?.exactUsedKey || key;
-      const resType = Object.prototype.toString.apply(res);
       const noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
       const joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
       const handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
-      const handleAsObject = !isString(res) && typeof res !== 'boolean' && typeof res !== 'number';
-      if (handleAsObjectInI18nFormat && res && handleAsObject && noObject.indexOf(resType) < 0 && !(isString(joinArrays) && Array.isArray(res))) {
+      const needsPluralHandling = options.count !== undefined && !isString(options.count);
+      const hasDefaultValue = Translator.hasDefaultValue(options);
+      const defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, options) : '';
+      const defaultValueSuffixOrdinalFallback = options.ordinal && needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, {
+        ordinal: false
+      }) : '';
+      const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
+      const defaultValue = needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`] || options[`defaultValue${defaultValueSuffix}`] || options[`defaultValue${defaultValueSuffixOrdinalFallback}`] || options.defaultValue;
+      let resForObjHndl = res;
+      if (handleAsObjectInI18nFormat && !res && hasDefaultValue) {
+        resForObjHndl = defaultValue;
+      }
+      const handleAsObject = shouldHandleAsObject(resForObjHndl);
+      const resType = Object.prototype.toString.apply(resForObjHndl);
+      if (handleAsObjectInI18nFormat && resForObjHndl && handleAsObject && noObject.indexOf(resType) < 0 && !(isString(joinArrays) && Array.isArray(resForObjHndl))) {
         if (!options.returnObjects && !this.options.returnObjects) {
           if (!this.options.returnedObjectHandler) {
             this.logger.warn('accessing an object - but returnObjects options is not enabled!');
           }
-          const r = this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, {
+          const r = this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, resForObjHndl, {
             ...options,
             ns: namespaces
           }) : `key '${key} (${this.language})' returned an object instead of string.`;
@@ -583,20 +596,31 @@
           return r;
         }
         if (keySeparator) {
-          const resTypeIsArray = Array.isArray(res);
+          const resTypeIsArray = Array.isArray(resForObjHndl);
           const copy = resTypeIsArray ? [] : {};
           const newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
-          for (const m in res) {
-            if (Object.prototype.hasOwnProperty.call(res, m)) {
+          for (const m in resForObjHndl) {
+            if (Object.prototype.hasOwnProperty.call(resForObjHndl, m)) {
               const deepKey = `${newKeyToUse}${keySeparator}${m}`;
-              copy[m] = this.translate(deepKey, {
-                ...options,
-                ...{
-                  joinArrays: false,
-                  ns: namespaces
-                }
-              });
-              if (copy[m] === deepKey) copy[m] = res[m];
+              if (hasDefaultValue && !res) {
+                copy[m] = this.translate(deepKey, {
+                  ...options,
+                  defaultValue: shouldHandleAsObject(defaultValue) ? defaultValue[m] : undefined,
+                  ...{
+                    joinArrays: false,
+                    ns: namespaces
+                  }
+                });
+              } else {
+                copy[m] = this.translate(deepKey, {
+                  ...options,
+                  ...{
+                    joinArrays: false,
+                    ns: namespaces
+                  }
+                });
+              }
+              if (copy[m] === deepKey) copy[m] = resForObjHndl[m];
             }
           }
           res = copy;
@@ -607,14 +631,6 @@
       } else {
         let usedDefault = false;
         let usedKey = false;
-        const needsPluralHandling = options.count !== undefined && !isString(options.count);
-        const hasDefaultValue = Translator.hasDefaultValue(options);
-        const defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, options) : '';
-        const defaultValueSuffixOrdinalFallback = options.ordinal && needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count, {
-          ordinal: false
-        }) : '';
-        const needsZeroSuffixLookup = needsPluralHandling && !options.ordinal && options.count === 0;
-        const defaultValue = needsZeroSuffixLookup && options[`defaultValue${this.options.pluralSeparator}zero`] || options[`defaultValue${defaultValueSuffix}`] || options[`defaultValue${defaultValueSuffixOrdinalFallback}`] || options.defaultValue;
         if (!this.isValidLookup(res) && hasDefaultValue) {
           usedDefault = true;
           res = defaultValue;

@@ -1,3 +1,7 @@
+## 24.2.2
+
+- fix: Interpolation fails with arrays (TypeError) and doesn't work with objects in defaultValue [1829](https://github.com/i18next/react-i18next/issues/1829)
+
 ## 24.2.1
 
 - Standardize null/undefined checks across codebase [2275](https://github.com/i18next/i18next/pull/2275)
