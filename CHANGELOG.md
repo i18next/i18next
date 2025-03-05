@@ -56,6 +56,7 @@
 - possible compatibility layer for older formats: `test/compatibility/v4/v4Compatibility.js`
 - rename `initImmediate` to `initAsync`
 - fallback to `dev` language if plural rule not found
+- Dropped support for Node.js < v14
 - remove TypeScript v4 support. TypeScript v5 is now an optional peer dependency
 - addresses
   - [2244](https://github.com/i18next/i18next/pull/2244)
