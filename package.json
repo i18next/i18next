@@ -49,7 +49,7 @@
     }
   ],
   "dependencies": {
-    "@babel/runtime": "^7.23.2"
+    "@babel/runtime": "^7.26.10"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -72,10 +72,10 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "0.4.4",
-    "@types/node": "20.14.10",
+    "@types/node": "22.13.10",
     "@typescript-eslint/eslint-plugin": "7.8.0",
     "@typescript-eslint/parser": "7.8.0",
-    "@vitest/coverage-v8": "2.1.5",
+    "@vitest/coverage-v8": "2.1.9",
     "babelify": "^10.0.0",
     "coveralls": "3.1.1",
     "cpy-cli": "^5.0.0",
@@ -86,9 +86,9 @@
     "eslint-plugin-import": "2.29.0",
     "gh-release": "7.0.2",
     "husky": "^8.0.3",
-    "i18next-browser-languagedetector": "7.1.0",
-    "i18next-fs-backend": "2.2.0",
-    "i18next-http-backend": "2.3.1",
+    "i18next-browser-languagedetector": "8.0.4",
+    "i18next-fs-backend": "2.6.0",
+    "i18next-http-backend": "3.0.2",
     "i18next-localstorage-cache": "1.1.1",
     "i18next-sprintf-postprocessor": "0.2.2",
     "lint-staged": "^15.2.10",
@@ -97,7 +97,7 @@
     "rollup": "^4.27.3",
     "sinon": "17.0.1",
     "typescript": "5.6.3",
-    "vitest": "2.1.5"
+    "vitest": "2.1.9"
   },
   "scripts": {
     "lint": "eslint src typescript test \"./*.{ts,mts,mjs}\"",

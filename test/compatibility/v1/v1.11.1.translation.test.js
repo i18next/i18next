@@ -843,8 +843,15 @@ describe('v1.11.1 translation', () => {
         name: 'John',
       };
 
+      /** @type {import('vitest').MockInstance}  */
+      let spy;
+
       beforeEach(async () => {
+        spy = vitest.spyOn(httpApi, 'read').mockImplementation(httpApiReadMockImplementation);
         await i18n.init(i18n.functions.extend(opts, { defaultVariables }));
+        return () => {
+          spy.mockReset();
+        };
       });
 
       it('it should use default variable', () => {

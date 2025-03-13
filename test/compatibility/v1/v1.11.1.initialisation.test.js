@@ -15,8 +15,15 @@ describe('v1.11.1 initialisation', () => {
   });
 
   describe('determining language directionality', () => {
+    /** @type {import('vitest').MockInstance}  */
+    let spy;
+
     beforeEach(async () => {
+      spy = vitest.spyOn(httpApi, 'read').mockImplementation(httpApiReadMockImplementation);
       await i18n.init();
+      return () => {
+        spy.mockReset();
+      };
     });
 
     it('returns ltr for en-US', () => {

@@ -1,3 +1,7 @@
+## 24.2.3
+
+- Upgrade @babel/runtime package to version v7.26.10 [2293](https://github.com/i18next/i18next/issues/2293)
+
 ## 24.2.2
 
 - fix: Interpolation fails with arrays (TypeError) and doesn't work with objects in defaultValue [1829](https://github.com/i18next/react-i18next/issues/1829)
