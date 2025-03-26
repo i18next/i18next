@@ -224,8 +224,10 @@ class Connector extends EventEmitter {
 
     this.read(lng, ns, 'read', undefined, undefined, (err, data) => {
       if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);
-      if (!err && data)
-        this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`, data);
+      if (!err && data) {
+        this.logger.log(`${prefix}loaded namespace ${ns} for language ${lng}`);
+        this.logger.debug(data);
+      }
 
       this.loaded(name, err, data);
     });
