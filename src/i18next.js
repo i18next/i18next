@@ -210,7 +210,13 @@ class I18n extends EventEmitter {
       };
       // fix for use cases when calling changeLanguage before finished to initialized (i.e. https://github.com/i18next/i18next/issues/1552)
       if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
-      this.changeLanguage(this.options.lng, finish);
+      if (!this.options.lng) {
+        this.detectLanguage((err, lng) => {
+          this.changeLanguage(lng, finish);
+        });
+      } else {
+        this.changeLanguage(this.options.lng, finish);
+      }
     };
 
     if (this.options.resources || !this.options.initAsync) {
@@ -330,9 +336,55 @@ class I18n extends EventEmitter {
     }
   }
 
-  changeLanguage(lng, callback) {
-    this.isLanguageChangingTo = lng;
+  detectLanguage(callback) {
     const deferred = defer();
+
+    const setLngs = lngs => {
+      const l = this.normalizeLng(lngs);
+
+      deferred.resolve(l);
+      if (callback) callback(null, l);
+    };
+
+    if (this.services.languageDetector && !this.services.languageDetector.async) {
+      setLngs(this.services.languageDetector.detect());
+    } else if (this.services.languageDetector && this.services.languageDetector.async) {
+      if (this.services.languageDetector.detect.length === 0) {
+        this.services.languageDetector.detect().then(setLngs);
+      } else {
+        this.services.languageDetector.detect(setLngs);
+      }
+    } else {
+      setLngs(undefined);
+    }
+
+    return deferred;
+  }
+
+  normalizeLng(lngs) {
+    // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
+    if (!lngs && this.services.languageDetector) lngs = [];
+    // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
+    const l = isString(lngs) ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
+
+    return l;
+  }
+
+  changeLanguage(inputLng, callback) {
+    const deferred = defer();
+
+    const lng = this.normalizeLng(inputLng);
+    const t = (...args) => this.t(...args);
+
+    if (!lng) {
+      this.logger.error(`Cannot find a matched language for ${lng}`);
+
+      deferred.resolve(t);
+      if (callback) callback(null, t);
+      return deferred;
+    }
+
+    this.isLanguageChangingTo = lng;
     this.emit('languageChanging', lng);
 
     const setLngProps = (l) => {
@@ -344,53 +396,28 @@ class I18n extends EventEmitter {
     };
 
     const done = (err, l) => {
-      if (l) {
-        if (this.isLanguageChangingTo === lng) {
-          setLngProps(l);
-          this.translator.changeLanguage(l);
-          this.isLanguageChangingTo = undefined;
-          this.emit('languageChanged', l);
-          this.logger.log('languageChanged', l);
-        }
-      } else {
+      if (this.isLanguageChangingTo === lng) {
+        setLngProps(l);
+        this.translator.changeLanguage(l);
         this.isLanguageChangingTo = undefined;
+        this.emit('languageChanged', l);
+        this.logger.log('languageChanged', l);
       }
 
-      deferred.resolve((...args) => this.t(...args));
-      if (callback) callback(err, (...args) => this.t(...args));
+      deferred.resolve(t);
+      if (callback) callback(err, t);
     };
 
-    const setLng = lngs => {
-      // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
-      if (!lng && !lngs && this.services.languageDetector) lngs = [];
-      // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
-      const l = isString(lngs) ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
-
-      if (l) {
-        if (!this.language) {
-          setLngProps(l);
-        }
-        if (!this.translator.language) this.translator.changeLanguage(l);
-
-        this.services.languageDetector?.cacheUserLanguage?.(l);
-      }
-
-      this.loadResources(l, err => {
-        done(err, l);
-      });
-    };
-
-    if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
-      setLng(this.services.languageDetector.detect());
-    } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
-      if (this.services.languageDetector.detect.length === 0) {
-        this.services.languageDetector.detect().then(setLng);
-      } else {
-        this.services.languageDetector.detect(setLng);
-      }
-    } else {
-      setLng(lng);
+    if (!this.language) {
+      setLngProps(lng);
     }
+    if (!this.translator.language) this.translator.changeLanguage(lng);
+
+    this.services.languageDetector?.cacheUserLanguage?.(lng);
+
+    this.loadResources(lng, err => {
+      done(err, lng);
+    });
 
     return deferred;
   }
