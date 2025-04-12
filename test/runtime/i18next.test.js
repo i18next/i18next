@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, vi, beforeEach, afterEach } from 'vitest';
 import i18next from '../../src/i18next.js';
 import { get as getDefaults } from '../../src/defaults.js';
 
@@ -402,6 +402,67 @@ describe('i18next', () => {
         it('it should extend preload', () => {
           newInstance.loadLanguages('es');
           expect(newInstance.options.preload).to.include('es');
+        });
+      });
+
+      describe('calling order of the changeLanguage function', () => {
+        beforeEach(() => {
+          vi.useFakeTimers();
+        });
+        afterEach(() => {
+          vi.restoreAllMocks();
+        });
+
+        const mockLanguageResource = (lan, delay, value = `${lan}`) => ({
+          delay,
+          value: {
+            foo: value,
+          },
+        });
+
+        it('it should make sure the resolved language matches the order of changeLanguage calls', () => {
+          const instance = i18next.createInstance();
+
+          const langMap = {
+            en: mockLanguageResource('en', 100),
+            zh: mockLanguageResource('zh', 500),
+            es: mockLanguageResource('es', 300),
+            jp: mockLanguageResource('jp', 200),
+          };
+
+          const task = new Promise((resolve) => {
+            instance
+              .use({
+                type: 'backend',
+                read: (language, namespace, callback) => {
+                  const lang = langMap[language];
+
+                  setTimeout(() => {
+                    callback(null, lang.value);
+                  }, lang.delay);
+                },
+              })
+              .init(
+                {
+                  fallbackLng: 'en',
+                },
+                (err, t) => {
+                  resolve(
+                    Promise.all([
+                      instance.changeLanguage('en'),
+                      instance.changeLanguage('zh'),
+                      instance.changeLanguage('jp'),
+                      instance.changeLanguage('es'),
+                    ]).then(() => {
+                      expect(t('foo')).to.equal('es');
+                    }),
+                  );
+                },
+              );
+          });
+
+          vi.advanceTimersByTime(1000);
+          return task;
         });
       });
     });
