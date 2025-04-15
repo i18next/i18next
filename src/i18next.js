@@ -345,11 +345,13 @@ class I18n extends EventEmitter {
 
     const done = (err, l) => {
       if (l) {
-        setLngProps(l);
-        this.translator.changeLanguage(l);
-        this.isLanguageChangingTo = undefined;
-        this.emit('languageChanged', l);
-        this.logger.log('languageChanged', l);
+        if (this.isLanguageChangingTo === lng) {
+          setLngProps(l);
+          this.translator.changeLanguage(l);
+          this.isLanguageChangingTo = undefined;
+          this.emit('languageChanged', l);
+          this.logger.log('languageChanged', l);
+        }
       } else {
         this.isLanguageChangingTo = undefined;
       }
