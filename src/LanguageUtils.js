@@ -80,6 +80,10 @@ class LanguageUtil {
       codes.forEach((code) => {
         if (found) return;
 
+        const lngScOnly = this.getScriptPartFromCode(code);
+        // eslint-disable-next-line no-return-assign
+        if (this.isSupportedCode(lngScOnly)) return (found = lngScOnly);
+
         const lngOnly = this.getLanguagePartFromCode(code);
         // eslint-disable-next-line no-return-assign
         if (this.isSupportedCode(lngOnly)) return (found = lngOnly);

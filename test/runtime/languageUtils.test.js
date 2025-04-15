@@ -305,7 +305,7 @@ describe('LanguageUtils', () => {
     beforeAll(() => {
       cu = new LanguageUtils({
         fallbackLng: ['en'],
-        supportedLngs: ['en-US', 'en', 'de-DE'],
+        supportedLngs: ['en-US', 'en', 'de-DE', 'zh-Hans', 'zh-Hant'],
       });
     });
 
@@ -321,6 +321,8 @@ describe('LanguageUtils', () => {
       { args: [['user-id']], expected: 'en' },
       { args: [['en-AU-SA']], expected: 'en' },
       { args: [[]], expected: 'en' },
+      { args: [['zh-Hant-TW']], expected: 'zh-Hant' },
+      { args: [['zh-Hans-TW']], expected: 'zh-Hans' },
     ];
 
     tests.forEach((test) => {

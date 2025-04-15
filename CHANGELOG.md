@@ -1,3 +1,11 @@
+## 25.0.0
+
+**This is a potentially breaking release:**
+
+- fix multiple changeLanguage call that may have result in wrong order in previous versions [1605](https://github.com/i18next/i18next/issues/1605) [2298](https://github.com/i18next/i18next/pull/2298)
+- adapt `changeLanguage` to always (string or array) use `getBestMatchFromCodes` [2299](https://github.com/i18next/i18next/issues/2299)
+- `getBestMatchFromCodes` now tries to fallback to language code with same script [2299](https://github.com/i18next/i18next/issues/2299)
+
 ## 24.2.3
 
 - Upgrade @babel/runtime package to version v7.26.10 [2293](https://github.com/i18next/i18next/issues/2293)

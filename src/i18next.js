@@ -127,7 +127,7 @@ class I18n extends EventEmitter {
       s.interpolator = new Interpolator(this.options);
       s.utils = {
         hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
-      }
+      };
 
       s.backendConnector = new BackendConnector(
         createClassOnDemand(this.modules.backend),
@@ -364,7 +364,7 @@ class I18n extends EventEmitter {
       // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
       if (!lng && !lngs && this.services.languageDetector) lngs = [];
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
-      const l = isString(lngs) ? lngs : this.services.languageUtils.getBestMatchFromCodes(lngs);
+      const l = this.services.languageUtils.getBestMatchFromCodes(isString(lngs) ? [lngs] : lngs);
 
       if (l) {
         if (!this.language) {
@@ -397,26 +397,26 @@ class I18n extends EventEmitter {
 
   getFixedT(lng, ns, keyPrefix) {
     const fixedT = (key, opts, ...rest) => {
-      let options;
+      let o;
       if (typeof opts !== 'object') {
-        options = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
+        o = this.options.overloadTranslationOptionHandler([key, opts].concat(rest));
       } else {
-        options = { ...opts };
+        o = { ...opts };
       }
 
-      options.lng = options.lng || fixedT.lng;
-      options.lngs = options.lngs || fixedT.lngs;
-      options.ns = options.ns || fixedT.ns;
-      if (options.keyPrefix !== '') options.keyPrefix = options.keyPrefix || keyPrefix || fixedT.keyPrefix;
+      o.lng = o.lng || fixedT.lng;
+      o.lngs = o.lngs || fixedT.lngs;
+      o.ns = o.ns || fixedT.ns;
+      if (o.keyPrefix !== '') o.keyPrefix = o.keyPrefix || keyPrefix || fixedT.keyPrefix;
 
       const keySeparator = this.options.keySeparator || '.';
       let resultKey
-      if (options.keyPrefix && Array.isArray(key)) {
-        resultKey = key.map(k => `${options.keyPrefix}${keySeparator}${k}`);
+      if (o.keyPrefix && Array.isArray(key)) {
+        resultKey = key.map(k => `${o.keyPrefix}${keySeparator}${k}`);
       } else {
-        resultKey = options.keyPrefix ? `${options.keyPrefix}${keySeparator}${key}` : key;
+        resultKey = o.keyPrefix ? `${o.keyPrefix}${keySeparator}${key}` : key;
       }
-      return this.t(resultKey, options);
+      return this.t(resultKey, o);
     };
     if (isString(lng)) {
       fixedT.lng = lng;
