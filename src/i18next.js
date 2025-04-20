@@ -330,7 +330,7 @@ class I18n extends EventEmitter {
     }
     if (!this.resolvedLanguage && this.languages.indexOf(l) < 0 && this.store.hasLanguageSomeTranslations(l)) {
       this.resolvedLanguage = l;
-      if (this.languages.indexOf(l) < 0) this.languages.unshift(l);
+      this.languages.unshift(l);
     }
   }
 
