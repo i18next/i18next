@@ -1972,6 +1972,10 @@
           break;
         }
       }
+      if (!this.resolvedLanguage && this.languages.indexOf(l) < 0 && this.store.hasLanguageSomeTranslations(l)) {
+        this.resolvedLanguage = l;
+        if (this.languages.indexOf(l) < 0) this.languages.unshift(l);
+      }
     }
     changeLanguage(lng, callback) {
       var _this2 = this;
@@ -2005,7 +2009,8 @@
       };
       const setLng = lngs => {
         if (!lng && !lngs && this.services.languageDetector) lngs = [];
-        const l = this.services.languageUtils.getBestMatchFromCodes(isString(lngs) ? [lngs] : lngs);
+        const fl = isString(lngs) ? lngs : lngs && lngs[0];
+        const l = this.store.hasLanguageSomeTranslations(fl) ? fl : this.services.languageUtils.getBestMatchFromCodes(isString(lngs) ? [lngs] : lngs);
         if (l) {
           if (!this.language) {
             setLngProps(l);

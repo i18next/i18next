@@ -1,3 +1,7 @@
+## 25.0.1
+
+- optimize `changeLanguage` to correctly use `getBestMatchFromCodes` (string or array) [2299](https://github.com/i18next/i18next/issues/2299) and improve `resolvedLanguage` set for non canonical codes
+
 ## 25.0.0
 
 **This is a potentially breaking release:**
