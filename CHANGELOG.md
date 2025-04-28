@@ -1,3 +1,7 @@
+## 25.0.2
+
+- fix `cloneInstance` with `forkResourceStore: true` addresses [2303](https://github.com/i18next/i18next/issues/2303)
+
 ## 25.0.1
 
 - optimize `changeLanguage` to correctly use `getBestMatchFromCodes` (string or array) [2299](https://github.com/i18next/i18next/issues/2299) and improve `resolvedLanguage` set for non canonical codes

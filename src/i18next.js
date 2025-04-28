@@ -626,10 +626,11 @@ class I18n extends EventEmitter {
       // faster than const clonedData = JSON.parse(JSON.stringify(this.store.data))
       const clonedData = Object.keys(this.store.data).reduce((prev, l) => {
         prev[l] = { ...this.store.data[l] };
-        return Object.keys(prev[l]).reduce((acc, n) => {
+        prev[l] = Object.keys(prev[l]).reduce((acc, n) => {
           acc[n] = { ...prev[l][n] };
           return acc;
-        }, {});
+        }, prev[l]);
+        return prev;
       }, {});
       clone.store = new ResourceStore(clonedData, mergedOptions);
       clone.services.resourceStore = clone.store;
