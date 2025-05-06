@@ -336,6 +336,7 @@ class Translator extends EventEmitter {
         res = this.options.parseMissingKeyHandler(
           this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key,
           usedDefault ? res : undefined,
+          opt,
         );
       }
     }

@@ -1,3 +1,7 @@
+## 25.1.0
+
+- feat: `parseMissingKeyHandler` now takes options as parameter like in missingKeyHandler [2304](https://github.com/i18next/i18next/issues/2304)
+
 ## 25.0.2
 
 - fix `cloneInstance` with `forkResourceStore: true` addresses [2303](https://github.com/i18next/i18next/issues/2303)

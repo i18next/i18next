@@ -690,7 +690,7 @@
         res = this.extendTranslation(res, keys, opt, resolved, lastKey);
         if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = `${namespace}:${key}`;
         if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
-          res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key, usedDefault ? res : undefined);
+          res = this.options.parseMissingKeyHandler(this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key, usedDefault ? res : undefined, opt);
         }
       }
       if (returnDetails) {

@@ -75,6 +75,43 @@ describe('Translator', () => {
     });
   });
 
+  describe('translate() with missing key and a custom parseMissingKeyHandler', () => {
+    const calledParseMissingKeyHandler = [];
+    const parseMissingKeyHandler = (key, defaultValue, options) => {
+      calledParseMissingKeyHandler.push({
+        key,
+        defaultValue,
+        options,
+      });
+      return defaultValue || key;
+    };
+    beforeEach(() => {
+      t = new Translator(tServices, {
+        defaultNS: 'translation',
+        ns: 'translation',
+        saveMissing: true,
+        parseMissingKeyHandler,
+        interpolation: {
+          interpolateResult: true,
+          interpolateDefaultValue: true,
+          interpolateKey: true,
+        },
+      });
+      t.changeLanguage('en');
+    });
+
+    it('correctly calls parseMissingKeyHandler for "translation:test.missing"', () => {
+      expect(t.translate('translation:test.missing', { someV: 'hi there' })).toEqual(
+        'test.missing',
+      );
+      expect(calledParseMissingKeyHandler).to.have.lengthOf(1);
+      expect(calledParseMissingKeyHandler[0]).to.have.property('key', 'test.missing');
+      expect(calledParseMissingKeyHandler[0]).to.have.property('defaultValue', undefined);
+      expect(calledParseMissingKeyHandler[0]).to.have.property('options');
+      expect(calledParseMissingKeyHandler[0].options).to.have.property('someV', 'hi there');
+    });
+  });
+
   describe('translate() saveMissing with saveMissingPlurals options', () => {
     beforeEach(() => {
       t = new Translator(tServices, {
