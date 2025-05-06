@@ -472,7 +472,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * Receives a key that was not found in `t()` and returns a value, that will be returned by `t()`
    * @default noop
    */
-  parseMissingKeyHandler?(key: string, defaultValue?: string, options?: InitOptions): any;
+  parseMissingKeyHandler?(key: string, defaultValue?: string, options?: any): any;
 
   /**
    * Appends namespace to missing key

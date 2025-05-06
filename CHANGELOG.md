@@ -1,3 +1,7 @@
+## 25.1.1
+
+- fix options type for `parseMissingKeyHandler`
+
 ## 25.1.0
 
 - feat: `parseMissingKeyHandler` now takes options as parameter like in missingKeyHandler [2304](https://github.com/i18next/i18next/issues/2304)
