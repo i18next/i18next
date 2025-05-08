@@ -130,6 +130,31 @@ describe('i18next', () => {
         const { t } = i18next;
         expect(t('key')).to.equal('key');
       });
+
+      describe('t with interpolated key', () => {
+        let i18nInst;
+        beforeAll(() => {
+          const { createInstance } = i18next;
+          i18nInst = createInstance();
+          i18nInst.init({
+            fallbackLng: 'en',
+            resources: {
+              en: {
+                translation: {
+                  interKey: 'hi {{name}}',
+                },
+              },
+            },
+          });
+        });
+
+        it('does not manipulate passed options', () => {
+          const { t } = i18nInst;
+          const o = { name: 'Fritz' };
+          expect(t('interKey', o)).to.equal('hi Fritz');
+          expect(o).to.not.have.property('lng');
+        });
+      });
     });
 
     describe('getFixedT', () => {

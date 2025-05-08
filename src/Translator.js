@@ -38,12 +38,10 @@ class Translator extends EventEmitter {
     if (lng) this.language = lng;
   }
 
-  exists(key, options = { interpolation: {} }) {
-    if (key == null) {
-      return false;
-    }
-
-    const resolved = this.resolve(key, options);
+  exists(key, o = { interpolation: {} }) {
+    const opt = { ...o };
+    if (key == null) return false;
+    const resolved = this.resolve(key, opt);
     return resolved?.res !== undefined;
   }
 
@@ -85,7 +83,8 @@ class Translator extends EventEmitter {
     };
   }
 
-  translate(keys, opt, lastKey) {
+  translate(keys, o, lastKey) {
+    let opt = typeof o === 'object' ? { ...o } : o;
     if (typeof opt !== 'object' && this.options.overloadTranslationOptionHandler) {
       /* eslint prefer-rest-params: 0 */
       opt = this.options.overloadTranslationOptionHandler(arguments);

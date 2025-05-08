@@ -1,3 +1,7 @@
+## 25.1.2
+
+- do not mutate t options, fixes [2307](https://github.com/i18next/i18next/issues/2307)
+
 ## 25.1.1
 
 - fix options type for `parseMissingKeyHandler`

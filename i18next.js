@@ -479,13 +479,14 @@
       if (lng) this.language = lng;
     }
     exists(key) {
-      let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+      let o = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
         interpolation: {}
       };
-      if (key == null) {
-        return false;
-      }
-      const resolved = this.resolve(key, options);
+      const opt = {
+        ...o
+      };
+      if (key == null) return false;
+      const resolved = this.resolve(key, opt);
       return resolved?.res !== undefined;
     }
     extractFromKey(key, opt) {
@@ -512,7 +513,10 @@
         namespaces: isString(namespaces) ? [namespaces] : namespaces
       };
     }
-    translate(keys, opt, lastKey) {
+    translate(keys, o, lastKey) {
+      let opt = typeof o === 'object' ? {
+        ...o
+      } : o;
       if (typeof opt !== 'object' && this.options.overloadTranslationOptionHandler) {
         opt = this.options.overloadTranslationOptionHandler(arguments);
       }
