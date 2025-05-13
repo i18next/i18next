@@ -48,8 +48,8 @@ type WithOrWithoutPlural<Key> = _CompatibilityJSON extends 'v4'
   ? Key extends `${infer KeyWithoutOrdinalPlural}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
     ? KeyWithoutOrdinalPlural | Key
     : Key extends `${infer KeyWithoutPlural}${_PluralSeparator}${PluralSuffix}`
-    ? KeyWithoutPlural | Key
-    : Key
+      ? KeyWithoutPlural | Key
+      : Key
   : Key;
 
 type JoinKeys<K1, K2> = `${K1 & string}${_KeySeparator}${K2 & string}`;
@@ -60,8 +60,8 @@ type TrimSpaces<T extends string, Acc extends string = ''> = T extends `${infer 
     ? TrimSpaces<Rest, Acc>
     : TrimSpaces<Rest, `${Acc}${Char}`>
   : T extends ''
-  ? Acc
-  : never;
+    ? Acc
+    : never;
 
 /** ****************************************************
  * Build all keys and key prefixes based on Resources *
@@ -123,8 +123,8 @@ type ParseKeysByNamespaces<Ns extends Namespace, Keys> = Ns extends readonly (in
 type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extends false
   ? never
   : _FallbackNamespace extends (infer UnionFallbackNs extends string)[]
-  ? Keys[UnionFallbackNs]
-  : Keys[_FallbackNamespace & string];
+    ? Keys[UnionFallbackNs]
+    : Keys[_FallbackNamespace & string];
 
 export type FilterKeysByContext<Keys, Context> = Context extends string
   ? Keys extends
@@ -189,34 +189,34 @@ type ParseTReturnWithFallback<Key, Val> = Val extends ''
     ? ''
     : Key
   : Val extends null
-  ? _ReturnNull extends true
-    ? null
-    : Key
-  : Val;
+    ? _ReturnNull extends true
+      ? null
+      : Key
+    : Val;
 
 type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallback<
   Key,
   Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
     ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt>
     : // Process plurals only if count is provided inside options
-    TOpt['count'] extends number
-    ? TOpt['ordinal'] extends boolean
-      ? ParseTReturnPluralOrdinal<Res, Key>
-      : ParseTReturnPlural<Res, Key>
-    : // otherwise access plain key without adding plural and ordinal suffixes
-    Res extends readonly unknown[]
-    ? Key extends `${infer NKey extends number}`
-      ? Res[NKey]
-      : never
-    : Res[Key & keyof Res]
+      TOpt['count'] extends number
+      ? TOpt['ordinal'] extends boolean
+        ? ParseTReturnPluralOrdinal<Res, Key>
+        : ParseTReturnPlural<Res, Key>
+      : // otherwise access plain key without adding plural and ordinal suffixes
+        Res extends readonly unknown[]
+        ? Key extends `${infer NKey extends number}`
+          ? Res[NKey]
+          : never
+        : Res[Key & keyof Res]
 >;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
   ? $SpecialObject | string
   : TOpt['returnObjects'] extends true
-  ? $SpecialObject
-  : string;
+    ? $SpecialObject
+    : string;
 type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
 export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
@@ -265,8 +265,8 @@ export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
 type TFunctionProcessReturnValue<Ret, DefaultValue> = Ret extends string | $SpecialObject | null
   ? Ret
   : [DefaultValue] extends [never]
-  ? Ret
-  : DefaultValue;
+    ? Ret
+    : DefaultValue;
 
 type TFunctionReturnOptionalDetails<Ret, TOpt extends TOptions> = TOpt['returnDetails'] extends true
   ? TFunctionDetailedResult<Ret, TOpt>
