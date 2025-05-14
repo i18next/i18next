@@ -107,13 +107,15 @@ class Translator extends EventEmitter {
     const { key, namespaces } = this.extractFromKey(keys[keys.length - 1], opt);
     const namespace = namespaces[namespaces.length - 1];
 
+    let nsSeparator = opt.nsSeparator !== undefined ? opt.nsSeparator : this.options.nsSeparator;
+    if (nsSeparator === undefined) nsSeparator = ':';
+
     // return key on CIMode
     const lng = opt.lng || this.language;
     const appendNamespaceToCIMode =
       opt.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
     if (lng?.toLowerCase() === 'cimode') {
       if (appendNamespaceToCIMode) {
-        const nsSeparator = opt.nsSeparator || this.options.nsSeparator;
         if (returnDetails) {
           return {
             res: `${namespace}${nsSeparator}${key}`,
@@ -328,17 +330,11 @@ class Translator extends EventEmitter {
 
       // append namespace if still key
       if (usedKey && res === key && this.options.appendNamespaceToMissingKey) {
-        let nsSeparator =
-          opt.nsSeparator !== undefined ? opt.nsSeparator : this.options.nsSeparator;
-        if (nsSeparator === undefined) nsSeparator = ':';
         res = `${namespace}${nsSeparator}${key}`;
       }
 
       // parseMissingKeyHandler
       if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
-        let nsSeparator =
-          opt.nsSeparator !== undefined ? opt.nsSeparator : this.options.nsSeparator;
-        if (nsSeparator === undefined) nsSeparator = ':';
         res = this.options.parseMissingKeyHandler(
           this.options.appendNamespaceToMissingKey ? `${namespace}${nsSeparator}${key}` : key,
           usedDefault ? res : undefined,
