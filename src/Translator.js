@@ -327,13 +327,20 @@ class Translator extends EventEmitter {
       res = this.extendTranslation(res, keys, opt, resolved, lastKey);
 
       // append namespace if still key
-      if (usedKey && res === key && this.options.appendNamespaceToMissingKey)
-        res = `${namespace}:${key}`;
+      if (usedKey && res === key && this.options.appendNamespaceToMissingKey) {
+        let nsSeparator =
+          opt.nsSeparator !== undefined ? opt.nsSeparator : this.options.nsSeparator;
+        if (nsSeparator === undefined) nsSeparator = ':';
+        res = `${namespace}${nsSeparator}${key}`;
+      }
 
       // parseMissingKeyHandler
       if ((usedKey || usedDefault) && this.options.parseMissingKeyHandler) {
+        let nsSeparator =
+          opt.nsSeparator !== undefined ? opt.nsSeparator : this.options.nsSeparator;
+        if (nsSeparator === undefined) nsSeparator = ':';
         res = this.options.parseMissingKeyHandler(
-          this.options.appendNamespaceToMissingKey ? `${namespace}:${key}` : key,
+          this.options.appendNamespaceToMissingKey ? `${namespace}${nsSeparator}${key}` : key,
           usedDefault ? res : undefined,
           opt,
         );
