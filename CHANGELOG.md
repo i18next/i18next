@@ -1,3 +1,7 @@
+## 25.2.0
+
+- introduce `cacheInBuiltFormats` option to address [2227](https://github.com/i18next/i18next/issues/2227)
+
 ## 25.1.3
 
 - Ensure nsSeparator is respected when appendNamespaceToMissingKey is true [2311](https://github.com/i18next/i18next/pull/2311), fixes [2310](https://github.com/i18next/i18next/issues/2310)

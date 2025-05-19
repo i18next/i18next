@@ -679,6 +679,13 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * @default 350
    */
   retryTimeout?: number;
+
+  /**
+   * Initializes the internal formatter for the in-built formats as cached version.
+   * Can be set to false for this type of issues: https://github.com/i18next/i18next/issues/2227
+   * @default true
+   */
+  cacheInBuiltFormats?: boolean;
 }
 
 export interface TOptionsBase {

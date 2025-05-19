@@ -72,6 +72,7 @@ export const get = () => ({
     maxReplaces: 1000, // max replaces to prevent endless loop
     skipOnVariables: true,
   },
+  cacheInBuiltFormats: true,
 });
 
 /* eslint no-param-reassign: 0 */

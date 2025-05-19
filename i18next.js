@@ -1278,66 +1278,68 @@
   };
   const createCachedFormatter = fn => {
     const cache = {};
-    return (val, lng, options) => {
-      let optForCache = options;
-      if (options && options.interpolationkey && options.formatParams && options.formatParams[options.interpolationkey] && options[options.interpolationkey]) {
+    return (v, l, o) => {
+      let optForCache = o;
+      if (o && o.interpolationkey && o.formatParams && o.formatParams[o.interpolationkey] && o[o.interpolationkey]) {
         optForCache = {
           ...optForCache,
-          [options.interpolationkey]: undefined
+          [o.interpolationkey]: undefined
         };
       }
-      const key = lng + JSON.stringify(optForCache);
-      let formatter = cache[key];
-      if (!formatter) {
-        formatter = fn(getCleanedCode(lng), options);
-        cache[key] = formatter;
+      const key = l + JSON.stringify(optForCache);
+      let frm = cache[key];
+      if (!frm) {
+        frm = fn(getCleanedCode(l), o);
+        cache[key] = frm;
       }
-      return formatter(val);
+      return frm(v);
     };
   };
+  const createNonCachedFormatter = fn => (v, l, o) => fn(getCleanedCode(l), o)(v);
   class Formatter {
     constructor(options = {}) {
       this.logger = baseLogger.create('formatter');
       this.options = options;
-      this.formats = {
-        number: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.NumberFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val);
-        }),
-        currency: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.NumberFormat(lng, {
-            ...opt,
-            style: 'currency'
-          });
-          return val => formatter.format(val);
-        }),
-        datetime: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.DateTimeFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val);
-        }),
-        relativetime: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.RelativeTimeFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val, opt.range || 'day');
-        }),
-        list: createCachedFormatter((lng, opt) => {
-          const formatter = new Intl.ListFormat(lng, {
-            ...opt
-          });
-          return val => formatter.format(val);
-        })
-      };
       this.init(options);
     }
     init(services, options = {
       interpolation: {}
     }) {
       this.formatSeparator = options.interpolation.formatSeparator || ',';
+      const cf = options.cacheInBuiltFormats ? createCachedFormatter : createNonCachedFormatter;
+      this.formats = {
+        number: cf((lng, opt) => {
+          const formatter = new Intl.NumberFormat(lng, {
+            ...opt
+          });
+          return val => formatter.format(val);
+        }),
+        currency: cf((lng, opt) => {
+          const formatter = new Intl.NumberFormat(lng, {
+            ...opt,
+            style: 'currency'
+          });
+          return val => formatter.format(val);
+        }),
+        datetime: cf((lng, opt) => {
+          const formatter = new Intl.DateTimeFormat(lng, {
+            ...opt
+          });
+          return val => formatter.format(val);
+        }),
+        relativetime: cf((lng, opt) => {
+          const formatter = new Intl.RelativeTimeFormat(lng, {
+            ...opt
+          });
+          return val => formatter.format(val, opt.range || 'day');
+        }),
+        list: cf((lng, opt) => {
+          const formatter = new Intl.ListFormat(lng, {
+            ...opt
+          });
+          return val => formatter.format(val);
+        })
+      };
     }
     add(name, fc) {
       this.formats[name.toLowerCase().trim()] = fc;
@@ -1653,7 +1655,8 @@
       nestingOptionsSeparator: ',',
       maxReplaces: 1000,
       skipOnVariables: true
-    }
+    },
+    cacheInBuiltFormats: true
   });
   const transformOptions = options => {
     if (isString(options.ns)) options.ns = [options.ns];
