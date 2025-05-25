@@ -940,7 +940,7 @@
       return found || [];
     }
     toResolveHierarchy(code, fallbackCode) {
-      const fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
+      const fallbackCodes = this.getFallbackCodes((fallbackCode === false ? [] : fallbackCode) || this.options.fallbackLng || [], code);
       const codes = [];
       const addCode = c => {
         if (!c) return;

@@ -1,3 +1,7 @@
+## 25.2.1
+
+- streamline `fallbackLng` option of t call with the init options [2312](https://github.com/i18next/i18next/issues/2312)
+
 ## 25.2.0
 
 - introduce `cacheInBuiltFormats` option to address [2227](https://github.com/i18next/i18next/issues/2227)

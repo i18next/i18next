@@ -720,7 +720,7 @@ export interface TOptionsBase {
   /**
    * Override language to lookup key if not found see fallbacks for details
    */
-  fallbackLng?: FallbackLng;
+  fallbackLng?: false | FallbackLng;
   /**
    * Override namespaces (string or array)
    */

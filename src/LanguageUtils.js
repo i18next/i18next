@@ -128,7 +128,7 @@ class LanguageUtil {
 
   toResolveHierarchy(code, fallbackCode) {
     const fallbackCodes = this.getFallbackCodes(
-      fallbackCode || this.options.fallbackLng || [],
+      (fallbackCode === false ? [] : fallbackCode) || this.options.fallbackLng || [],
       code,
     );
 
