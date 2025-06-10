@@ -60,6 +60,7 @@
     }
   },
   "devDependencies": {
+    "@arktype/attest": "^0.46.0",
     "@babel/core": "^7.27.1",
     "@babel/plugin-transform-async-generator-functions": "^7.27.1",
     "@babel/plugin-transform-modules-commonjs": "^7.27.1",
@@ -84,6 +85,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^4.3.4",
     "eslint-plugin-import": "^2.31.0",
+    "fast-check": "^4.1.1",
     "gh-release": "^7.0.2",
     "husky": "^9.1.7",
     "i18next-browser-languagedetector": "^8.1.0",

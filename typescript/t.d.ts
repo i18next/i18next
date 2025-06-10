@@ -100,11 +100,11 @@ type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extend
 /** **********************************************************************
  * Parse t function keys based on the namespace, options and key prefix *
  *********************************************************************** */
-export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
+type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
   ? ResourceKeys<true>
   : ResourceKeys;
 
-export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
+type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
   ? TOpt['ns']
   : Ns;
 
@@ -126,7 +126,7 @@ type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extend
     ? Keys[UnionFallbackNs]
     : Keys[_FallbackNamespace & string];
 
-export type FilterKeysByContext<Keys, Context> = Context extends string
+type FilterKeysByContext<Keys, Context> = Context extends string
   ? Keys extends
       | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
       | `${infer Prefix}${_ContextSeparator}${Context}`
@@ -134,7 +134,7 @@ export type FilterKeysByContext<Keys, Context> = Context extends string
     : never
   : Keys;
 
-export type ParseKeys<
+type ParseKeys<
   Ns extends Namespace = DefaultNamespace,
   TOpt extends TOptions = {},
   KPrefix = undefined,
@@ -219,11 +219,11 @@ type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
     : string;
 type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
-export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
+type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
   : Key;
 
-export type TFunctionReturn<
+type TFunctionReturn<
   Ns extends Namespace,
   Key,
   TOpt extends TOptions,
@@ -235,7 +235,7 @@ export type TFunctionReturn<
     : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt>
   : DefaultTReturn<TOpt>;
 
-export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
+type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
   /**
    * The plain used key
    */
@@ -276,9 +276,90 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
+type PathOf<T extends [any], K = never> = PathsAtLevel<T, K>;
+type Atom = string | number | boolean | symbol | bigint | globalThis.Function;
+
+type PathsAtLevel<T extends [any], K> = (
+  K & `${string}${_KeySeparator}` extends never ? K : K & `${string}${_KeySeparator}`
+) extends infer P
+  ? P extends `${infer A}${_KeySeparator}${infer B}`
+    ? `${A}${_KeySeparator}${PathsAtLevel<[T[0][A]], B> & string}`
+    : P extends keyof T[0]
+      ? K
+      : T[0] extends Atom
+        ? never
+        : keyof T[0]
+  : never;
+
+type Absorb<T, Fallback = string> = unknown extends T
+  ? Fallback
+  : [T] extends [never]
+    ? Fallback
+    : T;
+type Get<T extends [any], K extends keyof any> = T[0][K];
+type GetPath<T extends [any], K extends keyof any> = WalkPath<T, K>;
+type WalkPath<
+  T extends [any],
+  K extends keyof any,
+> = K extends `${infer A}${_KeySeparator}${infer B}` ? WalkPath<[T[0][A]], B> : Absorb<T[0][K]>;
+
+type GetNamespaceTuples<NS extends keyof _Resources> = NS extends NS
+  ? keyof _Resources[NS] extends infer K extends keyof _Resources[NS]
+    ? K extends K
+      ? [NS: NS & string, K: K & string, V: _Resources[NS][K]]
+      : never
+    : never
+  : never;
+
 /** ************************
  * T function declaration *
  ************************* */
+
+interface TFunctionStrictLazy<Ns extends Namespace = DefaultNamespace> {
+  $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+  $Translations: Get<[_Resources], this['$TFunctionBrand']>;
+  <Key extends string>(
+    key: PathOf<[this['$Translations']], Key>,
+  ): GetPath<[this['$Translations']], Key>;
+  <
+    const Key extends ParseKeys<Ns, TOpt> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, Key, TOpt>,
+  >(
+    key: Key | Key[],
+    options?: TOpt & InterpolationMap<Ret>,
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+  <
+    const Key extends ParseKeys<Ns, TOpt> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, Key, TOpt>,
+  >(
+    key: Key | Key[],
+    defaultValue: string,
+    options?: TOpt & InterpolationMap<Ret>,
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+}
+
+interface TFunctionNonStrictLazy<Ns extends Namespace = DefaultNamespace>
+  extends TFunctionStrict<Ns, undefined> {
+  $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+  $Translations: Absorb<Get<[_Resources], this['$TFunctionBrand']>, _Resources>;
+  <Key extends string>(
+    key: PathOf<[this['$Translations']], Key>,
+  ): GetPath<[this['$Translations']], Key>;
+  <
+    const Key extends ParseKeys<Ns, TOpt> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, Key, TOpt>,
+    const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
+    DefaultValue extends string = never,
+  >(
+    ...args:
+      | [key: Key | Key[], options?: ActualOptions]
+      | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
+      | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
+}
 
 interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
   $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
@@ -317,12 +398,22 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
-type TFunctionSignature<
-  Ns extends Namespace = DefaultNamespace,
-  KPrefix = undefined,
-> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+type Inline<T> = T;
+// @ts-expect-error
+interface newtype<T extends {}> extends Inline<T> {}
 
-export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
-  extends TFunctionSignature<Ns, KPrefix> {}
+type TFunctionSignature<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = [
+  undefined,
+  _ReturnObjects,
+] extends [KPrefix, true]
+  ? _StrictKeyChecks extends true
+    ? TFunctionNonStrictLazy<Ns>
+    : TFunctionNonStrictLazy<Ns>
+  : _StrictKeyChecks extends true
+    ? TFunctionStrict<Ns, KPrefix>
+    : TFunctionNonStrict<Ns, KPrefix>;
 
-export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
+  extends newtype<TFunctionSignature<Ns, KPrefix>> {}
+
+type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
