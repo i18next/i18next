@@ -1,4 +1,4 @@
-export const translations = {
+export default {
   O2y12UZ: {
     c$An: {
       h: {

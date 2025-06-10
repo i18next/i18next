@@ -14,22 +14,22 @@ const options = {
 
 const property = fc.stringMatching(/^[$a-zA-Z][$a-zA-Z0-9]*$/);
 
-const translations_01 = fc.dictionary(property, property, options);
-const translations_02 = fc.dictionary(property, translations_01, options);
-const translations_03 = fc.dictionary(property, translations_02, options);
-const translations_04 = fc.dictionary(property, translations_03, options);
-const translations_05 = fc.dictionary(property, translations_04, options);
-const translations_06 = fc.dictionary(property, translations_05, options);
-const translations_07 = fc.dictionary(property, translations_06, options);
-const translations_08 = fc.dictionary(property, translations_07, options);
-const translations_09 = fc.dictionary(property, translations_08, options);
+const translations1 = fc.dictionary(property, property, options);
+const translations2 = fc.dictionary(property, translations1, options);
+const translations3 = fc.dictionary(property, translations2, options);
+const translations4 = fc.dictionary(property, translations3, options);
+const translations5 = fc.dictionary(property, translations4, options);
+const translations6 = fc.dictionary(property, translations5, options);
+const translations7 = fc.dictionary(property, translations6, options);
+const translations8 = fc.dictionary(property, translations7, options);
+const translations9 = fc.dictionary(property, translations8, options);
 
-const [trans_09] = fc.sample(translations_09, 1);
-const json_09 = JSON.stringify(trans_09, null, 2);
-const typescript_09 = 'export const translations = ' + json_09 + ' as const';
+const [translations] = fc.sample(translations9, 1);
+const json = JSON.stringify(translations, null, 2);
+const code = `export const translations = ${json} as const`;
 
-function main(): void {
-  fs.writeFileSync(PATH.target, typescript_09 + '\n');
+function main() {
+  return fs.writeFileSync(PATH.target, `${code}\n`);
 }
 
-void main();
+main();
