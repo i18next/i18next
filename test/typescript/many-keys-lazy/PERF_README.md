@@ -7,7 +7,7 @@
 To run performance check change your current working directory to this folder.
 
 ```bash
-cd test/typescript/many-keys
+cd test/typescript/many-keys-lazy
 ```
 
 Then run tsc
