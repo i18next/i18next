@@ -24,16 +24,11 @@ const translations_07 = fc.dictionary(property, translations_06, options);
 const translations_08 = fc.dictionary(property, translations_07, options);
 const translations_09 = fc.dictionary(property, translations_08, options);
 
-const [trans_05] = fc.sample(translations_05, 1);
-const json_05 = JSON.stringify(trans_05, null, 2);
-const typescript_05 = 'export const translations = ' + json_05 + ' as const';
-
 const [trans_09] = fc.sample(translations_09, 1);
 const json_09 = JSON.stringify(trans_09, null, 2);
 const typescript_09 = 'export const translations = ' + json_09 + ' as const';
 
 function main(): void {
-  // fs.writeFileSync(PATH.target, typescript_05 + '\n')
   fs.writeFileSync(PATH.target, typescript_09 + '\n');
 }
 
