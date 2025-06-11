@@ -100,11 +100,11 @@ type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extend
 /** **********************************************************************
  * Parse t function keys based on the namespace, options and key prefix *
  *********************************************************************** */
-export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
+type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
   ? ResourceKeys<true>
   : ResourceKeys;
 
-export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
+type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
   ? TOpt['ns']
   : Ns;
 
@@ -126,7 +126,7 @@ type ParseKeysByFallbackNs<Keys extends $Dictionary> = _FallbackNamespace extend
     ? Keys[UnionFallbackNs]
     : Keys[_FallbackNamespace & string];
 
-export type FilterKeysByContext<Keys, Context> = Context extends string
+type FilterKeysByContext<Keys, Context> = Context extends string
   ? Keys extends
       | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
       | `${infer Prefix}${_ContextSeparator}${Context}`
@@ -134,7 +134,7 @@ export type FilterKeysByContext<Keys, Context> = Context extends string
     : never
   : Keys;
 
-export type ParseKeys<
+type ParseKeys<
   Ns extends Namespace = DefaultNamespace,
   TOpt extends TOptions = {},
   KPrefix = undefined,
@@ -276,6 +276,28 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
+type Atom = string | number | boolean | symbol | bigint | globalThis.Function;
+type Absorb<T, Else = string> = unknown extends T ? Else : [T] extends [never] ? Else : T;
+type GetOne<T extends [any], K extends keyof any> = T[0][K];
+type Get<T extends [any], K extends keyof any> = Walk<T, K>;
+
+type Walk<T extends [any], K extends keyof any> = K extends `${infer A}${_KeySeparator}${infer B}`
+  ? Walk<[T[0][A]], B>
+  : Absorb<T[0][K]>;
+
+type PathOf<T extends [any], K = never> = PathsAtLevel<T, K>;
+type PathsAtLevel<T extends [any], K> = (
+  K & `${string}${_KeySeparator}` extends never ? K : K & `${string}${_KeySeparator}`
+) extends infer P
+  ? P extends `${infer A}${_KeySeparator}${infer B}`
+    ? `${A}${_KeySeparator}${PathsAtLevel<[T[0][A]], B> & string}`
+    : P extends keyof T[0]
+      ? K
+      : T[0] extends Atom
+        ? never
+        : keyof T[0]
+  : never;
+
 /** ************************
  * T function declaration *
  ************************* */
@@ -317,12 +339,101 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
-type TFunctionSignature<
+export type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+> = _ReturnObjects extends true
+  ? _StrictKeyChecks extends true
+    ? TFunction.LazyStrict<Ns, KPrefix>
+    : TFunction.LazyNonStrict<Ns, KPrefix>
+  : _StrictKeyChecks extends true
+    ? TFunctionStrict<Ns, KPrefix>
+    : TFunctionNonStrict<Ns, KPrefix>;
 
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends TFunctionSignature<Ns, KPrefix> {}
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+
+declare namespace TFunction {
+  /**
+   * ## {@link LazyStrict `TFunction.LazyStrict`}
+   *
+   * This signature is nearly identical to {@link TFunctionStrict `TFunctionStrict`},
+   * with 2 notable differences:
+   *
+   * 1. This signature adds a new property {@link $Trans `$Trans`} that contains the set of
+   *    available translations
+   *
+   * 2. This signature adds a new overload that is "lazy" (as in, not eager). The algorithm
+   *    it uses is responsive to user input, and computes auto-completions a level at a time,
+   *    rather than pre-computing all possible paths ahead of time.
+   *
+   * See also:
+   * - {@link LazyNonStrict `TFunction.LazyNonStrict`}
+   */
+  interface LazyStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+    <Key extends string>(key: PathOf<[this['$Trans']], Key>): Get<[this['$Trans']], Key>;
+    $Trans: GetOne<[_Resources], this['$TFunctionBrand']>;
+    /** This property was copy-pasted from {@link TFunctionStrict} */
+    $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+    /** This overload was copy-pasted from {@link TFunctionStrict} */
+    <
+      const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+      const TOpt extends TOptions,
+      Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    >(
+      key: Key | Key[],
+      options?: TOpt & InterpolationMap<Ret>,
+    ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+    /** This overload was copy-pasted from `TFunctionStrict` */
+    <
+      const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+      const TOpt extends TOptions,
+      Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    >(
+      key: Key | Key[],
+      defaultValue: string,
+      options?: TOpt & InterpolationMap<Ret>,
+    ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+  }
+
+  /**
+   * ## {@link LazyNonStrict `TFunction.LazyNonStrict`}
+   *
+   * This signature is nearly identical to {@link TFunctionNonStrict `TFunctionNonStrict`},
+   * with 2 notable differences:
+   *
+   * 1. This signature adds a new property {@link $Trans `$Trans`} that contains the set of
+   *    available translations
+   *
+   * 2. This signature adds a new overload that is "lazy" (as in, not eager). The algorithm
+   *    it uses is responsive to user input, and computes auto-completions a level at a time,
+   *    rather than pre-computing all possible paths ahead of time.
+   *
+   * See also:
+   * - {@link LazyStrict `TFunction.LazyStrict`}
+   */
+  interface LazyNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
+    <Key extends string>(key: PathOf<[this['$Trans']], Key>): Get<[this['$Trans']], Key>;
+    $Trans: GetOne<[_Resources], this['$TFunctionBrand']>;
+    /** This property was copy-pasted from {@link TFunctionNonStrict} */
+    $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+    /** This overload was copy-pasted from {@link TFunctionNonStrict} */
+    <
+      const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+      const TOpt extends TOptions,
+      Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+      const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
+      DefaultValue extends string = never,
+    >(
+      ...args:
+        | [key: Key | Key[], options?: ActualOptions]
+        | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
+        | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+    ): TFunctionReturnOptionalDetails<
+      TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>,
+      TOpt
+    >;
+  }
+}
