@@ -53,40 +53,6 @@ declare module 'i18next' {
           },
         ];
       };
-
-      // ctx: {
-      //   beverage: 'beverage'
-      //   tea_one: 'a cuppa tea and a lie down'
-      //   tea_other: '{{count}} cups of tea and a big sleep'
-      //   coffee: {
-      //     drip: {
-      //       black: 'a black cup of coffee'
-      //     }
-      //     bar: {
-      //       shot: 'a shot of espresso'
-      //     }
-      //   }
-      //   sodas: {
-      //     coke: {
-      //       'coca-cola': 'a can of coke'
-      //     }
-      //     faygo: {
-      //       purple: 'purple faygo'
-      //       orange_one: 'one orange faygo'
-      //       orange_other: '{{count}} orange faygo'
-      //     }
-      //   }
-      // }
-
-      // {
-      //   beverage: 'beverage'
-      //   'beverage|beer': 'beer'
-      //   tea_one: 'a cuppa tea and a lie down'
-      //   tea_other: '{{count}} cups of tea and a big sleep'
-      //   'dessert|cake': 'a nice cake'
-      //   'dessert|muffin_one': 'a nice muffin'
-      //   'dessert|muffin_other': '{{count}} nice muffins'
-      // }
     };
   }
 }
