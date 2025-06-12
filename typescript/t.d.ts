@@ -5,6 +5,7 @@ import type {
   $SpecialObject,
   $StringKeyPathToRecord,
   $NoInfer,
+  $Prune,
 } from './helpers.js';
 import type {
   TypeOptions,
@@ -33,6 +34,7 @@ type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
+type _UseSelector = TypeOptions['useSelector'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -212,6 +214,7 @@ type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallba
 >;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
+
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
   ? $SpecialObject | string
   : TOpt['returnObjects'] extends true
@@ -276,6 +279,60 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
+type Selector<S, T, Opt extends TOptions> =
+  | never
+  | {
+      (translations: FilterKeys<S, Opt['context']>): T;
+    };
+
+type RegularKeys<T, K extends keyof T, Context> = T[K] extends object
+  ? K
+  : Context extends string
+    ? never
+    : K;
+
+type ContextKeys<T, K extends keyof T, Context> = T[K] extends object
+  ? never
+  : Context extends string
+    ? K extends
+        | `${infer Prefix}${_ContextSeparator}${Context}`
+        | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+      ? Prefix
+      : never
+    : never;
+
+type PluralKeys<T, K extends keyof T, Context = undefined> = T[K] extends object
+  ? never
+  : Context extends string
+    ? never
+    : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+      ? Prefix
+      : never;
+
+type FilterKeys<T, Context> =
+  | never
+  | $Prune<
+      {
+        [K in keyof T as PluralKeys<T, K, Context>]: T[K] extends readonly any[]
+          ? { [I in keyof T[K]]: FilterKeys<T[K][I], Context> }
+          : T[K] extends object
+            ? FilterKeys<T[K], Context>
+            : T[K];
+      } & {
+        [K in keyof T as RegularKeys<T, K, Context>]: T[K] extends readonly any[]
+          ? { [I in keyof T[K]]: FilterKeys<T[K][I], Context> }
+          : T[K] extends object
+            ? FilterKeys<T[K], Context>
+            : T[K];
+      } & {
+        [K in keyof T as ContextKeys<T, K, Context>]: T[K] extends readonly any[]
+          ? { [I in keyof T[K]]: FilterKeys<T[K][I], Context> }
+          : T[K] extends object
+            ? FilterKeys<T[K], Context>
+            : T[K];
+      }
+    >;
+
 /** ************************
  * T function declaration *
  ************************* */
@@ -317,10 +374,37 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
+interface TFunctionSelectorStrict<Ns extends Namespace, S /* , KPrefix */> {
+  $TFunctionBrand: $IsResourcesDefined extends true
+    ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
+    : never;
+  <T, const Opt extends TOptions>(selector: Selector<S, T, Opt>, options?: Opt): T;
+}
+
+interface TFunctionSelectorNonStrict<Ns extends Namespace, S /* , KPrefix */> {
+  $TFunctionBrand: $IsResourcesDefined extends true
+    ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
+    : never;
+  <T, const Opt extends TOptions>(selector: Selector<S, T, Opt>, options?: Opt): T;
+}
+
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+  S = KPrefix extends undefined
+    ? /* eslint-disable @typescript-eslint/ban-ts-comment */
+      // @ts-ignore
+      _Resources[Ns extends readonly any[] ? Ns[0] : Ns]
+    : /* eslint-disable @typescript-eslint/ban-ts-comment */
+      // @ts-ignore
+      _Resources[Ns extends readonly any[] ? Ns[0] : Ns][KPrefix],
+> = _StrictKeyChecks extends true
+  ? _UseSelector extends true
+    ? TFunctionSelectorStrict<Ns, S /* , KPrefix */>
+    : TFunctionStrict<Ns, KPrefix>
+  : _UseSelector extends true
+    ? TFunctionSelectorNonStrict<Ns, S /* , KPrefix */>
+    : TFunctionNonStrict<Ns, KPrefix>;
 
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends TFunctionSignature<Ns, KPrefix> {}

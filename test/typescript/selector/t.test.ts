@@ -1,0 +1,85 @@
+import { describe, it, expectTypeOf } from 'vitest';
+import { getFixedT, TFunction } from 'i18next';
+
+declare const t: TFunction;
+
+describe('t', () => {
+  it('basic selector usage', () => {
+    expectTypeOf(t(($) => $.beverage)).toEqualTypeOf<'beverage'>();
+    expectTypeOf(t(($) => $['beverage|beer'])).toEqualTypeOf<'beer'>();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|americano'])).toEqualTypeOf<'a hot americano'>();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toEqualTypeOf<
+      'a dry cappuccino' | '{{count}} dry cappuccinos'
+    >();
+    expectTypeOf(
+      t(($) => $.coffee.bar['espresso|cappuccino_one']),
+    ).toEqualTypeOf<'a dry cappuccino'>();
+    expectTypeOf(
+      t(($) => $.coffee.bar['espresso|cappuccino_other']),
+    ).toEqualTypeOf<'{{count}} dry cappuccinos'>();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'])).toEqualTypeOf<
+      'a foamy latte' | '{{count}} foamy lattes'
+    >();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|latte_one'])).toEqualTypeOf<'a foamy latte'>();
+    expectTypeOf(
+      t(($) => $.coffee.bar['espresso|latte_other']),
+    ).toEqualTypeOf<'{{count}} foamy lattes'>();
+    expectTypeOf(t(($) => $.coffee.bar.shot)).toEqualTypeOf<'a shot of espresso'>();
+    expectTypeOf(t(($) => $['dessert|cake'])).toEqualTypeOf<'a nice cake'>();
+    expectTypeOf(t(($) => $['dessert|muffin'])).toEqualTypeOf<
+      'a nice muffin' | '{{count}} nice muffins'
+    >();
+    expectTypeOf(t(($) => $['dessert|muffin_one'])).toEqualTypeOf<'a nice muffin'>();
+    expectTypeOf(t(($) => $['dessert|muffin_other'])).toEqualTypeOf<'{{count}} nice muffins'>();
+    expectTypeOf(t(($) => $.sodas.coca_cola.coke)).toEqualTypeOf<'a can of coke'>();
+    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'])).toEqualTypeOf<
+      'a can of diet coke' | '{{count}} cans of diet coke'
+    >();
+    expectTypeOf(
+      t(($) => $.sodas.coca_cola['coke|diet_one']),
+    ).toEqualTypeOf<'a can of diet coke'>();
+    expectTypeOf(
+      t(($) => $.sodas.coca_cola['coke|diet_other']),
+    ).toEqualTypeOf<'{{count}} cans of diet coke'>();
+    expectTypeOf(t(($) => $.sodas.faygo.orange)).toEqualTypeOf<
+      'one orange faygo' | '{{count}} orange faygo'
+    >();
+    expectTypeOf(t(($) => $.sodas.faygo.orange_one)).toEqualTypeOf<'one orange faygo'>();
+    expectTypeOf(t(($) => $.sodas.faygo.orange_other)).toEqualTypeOf<'{{count}} orange faygo'>();
+    expectTypeOf(t(($) => $.sodas.faygo.purple)).toEqualTypeOf<'purple faygo'>();
+    expectTypeOf(t(($) => $.tea)).toEqualTypeOf<
+      'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep'
+    >();
+    expectTypeOf(t(($) => $.tea_one)).toEqualTypeOf<'a cuppa tea and a lie down'>();
+    expectTypeOf(t(($) => $.tea_other)).toEqualTypeOf<'{{count}} cups of tea and a big sleep'>();
+  });
+
+  it('selector works with arrays', () => {
+    expectTypeOf(t(($) => $.array[0])).toEqualTypeOf<'element one'>();
+    expectTypeOf(t(($) => $.array[1].elementTwo)).toEqualTypeOf<'element two'>();
+    expectTypeOf(
+      t(($) => $.array[2].elementThree[0].nestedElementThree),
+    ).toEqualTypeOf<'element three'>();
+  });
+
+  it('selector works with context', () => {
+    expectTypeOf(t(($) => $.dessert, { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
+    expectTypeOf(t(($) => $.dessert, { context: 'muffin' })).toEqualTypeOf<
+      'a nice muffin' | '{{count}} nice muffins'
+    >();
+    expectTypeOf(t(($) => $.coffee.bar.espresso, { context: 'cappuccino' })).toEqualTypeOf<
+      'a dry cappuccino' | '{{count}} dry cappuccinos'
+    >();
+    expectTypeOf(t(($) => $.coffee.bar.espresso, { context: 'latte' })).toEqualTypeOf<
+      'a foamy latte' | '{{count}} foamy lattes'
+    >();
+    expectTypeOf(t(($) => $.sodas.coca_cola.coke, { context: 'diet' })).toEqualTypeOf<
+      'a can of diet coke' | '{{count}} cans of diet coke'
+    >();
+  });
+
+  it('getFixedT', () => {
+    const fixedT = getFixedT(null, 'ctx', 'coffee');
+    expectTypeOf(fixedT(($) => $.bar.shot)).toEqualTypeOf<'a shot of espresso'>();
+  });
+});

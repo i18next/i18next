@@ -95,6 +95,14 @@ export type TypeOptions = $MergeBy<
 
     /** @see {InterpolationOptions.unescapeSuffix} */
     unescapeSuffix: '';
+
+    /**
+     * Use a proxy-based selector to select a translation.
+     *
+     * Enables features like go-to definition, and better DX/faster autocompletion
+     * for TypeScript developers.
+     */
+    useSelector: false;
   },
   CustomTypeOptions
 >;
