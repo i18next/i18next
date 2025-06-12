@@ -4,6 +4,6 @@ import type { TFunction } from 'i18next';
 
 declare const t: TFunction;
 
-bench('', () => {
+bench('selector usage benchmark', () => {
   t(($) => $.coffee.bar['espresso|cappuccino']);
 }).types([5549, 'instantiations']);
