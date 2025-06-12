@@ -387,14 +387,20 @@ interface TFunctionSelectorStrict<Ns extends Namespace, S /* , KPrefix */> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
-  <T, const Opt extends TOptions>(selector: Selector<S, T, Opt>, options?: Opt): T;
+  <T extends _ReturnObjects extends false ? string : unknown, const Opt extends TOptions>(
+    selector: Selector<S, T, Opt>,
+    options?: Opt,
+  ): T;
 }
 
 interface TFunctionSelectorNonStrict<Ns extends Namespace, S /* , KPrefix */> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
-  <T, const Opt extends TOptions>(selector: Selector<S, T, Opt>, options?: Opt): T;
+  <T extends _ReturnObjects extends false ? string : unknown, const Opt extends TOptions>(
+    selector: Selector<S, T, Opt>,
+    options?: Opt,
+  ): T;
 }
 
 type TFunctionSignature<

@@ -6,9 +6,9 @@ export type $SpecialObject = object | Array<string | object>;
 
 // Types Operators
 
-type $Get<T extends [any], K> = T[0][K & keyof any];
-
-type $Prune<T> = never | { [K in keyof T as [keyof T[K]] extends [never] ? never : K]: T[K] };
+export type $Prune<T> =
+  | never
+  | { [K in keyof T as [keyof T[K]] extends [never] ? never : K]: T[K] };
 
 export type $MergeBy<T, K> = Omit<T, keyof K> & K;
 

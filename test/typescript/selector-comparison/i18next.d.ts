@@ -4,7 +4,6 @@ declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'ctx';
     contextSeparator: '|';
-    useSelector: true;
     resources: {
       ctx: {
         beverage: 'beverage';
