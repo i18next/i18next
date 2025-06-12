@@ -333,6 +333,15 @@ type FilterKeys<T, Context> =
       }
     >;
 
+type GetResources<Ns extends Namespace, KPrefix> = KPrefix extends undefined
+  ? _Resources[Ns extends readonly any[] ? Ns[0] & keyof _Resources : Ns & keyof _Resources]
+  : _Resources[Ns extends readonly any[]
+      ? Ns[0] & keyof _Resources
+      : Ns & keyof _Resources][KPrefix &
+      keyof _Resources[Ns extends readonly any[]
+        ? Ns[0] & keyof _Resources
+        : Ns & keyof _Resources]];
+
 /** ************************
  * T function declaration *
  ************************* */
@@ -391,13 +400,7 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, S /* , KPrefix */> {
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-  S = KPrefix extends undefined
-    ? /* eslint-disable @typescript-eslint/ban-ts-comment */
-      // @ts-ignore
-      _Resources[Ns extends readonly any[] ? Ns[0] : Ns]
-    : /* eslint-disable @typescript-eslint/ban-ts-comment */
-      // @ts-ignore
-      _Resources[Ns extends readonly any[] ? Ns[0] : Ns][KPrefix],
+  S = GetResources<Ns, KPrefix>,
 > = _StrictKeyChecks extends true
   ? _UseSelector extends true
     ? TFunctionSelectorStrict<Ns, S /* , KPrefix */>
