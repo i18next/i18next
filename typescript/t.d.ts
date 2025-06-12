@@ -342,6 +342,12 @@ type GetResources<Ns extends Namespace, KPrefix> = KPrefix extends undefined
         ? Ns[0] & keyof _Resources
         : Ns & keyof _Resources]];
 
+type ConstrainReturnType<Opt extends TOptions> = [Opt['returnObjects']] extends [false]
+  ? string
+  : _ReturnObjects extends false
+    ? string
+    : unknown;
+
 /** ************************
  * T function declaration *
  ************************* */
@@ -387,7 +393,7 @@ interface TFunctionSelectorStrict<Ns extends Namespace, S /* , KPrefix */> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
-  <T extends _ReturnObjects extends false ? string : unknown, const Opt extends TOptions>(
+  <const Opt extends TOptions, T extends ConstrainReturnType<Opt>>(
     selector: Selector<S, T, Opt>,
     options?: Opt,
   ): T;
@@ -397,7 +403,7 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, S /* , KPrefix */> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
-  <T extends _ReturnObjects extends false ? string : unknown, const Opt extends TOptions>(
+  <const Opt extends TOptions, T extends ConstrainReturnType<Opt>>(
     selector: Selector<S, T, Opt>,
     options?: Opt,
   ): T;
