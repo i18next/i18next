@@ -425,5 +425,5 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
   extends TFunctionSignature<Ns, KPrefix> {}
 
 export type KeyPrefix<Ns extends Namespace> = _UseSelector extends true
-  ? keyof _Resources[$FirstNamespace<Ns>] | undefined
+  ? keyof _Resources[$FirstNamespace<Ns> & keyof _Resources] | undefined
   : ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
