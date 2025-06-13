@@ -430,7 +430,7 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-  Res extends Resources[$FirstNamespace<Ns>] = Resources[$FirstNamespace<Ns>],
+  Res = Resources[$FirstNamespace<Ns>],
   Source = KPrefix extends keyof Res ? Res[KPrefix] : Res,
 > = _StrictKeyChecks extends true
   ? _UseSelector extends true
