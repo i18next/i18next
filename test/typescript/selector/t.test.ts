@@ -164,4 +164,10 @@ describe('t', () => {
       t(($) => $.beverage, { context: 'beer', defaultValue: 'defaultValue' }),
     ).toEqualTypeOf<'beer' | 'defaultValue'>();
   });
+
+  it('returnObjects + defaultValue + context', () => {
+    expectTypeOf(
+      t(($) => $.beverage, { returnObjects: true, defaultValue: 'defaultValue', context: 'beer' }),
+    ).toEqualTypeOf<'beer' | 'defaultValue'>();
+  });
 });
