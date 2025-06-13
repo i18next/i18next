@@ -386,6 +386,18 @@ interface TFunctionSelectorStrict<Ns extends Namespace, S, KPrefix> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
+  /** ## Overload: namespace override */
+  <
+    const Opt extends Selector.Options,
+    Target extends ConstrainReturnType<Opt>,
+    NsOverride extends Namespace,
+    SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
+      ? Resources[$FirstNamespace<NsOverride>][KPrefix]
+      : Resources[$FirstNamespace<NsOverride>],
+  >(
+    selector: Selector<SourceOverride, Target, Opt>,
+    options: Opt & { ns: NsOverride },
+  ): Target;
   <const Opt extends TOptions, T extends ConstrainReturnType<Opt>>(
     selector: Selector<S, T, Opt>,
     options?: Opt,
@@ -401,10 +413,9 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
     const Opt extends Selector.Options,
     Target extends ConstrainReturnType<Opt>,
     NsOverride extends Namespace,
-    Resources extends $FirstNamespace<NsOverride> extends keyof _Resources
-      ? _Resources[$FirstNamespace<NsOverride>]
-      : never,
-    SourceOverride extends KPrefix extends keyof Resources ? Resources[KPrefix] : Resources,
+    SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
+      ? Resources[$FirstNamespace<NsOverride>][KPrefix]
+      : Resources[$FirstNamespace<NsOverride>],
   >(
     selector: Selector<SourceOverride, Target, Opt>,
     options: Opt & { ns: NsOverride },
@@ -419,12 +430,8 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-  Resources extends $FirstNamespace<Ns> extends keyof _Resources
-    ? _Resources[$FirstNamespace<Ns>]
-    : never = $FirstNamespace<Ns> extends keyof _Resources
-    ? _Resources[$FirstNamespace<Ns>]
-    : never,
-  Source = KPrefix extends keyof Resources ? Resources[KPrefix] : Resources,
+  Res extends Resources[$FirstNamespace<Ns>] = Resources[$FirstNamespace<Ns>],
+  Source = KPrefix extends keyof Res ? Res[KPrefix] : Res,
 > = _StrictKeyChecks extends true
   ? _UseSelector extends true
     ? TFunctionSelectorStrict<Ns, Source, KPrefix>
