@@ -111,8 +111,17 @@ describe('t', () => {
   });
 
   it('getFixedT', () => {
-    const fixedT = getFixedT(null, 'ctx', 'coffee');
+    const fixedT = getFixedT(null, 'ns1', 'coffee');
 
     expectTypeOf(fixedT(($) => $.bar.shot)).toEqualTypeOf<'a shot of espresso'>();
+  });
+
+  it('namespace: single', () => {
+    expectTypeOf(t(($) => $.fromNs2, { ns: 'ns2' })).toEqualTypeOf<'hello from ns2'>();
+  });
+
+  it('namespace: multiple', () => {
+    expectTypeOf(t(($) => $.fromNs2, { ns: ['ns2', 'ns3'] })).toEqualTypeOf<'hello from ns2'>();
+    expectTypeOf(t(($) => $.fromNs3, { ns: ['ns3', 'ns2'] })).toEqualTypeOf<'hello from ns3'>();
   });
 });

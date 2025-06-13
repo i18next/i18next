@@ -279,11 +279,13 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
-type Selector<S, T, Opt extends TOptions> =
-  | never
-  | {
-      (translations: FilterKeys<S, Opt['context']>): T;
-    };
+interface Selector<S, T, Opt extends TOptions> {
+  (translations: FilterKeys<S, Opt['context']>): T;
+}
+
+declare namespace Selector {
+  interface Options extends Omit<TOptions, 'ns'> {}
+}
 
 type RegularKeys<T, K extends keyof T, Context> = T[K] extends object
   ? K
@@ -333,15 +335,6 @@ type FilterKeys<T, Context> =
       }
     >;
 
-type GetResources<Ns extends Namespace, KPrefix> = KPrefix extends undefined
-  ? _Resources[Ns extends readonly any[] ? Ns[0] & keyof _Resources : Ns & keyof _Resources]
-  : _Resources[Ns extends readonly any[]
-      ? Ns[0] & keyof _Resources
-      : Ns & keyof _Resources][KPrefix &
-      keyof _Resources[Ns extends readonly any[]
-        ? Ns[0] & keyof _Resources
-        : Ns & keyof _Resources]];
-
 type ConstrainReturnType<Opt extends TOptions> = [Opt['returnObjects']] extends [false]
   ? string
   : _ReturnObjects extends false
@@ -389,7 +382,7 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
-interface TFunctionSelectorStrict<Ns extends Namespace, S /* , KPrefix */> {
+interface TFunctionSelectorStrict<Ns extends Namespace, S, KPrefix> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
@@ -399,26 +392,45 @@ interface TFunctionSelectorStrict<Ns extends Namespace, S /* , KPrefix */> {
   ): T;
 }
 
-interface TFunctionSelectorNonStrict<Ns extends Namespace, S /* , KPrefix */> {
+interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
-  <const Opt extends TOptions, T extends ConstrainReturnType<Opt>>(
-    selector: Selector<S, T, Opt>,
+  /** ## Overload: namespace override */
+  <
+    const Opt extends Selector.Options,
+    Target extends ConstrainReturnType<Opt>,
+    NsOverride extends Namespace,
+    Resources extends $FirstNamespace<NsOverride> extends keyof _Resources
+      ? _Resources[$FirstNamespace<NsOverride>]
+      : never,
+    SourceOverride extends KPrefix extends keyof Resources ? Resources[KPrefix] : Resources,
+  >(
+    selector: Selector<SourceOverride, Target, Opt>,
+    options: Opt & { ns: NsOverride },
+  ): Target;
+  /** ## Overload: no namespace */
+  <const Opt extends Selector.Options, Target extends ConstrainReturnType<Opt>>(
+    selector: Selector<Source, Target, Opt>,
     options?: Opt,
-  ): T;
+  ): Target;
 }
 
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-  S = GetResources<Ns, KPrefix>,
+  Resources extends $FirstNamespace<Ns> extends keyof _Resources
+    ? _Resources[$FirstNamespace<Ns>]
+    : never = $FirstNamespace<Ns> extends keyof _Resources
+    ? _Resources[$FirstNamespace<Ns>]
+    : never,
+  Source = KPrefix extends keyof Resources ? Resources[KPrefix] : Resources,
 > = _StrictKeyChecks extends true
   ? _UseSelector extends true
-    ? TFunctionSelectorStrict<Ns, S /* , KPrefix */>
+    ? TFunctionSelectorStrict<Ns, Source, KPrefix>
     : TFunctionStrict<Ns, KPrefix>
   : _UseSelector extends true
-    ? TFunctionSelectorNonStrict<Ns, S /* , KPrefix */>
+    ? TFunctionSelectorNonStrict<Ns, Source, KPrefix>
     : TFunctionNonStrict<Ns, KPrefix>;
 
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
