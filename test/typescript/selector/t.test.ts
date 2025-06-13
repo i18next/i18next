@@ -124,4 +124,44 @@ describe('t', () => {
     expectTypeOf(t(($) => $.fromNs2, { ns: ['ns2', 'ns3'] })).toEqualTypeOf<'hello from ns2'>();
     expectTypeOf(t(($) => $.fromNs3, { ns: ['ns3', 'ns2'] })).toEqualTypeOf<'hello from ns3'>();
   });
+
+  it('returnObjects', () => {
+    expectTypeOf(t(($) => $.sodas.faygo, { returnObjects: true })).toEqualTypeOf<{
+      orange: 'one orange faygo' | '{{count}} orange faygo';
+      purple: 'purple faygo';
+      orange_one: 'one orange faygo';
+      orange_other: '{{count}} orange faygo';
+    }>();
+
+    expectTypeOf(t(($) => $.array[1], { returnObjects: true })).toEqualTypeOf<{
+      elementTwo: 'element two';
+    }>();
+  });
+
+  it('defaultValue', () => {
+    expectTypeOf(t(($) => $.beverage, { defaultValue: 'defaultValue' })).toEqualTypeOf<
+      'beverage' | 'defaultValue'
+    >();
+    expectTypeOf(t(($) => $['beverage|beer'], { defaultValue: 'defaultValue' })).toEqualTypeOf<
+      'beer' | 'defaultValue'
+    >();
+    expectTypeOf(t(($) => $.array[0], { defaultValue: 'defaultValue' })).toEqualTypeOf<
+      'element one' | 'defaultValue'
+    >();
+    expectTypeOf(t(($) => $.array[1].elementTwo, { defaultValue: 'hi' })).toEqualTypeOf<
+      'element two' | 'hi'
+    >();
+  });
+
+  it('returnObjects + defaultValue', () => {
+    expectTypeOf(
+      t(($) => $.array[1], { returnObjects: true, defaultValue: 'defaultValue' }),
+    ).toEqualTypeOf<{ elementTwo: 'element two' } | 'defaultValue'>();
+  });
+
+  it('defaultValue + context', () => {
+    expectTypeOf(
+      t(($) => $.beverage, { context: 'beer', defaultValue: 'defaultValue' }),
+    ).toEqualTypeOf<'beer' | 'defaultValue'>();
+  });
 });

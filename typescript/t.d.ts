@@ -13,6 +13,7 @@ import type {
   FlatNamespace,
   DefaultNamespace,
   TOptions,
+  TOptionsBase,
 } from './options.js';
 
 /** @todo consider to replace {} with Record<string, never> */
@@ -279,14 +280,6 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
-interface Selector<S, T, Opt extends TOptions> {
-  (translations: FilterKeys<S, Opt['context']>): T;
-}
-
-declare namespace Selector {
-  interface Options extends Omit<TOptions, 'ns'> {}
-}
-
 type RegularKeys<T, K extends keyof T, Context> = T[K] extends object
   ? K
   : Context extends string
@@ -335,11 +328,14 @@ type FilterKeys<T, Context> =
       }
     >;
 
-type ConstrainReturnType<Opt extends TOptions> = [Opt['returnObjects']] extends [false]
-  ? string
-  : _ReturnObjects extends false
-    ? string
-    : unknown;
+type ConstrainReturnType<Options extends Selector.Options> = _ReturnObjects extends true
+  ? unknown
+  : Options['returnObjects'] extends true
+    ? unknown
+    : string;
+// _ReturnObjects extends false
+//   ? string
+//   : unknown
 
 /** ************************
  * T function declaration *
@@ -382,26 +378,29 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
-interface TFunctionSelectorStrict<Ns extends Namespace, S, KPrefix> {
+interface TFunctionSelectorStrict<Ns extends Namespace, Source, KPrefix> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
     : never;
   /** ## Overload: namespace override */
   <
-    const Opt extends Selector.Options,
-    Target extends ConstrainReturnType<Opt>,
+    const Opts extends Selector.Options,
+    Target extends _ReturnObjects extends true ? unknown : string,
     NsOverride extends Namespace,
     SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
       ? Resources[$FirstNamespace<NsOverride>][KPrefix]
       : Resources[$FirstNamespace<NsOverride>],
   >(
-    selector: Selector<SourceOverride, Target, Opt>,
-    options: Opt & { ns: NsOverride },
-  ): Target;
-  <const Opt extends TOptions, T extends ConstrainReturnType<Opt>>(
-    selector: Selector<S, T, Opt>,
-    options?: Opt,
-  ): T;
+    selector: Selector<SourceOverride, Target, Opts>,
+    options: Opts & { ns: NsOverride },
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Target>, never>, Opts>;
+  <
+    const Opts extends Selector.Options,
+    Target extends _ReturnObjects extends true ? unknown : string,
+  >(
+    selector: Selector<Source, Target, Opts>,
+    options?: Opts,
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Target>, never>, Opts>;
 }
 
 interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
@@ -410,21 +409,28 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
     : never;
   /** ## Overload: namespace override */
   <
-    const Opt extends Selector.Options,
-    Target extends ConstrainReturnType<Opt>,
+    const Opts extends Selector.Options,
+    Target extends ConstrainReturnType<Opts>,
     NsOverride extends Namespace,
     SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
       ? Resources[$FirstNamespace<NsOverride>][KPrefix]
       : Resources[$FirstNamespace<NsOverride>],
   >(
-    selector: Selector<SourceOverride, Target, Opt>,
-    options: Opt & { ns: NsOverride },
-  ): Target;
+    selector: Selector<SourceOverride, Opts['returnObjects'] extends true ? unknown : Target, Opts>,
+    options: Opts & { ns: NsOverride },
+  ): TFunctionReturnOptionalDetails<
+    Selector.ProcessReturnValue<$NoInfer<Target>, Opts['defaultValue']>,
+    Opts
+  >;
+
   /** ## Overload: no namespace */
-  <const Opt extends Selector.Options, Target extends ConstrainReturnType<Opt>>(
-    selector: Selector<Source, Target, Opt>,
-    options?: Opt,
-  ): Target;
+  <const Opts extends Selector.Options, Target extends ConstrainReturnType<Opts>>(
+    selector: Selector<Source, Opts['returnObjects'] extends true ? unknown : Target, Opts>,
+    options?: Opts,
+  ): TFunctionReturnOptionalDetails<
+    Selector.ProcessReturnValue<$NoInfer<Target>, Opts['defaultValue']>,
+    Opts
+  >;
 }
 
 type TFunctionSignature<
@@ -446,3 +452,21 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
 export type KeyPrefix<Ns extends Namespace> = _UseSelector extends true
   ? keyof _Resources[$FirstNamespace<Ns> & keyof _Resources] | undefined
   : ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+
+interface Selector<Source, Target, Options extends Selector.Options> {
+  (translations: FilterKeys<Source, Options['context']>): Target;
+}
+
+declare namespace Selector {
+  interface Options extends Omit<TOptionsBase, 'ns'> {}
+  type ProcessReturnValue<Target, DefaultValue> = [DefaultValue] extends [never]
+    ? Target
+    : unknown extends DefaultValue
+      ? Target
+      : Target | DefaultValue;
+
+  type ReturnOptionalDetails<
+    Target,
+    Opts extends Selector.Options,
+  > = Opts['returnDetails'] extends true ? TFunctionDetailedResult<Target, Opts> : Target;
+}
