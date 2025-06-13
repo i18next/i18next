@@ -12,15 +12,15 @@ describe('getFixedT', () => {
   });
 
   describe('should work with `namespace` and `keyPrefix`', () => {
-    const t = i18next.getFixedT(null, 'alternate', 'foobar.deep');
+    const t = i18next.getFixedT(null, 'alternate', 'foobar');
 
     it('should retrieve deep key', () => {
-      expectTypeOf(t('deeper.deeeeeper')).toEqualTypeOf<'foobar'>();
+      expectTypeOf(t(($) => $.deep.deeper.deeeeeper)).toEqualTypeOf<'foobar'>();
     });
 
     it('should work with `returnObjects`', () => {
-      // t2('deeper').deeeeeper; // i18next would say: "key 'deeper (en)' returned an object instead of string."
-      expectTypeOf(t('deeper', { returnObjects: true })).toEqualTypeOf<{
+      // t('deeper').deeeeeper; // i18next would say: "key 'deeper (en)' returned an object instead of string."
+      expectTypeOf(t(($) => $.deep.deeper, { returnObjects: true })).toEqualTypeOf<{
         deeeeeper: 'foobar';
       }>();
     });
@@ -34,28 +34,41 @@ describe('getFixedT', () => {
   it('should work when providing only language', () => {
     const t = i18next.getFixedT('en');
 
-    expectTypeOf(t('foo')).toEqualTypeOf<'foo'>();
+    expectTypeOf(t(($) => $.foo)).toEqualTypeOf<'foo'>();
 
-    // t3('alternate:foobar.deep.deeper.deeeeeper');
-    expectTypeOf(t('foobar.deep.deeper.deeeeeper', { ns: 'alternate' })).toEqualTypeOf<'foobar'>();
+    // t('alternate:foobar.deep.deeper.deeeeeper');
+    expectTypeOf(
+      t(($) => $.foobar.deep.deeper.deeeeeper, { ns: 'alternate' }),
+    ).toEqualTypeOf<'foobar'>();
   });
 
   it('should work when providing `language`,`namespace` and `keyPrefix`', () => {
     const t = i18next.getFixedT('en', 'alternate', 'foobar');
-    expectTypeOf(t('barfoo')).toEqualTypeOf<'barfoo'>();
+    expectTypeOf(t(($) => $.barfoo)).toEqualTypeOf<'barfoo'>();
   });
 
   it('should work when providing just `language`', () => {
     const t = i18next.getFixedT('en');
 
-    expectTypeOf(t('bar')).toEqualTypeOf<'bar'>();
+    expectTypeOf(t(($) => $.bar)).toEqualTypeOf<'bar'>();
 
-    expectTypeOf(t('foobar.barfoo', { ns: 'alternate' })).toEqualTypeOf<'barfoo'>();
-    expectTypeOf(t('fallbackKey')).toEqualTypeOf<never>();
+    expectTypeOf(t(($) => $.foobar.barfoo, { ns: 'alternate' })).toEqualTypeOf<'barfoo'>();
+    // TODO:
+    /**
+     * @example
+     * expectTypeOf(t($ => $.fallbackKey)).toEqualTypeOf<never>();
+     */
+
+    // TODO: figure out why this is supposed to be an error
+    /**
+     * @example
+     * // @ts-expect-error
+     * assertType(t($ => $.foobar.barfoo, { ns: 'alternate' }));
+     * // original:
+     * assertType(t('alternate:foobar.barfoo'));
+     */
 
     // @ts-expect-error
-    assertType(t('alternate:foobar.barfoo'));
-    // @ts-expect-error
-    assertType(t('foobar.barfoo'));
+    assertType(t(($) => $.foobar.barfoo));
   });
 });

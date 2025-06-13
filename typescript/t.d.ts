@@ -406,6 +406,18 @@ interface TFunctionSelectorStrict<Ns extends Namespace, Source, KPrefix> {
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Target>, never>, Opts>;
 }
 
+/**
+ * 1. KPrefix cannot be a path -- it must be a shallow key
+ * 2. Namespace change must happen via options
+ * 3. Default value must be explicitly passed via options
+ * 4. Implies "strict" by default?
+ *    A. Providing a default value turns the return type into a union that includes the default value
+ *    B. Similarly, `null` keys are prevented by path access. If a user has that setting turned on,
+ *       it might affect runtime behavior, but there isn't a straight-forward way to allow users to
+ *       access keys that don't exist on the object, so I'm not sure it makes sense to support this
+ *       at the type-level
+ */
+
 interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
   $TFunctionBrand: $IsResourcesDefined extends true
     ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
