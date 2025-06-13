@@ -300,9 +300,15 @@ type PluralKeys<T, K extends keyof T, Context = undefined> = T[K] extends object
   ? never
   : Context extends string
     ? never
-    : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
-      ? Prefix
-      : never;
+    : _CompatibilityJSON extends 'v4'
+      ? K extends
+          | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+          | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+        ? Prefix
+        : never
+      : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+        ? Prefix
+        : never;
 
 type FilterKeys<T, Context> =
   | never
@@ -406,7 +412,8 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
     : never;
   /** ## Overload: namespace override */
   <
-    const Opts extends Selector.Options,
+    const Opts extends Selector.Options<Interp>,
+    Interp extends $Dictionary,
     Target extends ConstrainReturnType<Opts>,
     NsOverride extends Namespace,
     SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
@@ -421,7 +428,11 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
   >;
 
   /** ## Overload: no namespace */
-  <const Opts extends Selector.Options, Target extends ConstrainReturnType<Opts>>(
+  <
+    const Opts extends Selector.Options<Interp>,
+    Interp extends $Dictionary,
+    Target extends ConstrainReturnType<Opts>,
+  >(
     selector: Selector<Source, Opts['returnObjects'] extends true ? unknown : Target, Opts>,
     options?: Opts,
   ): TFunctionReturnOptionalDetails<
@@ -455,7 +466,7 @@ interface Selector<Source, Target, Options extends Selector.Options> {
 }
 
 declare namespace Selector {
-  interface Options extends Omit<TOptionsBase, 'ns'> {}
+  type Options<T extends $Dictionary = {}> = Omit<TOptionsBase, 'ns'> & T;
   type ProcessReturnValue<Target, DefaultValue> = [DefaultValue] extends [never]
     ? Target
     : unknown extends DefaultValue
