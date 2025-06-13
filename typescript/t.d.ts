@@ -333,9 +333,6 @@ type ConstrainReturnType<Options extends Selector.Options> = _ReturnObjects exte
   : Options['returnObjects'] extends true
     ? unknown
     : string;
-// _ReturnObjects extends false
-//   ? string
-//   : unknown
 
 /** ************************
  * T function declaration *
