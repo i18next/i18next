@@ -424,9 +424,7 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
     : never;
   /** ## Overload: namespace override */
   <
-    const Options extends Selector.Options<Interp>,
-    Interp extends $Dictionary,
-    // Interp extends InterpolationMap<Target>,
+    const Options extends Selector.Options,
     Target extends ConstrainReturnType<Options>,
     NsOverride extends Namespace,
     SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
@@ -438,18 +436,14 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
       Options['returnObjects'] extends true ? unknown : Target,
       Options
     >,
-    options: Options & { ns: NsOverride },
+    options: Options & { ns: NsOverride } & InterpolationMap<Target>,
   ): TFunctionReturnOptionalDetails<
     Selector.ProcessReturnValue<$NoInfer<Target>, Options['defaultValue']>,
     Options
   >;
 
   /** ## Overload: no namespace */
-  <
-    const Options extends Selector.Options<Selector.Interpolations<Target>>,
-    // Interp extends $Dictionary,
-    Target extends ConstrainReturnType<Options>,
-  >(
+  <const Options extends Selector.Options, Target extends ConstrainReturnType<Options>>(
     selector: Selector<Source, Options['returnObjects'] extends true ? unknown : Target, Options>,
     options?: Options & InterpolationMap<Target>,
   ): TFunctionReturnOptionalDetails<
@@ -483,7 +477,7 @@ interface Selector<Source, Target, Options extends Selector.Options> {
 }
 
 declare namespace Selector {
-  type Options<T = {}> = Omit<TOptionsBase, 'ns'> & T;
+  type Options = Omit<TOptionsBase, 'ns'> & $Dictionary;
   type ProcessReturnValue<Target, DefaultValue> = [DefaultValue] extends [never]
     ? Target
     : unknown extends DefaultValue
