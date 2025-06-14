@@ -64,14 +64,10 @@ describe('i18next.t', () => {
       ).toEqualTypeOf<'some unescaped {- val, number}}'>();
     });
 
-    // TODO: interpolated values
-    /**
-     * @example
-     * it('should throw an error when value is not present inside key', () => {
-     *   // @ts-expect-error
-     *   assertType(i18next.t($ => $.inter, { foo: 'asdf', ns: 'custom' }));
-     * });
-     */
+    it('should throw an error when value is not present inside key', () => {
+      // @ts-expect-error
+      assertType(i18next.t(($) => $.inter, { foo: 'asdf', ns: 'custom' }));
+    });
   });
 
   describe('defaultValue', () => {
