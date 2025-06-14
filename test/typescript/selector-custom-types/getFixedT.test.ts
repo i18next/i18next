@@ -53,20 +53,6 @@ describe('getFixedT', () => {
     expectTypeOf(t(($) => $.bar)).toEqualTypeOf<'bar'>();
 
     expectTypeOf(t(($) => $.foobar.barfoo, { ns: 'alternate' })).toEqualTypeOf<'barfoo'>();
-    // TODO:
-    /**
-     * @example
-     * expectTypeOf(t($ => $.fallbackKey)).toEqualTypeOf<never>();
-     */
-
-    // TODO: figure out why this is supposed to be an error
-    /**
-     * @example
-     * // @ts-expect-error
-     * assertType(t($ => $.foobar.barfoo, { ns: 'alternate' }));
-     * // original:
-     * assertType(t('alternate:foobar.barfoo'));
-     */
 
     // @ts-expect-error
     assertType(t(($) => $.foobar.barfoo));

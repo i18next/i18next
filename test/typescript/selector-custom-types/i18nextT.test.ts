@@ -81,22 +81,6 @@ describe('i18next.t', () => {
     });
   });
 
-  // TODO: Figure out how the `nullKey` feature works
-  /**
-   * @example
-   * it('should fallback for null translations with unset returnNull in config', () => {
-   *   expectTypeOf(i18next.t($ => $.nullKey)).toEqualTypeOf<'nullKey'>()
-   * })
-   */
-
-  // TODO: figure out how the `returnEmptyString` feature works
-  /**
-   * @example
-   * it('should accept empty string translations with returnEmpty with unset returnEmpty in config', () => {
-   *   expectTypeOf(i18next.t('empty string with {{val}}')).toEqualTypeOf<''>()
-   * })
-   */
-
   it('should work with plurals', () => {
     expectTypeOf(i18next.t(($) => $.foo, { count: 1, ns: 'plurals' })).toEqualTypeOf<'foo'>();
     expectTypeOf(i18next.t(($) => $.foo_many, { count: 10, ns: 'plurals' })).toEqualTypeOf<'foo'>();
