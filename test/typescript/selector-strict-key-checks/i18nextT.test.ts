@@ -22,12 +22,12 @@ describe('i18next.t defaultValue with strictKeyChecks == true', () => {
 
     // @ts-expect-error
     assertType(i18next.t(($) => $['unknown-key']));
-    // @ts-expect-error
     assertType(
+      // @ts-expect-error
       i18next.t(($) => $['unknown-key'], { ns: 'custom', defaultValue: 'some default value' }),
     );
-    // @ts-expect-error
     assertType(
+      // @ts-expect-error
       i18next.t(($) => $['unknown-key'], { ns: 'unknown-ns', defaultValue: 'default value' }),
     );
   });

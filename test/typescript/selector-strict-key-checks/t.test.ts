@@ -82,15 +82,15 @@ describe('basic array access with strictKeyChecks == true', () => {
       foo: 'bar';
     }>();
 
-    // @ts-expect-error
     expectTypeOf(
+      // @ts-expect-error
       t(($) => $.nonExistent, { returnObjects: true, defaultValue: 'some default value' }),
     );
   });
 });
 
 describe('interpolation values with strictKeyChecks == true', () => {
-  const t = (() => '') as unknown as TFunction<['interpolators']>;
+  const t: TFunction<['interpolators']> = (() => '') as never;
 
   it('should allow anything when key is a string', () => {
     expectTypeOf(t(($) => $.just_a_string, { asd: '', beep: 'boop' })).toEqualTypeOf<string>();

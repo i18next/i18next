@@ -17,14 +17,14 @@ describe('keysFromSelector', () => {
       expect(keys).toEqual('a.b.c');
     });
 
-    it('tracks property access with default namespace separator', () => {
-      const keys = keysFromSelector(($) => $['ns:'].a.b.c, defaultOptions);
-      expect(keys).toEqual('ns:a.b.c');
-    });
-
     it('works with array indices', () => {
       const keys = keysFromSelector(($) => $[0][1][2], defaultOptions);
       expect(keys).toEqual('0.1.2');
+    });
+
+    it('tracks property access with default namespace separator', () => {
+      const keys = keysFromSelector(($) => $['ns:'].a.b.c, defaultOptions);
+      expect(keys).toEqual('ns:a.b.c');
     });
 
     it('works with custom namespace separator', () => {
