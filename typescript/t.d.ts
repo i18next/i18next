@@ -446,59 +446,37 @@ export declare namespace Selector {
       ? Target
       : Target | DefaultValue;
 
-  type RegularKeys<T, K extends keyof T, Context> = T[K] extends object
-    ? K
-    : Context extends string
-      ? never
-      : K;
-
-  type ContextKeys<T, K extends keyof T, Context> = T[K] extends object
-    ? never
-    : Context extends string
-      ? K extends
-          | `${infer Prefix}${_ContextSeparator}${Context}`
-          | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
-        ? Prefix
-        : never
-      : never;
-
-  type PluralKeys<T, K extends keyof T, Context = undefined> = T[K] extends object
-    ? never
-    : Context extends string
-      ? never
-      : _CompatibilityJSON extends 'v4'
-        ? K extends
-            | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
-            | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
-          ? Prefix
-          : never
-        : K extends `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
-          ? Prefix
-          : never;
-
   type FilterArray<T, Context> = { [I in keyof T]: FilterKeys<T[I], Context> };
 
   type FilterKeys<T, Context> = never | T extends readonly any[]
     ? FilterArray<T, Context>
     : $Prune<
         {
-          [K in keyof T as PluralKeys<T, K, Context>]: T[K] extends readonly any[]
-            ? FilterArray<T[K], Context>
-            : T[K] extends object
-              ? FilterKeys<T[K], Context>
-              : T[K];
+          [K in keyof T as T[K] extends object
+            ? K
+            : Context extends string
+              ? never
+              : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
         } & {
-          [K in keyof T as RegularKeys<T, K, Context>]: T[K] extends readonly any[]
-            ? FilterArray<T[K], Context>
-            : T[K] extends object
-              ? FilterKeys<T[K], Context>
-              : T[K];
+          [K in keyof T as T[K] extends object
+            ? never
+            : Context extends string
+              ? never
+              : K extends
+                    | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+                    | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+                ? Prefix
+                : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
         } & {
-          [K in keyof T as ContextKeys<T, K, Context>]: T[K] extends readonly any[]
-            ? FilterArray<T[K], Context>
-            : T[K] extends object
-              ? FilterKeys<T[K], Context>
-              : T[K];
+          [K in keyof T as T[K] extends object
+            ? never
+            : Context extends string
+              ? K extends
+                  | `${infer Prefix}${_ContextSeparator}${Context}`
+                  | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+                ? Prefix
+                : never
+              : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
         }
       >;
 }
