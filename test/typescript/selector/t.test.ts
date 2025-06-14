@@ -93,19 +93,19 @@ describe('t', () => {
   it('selector works with context', () => {
     expectTypeOf(t(($) => $.dessert, { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
 
-    expectTypeOf(t(($) => $.dessert, { context: 'muffin' })).toEqualTypeOf<
+    expectTypeOf(t(($) => $.dessert, { context: 'muffin', count: 2 })).toEqualTypeOf<
       'a nice muffin' | '{{count}} nice muffins'
     >();
 
-    expectTypeOf(t(($) => $.coffee.bar.espresso, { context: 'cappuccino' })).toEqualTypeOf<
-      'a dry cappuccino' | '{{count}} dry cappuccinos'
-    >();
+    expectTypeOf(
+      t(($) => $.coffee.bar.espresso, { context: 'cappuccino', count: 2 }),
+    ).toEqualTypeOf<'a dry cappuccino' | '{{count}} dry cappuccinos'>();
 
-    expectTypeOf(t(($) => $.coffee.bar.espresso, { context: 'latte' })).toEqualTypeOf<
+    expectTypeOf(t(($) => $.coffee.bar.espresso, { context: 'latte', count: 3 })).toEqualTypeOf<
       'a foamy latte' | '{{count}} foamy lattes'
     >();
 
-    expectTypeOf(t(($) => $.sodas.coca_cola.coke, { context: 'diet' })).toEqualTypeOf<
+    expectTypeOf(t(($) => $.sodas.coca_cola.coke, { context: 'diet', count: 1 })).toEqualTypeOf<
       'a can of diet coke' | '{{count}} cans of diet coke'
     >();
   });
@@ -169,5 +169,9 @@ describe('t', () => {
     expectTypeOf(
       t(($) => $.beverage, { returnObjects: true, defaultValue: 'defaultValue', context: 'beer' }),
     ).toEqualTypeOf<'beer' | 'defaultValue'>();
+  });
+
+  it('', () => {
+    t(($) => $.interpolation.val, { val: '' });
   });
 });

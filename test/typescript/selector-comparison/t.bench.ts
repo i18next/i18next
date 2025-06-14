@@ -6,4 +6,4 @@ declare const t: TFunction;
 
 bench('selector usage benchmark', () => {
   t('coffee.bar.espresso|cappuccino');
-}).types([24141, 'instantiations']);
+}).types([24147, 'instantiations']);

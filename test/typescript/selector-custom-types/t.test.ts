@@ -196,9 +196,9 @@ describe('t', () => {
     });
 
     it('should work with string union as a context value', () => {
-      expectTypeOf(t(($) => $.dessert, { context: 'muffin' as 'muffin' | 'cake' })).toEqualTypeOf<
-        'a nice cake' | 'a nice muffin' | '{{count}} nice muffins'
-      >();
+      expectTypeOf(
+        t(($) => $.dessert, { context: 'muffin' as 'muffin' | 'cake', count: 2 }),
+      ).toEqualTypeOf<'a nice cake' | 'a nice muffin' | '{{count}} nice muffins'>();
     });
 
     // @see https://github.com/i18next/i18next/issues/2172
@@ -288,26 +288,17 @@ describe('t', () => {
     it('simple key', () => {
       expectTypeOf(t(($) => $.simple, { olim: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
 
-      // TODO:
-      /**
-       * @example
-       * // @ts-expect-error because nope isn't a valid key
-       * expectTypeOf(t($ => $.simple, { nope: 'yes' })).toEqualTypeOf<'This is {{olim}}'>()
-       */
+      // @ts-expect-error because nope isn't a valid key
+      expectTypeOf(t(($) => $.simple, { nope: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
     });
 
     it('simple key (multiple)', () => {
-      type Expected = 'This has {{more}} than {{one}}';
       expectTypeOf(
         t(($) => $.simple_multiple_keys, { more: '', one: '' }),
-      ).toEqualTypeOf<Expected>();
+      ).toEqualTypeOf<'This has {{more}} than {{one}}'>();
 
-      // TODO:
-      /**
-       * @example
-       * // @ts-expect-error one of the required keys is missing
-       * expectTypeOf(t($ => $.simple_multiple_keys, { less: '', one: '' })).toEqualTypeOf<Expected>()
-       */
+      // @ts-expect-error one of the required keys is missing
+      t(($) => $.simple_multiple_keys, { less: '', one: '' });
     });
 
     it('keypath', () => {
@@ -327,14 +318,8 @@ describe('t', () => {
         t(($) => $.keypath_deep, { living: { in: { the: 'yes' } } }),
       ).toEqualTypeOf<Expected>();
 
-      // TODO:
-      /**
-       * @example
-       * expectTypeOf(
-       *   // // @ts-expect-error one of the required keys is missing
-       *   t($ => $.keypath_deep, { suffering: { in: { the: 'yes' } } }),
-       * ).toEqualTypeOf<Expected>()
-       */
+      // @ts-expect-error one of the required keys is missing
+      t(($) => $.keypath_deep, { suffering: { in: { the: 'yes' } } });
     });
   });
 });

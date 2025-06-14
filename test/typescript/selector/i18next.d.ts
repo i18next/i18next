@@ -38,6 +38,9 @@ declare const ns1: {
       orange_other: '{{count}} orange faygo';
     };
   };
+  interpolation: {
+    val: 'Interpolated {{val}}';
+  };
   array: [
     'element one',
     {

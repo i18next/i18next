@@ -408,7 +408,7 @@ interface TFunctionSelectorStrict<Ns extends Namespace, Source, KPrefix> {
 
 /**
  * 1. KPrefix cannot be a path -- it must be a shallow key
- * 2. Namespace change must happen via options
+ * 2. Namespace change must happen explicitly via options
  * 3. Default value must be explicitly passed via options
  * 4. Implies "strict" by default?
  *    A. Providing a default value turns the return type into a union that includes the default value
@@ -424,32 +424,37 @@ interface TFunctionSelectorNonStrict<Ns extends Namespace, Source, KPrefix> {
     : never;
   /** ## Overload: namespace override */
   <
-    const Opts extends Selector.Options<Interp>,
+    const Options extends Selector.Options<Interp>,
     Interp extends $Dictionary,
-    Target extends ConstrainReturnType<Opts>,
+    // Interp extends InterpolationMap<Target>,
+    Target extends ConstrainReturnType<Options>,
     NsOverride extends Namespace,
     SourceOverride extends KPrefix extends keyof Resources[$FirstNamespace<NsOverride>]
       ? Resources[$FirstNamespace<NsOverride>][KPrefix]
       : Resources[$FirstNamespace<NsOverride>],
   >(
-    selector: Selector<SourceOverride, Opts['returnObjects'] extends true ? unknown : Target, Opts>,
-    options: Opts & { ns: NsOverride },
+    selector: Selector<
+      SourceOverride,
+      Options['returnObjects'] extends true ? unknown : Target,
+      Options
+    >,
+    options: Options & { ns: NsOverride },
   ): TFunctionReturnOptionalDetails<
-    Selector.ProcessReturnValue<$NoInfer<Target>, Opts['defaultValue']>,
-    Opts
+    Selector.ProcessReturnValue<$NoInfer<Target>, Options['defaultValue']>,
+    Options
   >;
 
   /** ## Overload: no namespace */
   <
-    const Opts extends Selector.Options<Interp>,
-    Interp extends $Dictionary,
-    Target extends ConstrainReturnType<Opts>,
+    const Options extends Selector.Options<Selector.Interpolations<Target>>,
+    // Interp extends $Dictionary,
+    Target extends ConstrainReturnType<Options>,
   >(
-    selector: Selector<Source, Opts['returnObjects'] extends true ? unknown : Target, Opts>,
-    options?: Opts,
+    selector: Selector<Source, Options['returnObjects'] extends true ? unknown : Target, Options>,
+    options?: Options & InterpolationMap<Target>,
   ): TFunctionReturnOptionalDetails<
-    Selector.ProcessReturnValue<$NoInfer<Target>, Opts['defaultValue']>,
-    Opts
+    Selector.ProcessReturnValue<$NoInfer<Target>, Options['defaultValue']>,
+    Options
   >;
 }
 
@@ -478,7 +483,7 @@ interface Selector<Source, Target, Options extends Selector.Options> {
 }
 
 declare namespace Selector {
-  type Options<T extends $Dictionary = {}> = Omit<TOptionsBase, 'ns'> & T;
+  type Options<T = {}> = Omit<TOptionsBase, 'ns'> & T;
   type ProcessReturnValue<Target, DefaultValue> = [DefaultValue] extends [never]
     ? Target
     : unknown extends DefaultValue
@@ -489,4 +494,23 @@ declare namespace Selector {
     Target,
     Opts extends Selector.Options,
   > = Opts['returnDetails'] extends true ? TFunctionDetailedResult<Target, Opts> : Target;
+
+  type Interpolations<
+    T,
+    P extends string = never,
+  > = T extends `${string}{{${infer K}}}${infer Tail}`
+    ? Interpolations<
+        Tail,
+        | P
+        | TrimSpaces<
+            K extends `${_UnescapePrefix}${infer K2}${_UnescapeSuffix}`
+              ? K2 extends `${infer K3},${string}`
+                ? K3
+                : K2
+              : K extends `${infer K4},${string}`
+                ? K4
+                : K
+          >
+      >
+    : { [K in P]: unknown };
 }
