@@ -1,6 +1,5 @@
 export type TestNamespaceCustom = {
   foo: 'foo';
-  DELETEME: 'DELETE ME';
   bar: 'bar';
   baz: {
     bing: 'boop';
