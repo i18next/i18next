@@ -339,9 +339,7 @@ type TFunctionSignature<
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends TFunctionSignature<Ns, KPrefix> {}
 
-export type KeyPrefix<Ns extends Namespace> = _UseSelector extends true
-  ? keyof _Resources[$FirstNamespace<Ns> & keyof _Resources] | undefined
-  : ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
 export declare namespace TFunction {
   interface Selector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
@@ -374,6 +372,12 @@ export declare namespace TFunction {
 
 export declare namespace Selector {
   type SelectorOptions = Omit<TOptionsBase, 'ns'> & $Dictionary;
+  type ApplyKeyPrefix<
+    T extends [any],
+    KPrefix,
+  > = KPrefix extends `${infer Head}${_KeySeparator}${infer Tail}`
+    ? ApplyKeyPrefix<[T[0][Head]], Tail>
+    : T[0][KPrefix & string];
 
   interface SelectorFn<Source, Target, Options extends SelectorOptions> {
     (translations: Selector.FilterKeys<Source, Options['context']>): Target;
@@ -384,7 +388,9 @@ export declare namespace Selector {
     KPrefix,
   > = KPrefix extends keyof Resources[$FirstNamespace<Ns>]
     ? Resources[$FirstNamespace<Ns>][KPrefix]
-    : Resources[$FirstNamespace<Ns>];
+    : undefined extends KPrefix
+      ? Resources[$FirstNamespace<Ns>]
+      : ApplyKeyPrefix<[Resources[$FirstNamespace<Ns>]], KPrefix>;
 
   type ConstrainTarget<Options extends SelectorOptions> = _ReturnObjects extends true
     ? unknown

@@ -2,9 +2,15 @@ import 'i18next';
 
 declare const ns1: {
   /**
-   * ## {@link resources.ctx.beverage `resources.ctx.beverage`}
+   * ## {@link ns1.beverage `ns1.beverage`}
    *
    * A drink, or whatever.
+   *
+   * See also:
+   *
+   * - {@link ns1.coffee `ns1.coffee`}
+   * - {@link ns1.sodas.coca_cola `ns1.sodas.coca_cola`}
+   * - {@link ns1.sodas.faygo `ns1.sodas.faygo`}
    */
   beverage: 'beverage';
   'beverage|beer': 'beer';

@@ -1,5 +1,5 @@
 import { describe, it, assertType, expectTypeOf } from 'vitest';
-import i18next, { TFunction } from 'i18next';
+import i18next, { getFixedT, TFunction } from 'i18next';
 
 describe('getFixedT', () => {
   it('returns a `TFunction`', () => {
@@ -56,5 +56,15 @@ describe('getFixedT', () => {
 
     // @ts-expect-error
     assertType(t(($) => $.foobar.barfoo));
+  });
+
+  it('should work with a two-level deep keyPrefix', () => {
+    const t = getFixedT(null, 'alternate', 'foobar.deep');
+    expectTypeOf(t(($) => $.deeper.deeeeeper)).toEqualTypeOf<'foobar'>();
+  });
+
+  it('should work with a three-level deep keyPrefix', () => {
+    const t = getFixedT(null, 'alternate', 'foobar.deep.deeper');
+    expectTypeOf(t(($) => $.deeeeeper)).toEqualTypeOf<'foobar'>();
   });
 });
