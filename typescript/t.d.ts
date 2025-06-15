@@ -372,50 +372,6 @@ export declare namespace TFunction {
   }
 }
 
-/**
- * 1. KPrefix cannot be a path -- it must be a shallow key
- *
- *    - There might be a way to support this, but in my early experiments came with a significant
- *    compile-time cost
- *
- *    - This is reflected in the signature of `getFixed` when `useSelector` is true
- *
- * 2. Namespace change must happen explicitly via options
- *
- *    - The reason for this is also performance related. Adding support for switching namespaces like
- *      that would require us to always instantiate all namespaces, even if users never actually use
- *      them
- *
- *    - This seemed to align with the best practices that i18next describes in their docs, and since
- *    this is a new feature, it seems like an opportunity to nudge users toward that usage anyway
- *
- * 3. Default value must be explicitly passed via options
- *
- *    - There might be a way to support this, to be honest I didn't spend a lot of time here since I
- *      wasn't sure how popular this feature is in userland. If you'd like me to give it another try
- *      I'm open to doing spending another cycle on it.
- *
- * 4. "Strict" semantics by default (`useSelector: true` implies strict)
- *
- *    A. Providing a default value turns the return type into a union that includes the default value
- *
- *    B. Similarly, `null` keys are prevented by path access. If a user has that setting turned on,
- *       it might affect runtime behavior, but there isn't a straight-forward way to allow users to
- *       access keys that don't exist on the object, so I'm not sure it makes sense to support this
- *       at the type-level
- *
- *    C. Same applies to applying types for fallback namespaces. Users can still use fallback namespaces
- *       to "catch" lookups that misfire at runetime, but applying that logic at the type-level when
- *       using selectors would require either:
- *
- *       A.) changing thte proxy object's type to allow arbitrary property access at
- *           any level (which is possible, but comes at the cost of making navigation of the data structure
- *           less intuitive); or,
- *
- *       B.) updating the return type of all translations to be a union of the accessed
- *           property _or_ the fallback value, which would likely be an unpopular design desicion
- */
-
 export declare namespace Selector {
   type SelectorOptions = Omit<TOptionsBase, 'ns'> & $Dictionary;
 
