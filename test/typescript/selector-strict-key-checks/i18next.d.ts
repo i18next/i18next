@@ -12,7 +12,7 @@ declare module 'i18next' {
     strictKeyChecks: true;
     defaultNS: 'custom';
     fallbackNS: 'fallback';
-    useSelector: true;
+    enableSelector: true;
     resources: {
       custom: TestNamespaceCustom;
       alternate: TestNamespaceCustomAlternate;

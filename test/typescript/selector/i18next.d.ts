@@ -74,7 +74,7 @@ declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'ns1';
     contextSeparator: '|';
-    useSelector: true;
+    enableSelector: true;
     resources: {
       ns1: typeof ns1;
       ns2: typeof ns2;

@@ -35,7 +35,7 @@ type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
-type _UseSelector = TypeOptions['useSelector'];
+type _EnableSelector = TypeOptions['enableSelector'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -330,7 +330,7 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-> = _UseSelector extends true
+> = _EnableSelector extends true
   ? TFunction.Selector<Ns, KPrefix, Selector.GetSource<Ns, KPrefix>>
   : _StrictKeyChecks extends true
     ? TFunctionStrict<Ns, KPrefix>

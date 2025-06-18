@@ -102,7 +102,7 @@ export type TypeOptions = $MergeBy<
      * Enables features like go-to definition, and better DX/faster autocompletion
      * for TypeScript developers.
      */
-    useSelector: false;
+    enableSelector: false;
   },
   CustomTypeOptions
 >;

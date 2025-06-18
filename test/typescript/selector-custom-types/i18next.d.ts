@@ -16,7 +16,7 @@ declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'custom';
     fallbackNS: 'fallback';
-    useSelector: true;
+    enableSelector: true;
     resources: {
       custom: TestNamespaceCustom;
 
