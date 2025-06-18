@@ -83,6 +83,8 @@ describe('i18next.t', () => {
 
   it('should work with plurals', () => {
     expectTypeOf(i18next.t(($) => $.foo, { count: 1, ns: 'plurals' })).toEqualTypeOf<'foo'>();
+
+    // @ts-expect-error plural keys have been removed from the translations object
     expectTypeOf(i18next.t(($) => $.foo_many, { count: 10, ns: 'plurals' })).toEqualTypeOf<'foo'>();
   });
 
