@@ -408,17 +408,17 @@ export declare namespace Selector {
       ? Target
       : Target | DefaultValue;
 
-  type FilterArray<T, Context> = { [I in keyof T]: FilterKeys<T[I], Context> };
-
   type FilterKeys<T, Context> = never | T extends readonly any[]
-    ? FilterArray<T, Context>
+    ? { [I in keyof T]: FilterKeys<T[I], Context> }
     : $Prune<
         {
           [K in keyof T as T[K] extends object
             ? K
             : Context extends string
               ? never
-              : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+              : K extends `${string}${_PluralSeparator}${PluralSuffix}`
+                ? never
+                : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
         } & {
           [K in keyof T as T[K] extends object
             ? never
