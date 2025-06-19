@@ -1,21 +1,14 @@
-export const PATH_KEY = Symbol.for('@i18next/PATH_KEY');
+export const PATH_KEY = Symbol.for('i18next/PATH_KEY');
 
 export function createProxy() {
-  const state = Array.of();
+  const state = [];
   const handler = Object.create(null);
   let proxy;
   handler.get = (target, key) => {
-    const index = Number.parseInt(String(key), 10);
-    if (key === PATH_KEY) {
-      proxy?.revoke?.();
-      return state;
-    }
     proxy?.revoke?.();
-    proxy = Proxy.revocable(
-      Object.assign(target, Object.assign(Object.create(null), { [PATH_KEY]: state })),
-      handler,
-    );
-    Reflect.set(state, state.length, Number.isNaN(index) ? key : index);
+    if (key === PATH_KEY) return state;
+    state.push(key);
+    proxy = Proxy.revocable(target, handler);
     return proxy.proxy;
   };
   return Proxy.revocable(Object.create(null), handler).proxy;
