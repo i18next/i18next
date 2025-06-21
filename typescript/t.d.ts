@@ -342,9 +342,9 @@ export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = un
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
-//////////////////////
+/// ////////////// ///
 ///  ↆ selector ↆ  ///
-//////////////////////
+/// ////////////// ///
 
 interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
   <
