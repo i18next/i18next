@@ -10,6 +10,11 @@ export type $Prune<T> =
   | never
   | { [K in keyof T as [keyof T[K]] extends [never] ? never : K]: T[K] };
 
+/** All the way down. */
+export interface $Turtles {
+  [x: string]: $Turtles;
+}
+
 export type $MergeBy<T, K> = Omit<T, keyof K> & K;
 
 export type $OmitArrayKeys<Arr> = Arr extends readonly any[] ? Omit<Arr, keyof any[]> : Arr;
