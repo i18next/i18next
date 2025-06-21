@@ -5,6 +5,8 @@ import type {
   $SpecialObject,
   $StringKeyPathToRecord,
   $NoInfer,
+  $Prune,
+  $Turtles,
 } from './helpers.js';
 import type {
   TypeOptions,
@@ -12,6 +14,7 @@ import type {
   FlatNamespace,
   DefaultNamespace,
   TOptions,
+  TOptionsBase,
 } from './options.js';
 
 /** @todo consider to replace {} with Record<string, never> */
@@ -33,6 +36,7 @@ type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
+type _EnableSelector = TypeOptions['enableSelector'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -62,6 +66,12 @@ type TrimSpaces<T extends string, Acc extends string = ''> = T extends `${infer 
   : T extends ''
     ? Acc
     : never;
+
+interface Branded<Ns extends Namespace> {
+  $TFunctionBrand: $IsResourcesDefined extends true
+    ? `${Ns extends readonly any[] ? Ns[0] : Ns}`
+    : never;
+}
 
 /** ****************************************************
  * Build all keys and key prefixes based on Resources *
@@ -212,6 +222,7 @@ type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallba
 >;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
+
 type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
   ? $SpecialObject | string
   : TOpt['returnObjects'] extends true
@@ -280,8 +291,8 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
  * T function declaration *
  ************************* */
 
-interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
-  $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
+  extends Branded<Ns> {
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
@@ -301,8 +312,8 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
 }
 
-interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> {
-  $TFunctionBrand: $IsResourcesDefined extends true ? `${$FirstNamespace<Ns>}` : never;
+interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
+  extends Branded<Ns> {
   <
     const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
     const TOpt extends TOptions,
@@ -320,9 +331,108 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-> = _StrictKeyChecks extends true ? TFunctionStrict<Ns, KPrefix> : TFunctionNonStrict<Ns, KPrefix>;
+> = _EnableSelector extends true
+  ? TFunctionSelector<Ns, KPrefix, GetSource<Ns, KPrefix>>
+  : _StrictKeyChecks extends true
+    ? TFunctionStrict<Ns, KPrefix>
+    : TFunctionNonStrict<Ns, KPrefix>;
 
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends TFunctionSignature<Ns, KPrefix> {}
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
+
+/// ////////////// ///
+///  ↆ selector ↆ  ///
+/// ////////////// ///
+
+interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
+  <
+    Target extends ConstrainTarget<Opts>,
+    const Opts extends Options,
+    NsOverride extends Namespace,
+    SourceOverride extends GetSource<NsOverride, KPrefix>,
+  >(
+    selector: SelectorFn<SourceOverride, ApplyTarget<Target, Opts>, Opts>,
+    options: Opts & InterpolationMap<Target> & { ns: NsOverride },
+  ): TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>;
+  <Target extends ConstrainTarget<Opts>, const Opts extends Options>(
+    selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
+    options?: Opts & InterpolationMap<Target>,
+  ): TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>;
+}
+
+type Options = Omit<TOptionsBase, 'ns' | 'keySeparator' | 'nsSeparator'> & $Dictionary;
+
+interface SelectorFn<Source, Target, Opts extends Options> {
+  (translations: Select<Source, Opts['context']>): Target;
+}
+
+type ApplyKeyPrefix<
+  T extends [any],
+  KPrefix,
+> = KPrefix extends `${infer Head}${_KeySeparator}${infer Tail}`
+  ? ApplyKeyPrefix<[T[0][Head]], Tail>
+  : T[0][KPrefix & string];
+
+type ApplyTarget<Target, Opts extends Options> = Opts['returnObjects'] extends true
+  ? unknown
+  : Target;
+
+type ConstrainTarget<Opts extends Options> = _ReturnObjects extends true
+  ? unknown
+  : Opts['returnObjects'] extends true
+    ? unknown
+    : $IsResourcesDefined extends false
+      ? unknown
+      : string;
+
+type ProcessReturnValue<Target, DefaultValue> = $Turtles extends Target
+  ? string
+  : [DefaultValue] extends [never]
+    ? Target
+    : unknown extends DefaultValue
+      ? Target
+      : Target | DefaultValue;
+
+type GetSource<Ns extends Namespace, KPrefix> = KPrefix extends keyof Resources[$FirstNamespace<Ns>]
+  ? Resources[$FirstNamespace<Ns>][KPrefix]
+  : undefined extends KPrefix
+    ? Resources[$FirstNamespace<Ns>]
+    : ApplyKeyPrefix<[Resources[$FirstNamespace<Ns>]], KPrefix>;
+
+type Select<T, Context> = $IsResourcesDefined extends false ? $Turtles : FilterKeys<T, Context>;
+
+type FilterKeys<T, Context> = never | T extends readonly any[]
+  ? { [I in keyof T]: FilterKeys<T[I], Context> }
+  : $Prune<
+      {
+        [K in keyof T as T[K] extends object
+          ? K
+          : Context extends string
+            ? never
+            : K extends `${string}${_PluralSeparator}${PluralSuffix}`
+              ? never
+              : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+      } & {
+        [K in keyof T as T[K] extends object
+          ? never
+          : Context extends string
+            ? never
+            : K extends
+                  | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+                  | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+              ? Prefix
+              : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+      } & {
+        [K in keyof T as T[K] extends object
+          ? never
+          : Context extends string
+            ? K extends
+                | `${infer Prefix}${_ContextSeparator}${Context}`
+                | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+              ? Prefix
+              : never
+            : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+      }
+    >;
