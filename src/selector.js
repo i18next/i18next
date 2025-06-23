@@ -14,7 +14,7 @@ export function createProxy() {
   return Proxy.revocable(Object.create(null), handler).proxy;
 }
 
-export function keysFromSelector(selector) {
+export function keysFromSelector(selector, opts) {
   const { [PATH_KEY]: PATH } = selector(createProxy());
-  return PATH.join('.');
+  return PATH.join(opts.keySeparator ?? '.');
 }
