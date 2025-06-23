@@ -16,5 +16,5 @@ export function createProxy() {
 
 export function keysFromSelector(selector, opts) {
   const { [PATH_KEY]: PATH } = selector(createProxy());
-  return PATH.join(opts.keySeparator ?? '.');
+  return PATH.join(opts?.keySeparator ?? '.');
 }

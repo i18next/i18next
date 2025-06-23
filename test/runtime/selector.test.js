@@ -17,5 +17,10 @@ describe('keysFromSelector', () => {
       const keys = keysFromSelector(($) => $[0][1][2]);
       expect(keys).toEqual('0.1.2');
     });
+
+    it('supports custom keySeparator option', () => {
+      const keys = keysFromSelector(($) => $[0][1][2], { keySeparator: '...' });
+      expect(keys).toEqual('0...1...2');
+    });
   });
 });
