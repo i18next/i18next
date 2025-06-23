@@ -349,22 +349,22 @@ export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace
 interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
   <
     Target extends ConstrainTarget<Opts>,
-    const Opts extends Options,
+    const Opts extends SelectorOptions,
     NsOverride extends Namespace,
     SourceOverride extends GetSource<NsOverride, KPrefix>,
   >(
     selector: SelectorFn<SourceOverride, ApplyTarget<Target, Opts>, Opts>,
     options: Opts & InterpolationMap<Target> & { ns: NsOverride },
   ): TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>;
-  <Target extends ConstrainTarget<Opts>, const Opts extends Options>(
+  <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions>(
     selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
     options?: Opts & InterpolationMap<Target>,
   ): TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>;
 }
 
-type Options = Omit<TOptionsBase, 'ns' | 'keySeparator' | 'nsSeparator'> & $Dictionary;
+type SelectorOptions = Omit<TOptionsBase, 'ns' | 'nsSeparator'> & $Dictionary;
 
-interface SelectorFn<Source, Target, Opts extends Options> {
+interface SelectorFn<Source, Target, Opts extends SelectorOptions> {
   (translations: Select<Source, Opts['context']>): Target;
 }
 
@@ -375,11 +375,11 @@ type ApplyKeyPrefix<
   ? ApplyKeyPrefix<[T[0][Head]], Tail>
   : T[0][KPrefix & string];
 
-type ApplyTarget<Target, Opts extends Options> = Opts['returnObjects'] extends true
+type ApplyTarget<Target, Opts extends SelectorOptions> = Opts['returnObjects'] extends true
   ? unknown
   : Target;
 
-type ConstrainTarget<Opts extends Options> = _ReturnObjects extends true
+type ConstrainTarget<Opts extends SelectorOptions> = _ReturnObjects extends true
   ? unknown
   : Opts['returnObjects'] extends true
     ? unknown
