@@ -350,19 +350,23 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
   <
     Target extends ConstrainTarget<Opts>,
     const Opts extends SelectorOptions,
-    NsOverride extends Namespace,
-    SourceOverride extends GetSource<NsOverride, KPrefix>,
+    NewNs extends Namespace,
+    NewSrc extends GetSource<NewNs, KPrefix>,
   >(
-    selector: SelectorFn<SourceOverride, ApplyTarget<Target, Opts>, Opts>,
-    options: Opts & InterpolationMap<Target> & { ns: NsOverride },
-  ): TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>;
+    selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>,
+    options: Opts & InterpolationMap<Target> & { ns: NewNs },
+  ): SelectorReturn<Target, Opts>;
   <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions>(
     selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
     options?: Opts & InterpolationMap<Target>,
-  ): TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>;
+  ): SelectorReturn<Target, Opts>;
 }
 
 type SelectorOptions = Omit<TOptionsBase, 'ns' | 'nsSeparator'> & $Dictionary;
+
+type SelectorReturn<Target, Opts extends SelectorOptions> = $IsResourcesDefined extends true
+  ? TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>
+  : DefaultTReturn<Opts>;
 
 interface SelectorFn<Source, Target, Opts extends SelectorOptions> {
   (translations: Select<Source, Opts['context']>): Target;
