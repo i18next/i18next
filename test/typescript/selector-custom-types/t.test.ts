@@ -18,7 +18,7 @@ describe('t', () => {
 
     it('should throw an error when keys are not defined', () => {
       // @ts-expect-error
-      assertType(t(($) => $.do_not_exists, { wrongOrNoValPassed: 'xx' }));
+      assertType(t(($) => $.does_not_exist, { wrongOrNoValPassed: 'xx' }));
 
       // @ts-expect-error
       assertType(t(($) => $.baz));
@@ -80,11 +80,17 @@ describe('t', () => {
 
     it('should work with standard keys', () => {
       expectTypeOf(t(($) => $.baz.bing)).toEqualTypeOf<'boop'>();
-      expectTypeOf(t(($) => $.baz, { ns: 'alternate' })).toEqualTypeOf<'baz'>();
       expectTypeOf(t(($) => $.bar)).toEqualTypeOf<'bar'>();
       expectTypeOf(t(($) => $.bar, { ns: 'custom' })).toEqualTypeOf<'bar'>();
       expectTypeOf(t(($) => $.bar)).toEqualTypeOf<'bar'>();
+
+      expectTypeOf(t(($) => $.baz, { ns: 'alternate' })).toEqualTypeOf<'baz'>();
       expectTypeOf(t(($) => $.baz, { ns: ['alternate', 'custom'] })).toEqualTypeOf<'baz'>();
+      expectTypeOf(t(($) => $.custom.bar, { ns: ['alternate', 'custom'] })).toEqualTypeOf<'bar'>();
+      expectTypeOf(t(($) => $.alternate.foobar.deep.deeper.deeeeeper)).toEqualTypeOf<'foobar'>();
+      expectTypeOf(
+        t(($) => $.foobar.deep.deeper.deeeeeper, { ns: 'alternate' }),
+      ).toEqualTypeOf<'foobar'>();
     });
 
     it('should work with `returnObjects`', () => {
@@ -239,6 +245,8 @@ describe('t', () => {
     it('should work with basic usage', () => {
       expectTypeOf(t(($) => $.dessert, { context: 'cake' })).toEqualTypeOf<'a nice cake'>();
 
+      expectTypeOf(t(($) => $.ctxAlternate.game_chess)).toEqualTypeOf<'Chess'>();
+
       // context + plural
       expectTypeOf(t(($) => $.dessert, { context: 'muffin', count: 3 })).toEqualTypeOf<
         'a nice muffin' | '{{count}} nice muffins'
@@ -246,7 +254,7 @@ describe('t', () => {
 
       // @ts-expect-error
       // valid key with invalid context
-      assertType(t(($) => $.dessert, { context: 'bad context' }));
+      assertType(t(($) => $.ctx.dessert, { context: 'bad context' }));
     });
 
     it('should work with text value from another namespace', () => {
@@ -269,13 +277,19 @@ describe('t', () => {
 
   it('each t function must have a type based on provided namespace', () => {
     const tOrdinal: TFunction<'ord'> = (() => '') as never;
-    const tOrdPlurals: TFunction<['ord', 'plurals']> = (() => '') as never;
-    const tPluralsOrd: TFunction<['plurals', 'ord']> = (() => '') as never;
+    const tOrdinalSingleton: TFunction<['ord']> = (() => '') as never;
     const tPlurals: TFunction<'plurals'> = (() => '') as never;
+    const tPluralsSingleton: TFunction<['plurals']> = (() => '') as never;
+    const tPluralsOrd: TFunction<['plurals', 'ord']> = (() => '') as never;
+    const tOrdPlurals: TFunction<['ord', 'plurals']> = (() => '') as never;
 
-    expectTypeOf(tOrdinal).not.toMatchTypeOf(tPlurals);
-    expectTypeOf(tOrdPlurals).not.toMatchTypeOf(tPlurals);
-    expectTypeOf(tPluralsOrd).toEqualTypeOf(tPlurals);
+    expectTypeOf(tPlurals).toEqualTypeOf(tPluralsSingleton);
+    expectTypeOf(tOrdinal).toEqualTypeOf(tOrdinalSingleton);
+    expectTypeOf(tOrdinal).not.toMatchTypeOf(tOrdPlurals);
+    expectTypeOf(tPlurals).not.toMatchTypeOf(tPluralsOrd);
+    expectTypeOf(tPlurals).not.toMatchTypeOf(tOrdPlurals);
+    expectTypeOf(tOrdinal).not.toMatchTypeOf(tPluralsOrd);
+    expectTypeOf(tOrdPlurals).not.toMatchTypeOf(tPluralsOrd);
   });
 
   describe('should work with `InterpolatorMap`', () => {

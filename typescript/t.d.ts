@@ -399,11 +399,25 @@ type ProcessReturnValue<Target, DefaultValue> = $Turtles extends Target
       ? Target
       : Target | DefaultValue;
 
-type GetSource<Ns extends Namespace, KPrefix> = KPrefix extends keyof Resources[$FirstNamespace<Ns>]
-  ? Resources[$FirstNamespace<Ns>][KPrefix]
+type Intersect<T, Out = unknown> = T extends [infer F, ...infer R] ? Intersect<R, F & Out> : Out;
+
+type PickNamespaces<T, K extends keyof any> = {
+  [P in K as P extends keyof T ? P : never]: T[P & keyof T];
+};
+
+type GetSource<
+  Ns extends Namespace,
+  KPrefix,
+  Res = Ns extends readonly [any, any, ...any[]]
+    ? Ns extends readonly [infer Head extends keyof Resources, ...infer Tail extends (keyof any)[]]
+      ? Resources[Head] & PickNamespaces<Resources, Tail[number]>
+      : never
+    : Resources[$FirstNamespace<Ns>],
+> = KPrefix extends keyof Res
+  ? Res[KPrefix]
   : undefined extends KPrefix
-    ? Resources[$FirstNamespace<Ns>]
-    : ApplyKeyPrefix<[Resources[$FirstNamespace<Ns>]], KPrefix>;
+    ? Res
+    : ApplyKeyPrefix<[Res], KPrefix>;
 
 type Select<T, Context> = $IsResourcesDefined extends false ? $Turtles : FilterKeys<T, Context>;
 
