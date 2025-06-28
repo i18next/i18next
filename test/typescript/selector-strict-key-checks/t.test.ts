@@ -11,7 +11,7 @@ describe('basic usage with strictKeyChecks == true', () => {
     >();
   });
 
-  it('should throw an error even if `defaultValue` is provided when key is missing', () => {
+  it('should throw an error when key is missing (even when `defaultValue` is provided)', () => {
     // @ts-expect-error
     assertType(t(($) => $.new));
     // @ts-expect-error
