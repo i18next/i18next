@@ -437,6 +437,27 @@
     }
   };
 
+  const PATH_KEY = Symbol.for('i18next/PATH_KEY');
+  function createProxy() {
+    const state = [];
+    const handler = Object.create(null);
+    let proxy;
+    handler.get = (target, key) => {
+      proxy?.revoke?.();
+      if (key === PATH_KEY) return state;
+      state.push(key);
+      proxy = Proxy.revocable(target, handler);
+      return proxy.proxy;
+    };
+    return Proxy.revocable(Object.create(null), handler).proxy;
+  }
+  function keysFromSelector(selector, opts) {
+    const {
+      [PATH_KEY]: PATH
+    } = selector(createProxy());
+    return PATH.join(opts?.keySeparator ?? '.');
+  }
+
   const checkedLoadedFor = {};
   const shouldHandleAsObject = res => !isString(res) && typeof res !== 'boolean' && typeof res !== 'number';
   class Translator extends EventEmitter {
@@ -498,6 +519,7 @@
       };
       if (!opt) opt = {};
       if (keys == null) return '';
+      if (typeof keys === 'function') keys = keysFromSelector(keys, opt);
       if (!Array.isArray(keys)) keys = [String(keys)];
       const returnDetails = opt.returnDetails !== undefined ? opt.returnDetails : this.options.returnDetails;
       const keySeparator = opt.keySeparator !== undefined ? opt.keySeparator : this.options.keySeparator;
