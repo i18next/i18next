@@ -331,7 +331,7 @@ interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = 
 type TFunctionSignature<
   Ns extends Namespace = DefaultNamespace,
   KPrefix = undefined,
-> = _EnableSelector extends true
+> = _EnableSelector extends true | 'optimize'
   ? TFunctionSelector<Ns, KPrefix, GetSource<Ns, KPrefix>>
   : _StrictKeyChecks extends true
     ? TFunctionStrict<Ns, KPrefix>
@@ -399,8 +399,6 @@ type ProcessReturnValue<Target, DefaultValue> = $Turtles extends Target
       ? Target
       : Target | DefaultValue;
 
-type Intersect<T, Out = unknown> = T extends [infer F, ...infer R] ? Intersect<R, F & Out> : Out;
-
 type PickNamespaces<T, K extends keyof any> = {
   [P in K as P extends keyof T ? P : never]: T[P & keyof T];
 };
@@ -408,10 +406,8 @@ type PickNamespaces<T, K extends keyof any> = {
 type GetSource<
   Ns extends Namespace,
   KPrefix,
-  Res = Ns extends readonly [any, any, ...any[]]
-    ? Ns extends readonly [infer Head extends keyof Resources, ...infer Tail extends (keyof any)[]]
-      ? Resources[Head] & PickNamespaces<Resources, Tail[number]>
-      : never
+  Res = Ns extends readonly [keyof Resources, any, ...any]
+    ? Resources[Ns[0]] & PickNamespaces<Resources, Ns[number]>
     : Resources[$FirstNamespace<Ns>],
 > = KPrefix extends keyof Res
   ? Res[KPrefix]
@@ -419,7 +415,11 @@ type GetSource<
     ? Res
     : ApplyKeyPrefix<[Res], KPrefix>;
 
-type Select<T, Context> = $IsResourcesDefined extends false ? $Turtles : FilterKeys<T, Context>;
+type Select<T, Context> = $IsResourcesDefined extends false
+  ? $Turtles
+  : [_EnableSelector] extends ['optimize']
+    ? T
+    : FilterKeys<T, Context>;
 
 type FilterKeys<T, Context> = never | T extends readonly any[]
   ? { [I in keyof T]: FilterKeys<T[I], Context> }

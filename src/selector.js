@@ -1,7 +1,8 @@
-export const PATH_KEY = Symbol.for('i18next/PATH_KEY');
+const PATH_KEY = Symbol.for('i18next/PATH_KEY');
 
-export function createProxy() {
+function createProxy() {
   const state = [];
+  // `Object.create(null)` to prevent prototype pollution
   const handler = Object.create(null);
   let proxy;
   handler.get = (target, key) => {
@@ -14,7 +15,7 @@ export function createProxy() {
   return Proxy.revocable(Object.create(null), handler).proxy;
 }
 
-export function keysFromSelector(selector, opts) {
-  const { [PATH_KEY]: PATH } = selector(createProxy());
-  return PATH.join(opts?.keySeparator ?? '.');
+export default function keysFromSelector(selector, opts) {
+  const { [PATH_KEY]: path } = selector(createProxy());
+  return path.join(opts?.keySeparator ?? '.');
 }

@@ -2,7 +2,7 @@ import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 import postProcessor from './postProcessor.js';
 import { copy as utilsCopy, looksLikeObjectPath, isString } from './utils.js';
-import { keysFromSelector } from './selector.js';
+import keysFromSelector from './selector.js';
 
 const checkedLoadedFor = {};
 

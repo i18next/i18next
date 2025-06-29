@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { keysFromSelector } from '../../src/selector.js';
+import keysFromSelector from '../../src/selector.js';
 
 describe('keysFromSelector', () => {
   describe('example-based test suite', () => {
