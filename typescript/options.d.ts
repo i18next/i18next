@@ -101,6 +101,16 @@ export type TypeOptions = $MergeBy<
      *
      * Enables features like go-to definition, and better DX/faster autocompletion
      * for TypeScript developers.
+     *
+     * If you're working with an especially large set of translations and aren't
+     * using context, you set `enableSelector` to `"optimize"` and i18next won't do
+     * any type-level processing of your translations at all.
+     *
+     * With `enableSelector` set to `"optimize"`, i18next is capable of supporting
+     * arbitrarily large/deep translation sets without causing any IDE slowdown
+     * whatsoever.
+     *
+     * @default false
      */
     enableSelector: false;
   },

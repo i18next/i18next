@@ -7,5 +7,6 @@
     ".eslintrc.js",
     "vitest.*.mts",
     "rollup.config.mjs"
-  ]
+  ],
+  "exclude": ["./test/typescript/test.namespace.extra-large.ts"]
 }
