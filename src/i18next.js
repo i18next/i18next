@@ -532,6 +532,14 @@ class I18n extends EventEmitter {
     if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
     if (!lng) return 'rtl';
 
+    if (Intl.Locale) {
+      const l = new Intl.Locale(lng)
+      if (l && l.getTextInfo) {
+        const ti = l.getTextInfo()
+        if (ti && ti.direction) return ti.direction
+      }
+    }
+
     const rtlLngs = [
       'ar',
       'shu',
@@ -598,6 +606,7 @@ class I18n extends EventEmitter {
     ];
 
     const languageUtils = this.services?.languageUtils || new LanguageUtils(getDefaults()) // for uninitialized usage
+    if (lng.toLowerCase().indexOf('-latn') > 1) return 'ltr';
 
     return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'

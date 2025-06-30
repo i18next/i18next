@@ -1,3 +1,7 @@
+## 25.3.0
+
+- fix `dir()` for Latn language codes [2324](https://github.com/i18next/i18next/issues/23232412)
+
 ## 25.2.1
 
 - streamline `fallbackLng` option of t call with the init options [2312](https://github.com/i18next/i18next/issues/2312)
