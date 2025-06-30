@@ -277,13 +277,19 @@ class Interpolator {
        * And those parameters are not dynamic values (parameters do not include curly braces). E.g.:
        *   - Not t(a, { "key": "{{variable}}" })
        *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
+       *
+       * Since v25.3.0 also this is possible: https://github.com/i18next/i18next/pull/2325
        */
-      let doReduce = false;
-      if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
-        const r = match[1].split(this.formatSeparator).map((elem) => elem.trim());
-        match[1] = r.shift();
-        formatters = r;
-        doReduce = true;
+      const keyEndIndex = /{.*}/.test(match[1])
+        ? match[1].lastIndexOf('}') + 1
+        : match[1].indexOf(this.formatSeparator);
+      if (keyEndIndex !== -1) {
+        formatters = match[1]
+          .slice(keyEndIndex)
+          .split(this.formatSeparator)
+          .map((elem) => elem.trim())
+          .filter(Boolean);
+        match[1] = match[1].slice(0, keyEndIndex);
       }
 
       value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
@@ -298,7 +304,7 @@ class Interpolator {
         value = '';
       }
 
-      if (doReduce) {
+      if (formatters.length) {
         value = formatters.reduce(
           // eslint-disable-next-line no-loop-func
           (v, f) =>

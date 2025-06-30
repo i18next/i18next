@@ -45,6 +45,16 @@ describe('v1.11.1 initialisation', () => {
       await i18n.setLng('ar-Ir');
       expect(i18n.dir()).to.equal('rtl');
     });
+
+    it('returns rtl for fa-AF', async () => {
+      await i18n.setLng('fa-AF');
+      expect(i18n.dir()).to.equal('rtl');
+    });
+
+    it('returns ltr for fa-Latn-AF', async () => {
+      await i18n.setLng('fa-Latn-AF');
+      expect(i18n.dir()).to.equal('ltr');
+    });
   });
 
   describe('with passed in resource set', () => {
