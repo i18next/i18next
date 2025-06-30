@@ -53,6 +53,22 @@ describe('i18next.translation.formatting', () => {
                     'Before {{date, customDateCached(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
                   customFormatWithSeparator: "Hello {{myVar, join(separator: ' | ')}}",
                   customFormatWithSeparatorComma: "Hello {{myVar, join(separator: ', ')}}",
+                  boy: 'Boy',
+                  boy_other: 'Boys',
+                  girl: 'Girl',
+                  girl_other: 'Girls',
+                  park: 'a {{name}} park',
+                  park_other: '{{count}} {{name}} parks',
+                  be: 'is',
+                  be_other: 'are',
+                  girlsAndBoysWithoutFormatTest:
+                    'They have {{girls}} $t(girl, { "count": {{girls}} }) and {{boys}} $t(boy, { "count": {{boys}} })',
+                  girlsAndBoysWithoutPluralTest:
+                    'They have {{girls}} $t(girl, lowercase) and {{boys}} $t(boy, lowercase)',
+                  girlsAndBoysFormatTest:
+                    'They have {{girls}} $t(girl, { "count": {{girls}} }, lowercase) and {{boys}} $t(boy, { "count": {{boys}} }, lowercase)',
+                  girlsAndBoysInTheParkFormatTest:
+                    'There $t(be, { "count": {{girls}} }) {{girls}} $t(girl, { "count": {{girls}} }, lowercase) and {{boys}} $t(boy, { "count": {{boys}} }, lowercase) in $t(park, { "count": {{parkCount}}, "name": "{{parkName}}" }, title case, underscore)',
                 },
               },
             },
@@ -61,6 +77,12 @@ describe('i18next.translation.formatting', () => {
             // add some custom formats used by legacy
             instance.services.formatter.add('uppercase', (value) => value.toUpperCase());
             instance.services.formatter.add('lowercase', (value) => value.toLowerCase());
+            instance.services.formatter.add('title case', (value) =>
+              value
+                .split(' ')
+                .map((word) => word[0].toUpperCase() + word.slice(1))
+                .join(' '),
+            );
             instance.services.formatter.add('underscore', (value) => value.replace(/\s+/g, '_'));
             instance.services.formatter.add('encodeuricomponent', (value) =>
               encodeURIComponent(value),
@@ -222,6 +244,27 @@ describe('i18next.translation.formatting', () => {
       {
         args: ['intlList', { val: ['locize', 'i18next', 'awesome'] }],
         expected: 'A list of locize, i18next, and awesome',
+      },
+
+      // formatting + plural + interpolation
+      {
+        args: ['girlsAndBoysWithoutFormatTest', { girls: 1, boys: 2 }],
+        expected: 'They have 1 Girl and 2 Boys',
+      },
+      {
+        args: ['girlsAndBoysWithoutPluralTest', { girls: 1, boys: 2 }],
+        expected: 'They have 1 girl and 2 boy',
+      },
+      {
+        args: ['girlsAndBoysFormatTest', { girls: 1, boys: 2 }],
+        expected: 'They have 1 girl and 2 boys',
+      },
+      {
+        args: [
+          'girlsAndBoysInTheParkFormatTest',
+          { girls: 1, boys: 2, parkCount: 3, parkName: 'national' },
+        ],
+        expected: 'There is 1 girl and 2 boys in 3_National_Parks',
       },
     ];
 
