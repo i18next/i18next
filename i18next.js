@@ -437,7 +437,7 @@
     }
   };
 
-  const PATH_KEY = Symbol.for('i18next/PATH_KEY');
+  const PATH_KEY = Symbol('i18next/PATH_KEY');
   function createProxy() {
     const state = [];
     const handler = Object.create(null);
@@ -453,9 +453,9 @@
   }
   function keysFromSelector(selector, opts) {
     const {
-      [PATH_KEY]: PATH
+      [PATH_KEY]: path
     } = selector(createProxy());
-    return PATH.join(opts?.keySeparator ?? '.');
+    return path.join(opts?.keySeparator ?? '.');
   }
 
   const checkedLoadedFor = {};

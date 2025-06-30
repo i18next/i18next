@@ -1,4 +1,4 @@
-const PATH_KEY = Symbol.for('i18next/PATH_KEY');
+const PATH_KEY = Symbol('i18next/PATH_KEY');
 
 function createProxy() {
   const state = [];
