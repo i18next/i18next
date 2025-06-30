@@ -1,6 +1,6 @@
 ## 25.3.0
 
-- fix `dir()` for Latn language codes [2324](https://github.com/i18next/i18next/issues/23232412)
+- fix `dir()` for Latn language codes [2324](https://github.com/i18next/i18next/issues/2324)
 
 ## 25.2.1
 
