@@ -277,6 +277,8 @@ class Interpolator {
        * And those parameters are not dynamic values (parameters do not include curly braces). E.g.:
        *   - Not t(a, { "key": "{{variable}}" })
        *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
+       *
+       * Since v25.3.0 also this is possible: https://github.com/i18next/i18next/pull/2325
        */
       const keyEndIndex = /{.*}/.test(match[1])
         ? match[1].lastIndexOf('}') + 1

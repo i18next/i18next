@@ -1218,12 +1218,10 @@
         clonedOptions = clonedOptions.replace && !isString(clonedOptions.replace) ? clonedOptions.replace : clonedOptions;
         clonedOptions.applyPostProcessor = false;
         delete clonedOptions.defaultValue;
-        let doReduce = false;
-        if (match[0].indexOf(this.formatSeparator) !== -1 && !/{.*}/.test(match[1])) {
-          const r = match[1].split(this.formatSeparator).map(elem => elem.trim());
-          match[1] = r.shift();
-          formatters = r;
-          doReduce = true;
+        const keyEndIndex = /{.*}/.test(match[1]) ? match[1].lastIndexOf('}') + 1 : match[1].indexOf(this.formatSeparator);
+        if (keyEndIndex !== -1) {
+          formatters = match[1].slice(keyEndIndex).split(this.formatSeparator).map(elem => elem.trim()).filter(Boolean);
+          match[1] = match[1].slice(0, keyEndIndex);
         }
         value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
         if (value && match[0] === str && !isString(value)) return value;
@@ -1232,7 +1230,7 @@
           this.logger.warn(`missed to resolve ${match[1]} for nesting ${str}`);
           value = '';
         }
-        if (doReduce) {
+        if (formatters.length) {
           value = formatters.reduce((v, f) => this.format(v, f, options.lng, {
             ...options,
             interpolationkey: match[1].trim()
@@ -2071,8 +2069,16 @@
     dir(lng) {
       if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
       if (!lng) return 'rtl';
+      if (Intl.Locale) {
+        const l = new Intl.Locale(lng);
+        if (l && l.getTextInfo) {
+          const ti = l.getTextInfo();
+          if (ti && ti.direction) return ti.direction;
+        }
+      }
       const rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam', 'ckb'];
       const languageUtils = this.services?.languageUtils || new LanguageUtil(get());
+      if (lng.toLowerCase().indexOf('-latn') > 1) return 'ltr';
       return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
     }
     static createInstance(options = {}, callback) {

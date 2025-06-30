@@ -1,5 +1,6 @@
 ## 25.3.0
 
+- feat: support formatting function with plural and interpolation [2325](https://github.com/i18next/i18next/pull/2325)
 - fix `dir()` for Latn language codes [2324](https://github.com/i18next/i18next/issues/2324)
 
 ## 25.2.1
