@@ -280,15 +280,14 @@ class Interpolator {
        */
       const keyEndIndex = /{.*}/.test(match[1])
         ? match[1].lastIndexOf('}') + 1
-        : match[1].indexOf(',');
+        : match[1].indexOf(this.formatSeparator);
       if (keyEndIndex !== -1) {
-        const key = match[1].slice(0, keyEndIndex);
         formatters = match[1]
           .slice(keyEndIndex)
           .split(this.formatSeparator)
           .map((elem) => elem.trim())
           .filter(Boolean);
-        match[1] = key;
+        match[1] = match[1].slice(0, keyEndIndex);
       }
 
       value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
