@@ -117,10 +117,14 @@ class I18n extends EventEmitter {
         simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
 
+      const usingLegacyFormatFunction = this.options.interpolation.format && this.options.interpolation.format !== defOpts.interpolation.format;
+      if (usingLegacyFormatFunction) {
+        this.logger.warn(`init: you are still using the legacy format function, please use the new approach: https://www.i18next.com/translation-function/formatting`);
+      }
+
       if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
         s.formatter = createClassOnDemand(formatter);
-        s.formatter.init(s, this.options);
-
+        if (s.formatter.init) s.formatter.init(s, this.options);
         this.options.interpolation.format = s.formatter.format.bind(s.formatter);
       }
 

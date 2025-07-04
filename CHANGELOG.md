@@ -1,3 +1,7 @@
+## 25.3.1
+
+- warn if legacy `interpolation.format` function is still used
+
 ## 25.3.0
 
 - feat: support formatting function with plural and interpolation [2325](https://github.com/i18next/i18next/pull/2325)
