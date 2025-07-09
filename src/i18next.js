@@ -536,13 +536,13 @@ class I18n extends EventEmitter {
     if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
     if (!lng) return 'rtl';
 
-    if (Intl.Locale) {
+    try {
       const l = new Intl.Locale(lng)
       if (l && l.getTextInfo) {
         const ti = l.getTextInfo()
         if (ti && ti.direction) return ti.direction
       }
-    }
+    } catch (e) {/* fall through */}
 
     const rtlLngs = [
       'ar',

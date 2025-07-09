@@ -1,3 +1,7 @@
+## 25.3.2
+
+- fix `dir()` for non-Intl language codes [2330](https://github.com/i18next/i18next/issues/2330)
+
 ## 25.3.1
 
 - warn if legacy `interpolation.format` function is still used

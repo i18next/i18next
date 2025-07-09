@@ -2073,13 +2073,13 @@
     dir(lng) {
       if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
       if (!lng) return 'rtl';
-      if (Intl.Locale) {
+      try {
         const l = new Intl.Locale(lng);
         if (l && l.getTextInfo) {
           const ti = l.getTextInfo();
           if (ti && ti.direction) return ti.direction;
         }
-      }
+      } catch (e) {}
       const rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam', 'ckb'];
       const languageUtils = this.services?.languageUtils || new LanguageUtil(get());
       if (lng.toLowerCase().indexOf('-latn') > 1) return 'ltr';
