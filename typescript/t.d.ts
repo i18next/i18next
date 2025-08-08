@@ -338,9 +338,6 @@ type TFunctionSignature<
     ? TFunctionStrict<Ns, KPrefix>
     : TFunctionNonStrict<Ns, KPrefix>;
 
-// export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
-//   extends TFunctionSignature<Ns, KPrefix> {}
-
 export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends TFunctionSignature<Ns, KPrefix> {}
 
