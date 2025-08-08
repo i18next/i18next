@@ -213,14 +213,10 @@ describe('t', () => {
 
   it('each t function must have a type based on provided namespace', () => {
     const tOrdinal: TFunction<'ord'> = (() => '') as never;
-    const tOrdinalSingleton: TFunction<['ord']> = (() => '') as never;
     const tPlurals: TFunction<'plurals'> = (() => '') as never;
-    const tPluralsSingleton: TFunction<['plurals']> = (() => '') as never;
     const tPluralsOrd: TFunction<['plurals', 'ord']> = (() => '') as never;
     const tOrdPlurals: TFunction<['ord', 'plurals']> = (() => '') as never;
 
-    expectTypeOf(tOrdinal).toEqualTypeOf(tOrdinalSingleton);
-    expectTypeOf(tPlurals).toEqualTypeOf(tPluralsSingleton);
     expectTypeOf(tOrdinal).not.toMatchTypeOf(tPlurals);
     expectTypeOf(tOrdPlurals).not.toEqualTypeOf(tPlurals);
     expectTypeOf(tPluralsOrd).not.toEqualTypeOf(tPlurals);

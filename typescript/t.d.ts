@@ -222,12 +222,14 @@ type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallba
 >;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
-type TReturnOptionalObjects<TOpt extends TOptions> = _ReturnObjects extends true
+type TReturnOptionalObjects<TOpt extends { returnObjects?: unknown }> = _ReturnObjects extends true
   ? $SpecialObject | string
   : TOpt['returnObjects'] extends true
     ? $SpecialObject
     : string;
-type DefaultTReturn<TOpt extends TOptions> = TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
+type DefaultTReturn<TOpt extends { returnObjects?: unknown }> =
+  | TReturnOptionalObjects<TOpt>
+  | TReturnOptionalNull;
 
 export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
@@ -336,8 +338,13 @@ type TFunctionSignature<
     ? TFunctionStrict<Ns, KPrefix>
     : TFunctionNonStrict<Ns, KPrefix>;
 
-export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
-  extends TFunctionSignature<Ns, KPrefix> {}
+// export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
+//   extends TFunctionSignature<Ns, KPrefix> {}
+
+export type TFunction<
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix = undefined,
+> = TFunctionSignature<Ns, KPrefix>;
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
@@ -348,26 +355,33 @@ export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace
 interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
   <
     Target extends ConstrainTarget<Opts>,
-    const Opts extends SelectorOptions,
+    const Opts extends SelectorOptions<NewNs>,
     NewNs extends Namespace,
     NewSrc extends GetSource<NewNs, KPrefix>,
   >(
     selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>,
     options: Opts & InterpolationMap<Target> & { ns: NewNs },
   ): SelectorReturn<Target, Opts>;
-  <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions>(
+  <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions<Ns>>(
     selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
     options?: Opts & InterpolationMap<Target>,
   ): SelectorReturn<Target, Opts>;
 }
 
-type SelectorOptions = Omit<TOptionsBase, 'ns' | 'nsSeparator'> & $Dictionary;
+interface SelectorOptions<Ns = Namespace>
+  extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>,
+    $Dictionary {
+  ns?: Ns;
+}
 
-type SelectorReturn<Target, Opts extends SelectorOptions> = $IsResourcesDefined extends true
+type SelectorReturn<
+  Target,
+  Opts extends { defaultValue?: unknown; returnObjects?: boolean },
+> = $IsResourcesDefined extends true
   ? TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>
   : DefaultTReturn<Opts>;
 
-interface SelectorFn<Source, Target, Opts extends SelectorOptions> {
+interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
   (translations: Select<Source, Opts['context']>): Target;
 }
 
@@ -378,11 +392,12 @@ type ApplyKeyPrefix<
   ? ApplyKeyPrefix<[T[0][Head]], Tail>
   : T[0][KPrefix & string];
 
-type ApplyTarget<Target, Opts extends SelectorOptions> = Opts['returnObjects'] extends true
-  ? unknown
-  : Target;
+type ApplyTarget<
+  Target,
+  Opts extends { returnObjects?: unknown },
+> = Opts['returnObjects'] extends true ? unknown : Target;
 
-type ConstrainTarget<Opts extends SelectorOptions> = _ReturnObjects extends true
+type ConstrainTarget<Opts extends SelectorOptions<any>> = _ReturnObjects extends true
   ? unknown
   : Opts['returnObjects'] extends true
     ? unknown

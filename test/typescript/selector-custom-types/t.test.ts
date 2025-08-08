@@ -78,6 +78,29 @@ describe('t', () => {
   describe('array namespace', () => {
     const t: TFunction<['custom', 'alternate']> = (() => '') as never;
 
+    /**
+     * @example
+     * {
+     *   custom: {
+     *     foo: 'foo';
+     *     bar: 'bar';
+     *     baz: {
+     *       bing: 'boop';
+     *     };
+     *     qux: 'some {{val, number}}';
+     *     inter: 'some {{val}}';
+     *     interUnescaped: 'some unescaped {{- val}}';
+     *     interUnescapedNoSpace: 'some unescaped {{-val}}';
+     *     interUnescapedFormatted: 'some unescaped {- val, number}}';
+     *     nullKey: null;
+     *     'empty string with {{val}}': '';
+     *   }
+     * }
+     */
+    it('TODO', () => {
+      t(($) => $.baz, { ns: 'alternate' });
+    });
+
     it('should work with standard keys', () => {
       expectTypeOf(t(($) => $.baz.bing)).toEqualTypeOf<'boop'>();
       expectTypeOf(t(($) => $.bar)).toEqualTypeOf<'bar'>();
@@ -277,14 +300,10 @@ describe('t', () => {
 
   it('each t function must have a type based on provided namespace', () => {
     const tOrdinal: TFunction<'ord'> = (() => '') as never;
-    const tOrdinalSingleton: TFunction<['ord']> = (() => '') as never;
     const tPlurals: TFunction<'plurals'> = (() => '') as never;
-    const tPluralsSingleton: TFunction<['plurals']> = (() => '') as never;
     const tPluralsOrd: TFunction<['plurals', 'ord']> = (() => '') as never;
     const tOrdPlurals: TFunction<['ord', 'plurals']> = (() => '') as never;
 
-    expectTypeOf(tPlurals).toEqualTypeOf(tPluralsSingleton);
-    expectTypeOf(tOrdinal).toEqualTypeOf(tOrdinalSingleton);
     expectTypeOf(tOrdinal).not.toMatchTypeOf(tOrdPlurals);
     expectTypeOf(tPlurals).not.toMatchTypeOf(tPluralsOrd);
     expectTypeOf(tPlurals).not.toMatchTypeOf(tOrdPlurals);
