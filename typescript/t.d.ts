@@ -341,10 +341,8 @@ type TFunctionSignature<
 // export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
 //   extends TFunctionSignature<Ns, KPrefix> {}
 
-export type TFunction<
-  Ns extends Namespace = DefaultNamespace,
-  KPrefix = undefined,
-> = TFunctionSignature<Ns, KPrefix>;
+export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
+  extends TFunctionSignature<Ns, KPrefix> {}
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
