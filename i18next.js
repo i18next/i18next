@@ -1211,10 +1211,6 @@
         return key;
       };
       while (match = this.nestingRegexp.exec(str)) {
-        console.log({
-          str,
-          match
-        });
         let formatters = [];
         clonedOptions = {
           ...options
