@@ -107,7 +107,7 @@ class Interpolator {
     );
     this.nestingRegexp = getOrResetRegExp(
       this.nestingRegexp,
-      `${this.nestingPrefix}(.+?)${this.nestingSuffix}`,
+      `${this.nestingPrefix}((?:[^()"']+|"[^"]*"|'[^']*'|\\((?:[^()]|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`,
     );
   }
 
@@ -259,6 +259,19 @@ class Interpolator {
 
     // regular escape on demand
     while ((match = this.nestingRegexp.exec(str))) {
+      console.log({ str, match });
+      /*
+      {
+        str: '$t(second, {"name": "foo (bar)"})',
+        match: [
+          '$t(second, {"name": "foo (bar)',
+          'second, {"name": "foo (bar',
+          index: 0,
+          input: '$t(second, {"name": "foo (bar)"})',
+          groups: undefined
+        ]
+      }
+      */
       let formatters = [];
 
       clonedOptions = { ...options };

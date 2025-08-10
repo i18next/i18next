@@ -1,3 +1,7 @@
+## 25.3.3
+
+- fix: Brackets breaking nesting interpolation [2336](https://github.com/i18next/i18next/issues/2336)
+
 ## 25.3.2
 
 - fix `dir()` for non-Intl language codes [2330](https://github.com/i18next/i18next/issues/2330)
