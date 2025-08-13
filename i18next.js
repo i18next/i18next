@@ -1109,7 +1109,7 @@
       };
       this.regexp = getOrResetRegExp(this.regexp, `${this.prefix}(.+?)${this.suffix}`);
       this.regexpUnescape = getOrResetRegExp(this.regexpUnescape, `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`);
-      this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}(.+?)${this.nestingSuffix}`);
+      this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}((?:[^()"']+|"[^"]*"|'[^']*'|\\((?:[^()]|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`);
     }
     interpolate(str, data, lng, options) {
       let match;
@@ -1752,9 +1752,13 @@
           prepend: this.options.pluralSeparator,
           simplifyPluralSuffix: this.options.simplifyPluralSuffix
         });
+        const usingLegacyFormatFunction = this.options.interpolation.format && this.options.interpolation.format !== defOpts.interpolation.format;
+        if (usingLegacyFormatFunction) {
+          this.logger.warn(`init: you are still using the legacy format function, please use the new approach: https://www.i18next.com/translation-function/formatting`);
+        }
         if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
           s.formatter = createClassOnDemand(formatter);
-          s.formatter.init(s, this.options);
+          if (s.formatter.init) s.formatter.init(s, this.options);
           this.options.interpolation.format = s.formatter.format.bind(s.formatter);
         }
         s.interpolator = new Interpolator(this.options);
@@ -2069,13 +2073,13 @@
     dir(lng) {
       if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
       if (!lng) return 'rtl';
-      if (Intl.Locale) {
+      try {
         const l = new Intl.Locale(lng);
         if (l && l.getTextInfo) {
           const ti = l.getTextInfo();
           if (ti && ti.direction) return ti.direction;
         }
-      }
+      } catch (e) {}
       const rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam', 'ckb'];
       const languageUtils = this.services?.languageUtils || new LanguageUtil(get());
       if (lng.toLowerCase().indexOf('-latn') > 1) return 'ltr';

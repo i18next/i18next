@@ -107,7 +107,7 @@ class Interpolator {
     );
     this.nestingRegexp = getOrResetRegExp(
       this.nestingRegexp,
-      `${this.nestingPrefix}(.+?)${this.nestingSuffix}`,
+      `${this.nestingPrefix}((?:[^()"']+|"[^"]*"|'[^']*'|\\((?:[^()]|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`,
     );
   }
 

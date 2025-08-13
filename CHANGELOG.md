@@ -1,3 +1,19 @@
+## 25.3.4
+
+- remove unnecessary debug logs
+
+## 25.3.3
+
+- fix: Brackets breaking nesting interpolation [2336](https://github.com/i18next/i18next/issues/2336)
+
+## 25.3.2
+
+- fix `dir()` for non-Intl language codes [2330](https://github.com/i18next/i18next/issues/2330)
+
+## 25.3.1
+
+- warn if legacy `interpolation.format` function is still used
+
 ## 25.3.0
 
 - feat: support formatting function with plural and interpolation [2325](https://github.com/i18next/i18next/pull/2325)

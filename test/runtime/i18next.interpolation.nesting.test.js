@@ -45,6 +45,9 @@ describe('i18next.interpolation.nesting', () => {
 
             date_MMDD: 'DD/MM/YY',
             dateTest: '$t({{format}}, customdDateFormatter)',
+
+            nestingWithBracketsFirst: '$t(nestingWithBracketsSecond, {"name": "foo (bar)"})',
+            nestingWithBracketsSecond: 'Hello {{name}}!',
           },
         },
       },
@@ -148,6 +151,10 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['dateTest', { format: 'date_MMDD' }],
         expected: 'DD/MM/YY | en',
+      },
+      {
+        args: ['nestingWithBracketsFirst'],
+        expected: 'Hello foo (bar)!',
       },
     ];
 
