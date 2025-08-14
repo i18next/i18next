@@ -503,12 +503,12 @@ class Translator extends EventEmitter {
             const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
             // get key for plural if needed
             if (needsPluralHandling) {
-              finalKeys.push(key + pluralSuffix);
               if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
                 finalKeys.push(
                   key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator),
                 );
               }
+              finalKeys.push(key + pluralSuffix);
               if (needsZeroSuffixLookup) {
                 finalKeys.push(key + zeroSuffix);
               }

@@ -775,10 +775,10 @@
               const zeroSuffix = `${this.options.pluralSeparator}zero`;
               const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
               if (needsPluralHandling) {
-                finalKeys.push(key + pluralSuffix);
                 if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
                   finalKeys.push(key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
                 }
+                finalKeys.push(key + pluralSuffix);
                 if (needsZeroSuffixLookup) {
                   finalKeys.push(key + zeroSuffix);
                 }
