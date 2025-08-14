@@ -20,6 +20,10 @@ describe('Translator', () => {
             pos_test_ordinal_two: 'pos_test_en_two',
             pos_test_ordinal_few: 'pos_test_en_few',
             pos_test_ordinal_other: 'pos_test_en_other',
+            oTest_ordinal_one: 'Every {{count}}st month',
+            oTest_one: 'Every month',
+            oTest_month_ordinal_one: 'Every {{count}}st month (ctx)',
+            oTest_month_one: 'Every month (ctx)',
           },
           translationWithZero: {
             test_zero: 'test_zero',
@@ -152,6 +156,22 @@ describe('Translator', () => {
       {
         args: ['translation:test', { count: 11, lng: 'it', ordinal: true }],
         expected: 'tests_it_many', // fallback
+      },
+      {
+        args: ['translation:oTest', { count: 1, lng: 'en', ordinal: true }],
+        expected: 'Every 1st month',
+      },
+      {
+        args: ['translation:oTest', { count: 1, lng: 'en' }],
+        expected: 'Every month',
+      },
+      {
+        args: ['translation:oTest', { count: 1, lng: 'en', ordinal: true, context: 'month' }],
+        expected: 'Every 1st month (ctx)',
+      },
+      {
+        args: ['translation:oTest', { count: 1, lng: 'en', context: 'month' }],
+        expected: 'Every month (ctx)',
       },
     ];
 

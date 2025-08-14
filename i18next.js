@@ -775,22 +775,22 @@
               const zeroSuffix = `${this.options.pluralSeparator}zero`;
               const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
               if (needsPluralHandling) {
-                finalKeys.push(key + pluralSuffix);
                 if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
                   finalKeys.push(key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
                 }
+                finalKeys.push(key + pluralSuffix);
                 if (needsZeroSuffixLookup) {
                   finalKeys.push(key + zeroSuffix);
                 }
               }
               if (needsContextHandling) {
-                const contextKey = `${key}${this.options.contextSeparator}${opt.context}`;
+                const contextKey = `${key}${this.options.contextSeparator || '_'}${opt.context}`;
                 finalKeys.push(contextKey);
                 if (needsPluralHandling) {
-                  finalKeys.push(contextKey + pluralSuffix);
                   if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
                     finalKeys.push(contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator));
                   }
+                  finalKeys.push(contextKey + pluralSuffix);
                   if (needsZeroSuffixLookup) {
                     finalKeys.push(contextKey + zeroSuffix);
                   }
