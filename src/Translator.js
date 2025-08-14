@@ -516,17 +516,17 @@ class Translator extends EventEmitter {
 
             // get key for context if needed
             if (needsContextHandling) {
-              const contextKey = `${key}${this.options.contextSeparator}${opt.context}`;
+              const contextKey = `${key}${this.options.contextSeparator || '_'}${opt.context}`;
               finalKeys.push(contextKey);
 
               // get key for context + plural if needed
               if (needsPluralHandling) {
-                finalKeys.push(contextKey + pluralSuffix);
                 if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
                   finalKeys.push(
                     contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator),
                   );
                 }
+                finalKeys.push(contextKey + pluralSuffix);
                 if (needsZeroSuffixLookup) {
                   finalKeys.push(contextKey + zeroSuffix);
                 }

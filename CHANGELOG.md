@@ -1,3 +1,7 @@
+## 25.3.6
+
+- improve fix: Ordinals and non-ordinals don't work together [2337](https://github.com/i18next/i18next/issues/2337)
+
 ## 25.3.5
 
 - fix: Ordinals and non-ordinals don't work together [2337](https://github.com/i18next/i18next/issues/2337)
