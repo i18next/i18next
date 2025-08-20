@@ -2,6 +2,7 @@ import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 import postProcessor from './postProcessor.js';
 import { copy as utilsCopy, looksLikeObjectPath, isString } from './utils.js';
+import keysFromSelector from './selector.js';
 
 const checkedLoadedFor = {};
 
@@ -94,6 +95,7 @@ class Translator extends EventEmitter {
 
     // non valid keys handling
     if (keys == null /* || keys === '' */) return '';
+    if (typeof keys === 'function') keys = keysFromSelector(keys, opt);
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     const returnDetails =

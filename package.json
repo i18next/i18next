@@ -60,6 +60,7 @@
     }
   },
   "devDependencies": {
+    "@arktype/attest": "^0.46.0",
     "@babel/core": "^7.27.4",
     "@babel/plugin-transform-async-generator-functions": "^7.27.1",
     "@babel/plugin-transform-modules-commonjs": "^7.27.1",
