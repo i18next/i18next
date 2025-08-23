@@ -2010,8 +2010,12 @@
         const keySeparator = this.options.keySeparator || '.';
         let resultKey;
         if (o.keyPrefix && Array.isArray(key)) {
-          resultKey = key.map(k => `${o.keyPrefix}${keySeparator}${k}`);
+          resultKey = key.map(k => {
+            if (typeof k === 'function') k = keysFromSelector(k, opts);
+            return `${o.keyPrefix}${keySeparator}${k}`;
+          });
         } else {
+          if (typeof key === 'function') key = keysFromSelector(key, opts);
           resultKey = o.keyPrefix ? `${o.keyPrefix}${keySeparator}${key}` : key;
         }
         return this.t(resultKey, o);

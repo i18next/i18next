@@ -174,6 +174,7 @@ describe('i18next', () => {
         i18next.addResource('fr', 'translation', 'deeply.nested.key', 'ici!');
         const t = i18next.getFixedT('fr', null, 'deeply.nested');
         expect(t('key')).to.equal('ici!');
+        expect(t(($) => $.key)).to.equal('ici!');
         expect(t.keyPrefix).to.equal('deeply.nested');
       });
       it('should apply keyPrefix and also be able to overwrite it', () => {

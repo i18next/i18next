@@ -1,3 +1,7 @@
+## 25.4.1
+
+- fix: KeyPrefix not working with new selector api [2340](https://github.com/i18next/i18next/issues/2340)
+
 ## 25.4.0
 
 - add new selector API to improve TypeScript IDE performance [2322](https://github.com/i18next/i18next/pull/2322)
