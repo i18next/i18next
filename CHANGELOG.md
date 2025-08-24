@@ -1,3 +1,7 @@
+## 25.4.2
+
+- fix: enableSelector: true doesn't work with custom keySeparator [2341](https://github.com/i18next/i18next/issues/2341)
+
 ## 25.4.1
 
 - fix: KeyPrefix not working with new selector api [2340](https://github.com/i18next/i18next/issues/2340)

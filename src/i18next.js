@@ -423,11 +423,11 @@ class I18n extends EventEmitter {
       let resultKey
       if (o.keyPrefix && Array.isArray(key)) {
         resultKey = key.map(k => {
-          if (typeof k === 'function') k = keysFromSelector(k, opts);
+          if (typeof k === 'function') k = keysFromSelector(k, { ...this.options, ...opts });
           return `${o.keyPrefix}${keySeparator}${k}`
         });
       } else {
-        if (typeof key === 'function') key = keysFromSelector(key, opts);
+        if (typeof key === 'function') key = keysFromSelector(key, { ...this.options, ...opts });
         resultKey = o.keyPrefix ? `${o.keyPrefix}${keySeparator}${key}` : key;
       }
       return this.t(resultKey, o);

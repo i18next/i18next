@@ -42,4 +42,38 @@ describe('i18next t default returns', () => {
     expect(i18n.t(undefined)).to.equal('');
     expect(i18n.t()).to.equal('');
   });
+
+  describe('with custome separators', () => {
+    /** @type {import('i18next').i18n} */
+    let i18nSep;
+    beforeAll(() => {
+      i18nSep = i18next.createInstance();
+      i18nSep.init({
+        keySeparator: '::',
+        nsSeparator: ':::',
+        fallbackLng: 'en',
+        resources: {
+          en: {
+            root: {
+              foo: {
+                bar: 'foobar',
+              },
+            },
+          },
+        },
+      });
+    });
+
+    const tests = [
+      { args: ['root:::foo::bar'], expected: 'foobar' },
+      { args: ['foo::bar', { ns: 'root' }], expected: 'foobar' },
+      { args: [($) => $.foo.bar, { ns: 'root' }], expected: 'foobar' },
+    ];
+
+    tests.forEach((test) => {
+      it(`correctly translates for ${JSON.stringify(test.args)} args`, () => {
+        expect(i18nSep.t.apply(i18nSep, test.args)).toEqual(test.expected);
+      });
+    });
+  });
 });

@@ -514,12 +514,15 @@
       if (typeof opt !== 'object' && this.options.overloadTranslationOptionHandler) {
         opt = this.options.overloadTranslationOptionHandler(arguments);
       }
-      if (typeof options === 'object') opt = {
+      if (typeof opt === 'object') opt = {
         ...opt
       };
       if (!opt) opt = {};
       if (keys == null) return '';
-      if (typeof keys === 'function') keys = keysFromSelector(keys, opt);
+      if (typeof keys === 'function') keys = keysFromSelector(keys, {
+        ...this.options,
+        ...opt
+      });
       if (!Array.isArray(keys)) keys = [String(keys)];
       const returnDetails = opt.returnDetails !== undefined ? opt.returnDetails : this.options.returnDetails;
       const keySeparator = opt.keySeparator !== undefined ? opt.keySeparator : this.options.keySeparator;
@@ -2011,11 +2014,17 @@
         let resultKey;
         if (o.keyPrefix && Array.isArray(key)) {
           resultKey = key.map(k => {
-            if (typeof k === 'function') k = keysFromSelector(k, opts);
+            if (typeof k === 'function') k = keysFromSelector(k, {
+              ...this.options,
+              ...opts
+            });
             return `${o.keyPrefix}${keySeparator}${k}`;
           });
         } else {
-          if (typeof key === 'function') key = keysFromSelector(key, opts);
+          if (typeof key === 'function') key = keysFromSelector(key, {
+            ...this.options,
+            ...opts
+          });
           resultKey = o.keyPrefix ? `${o.keyPrefix}${keySeparator}${key}` : key;
         }
         return this.t(resultKey, o);

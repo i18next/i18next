@@ -90,12 +90,12 @@ class Translator extends EventEmitter {
       /* eslint prefer-rest-params: 0 */
       opt = this.options.overloadTranslationOptionHandler(arguments);
     }
-    if (typeof options === 'object') opt = { ...opt };
+    if (typeof opt === 'object') opt = { ...opt };
     if (!opt) opt = {};
 
     // non valid keys handling
     if (keys == null /* || keys === '' */) return '';
-    if (typeof keys === 'function') keys = keysFromSelector(keys, opt);
+    if (typeof keys === 'function') keys = keysFromSelector(keys, { ...this.options, ...opt });
     if (!Array.isArray(keys)) keys = [String(keys)];
 
     const returnDetails =
