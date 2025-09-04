@@ -574,3 +574,4 @@ export const setDefaultNamespace: i18n['setDefaultNamespace'];
 export const hasLoadedNamespace: i18n['hasLoadedNamespace'];
 export const loadNamespaces: i18n['loadNamespaces'];
 export const loadLanguages: i18n['loadLanguages'];
+export function keyFromSelector(selector: ($: Record<string, any>) => any): string;
