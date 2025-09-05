@@ -1,3 +1,7 @@
+## 25.5.2
+
+- fix [last change](https://github.com/i18next/i18next/pull/2347) => for cjs there is just 1 default export, no named exports, fixes [2348](https://github.com/i18next/i18next/issues/2348)
+
 ## 25.5.1
 
 - export keyFromSelector from index.cjs [2347](https://github.com/i18next/i18next/pull/2347)
