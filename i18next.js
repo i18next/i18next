@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.i18next = factory());
-})(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.i18next = {}));
+})(this, (function (exports) { 'use strict';
 
   const isString = obj => typeof obj === 'string';
   const defer = () => {
@@ -2187,6 +2187,9 @@
   const instance = I18n.createInstance();
   instance.createInstance = I18n.createInstance;
 
-  return instance;
+  exports.default = instance;
+  exports.keyFromSelector = keysFromSelector;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

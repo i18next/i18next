@@ -1,3 +1,7 @@
+## 25.5.1
+
+- export keyFromSelector from index.cjs [2347](https://github.com/i18next/i18next/pull/2347)
+
 ## 25.5.0
 
 - export keyFromSelector function for testing purposes [2346](https://github.com/i18next/i18next/pull/2346)
