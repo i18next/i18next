@@ -1,3 +1,7 @@
+## 25.5.3
+
+- export esm type declaration for keyFromSelector [2356](https://github.com/i18next/i18next/pull/2356)
+
 ## 25.5.2
 
 - fix [last change](https://github.com/i18next/i18next/pull/2347) => for cjs there is just 1 default export, no named exports, fixes [2348](https://github.com/i18next/i18next/issues/2348)
