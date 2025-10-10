@@ -481,7 +481,12 @@
       };
       if (key == null) return false;
       const resolved = this.resolve(key, opt);
-      return resolved?.res !== undefined;
+      if (resolved?.res === undefined) return false;
+      const isObject = shouldHandleAsObject(resolved.res);
+      if (opt.returnObjects === false && isObject) {
+        return false;
+      }
+      return true;
     }
     extractFromKey(key, opt) {
       let nsSeparator = opt.nsSeparator !== undefined ? opt.nsSeparator : this.options.nsSeparator;

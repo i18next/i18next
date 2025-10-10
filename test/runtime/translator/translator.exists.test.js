@@ -78,5 +78,41 @@ describe('Translator', () => {
       expect(t.exists(undefined)).to.equal(false);
       expect(t.exists()).to.equal(false);
     });
+
+    it('should return false for object keys when returnObjects is false, true otherwise', () => {
+      expect(t.exists('deep', { returnObjects: false })).toBe(false);
+      expect(t.exists('deep', { returnObjects: true })).toBe(true);
+    });
+
+    it('should return true for string keys regardless of returnObjects option', () => {
+      expect(t.exists('test', { returnObjects: false })).toBe(true);
+      expect(t.exists('test', { returnObjects: true })).toBe(true);
+    });
+
+    it('should handle object keys correctly with returnObjects option', () => {
+      expect(t.exists('deep', { returnObjects: false })).toBe(false);
+      expect(t.exists('deep', { returnObjects: true })).toBe(true);
+    });
+
+    it('should handle returnObjects option with nested keys', () => {
+      // Test with namespace separator - object key
+      expect(t.exists('translation:deep', { returnObjects: false })).toBe(false);
+      expect(t.exists('translation:deep', { returnObjects: true })).toBe(true);
+
+      // Test with key separator for nested string
+      expect(t.exists('deep.test', { returnObjects: false })).toBe(true);
+      expect(t.exists('deep.test', { returnObjects: true })).toBe(true);
+    });
+
+    it('should demonstrate object detection pattern with returnObjects comparison', () => {
+      // Helper function to detect if key points to object (proposed feature)
+      const isObjectKey = (key, options = {}) => {
+        const withFalse = t.exists(key, { ...options, returnObjects: false });
+        const withTrue = t.exists(key, { ...options, returnObjects: true });
+        return withFalse !== withTrue;
+      };
+
+      expect(isObjectKey('deep')).toBe(true); // object key
+    });
   });
 });

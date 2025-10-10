@@ -1,3 +1,9 @@
+## 25.6.0
+
+- **feat**: `exists()` method now respects `returnObjects` option - returns `false` when accessing an object key with `returnObjects: false`, enabling detection of object vs string keys [2359](https://github.com/i18next/i18next/issues/2359)
+
+  **Note**: This is a potential behavior change. If you were previously calling `exists()` with `returnObjects: false` on object keys, those calls will now return `false` instead of `true`. This enables developers to detect whether a key points to an object or string value.
+
 ## 25.5.3
 
 - export esm type declaration for keyFromSelector [2356](https://github.com/i18next/i18next/pull/2356)

@@ -43,7 +43,20 @@ class Translator extends EventEmitter {
     const opt = { ...o };
     if (key == null) return false;
     const resolved = this.resolve(key, opt);
-    return resolved?.res !== undefined;
+
+    // If no resource found, return false
+    if (resolved?.res === undefined) return false;
+
+    // Check if the resolved resource is an object
+    const isObject = shouldHandleAsObject(resolved.res);
+
+    // If returnObjects is explicitly set to false and the resource is an object, return false
+    if (opt.returnObjects === false && isObject) {
+      return false;
+    }
+
+    // Otherwise return true (resource exists)
+    return true;
   }
 
   extractFromKey(key, opt) {
