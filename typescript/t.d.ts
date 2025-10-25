@@ -244,7 +244,20 @@ export type TFunctionReturn<
 > = $IsResourcesDefined extends true
   ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
     ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt>
-    : ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt>
+    : $PreservedValue<
+        ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt>,
+        ParseTReturn<
+          ActualKey,
+          _FallbackNamespace extends readonly (infer FN)[]
+            ? Resources[FN & keyof Resources]
+            : [_FallbackNamespace] extends [false]
+              ? never
+              : Extract<_FallbackNamespace, keyof Resources> extends infer K
+                ? Resources[K & keyof Resources]
+                : never,
+          TOpt
+        >
+      >
   : DefaultTReturn<TOpt>;
 
 export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {
