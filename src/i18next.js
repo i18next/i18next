@@ -622,7 +622,11 @@ class I18n extends EventEmitter {
       : 'ltr';
   }
 
-  static createInstance(options = {}, callback) { return new I18n(options, callback) }
+  static createInstance(options = {}, callback) {
+    const instance = new I18n(options, callback)
+    instance.createInstance = I18n.createInstance;
+    return instance;
+  }
 
   cloneInstance(options = {}, callback = noop) {
     const forkResourceStore = options.forkResourceStore;
@@ -678,6 +682,5 @@ class I18n extends EventEmitter {
 }
 
 const instance = I18n.createInstance();
-instance.createInstance = I18n.createInstance;
 
 export default instance;

@@ -1,3 +1,7 @@
+## 25.6.1
+
+- fix: createInstance does not exist on an instance [#2366](https://github.com/i18next/i18next/issues/2366)
+
 ## 25.6.0
 
 - **feat**: `exists()` method now respects `returnObjects` option - returns `false` when accessing an object key with `returnObjects: false`, enabling detection of object vs string keys [2359](https://github.com/i18next/i18next/issues/2359)

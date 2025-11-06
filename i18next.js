@@ -2126,7 +2126,9 @@
       return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1 ? 'rtl' : 'ltr';
     }
     static createInstance(options = {}, callback) {
-      return new I18n(options, callback);
+      const instance = new I18n(options, callback);
+      instance.createInstance = I18n.createInstance;
+      return instance;
     }
     cloneInstance(options = {}, callback = noop) {
       const forkResourceStore = options.forkResourceStore;
@@ -2190,7 +2192,6 @@
     }
   }
   const instance = I18n.createInstance();
-  instance.createInstance = I18n.createInstance;
 
   instance.keyFromSelector = keysFromSelector;
 
