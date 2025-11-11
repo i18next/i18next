@@ -176,7 +176,7 @@ type ParseInterpolationValues<Ret> =
         | ParseInterpolationValues<Rest>
     : never;
 
-type InterpolationMap<Ret> = $PreservedValue<
+export type InterpolationMap<Ret> = $PreservedValue<
   $StringKeyPathToRecord<ParseInterpolationValues<Ret>, unknown>,
   Record<string, unknown>
 >;

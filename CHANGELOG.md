@@ -1,3 +1,7 @@
+## 25.6.2
+
+- types: export `InterpolationMap`
+
 ## 25.6.1
 
 - fix: createInstance does not exist on an instance [#2366](https://github.com/i18next/i18next/issues/2366)

@@ -554,6 +554,7 @@ export type {
   TFunctionReturn,
   TFunctionDetailedResult,
   KeyPrefix,
+  InterpolationMap,
 } from './typescript/t.js';
 
 declare const i18next: i18n;
