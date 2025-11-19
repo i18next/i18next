@@ -1,10 +1,14 @@
+## 25.6.3
+
+- chore: dependency updates [2368](https://github.com/i18next/i18next/issues/2366)
+
 ## 25.6.2
 
 - types: export `InterpolationMap`
 
 ## 25.6.1
 
-- fix: createInstance does not exist on an instance [#2366](https://github.com/i18next/i18next/issues/2366)
+- fix: createInstance does not exist on an instance [2366](https://github.com/i18next/i18next/issues/2366)
 
 ## 25.6.0
 
