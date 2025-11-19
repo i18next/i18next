@@ -112,8 +112,10 @@
     "test:local": "vitest --workspace vitest.workspace.local.mts",
     "build": "rimraf dist && rollup -c && echo '{\"type\":\"module\"}' > dist/esm/package.json && cpy \"./dist/umd/*.js\" ./",
     "fix_dist_package": "node -e 'console.log(`{\"type\":\"module\",\"version\":\"${process.env.npm_package_version}\"}`)' > dist/esm/package.json",
+    "fix_jsr_package": "node -e 'const fs=require(\"fs\");const p=\"src/jsr.json\";const j=JSON.parse(fs.readFileSync(p,\"utf8\"));j.version=process.env.npm_package_version||j.version;fs.writeFileSync(p,JSON.stringify(j,null,2)+\"\\n\")'",
+    "publish_jsr": "deno publish --no-check",
     "preversion": "npm run test && npm run build && git push",
-    "postversion": "npm run fix_dist_package && git push && git push --tags && npm run release",
+    "postversion": "npm run fix_dist_package && npm run fix_jsr_package && git push && git push --tags && npm run release",
     "prepare": "husky",
     "release": "gh-release"
   },
