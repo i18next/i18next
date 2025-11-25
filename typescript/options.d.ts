@@ -394,8 +394,8 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   nonExplicitSupportedLngs?: boolean;
 
   /**
-   * Language codes to lookup, given set language is
-   * 'en-US': 'all' --> ['en-US', 'en', 'dev'],
+   * Language codes to lookup, given set language is 'en-US':
+   * 'all' --> ['en-US', 'en', 'dev'],
    * 'currentOnly' --> 'en-US',
    * 'languageOnly' --> 'en'
    * @default 'all'
