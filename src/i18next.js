@@ -657,6 +657,7 @@ class I18n extends EventEmitter {
       clone.store = new ResourceStore(clonedData, mergedOptions);
       clone.services.resourceStore = clone.store;
     }
+    if (options.interpolation) clone.services.interpolator = new Interpolator(mergedOptions);
     clone.translator = new Translator(clone.services, mergedOptions);
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);
