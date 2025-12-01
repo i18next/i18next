@@ -1,3 +1,7 @@
+## 25.7.1
+
+- TS: remove wrong signature [2372](https://github.com/i18next/i18next/issues/2372).
+
 ## 25.7.0
 
 - Enhance `cloneInstance` to create a new interpolator if interpolation options are passed in. This will address [2371](https://github.com/i18next/i18next/issues/2371).

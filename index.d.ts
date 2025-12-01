@@ -421,11 +421,6 @@ export interface i18n extends CustomInstanceExtensions {
   ): void;
 
   /**
-   * Gets fired when resources got added or removed.
-   */
-  on(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): void;
-
-  /**
    * Gets fired when changeLanguage got called.
    */
   on(event: 'languageChanged', callback: (lng: string) => void): void;
