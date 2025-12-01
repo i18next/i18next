@@ -3,3 +3,4 @@ i18next.min.js
 src/PluralResolver.js
 test/runtime/locales/en/nonjson.json
 test/typescript/test.namespace.extra-large.json
+jsr.json
