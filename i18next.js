@@ -1755,6 +1755,9 @@
       if (options.nsSeparator !== undefined) {
         this.options.userDefinedNsSeparator = options.nsSeparator;
       }
+      if (typeof this.options.overloadTranslationOptionHandler !== 'function') {
+        this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
+      }
       const createClassOnDemand = ClassOrObject => {
         if (!ClassOrObject) return null;
         if (typeof ClassOrObject === 'function') return new ClassOrObject();

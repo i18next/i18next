@@ -1,3 +1,7 @@
+## 25.7.2
+
+- fix: Invalid overwrite of default value for overloadTranslationOptionHandler [2374](https://github.com/i18next/i18next/issues/2374).
+
 ## 25.7.1
 
 - TS: remove wrong signature [2372](https://github.com/i18next/i18next/issues/2372).
