@@ -325,6 +325,16 @@ export interface ReactOptions {
    */
   transWrapTextNodes?: string;
   /**
+   * Default props to apply to all Trans components.
+   * Component-level props will override these defaults.
+   */
+  transDefaultProps?: {
+    tOptions?: TOptions;
+    values?: object;
+    shouldUnescape?: boolean;
+    components?: readonly unknown[] | { readonly [tagName: string]: unknown }; // Use `unknown` (or `any`) to be permissive without importing React.
+  };
+  /**
    * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
    * @default undefined
    */
