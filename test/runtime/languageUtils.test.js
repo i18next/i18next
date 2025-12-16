@@ -39,6 +39,7 @@ describe('LanguageUtils', () => {
           'de-CH': ['fr', 'it', 'en'],
           'zh-Hans': ['zh-Hant', 'zh', 'en'],
           'zh-Hant': ['zh-Hans', 'zh', 'en'],
+          ja: ['ja'],
           nb: ['no'],
           nn: ['no'],
           default: ['en'],
@@ -53,6 +54,8 @@ describe('LanguageUtils', () => {
       { args: ['nb-NO'], expected: ['nb-NO', 'nb', 'no'] },
       { args: ['nn'], expected: ['nn', 'no'] },
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'zh-Hans', 'en'] },
+      { args: ['fr'], expected: ['fr', 'en'] },
+      { args: ['ja'], expected: ['ja'] },
     ];
 
     tests.forEach((test) => {
