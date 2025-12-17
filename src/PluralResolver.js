@@ -29,10 +29,6 @@ class PluralResolver {
     this.pluralRulesCache = {};
   }
 
-  addRule(lng, obj) {
-    this.rules[lng] = obj;
-  }
-
   clearCache() {
     this.pluralRulesCache = {};
   }
