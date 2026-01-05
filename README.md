@@ -54,7 +54,7 @@ The react specific documentation is published on [react.i18next.com](https://rea
 
 A translation management system built around the i18next ecosystem - [locize.com](https://locize.com).
 
-![locize](https://cdn.prod.website-files.com/67a323e323a50df7f24f0a6f/67b8bbb29365c3a3c21c0898_github_locize.png)
+![locize](https://www.locize.com/img/ads/github_locize.png)
 
 With using [locize](https://locize.com/?utm_source=i18next_readme&utm_medium=github) you directly support the future of i18next.
 
