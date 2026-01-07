@@ -1,3 +1,7 @@
+## 25.7.4
+
+- fix: Interpolation breaks when cloning an instance [2376](https://github.com/i18next/react-i18next/issues/2376)
+
 ## 25.7.3
 
 - type definitions for new transDefaultProps option in react-i18next [react-i18next: #1895](https://github.com/i18next/react-i18next/issues/1895)

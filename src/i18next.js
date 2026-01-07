@@ -661,7 +661,13 @@ class I18n extends EventEmitter {
       clone.store = new ResourceStore(clonedData, mergedOptions);
       clone.services.resourceStore = clone.store;
     }
-    if (options.interpolation) clone.services.interpolator = new Interpolator(mergedOptions);
+    // Ensure interpolation options are always merged with defaults when cloning
+    if (options.interpolation) {
+      const defOpts = getDefaults();
+      const mergedInterpolation = { ...defOpts.interpolation, ...this.options.interpolation, ...options.interpolation };
+      const mergedForInterpolator = { ...mergedOptions, interpolation: mergedInterpolation };
+      clone.services.interpolator = new Interpolator(mergedForInterpolator);
+    }
     clone.translator = new Translator(clone.services, mergedOptions);
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);

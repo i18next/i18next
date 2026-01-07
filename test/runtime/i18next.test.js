@@ -52,6 +52,25 @@ describe('i18next', () => {
         expect(newInstance.language).to.equal('de');
         expect(i18next.language).to.equal('en');
       });
+
+      it('should interpolate list for cloned instance with empty interpolation config', async () => {
+        const config = {
+          lng: 'en',
+          resources: {
+            en: {
+              translation: {
+                test: 'My list: {{items, list(type: conjunction; style: long;)}}',
+              },
+            },
+          },
+          interpolation: {},
+        };
+        const instance = i18next.createInstance(config);
+        await instance.init(config);
+        const clone = instance.cloneInstance(config);
+        await clone.init(config);
+        expect(clone.t('test', { items: ['foo', 'bar'] })).to.equal('My list: foo and bar');
+      });
     });
 
     describe('create/cloneInstance()', () => {
