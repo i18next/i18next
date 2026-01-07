@@ -1015,9 +1015,6 @@
       this.logger = baseLogger.create('pluralResolver');
       this.pluralRulesCache = {};
     }
-    addRule(lng, obj) {
-      this.rules[lng] = obj;
-    }
     clearCache() {
       this.pluralRulesCache = {};
     }
@@ -2173,7 +2170,19 @@
         clone.store = new ResourceStore(clonedData, mergedOptions);
         clone.services.resourceStore = clone.store;
       }
-      if (options.interpolation) clone.services.interpolator = new Interpolator(mergedOptions);
+      if (options.interpolation) {
+        const defOpts = get();
+        const mergedInterpolation = {
+          ...defOpts.interpolation,
+          ...this.options.interpolation,
+          ...options.interpolation
+        };
+        const mergedForInterpolator = {
+          ...mergedOptions,
+          interpolation: mergedInterpolation
+        };
+        clone.services.interpolator = new Interpolator(mergedForInterpolator);
+      }
       clone.translator = new Translator(clone.services, mergedOptions);
       clone.translator.on('*', (event, ...args) => {
         clone.emit(event, ...args);
