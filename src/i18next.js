@@ -77,6 +77,11 @@ class I18n extends EventEmitter {
       this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
     }
 
+    if (this.options.debug === true) {
+      // eslint-disable-next-line no-console
+      if (typeof console !== 'undefined') console.warn('i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com');
+    }
+
     const createClassOnDemand = (ClassOrObject) => {
       if (!ClassOrObject) return null;
       if (typeof ClassOrObject === 'function') return new ClassOrObject();
