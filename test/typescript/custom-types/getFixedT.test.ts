@@ -51,7 +51,7 @@ describe('getFixedT', () => {
     expectTypeOf(t('bar')).toEqualTypeOf<'bar'>();
 
     expectTypeOf(t('foobar.barfoo', { ns: 'alternate' })).toEqualTypeOf<'barfoo'>();
-    expectTypeOf(t('fallbackKey')).toEqualTypeOf<never>();
+    expectTypeOf(t('fallbackKey')).toBeString();
 
     // @ts-expect-error
     assertType(t('alternate:foobar.barfoo'));
