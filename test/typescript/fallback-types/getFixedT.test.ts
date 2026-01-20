@@ -17,7 +17,7 @@ describe('t', () => {
   });
 
   it('should accept fallback keys', () => {
-    expectTypeOf(t('fallbackKey')).toEqualTypeOf<never>();
-    expectTypeOf(t('anotherFallbackKey')).toEqualTypeOf<never>();
+    expectTypeOf(t('fallbackKey')).toBeString();
+    expectTypeOf(t('anotherFallbackKey')).toBeString();
   });
 });
