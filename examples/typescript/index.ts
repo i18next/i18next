@@ -15,8 +15,6 @@ console.log(i18next.t('some', { context: '1234' }));
 console.log(i18next.t('pl', { count: 1 }));
 console.log(i18next.t('pl', { count: 2 }));
 
-const l = i18next.language;
-
 // interpolation
 i18next.t('inter', { val: 'xx' });
 
@@ -30,3 +28,6 @@ i18next.t('interUnescaped', { val: 'xx' });
 // throws only with ts v5
 // // @ts-expect-error
 // i18next.t('inter', { valWrong: 'xx' });
+
+const tNs2 = i18next.getFixedT('en', 'ns2');
+console.log(tNs2('description.part2'));
