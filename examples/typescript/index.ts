@@ -31,3 +31,6 @@ i18next.t('interUnescaped', { val: 'xx' });
 
 const tNs2 = i18next.getFixedT('en', 'ns2');
 console.log(tNs2('description.part2'));
+
+const fk = i18next.t('some.fallback');
+console.log(fk);

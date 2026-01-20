@@ -235,6 +235,26 @@ export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
   : Key;
 
+// helper that maps the configured fallbackNS value to the matching resources slice
+type FallbackResourcesOf<FallbackNS, R> = FallbackNS extends readonly (infer FN)[]
+  ? R[FN & keyof R]
+  : [FallbackNS] extends [false]
+    ? never
+    : R[Extract<FallbackNS, keyof R> & keyof R];
+
+/* reuse the parse helpers as top-level aliases (no nested type declarations) */
+type _PrimaryParse<
+  ActualKey,
+  PrimaryNS extends keyof Resources,
+  TOpt extends TOptions,
+> = ParseTReturn<ActualKey, Resources[PrimaryNS], TOpt>;
+
+type _FallbackParse<ActualKey, FallbackNS, TOpt extends TOptions> = [
+  FallbackResourcesOf<FallbackNS, Resources>,
+] extends [never]
+  ? never
+  : ParseTReturn<ActualKey, FallbackResourcesOf<FallbackNS, Resources>, TOpt>;
+
 export type TFunctionReturn<
   Ns extends Namespace,
   Key,
@@ -244,20 +264,15 @@ export type TFunctionReturn<
 > = $IsResourcesDefined extends true
   ? ActualKey extends `${infer Nsp}${_NsSeparator}${infer RestKey}`
     ? ParseTReturn<RestKey, Resources[Nsp & keyof Resources], TOpt>
-    : $PreservedValue<
-        ParseTReturn<ActualKey, Resources[$FirstNamespace<ActualNS>], TOpt>,
-        ParseTReturn<
-          ActualKey,
-          _FallbackNamespace extends readonly (infer FN)[]
-            ? Resources[FN & keyof Resources]
-            : [_FallbackNamespace] extends [false]
-              ? never
-              : Extract<_FallbackNamespace, keyof Resources> extends infer K
-                ? Resources[K & keyof Resources]
-                : never,
-          TOpt
-        >
-      >
+    : $FirstNamespace<ActualNS> extends infer PrimaryNS
+      ? [PrimaryNS] extends [keyof Resources]
+        ? [_PrimaryParse<ActualKey, PrimaryNS & keyof Resources, TOpt>] extends [never]
+          ? [_FallbackParse<ActualKey, _FallbackNamespace, TOpt>] extends [never]
+            ? DefaultTReturn<TOpt>
+            : _FallbackParse<ActualKey, _FallbackNamespace, TOpt>
+          : _PrimaryParse<ActualKey, PrimaryNS & keyof Resources, TOpt>
+        : never
+      : never
   : DefaultTReturn<TOpt>;
 
 export type TFunctionDetailedResult<T = string, TOpt extends TOptions = {}> = {

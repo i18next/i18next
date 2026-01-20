@@ -1,6 +1,10 @@
+## 25.8.0
+
+- fix: TFunctionReturn fallback [2360](https://github.com/i18next/i18next/issues/2360)
+
 ## 25.7.4
 
-- fix: Interpolation breaks when cloning an instance [2376](https://github.com/i18next/react-i18next/issues/2376)
+- fix: Interpolation breaks when cloning an instance [2376](https://github.com/i18next/i18next/issues/2376)
 
 ## 25.7.3
 
