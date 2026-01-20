@@ -1,6 +1,6 @@
 {
   "name": "@i18next/i18next",
-  "version": "25.7.4",
+  "version": "25.8.0",
   "license": "MIT",
   "exports": "./src/index.js",
   "publish": {
