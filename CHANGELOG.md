@@ -1,3 +1,7 @@
+## 25.8.1
+
+- fix(types): Selector API - fix Namespace inference for selector ns option [2384](https://github.com/i18next/i18next/pull/2384)
+
 ## 25.8.0
 
 - fix: TFunctionReturn fallback [2360](https://github.com/i18next/i18next/issues/2360)
