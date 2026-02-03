@@ -355,4 +355,12 @@ describe('t', () => {
       t(($) => $.keypath_deep, { suffering: { in: { the: 'yes' } } });
     });
   });
+
+  // https://github.com/i18next/i18next/issues/2383
+  it('should error when using a defined namespace that is not present in TFunction NS type parameter', () => {
+    const t: TFunction<['alternate']> = (() => '') as never;
+
+    // @ts-expect-error
+    t(($) => $.foo, { ns: 'custom' });
+  });
 });
