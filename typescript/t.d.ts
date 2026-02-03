@@ -375,17 +375,24 @@ export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace
 ///  ↆ selector ↆ  ///
 /// ////////////// ///
 
+type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
+
 interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
   <
     Target extends ConstrainTarget<Opts>,
+    const NewNs extends NsArg<Ns> & Namespace,
     const Opts extends SelectorOptions<NewNs>,
-    NewNs extends Namespace,
     NewSrc extends GetSource<NewNs, KPrefix>,
   >(
     selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>,
     options: Opts & InterpolationMap<Target> & { ns: NewNs },
   ): SelectorReturn<Target, Opts>;
-  <Target extends ConstrainTarget<Opts>, const Opts extends SelectorOptions<Ns>>(
+
+  <
+    Target extends ConstrainTarget<Opts>,
+    const NewNs extends NsArg<Ns> = Ns[number],
+    const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>,
+  >(
     selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
     options?: Opts & InterpolationMap<Target>,
   ): SelectorReturn<Target, Opts>;
