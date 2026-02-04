@@ -368,6 +368,11 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   debug?: boolean;
 
   /**
+   * @internal
+   */
+  showSupportNotice?: boolean;
+
+  /**
    * Resources to initialize with (if not using loading or not appending using addResourceBundle)
    * @default undefined
    */

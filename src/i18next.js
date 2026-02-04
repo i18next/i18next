@@ -25,6 +25,15 @@ const bindMemberFunctions = (inst) => {
   })
 }
 
+const usesLocize = (inst) => {
+  if (inst?.modules?.backend?.name?.indexOf('Locize') > 0) return true
+  if (inst?.modules?.backend?.constructor?.name?.indexOf('Locize') > 0) return true
+  if (inst?.options?.backend?.backends) {
+    if (inst.options.backend.backends.some((b) => b?.name.indexOf('Locize') > 0 || b?.constructor?.name.indexOf('Locize') > 0)) return true
+  }
+  return false
+}
+
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
@@ -77,9 +86,9 @@ class I18n extends EventEmitter {
       this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
     }
 
-    if (this.options.debug === true) {
+    if (this.options.showSupportNotice !== false && !usesLocize(this)) {
       // eslint-disable-next-line no-console
-      if (typeof console !== 'undefined') console.warn('i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com');
+      if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
     }
 
     const createClassOnDemand = (ClassOrObject) => {
