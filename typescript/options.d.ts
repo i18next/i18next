@@ -368,7 +368,8 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   debug?: boolean;
 
   /**
-   * @internal
+   * Show support notice in console during initialization.
+   * @default true
    */
   showSupportNotice?: boolean;
 

@@ -1,3 +1,7 @@
+## 25.8.3
+
+- ts: document option to suppress the support message [2385](https://github.com/i18next/i18next/issues/2385)
+
 ## 25.8.2
 
 - option to suppress the support message [2385](https://github.com/i18next/i18next/issues/2385)
