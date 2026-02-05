@@ -1,3 +1,7 @@
+## 25.8.4
+
+- fix: crashes when backend in backends array has no name property [2386](https://github.com/i18next/i18next/issues/2386)
+
 ## 25.8.3
 
 - ts: document option to suppress the support message [2385](https://github.com/i18next/i18next/issues/2385)

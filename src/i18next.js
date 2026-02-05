@@ -29,7 +29,7 @@ const usesLocize = (inst) => {
   if (inst?.modules?.backend?.name?.indexOf('Locize') > 0) return true
   if (inst?.modules?.backend?.constructor?.name?.indexOf('Locize') > 0) return true
   if (inst?.options?.backend?.backends) {
-    if (inst.options.backend.backends.some((b) => b?.name.indexOf('Locize') > 0 || b?.constructor?.name.indexOf('Locize') > 0)) return true
+    if (inst.options.backend.backends.some((b) => b?.name?.indexOf('Locize') > 0 || b?.constructor?.name?.indexOf('Locize') > 0)) return true
   }
   return false
 }
