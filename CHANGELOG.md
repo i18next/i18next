@@ -1,4 +1,4 @@
-## 25.8.4
+## 25.8.5
 
 - fix: compatibility with moduleResolution bundler (issue [2380](https://github.com/i18next/i18next/issues/2380)) [2381](https://github.com/i18next/i18next/pull/2381)
 
