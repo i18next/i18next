@@ -6,6 +6,7 @@ const instance = i18next.createInstance();
 describe('i18next.translation.formatting without escaping', () => {
   beforeAll(async () => {
     await instance.init({
+      showSupportNotice: false,
       lng: 'en',
       interpolation: {
         escapeValue: false,

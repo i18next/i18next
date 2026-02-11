@@ -14,6 +14,7 @@ describe('v1.11.1 basic usage', () => {
 
   beforeEach(() => {
     opts = compat.convertAPIOptions(getI18nCompatibilityV1InitOptions());
+    opts.showSupportNotice = false;
   });
 
   describe('CI mode', () => {

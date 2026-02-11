@@ -12,7 +12,7 @@ describe('LanguageDetector with different signatures', () => {
 
     describe('#init', () => {
       it('should work as usual', () => {
-        i18n.init({ initAsync: false });
+        i18n.init({ initAsync: false, showSupportNotice: false });
         expect(i18n.language).to.eql('de-CH');
       });
     });
@@ -42,7 +42,7 @@ describe('LanguageDetector with different signatures', () => {
 
     describe('#init', () => {
       it('should work as usual', () => {
-        i18n.init({ initAsync: false });
+        i18n.init({ initAsync: false, showSupportNotice: false });
         expect(i18n.language).to.eql('de-CH');
         expect(cachedLng).to.eql('de-CH');
       });
@@ -69,7 +69,7 @@ describe('LanguageDetector with different signatures', () => {
 
     describe('#init', () => {
       it('should work as usual', async () => {
-        await i18n.init({});
+        await i18n.init({ showSupportNotice: false });
         expect(i18n.language).to.eql('de-CH');
       });
     });
@@ -99,7 +99,7 @@ describe('LanguageDetector with different signatures', () => {
 
     describe('#init', () => {
       it('should work as usual', async () => {
-        await i18n.init({});
+        await i18n.init({ showSupportNotice: false });
 
         expect(i18n.language).to.eql('de-CH');
         expect(cachedLng).to.eql('de-CH');

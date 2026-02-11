@@ -7,6 +7,7 @@ describe('Translator', () => {
   describe('translate() with natural language', () => {
     beforeAll(async () => {
       await instance.init({
+        showSupportNotice: false,
         lng: 'en',
         fallbackLng: 'en',
         resources: {

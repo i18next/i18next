@@ -12,6 +12,7 @@ describe('v1.11.1 translation', () => {
 
   beforeEach(() => {
     opts = compat.convertAPIOptions(getI18nCompatibilityV1InitOptions());
+    opts.showSupportNotice = false;
   });
 
   describe('keys with non supported values', () => {

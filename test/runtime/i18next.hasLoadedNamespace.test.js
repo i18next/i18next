@@ -71,7 +71,7 @@ describe('i18next', () => {
       it('it should ok - but warn about issue', async () => {
         expect(i18n.isInitialized).toBeFalsy();
         expect(i18n.isInitializing).toBeFalsy();
-        const prom = i18n.init({ debug: true, saveMissing: true });
+        const prom = i18n.init({ showSupportNotice: false, debug: true, saveMissing: true });
         expect(i18n.isInitializing).toBeTruthy();
         expect(i18n.isInitialized).toBeFalsy();
         await prom;
@@ -180,6 +180,7 @@ describe('i18next', () => {
     i18n2.use(Logger);
     beforeAll(async () => {
       await i18n2.init({
+        showSupportNotice: false,
         debug: true,
         lng: 'en-US',
         resources: { 'en-US': { translation: {} }, dev: { translation: {} } },
@@ -202,6 +203,7 @@ describe('i18next', () => {
     i18n2.use(Logger);
     beforeAll(async () => {
       await i18n2.init({
+        showSupportNotice: false,
         debug: true,
         lng: 'en-US',
         resources: { 'en-US': { translation: {} }, dev: { translation: {} } },

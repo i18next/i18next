@@ -6,6 +6,7 @@ const instance = i18next.createInstance();
 describe('i18next.translation.formatting.legacyFunction', () => {
   beforeAll(async () => {
     instance.init({
+      showSupportNotice: false,
       lng: 'en',
       resources: {
         en: {

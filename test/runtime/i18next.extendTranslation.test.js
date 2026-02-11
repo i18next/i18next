@@ -49,6 +49,7 @@ describe('extendTranslation', () => {
           })
           .init(
             {
+              showSupportNotice: false,
               lng: 'en',
               interpolation: {
                 defaultVariables: test.defaultVariables,

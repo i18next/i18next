@@ -18,6 +18,7 @@ export function extend(obj, ...rest) {
       }
     }
   });
+  obj.showSupportNotice = false;
   return compat.convertAPIOptions(obj);
   // return obj;
 }

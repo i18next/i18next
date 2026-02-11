@@ -7,6 +7,7 @@ describe('i18next backend', () => {
 
   beforeAll(() => {
     i18n.use(BackendMock).init({
+      showSupportNotice: false,
       fallbackLng: 'en',
       fallbackNS: 'concurrently',
       ns: [],

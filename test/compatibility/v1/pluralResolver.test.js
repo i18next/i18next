@@ -12,7 +12,12 @@ describe('PluralResolver', () => {
       i18next
         .use(compatibilityLayer)
         .use({ type: 'formatter', init: () => {}, format: (v) => v })
-        .init({ fallbackLng: 'en', simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+        .init({
+          showSupportNotice: false,
+          fallbackLng: 'en',
+          simplifyPluralSuffix: true,
+          compatibilityJSON: 'v3',
+        });
       pr = i18next.services.pluralResolver;
     });
 
@@ -35,7 +40,12 @@ describe('PluralResolver', () => {
       const i18next = createInstance();
       i18next
         .use(compatibilityLayer)
-        .init({ fallbackLng: 'en', simplifyPluralSuffix: true, compatibilityJSON: 'v3' });
+        .init({
+          showSupportNotice: false,
+          fallbackLng: 'en',
+          simplifyPluralSuffix: true,
+          compatibilityJSON: 'v3',
+        });
       pr = i18next.services.pluralResolver;
     });
 
@@ -83,6 +93,7 @@ describe('PluralResolver', () => {
     beforeAll(() => {
       const i18next = createInstance();
       i18next.use(compatibilityLayer).init({
+        showSupportNotice: false,
         fallbackLng: 'en',
         simplifyPluralSuffix: true,
         compatibilityJSON: 'v3',
@@ -258,6 +269,7 @@ describe('PluralResolver', () => {
     beforeAll(() => {
       const i18next = createInstance();
       i18next.use(compatibilityLayer).init({
+        showSupportNotice: false,
         fallbackLng: 'en',
         simplifyPluralSuffix: true,
         pluralSeparator: '_',
@@ -286,6 +298,7 @@ describe('PluralResolver', () => {
     beforeAll(() => {
       const i18next = createInstance();
       i18next.use(compatibilityLayer).init({
+        showSupportNotice: false,
         fallbackLng: 'en',
         simplifyPluralSuffix: false,
         pluralSeparator: '_',
@@ -314,6 +327,7 @@ describe('PluralResolver', () => {
     beforeAll(() => {
       const i18next = createInstance();
       i18next.use(compatibilityLayer).init({
+        showSupportNotice: false,
         fallbackLng: 'en',
         simplifyPluralSuffix: true,
         pluralSeparator: '_',

@@ -12,7 +12,7 @@ describe('PluralResolver', () => {
       i18next
         .use({ type: 'formatter', init: () => {}, format: (v) => v })
         .use(compatibilityLayer)
-        .init({ fallbackLng: 'en' });
+        .init({ showSupportNotice: false, fallbackLng: 'en' });
       pr = i18next.services.pluralResolver;
     });
 
@@ -58,7 +58,7 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
+      i18next.use(compatibilityLayer).init({ showSupportNotice: false, fallbackLng: 'en' });
       pr = i18next.services.pluralResolver;
     });
 
@@ -102,7 +102,9 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
+      i18next
+        .use(compatibilityLayer)
+        .init({ showSupportNotice: false, fallbackLng: 'en', prepend: '_' });
       pr = i18next.services.pluralResolver;
     });
 
@@ -151,7 +153,9 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
+      i18next
+        .use(compatibilityLayer)
+        .init({ showSupportNotice: false, fallbackLng: 'en', prepend: '_' });
       pr = i18next.services.pluralResolver;
     });
 
@@ -178,7 +182,9 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
+      i18next
+        .use(compatibilityLayer)
+        .init({ showSupportNotice: false, fallbackLng: 'en', prepend: '_' });
       pr = i18next.services.pluralResolver;
     });
 
@@ -215,7 +221,7 @@ describe('PluralResolver', () => {
     let logger;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
+      i18next.use(compatibilityLayer).init({ showSupportNotice: false, fallbackLng: 'en' });
       lu = i18next.services.languageUtils;
       logger = i18next.services.logger;
     });

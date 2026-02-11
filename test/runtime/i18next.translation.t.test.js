@@ -7,6 +7,7 @@ describe('i18next t default returns', () => {
   beforeAll(() => {
     i18n = i18next.createInstance();
     i18n.init({
+      showSupportNotice: false,
       fallbackLng: 'en',
       resources: {
         en: {
@@ -49,6 +50,7 @@ describe('i18next t default returns', () => {
     beforeAll(() => {
       i18nSep = i18next.createInstance();
       i18nSep.init({
+        showSupportNotice: false,
         keySeparator: '::',
         nsSeparator: ':::',
         fallbackLng: 'en',

@@ -7,6 +7,7 @@ const instance = i18next.createInstance();
 describe('i18next.interpolation.nesting', () => {
   beforeAll(async () => {
     await instance.init({
+      showSupportNotice: false,
       lng: 'en',
       interpolation: {
         // skipOnVariables: true, // true by default

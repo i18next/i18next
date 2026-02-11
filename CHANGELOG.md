@@ -1,5 +1,9 @@
 ## 25.8.4
 
+- fix: compatibility with moduleResolution bundler (issue [2380](https://github.com/i18next/i18next/issues/2380)) [2381](https://github.com/i18next/i18next/pull/2381)
+
+## 25.8.4
+
 - fix: crashes when backend in backends array has no name property [2386](https://github.com/i18next/i18next/issues/2386)
 
 ## 25.8.3
