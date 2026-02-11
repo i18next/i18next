@@ -1,9 +1,7 @@
 import * as i18nextMod from './index.js';
 import type { $Dictionary } from './typescript/helpers.js';
 
-
 import type { DefaultNamespace, Namespace } from './typescript/options.js';
-
 
 export type WithT<Ns extends Namespace = DefaultNamespace> = i18nextMod.WithT<Ns>;
 export type Interpolator = i18nextMod.Interpolator;
@@ -33,24 +31,18 @@ export type ExistsFunction<
 > = i18nextMod.ExistsFunction<TKeys, TInterpolationMap>;
 export type CloneOptions = i18nextMod.CloneOptions;
 
-
 export type * from './typescript/options.js';
 export type * from './typescript/t.js';
 
-
 export interface CustomInstanceExtensions {}
-
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface i18n extends i18nextMod.i18n, CustomInstanceExtensions {}
 
-
 declare const i18next: i18n;
 export { i18next as default, i18next };
 
-
 export const createInstance: i18n['createInstance'];
-
 
 export const dir: i18n['dir'];
 export const init: i18n['init'];
@@ -65,7 +57,6 @@ export const setDefaultNamespace: i18n['setDefaultNamespace'];
 export const hasLoadedNamespace: i18n['hasLoadedNamespace'];
 export const loadNamespaces: i18n['loadNamespaces'];
 export const loadLanguages: i18n['loadLanguages'];
-
 
 export declare function keyFromSelector<S = Record<string, any>, T = string>(
   selector: ($: S) => T,

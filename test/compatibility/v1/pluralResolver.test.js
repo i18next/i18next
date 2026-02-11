@@ -38,14 +38,12 @@ describe('PluralResolver', () => {
 
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({
-          showSupportNotice: false,
-          fallbackLng: 'en',
-          simplifyPluralSuffix: true,
-          compatibilityJSON: 'v3',
-        });
+      i18next.use(compatibilityLayer).init({
+        showSupportNotice: false,
+        fallbackLng: 'en',
+        simplifyPluralSuffix: true,
+        compatibilityJSON: 'v3',
+      });
       pr = i18next.services.pluralResolver;
     });
 
