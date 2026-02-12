@@ -89,7 +89,7 @@ class I18n extends EventEmitter {
 
     if (this.options.showSupportNotice !== false && !usesLocize(this) && !supportNoticeShown) {
       // eslint-disable-next-line no-console
-      if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
+      if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
       supportNoticeShown = true
     }
 
