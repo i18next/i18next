@@ -1703,6 +1703,7 @@
       }
     });
   };
+  let supportNoticeShown = false;
   const usesLocize = inst => {
     if (inst?.modules?.backend?.name?.indexOf('Locize') > 0) return true;
     if (inst?.modules?.backend?.constructor?.name?.indexOf('Locize') > 0) return true;
@@ -1763,8 +1764,9 @@
       if (typeof this.options.overloadTranslationOptionHandler !== 'function') {
         this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
       }
-      if (this.options.showSupportNotice !== false && !usesLocize(this)) {
-        if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from locize.com — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
+      if (this.options.showSupportNotice !== false && !usesLocize(this) && !supportNoticeShown) {
+        if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
+        supportNoticeShown = true;
       }
       const createClassOnDemand = ClassOrObject => {
         if (!ClassOrObject) return null;
