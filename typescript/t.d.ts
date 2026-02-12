@@ -316,6 +316,14 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
   ? `${KPrefix}${_KeySeparator}${Key & string}`
   : Key;
 
+/**
+ * Resolves the effective key prefix by preferring a per-call `keyPrefix` from
+ * options over the interface-level `KPrefix` (set via getFixedT's 3rd argument).
+ */
+type EffectiveKPrefix<KPrefix, TOpt> = TOpt extends { keyPrefix: infer OptKP extends string }
+  ? OptKP
+  : KPrefix;
+
 /** ************************
  * T function declaration *
  ************************* */
@@ -323,17 +331,17 @@ type AppendKeyPrefix<Key, KPrefix> = KPrefix extends string
 interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends Branded<Ns> {
   <
-    const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
     const TOpt extends TOptions,
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
   >(
     key: Key | Key[],
     options?: TOpt & InterpolationMap<Ret>,
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
   <
-    const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
     const TOpt extends TOptions,
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
   >(
     key: Key | Key[],
     defaultValue: string,
@@ -344,9 +352,9 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
 interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
   extends Branded<Ns> {
   <
-    const Key extends ParseKeys<Ns, TOpt, KPrefix> | TemplateStringsArray,
+    const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
     const TOpt extends TOptions,
-    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, TOpt>,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
     const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
     DefaultValue extends string = never,
   >(

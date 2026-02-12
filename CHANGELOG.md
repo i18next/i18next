@@ -1,3 +1,7 @@
+## 25.8.6
+
+- ts: address incomplete type definition for `getFixedT()` return value [2318](https://github.com/i18next/i18next/issues/2318)
+
 ## 25.8.5
 
 - fix: compatibility with moduleResolution bundler (issue [2380](https://github.com/i18next/i18next/issues/2380)) [2381](https://github.com/i18next/i18next/pull/2381)

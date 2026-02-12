@@ -787,6 +787,11 @@ export interface TOptionsBase {
    * Override interpolation options
    */
   interpolation?: InterpolationOptions;
+  /**
+   * Optional keyPrefix that will be applied to the key before resolving.
+   * Only supported on the TFunction returned by getFixedT().
+   */
+  keyPrefix?: string;
 }
 
 export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase &
