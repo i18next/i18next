@@ -1,3 +1,7 @@
+## 25.8.7
+
+- avoid crash due to ReferenceError without Intl API [2391](https://github.com/i18next/i18next/pull/2391)
+
 ## 25.8.6
 
 - ts: address incomplete type definition for `getFixedT()` return value [2318](https://github.com/i18next/i18next/issues/2318)
