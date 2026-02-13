@@ -47,7 +47,7 @@ class PluralResolver {
     try {
       rule = new Intl.PluralRules(cleanedCode, { type });
     } catch (err) {
-      if (!Intl) {
+      if (typeof Intl === 'undefined') {
         this.logger.error('No Intl support, please use an Intl polyfill!');
         return dummyRule;
       }
