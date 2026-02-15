@@ -1,3 +1,7 @@
+## 25.8.8
+
+- types(i18n): add missing toJSON() declaration [2393](https://github.com/i18next/i18next/pull/2393)
+
 ## 25.8.7
 
 - avoid crash due to ReferenceError without Intl API [2391](https://github.com/i18next/i18next/pull/2391)
