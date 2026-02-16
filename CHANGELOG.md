@@ -1,3 +1,7 @@
+## 25.8.9
+
+- fix(interpolator): escape nestingOptionsSeparator in nesting option parsing [223943](https://github.com/i18next/i18next/pull/2394)
+
 ## 25.8.8
 
 - types(i18n): add missing toJSON() declaration [2393](https://github.com/i18next/i18next/pull/2393)
