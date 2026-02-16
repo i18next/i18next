@@ -228,7 +228,7 @@ class Interpolator {
       const sep = this.nestingOptionsSeparator;
       if (key.indexOf(sep) < 0) return key;
 
-      const c = key.split(new RegExp(`${sep}[ ]*{`));
+      const c = key.split(new RegExp(`${regexEscape(sep)}[ ]*{`));
 
       let optionsString = `{${c[1]}`;
       key = c[0];
