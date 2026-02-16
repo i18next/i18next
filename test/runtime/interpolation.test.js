@@ -370,6 +370,20 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - nesting with null matchedDoubleQuotes', () => {
+    /** @type {Interpolator} */
+    let ip;
+
+    beforeAll(() => {
+      ip = new Interpolator({ interpolation: { escapeValue: false } });
+    });
+
+    it('should not crash when optionsString has no double quotes', () => {
+      const result = ip.nest("$t(test, {'key': '{{val}}'})", () => 'ok', { val: "it's" });
+      expect(result).to.eql('ok');
+    });
+  });
+
   describe('interpolate() - nesting with regex meta char nestingOptionsSeparator', () => {
     /** @type {Interpolator} */
     let ip;
