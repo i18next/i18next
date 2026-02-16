@@ -237,7 +237,7 @@ class Interpolator {
       const matchedDoubleQuotes = optionsString.match(/"/g);
       if (
         ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes) ||
-        matchedDoubleQuotes.length % 2 !== 0
+        (matchedDoubleQuotes?.length ?? 0) % 2 !== 0
       ) {
         optionsString = optionsString.replace(/'/g, '"');
       }
