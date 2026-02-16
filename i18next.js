@@ -1221,7 +1221,7 @@
         optionsString = this.interpolate(optionsString, clonedOptions);
         const matchedSingleQuotes = optionsString.match(/'/g);
         const matchedDoubleQuotes = optionsString.match(/"/g);
-        if ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes || matchedDoubleQuotes.length % 2 !== 0) {
+        if ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes || (matchedDoubleQuotes?.length ?? 0) % 2 !== 0) {
           optionsString = optionsString.replace(/'/g, '"');
         }
         try {

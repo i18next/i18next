@@ -1,6 +1,10 @@
+## 25.8.10
+
+- fix(interpolator): guard null matchedDoubleQuotes in nesting option parsing [2395](https://github.com/i18next/i18next/pull/2395)
+
 ## 25.8.9
 
-- fix(interpolator): escape nestingOptionsSeparator in nesting option parsing [223943](https://github.com/i18next/i18next/pull/2394)
+- fix(interpolator): escape nestingOptionsSeparator in nesting option parsing [2394](https://github.com/i18next/i18next/pull/2394)
 
 ## 25.8.8
 
