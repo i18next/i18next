@@ -370,6 +370,24 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - nesting with regex meta char nestingOptionsSeparator', () => {
+    /** @type {Interpolator} */
+    let ip;
+
+    beforeAll(() => {
+      ip = new Interpolator({
+        interpolation: {
+          nestingOptionsSeparator: '+',
+        },
+      });
+    });
+
+    it('correctly parses nesting options when separator is a regex meta character', () => {
+      const result = ip.nest('$t(test+ {"key":"success"})', (key, opts) => `${key} ${opts.key}`);
+      expect(result).to.eql('test success');
+    });
+  });
+
   describe('interpolate() - backwards compatible', () => {
     /** @type {Interpolator} */
     let ip;
