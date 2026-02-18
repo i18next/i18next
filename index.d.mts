@@ -40,8 +40,7 @@ export interface CustomInstanceExtensions {}
 export interface i18n extends i18nextMod.i18n, CustomInstanceExtensions {}
 
 declare const i18next: i18n;
-// eslint-disable-next-line no-restricted-exports
-export { i18next as default, i18next };
+export default i18next;
 
 export const createInstance: i18n['createInstance'];
 
