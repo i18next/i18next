@@ -1,3 +1,7 @@
+## 25.8.13
+
+- improve support notice shown logic
+
 ## 25.8.12
 
 - improve support notice shown logic

@@ -36,6 +36,10 @@ const usesLocize = (inst) => {
   if (inst?.options?.backend?.backends) {
     if (inst.options.backend.backends.some((b) => b?.name?.indexOf('Locize') > 0 || b?.constructor?.name?.indexOf('Locize') > 0)) return true
   }
+  if (inst?.options?.backend?.projectId) return true
+  if (inst?.options?.backend?.backendOptions) {
+    if (inst.options.backend.backendOptions.some(b => b?.projectId)) return true
+  }
   return false
 }
 
