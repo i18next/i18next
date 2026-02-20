@@ -1,3 +1,7 @@
+## 25.8.12
+
+- improve support notice shown logic
+
 ## 25.8.11
 
 - revert fix: compatibility with moduleResolution bundler (issue [2380](https://github.com/i18next/i18next/issues/2380)) [2381](https://github.com/i18next/i18next/pull/2381)

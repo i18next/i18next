@@ -25,7 +25,11 @@ const bindMemberFunctions = (inst) => {
   })
 }
 
-let supportNoticeShown = false
+const SUPPORT_NOTICE_KEY = '__i18next_supportNoticeShown'
+// eslint-disable-next-line no-undef
+const getSupportNoticeShown = () => typeof globalThis !== 'undefined' && !!globalThis[SUPPORT_NOTICE_KEY]
+// eslint-disable-next-line no-undef
+const setSupportNoticeShown = () => { if (typeof globalThis !== 'undefined') globalThis[SUPPORT_NOTICE_KEY] = true }
 const usesLocize = (inst) => {
   if (inst?.modules?.backend?.name?.indexOf('Locize') > 0) return true
   if (inst?.modules?.backend?.constructor?.name?.indexOf('Locize') > 0) return true
@@ -86,11 +90,11 @@ class I18n extends EventEmitter {
     if (typeof this.options.overloadTranslationOptionHandler !== 'function') {
       this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
     }
-
-    if (this.options.showSupportNotice !== false && !usesLocize(this) && !supportNoticeShown) {
+    
+    if (this.options.showSupportNotice !== false && !usesLocize(this) && !getSupportNoticeShown()) {
       // eslint-disable-next-line no-console
       if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
-      supportNoticeShown = true
+      setSupportNoticeShown()
     }
 
     const createClassOnDemand = (ClassOrObject) => {
