@@ -23,6 +23,8 @@ i18next provides:
 - Extensibility: eg. [sprintf](https://www.i18next.com/overview/plugins-and-utils#post-processors)
 - ...
 
+> **Pro Tip:** Looking for a way to manage your translations? Locize is the official service by i18next's creators and now offers a **[Free plan](https://www.locize.com/pricing)** for small projects.
+
 For more information visit the website:
 
 - [Getting started](https://www.i18next.com/overview/getting-started)
@@ -49,12 +51,14 @@ The react specific documentation is published on [react.i18next.com](https://rea
 
 ---
 
-**From the creators of i18next: localization as a service - locize.com**
+**From the creators of i18next: localization as a service - [Locize](https://locize.com)**
 
-A translation management system built around the i18next ecosystem - [locize.com](https://locize.com).
+A translation management system built around the i18next ecosystem - [Locize](https://locize.com).
 
-![locize](https://www.locize.com/img/ads/github_locize.png)
+**Now with a [Free plan](https://locize.com/pricing) for small projects!** Perfect for hobbyists or getting started.
 
-With using [locize](https://locize.com/?utm_source=i18next_readme&utm_medium=github) you directly support the future of i18next.
+![Locize](https://www.locize.com/img/ads/github_locize.png)
+
+With using [Locize](https://www.locize.com/?utm_source=i18next_readme&utm_medium=github) you directly support the future of i18next.
 
 ---
