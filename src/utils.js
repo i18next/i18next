@@ -252,4 +252,4 @@ export const deepFind = (obj, path, keySeparator = '.') => {
   return current;
 };
 
-export const getCleanedCode = (code) => code?.replace('_', '-');
+export const getCleanedCode = (code) => code?.replace(/_/g, '-');
