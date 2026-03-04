@@ -1,3 +1,7 @@
+## 25.8.14
+
+- fix: getCleanedCode now replaces all underscores
+
 ## 25.8.13
 
 - improve support notice shown logic

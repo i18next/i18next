@@ -194,7 +194,7 @@
     }
     return current;
   };
-  const getCleanedCode = code => code?.replace('_', '-');
+  const getCleanedCode = code => code?.replace(/_/g, '-');
 
   const consoleLogger = {
     type: 'logger',
