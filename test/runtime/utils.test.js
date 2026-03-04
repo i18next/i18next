@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { deepExtend, deepFind } from '../../src/utils.js';
+import { deepExtend, deepFind, getCleanedCode } from '../../src/utils.js';
 
 describe('utils', () => {
   describe('#deepExtend', () => {
@@ -59,6 +59,28 @@ describe('utils', () => {
       const obj = { a: [{ c: 1 }] };
       const value = deepFind(obj, 'a.0.c');
       expect(value).toEqual(1);
+    });
+  });
+
+  describe('#getCleanedCode', () => {
+    it('should replace single underscore', () => {
+      expect(getCleanedCode('en_US')).toBe('en-US');
+    });
+
+    it('should replace all underscores in locale codes', () => {
+      expect(getCleanedCode('zh_Hant_TW')).toBe('zh-Hant-TW');
+      expect(getCleanedCode('en_US_POSIX')).toBe('en-US-POSIX');
+      expect(getCleanedCode('sr_Latn_RS')).toBe('sr-Latn-RS');
+    });
+
+    it('should return undefined for nullish input', () => {
+      expect(getCleanedCode(undefined)).toBeUndefined();
+      expect(getCleanedCode(null)).toBeUndefined();
+    });
+
+    it('should return code unchanged if no underscores', () => {
+      expect(getCleanedCode('en-US')).toBe('en-US');
+      expect(getCleanedCode('ko')).toBe('ko');
     });
   });
 });
