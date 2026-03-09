@@ -281,6 +281,7 @@ class PluralResolver {
 
       try {
         rule = new Intl.PluralRules(cleanedCode, { type });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         if (!code.match(/-|_/)) return;
         const lngPart = this.languageUtils.getLanguagePartFromCode(code);

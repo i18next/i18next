@@ -1,3 +1,7 @@
+## 25.8.17
+
+- update deps
+
 ## 25.8.16
 
 - fix(types): `on()` method now correctly returns `this` instead of `void`, matching the runtime behavior and enabling proper method chaining in TypeScript

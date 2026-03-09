@@ -34,6 +34,7 @@ class LanguageUtil {
       let formattedCode;
       try {
         formattedCode = Intl.getCanonicalLocales(code)[0];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         /* fall through */
       }

@@ -46,6 +46,7 @@ class PluralResolver {
 
     try {
       rule = new Intl.PluralRules(cleanedCode, { type });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       if (typeof Intl === 'undefined') {
         this.logger.error('No Intl support, please use an Intl polyfill!');

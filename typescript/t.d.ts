@@ -18,7 +18,6 @@ import type {
 } from './options.js';
 
 /** @todo consider to replace {} with Record<string, never> */
-/* eslint @typescript-eslint/ban-types: ['error', { types: { "{}": false } }] */
 
 // Type Options
 type _ReturnObjects = TypeOptions['returnObjects'];
@@ -328,8 +327,10 @@ type EffectiveKPrefix<KPrefix, TOpt> = TOpt extends { keyPrefix: infer OptKP ext
  * T function declaration *
  ************************* */
 
-interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
-  extends Branded<Ns> {
+interface TFunctionStrict<
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix = undefined,
+> extends Branded<Ns> {
   <
     const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
     const TOpt extends TOptions,
@@ -349,8 +350,10 @@ interface TFunctionStrict<Ns extends Namespace = DefaultNamespace, KPrefix = und
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
 }
 
-interface TFunctionNonStrict<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
-  extends Branded<Ns> {
+interface TFunctionNonStrict<
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix = undefined,
+> extends Branded<Ns> {
   <
     const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
     const TOpt extends TOptions,
@@ -374,8 +377,10 @@ type TFunctionSignature<
     ? TFunctionStrict<Ns, KPrefix>
     : TFunctionNonStrict<Ns, KPrefix>;
 
-export interface TFunction<Ns extends Namespace = DefaultNamespace, KPrefix = undefined>
-  extends TFunctionSignature<Ns, KPrefix> {}
+export interface TFunction<
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix = undefined,
+> extends TFunctionSignature<Ns, KPrefix> {}
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
@@ -407,8 +412,7 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
 }
 
 interface SelectorOptions<Ns = Namespace>
-  extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>,
-    $Dictionary {
+  extends Omit<TOptionsBase, 'ns' | 'nsSeparator'>, $Dictionary {
   ns?: Ns;
 }
 

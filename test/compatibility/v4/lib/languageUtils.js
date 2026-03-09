@@ -13,6 +13,7 @@ export function formatLanguageCode(code) {
           formattedCode = formattedCode.toLowerCase();
         }
         if (formattedCode) return formattedCode;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         /* fall through */
       }

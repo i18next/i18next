@@ -575,6 +575,7 @@ class I18n extends EventEmitter {
         const ti = l.getTextInfo()
         if (ti && ti.direction) return ti.direction
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {/* fall through */}
 
     const rtlLngs = [

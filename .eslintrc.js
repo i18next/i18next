@@ -47,6 +47,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'error',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
+    '@typescript-eslint/no-empty-object-type': 'off',
 
     '@typescript-eslint/naming-convention': [
       'error',

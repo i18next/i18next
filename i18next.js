@@ -1782,7 +1782,7 @@
         this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
       }
       if (this.options.showSupportNotice !== false && !usesLocize(this) && !getSupportNoticeShown()) {
-        if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is maintained with support from Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
+        if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
         setSupportNoticeShown();
       }
       const createClassOnDemand = ClassOrObject => {
