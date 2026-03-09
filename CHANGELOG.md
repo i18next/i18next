@@ -1,3 +1,7 @@
+## 25.8.15
+
+- fix: Selector API unable to resolve namespaces [#2402](https://github.com/i18next/i18next/issues/2402)
+
 ## 25.8.14
 
 - fix: getCleanedCode now replaces all underscores

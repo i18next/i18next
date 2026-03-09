@@ -17,5 +17,21 @@ function createProxy() {
 
 export default function keysFromSelector(selector, opts) {
   const { [PATH_KEY]: path } = selector(createProxy());
-  return path.join(opts?.keySeparator ?? '.');
+
+  const keySeparator = opts?.keySeparator ?? '.';
+  const nsSeparator = opts?.nsSeparator ?? ':';
+
+  // If the first path segment is a known namespace, emit "ns<nsSeparator>rest.of.key"
+  // so that extractFromKey can correctly split the namespace from the key — mirroring
+  // the behaviour of the string overload `t('ns2:description.part1')`.
+  if (path.length > 1 && nsSeparator) {
+    const ns = opts?.ns;
+    // eslint-disable-next-line no-nested-ternary
+    const namespaces = ns ? (Array.isArray(ns) ? ns : [ns]) : [];
+    if (namespaces.includes(path[0])) {
+      return `${path[0]}${nsSeparator}${path.slice(1).join(keySeparator)}`;
+    }
+  }
+
+  return path.join(keySeparator);
 }

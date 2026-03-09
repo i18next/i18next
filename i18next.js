@@ -455,7 +455,16 @@
     const {
       [PATH_KEY]: path
     } = selector(createProxy());
-    return path.join(opts?.keySeparator ?? '.');
+    const keySeparator = opts?.keySeparator ?? '.';
+    const nsSeparator = opts?.nsSeparator ?? ':';
+    if (path.length > 1 && nsSeparator) {
+      const ns = opts?.ns;
+      const namespaces = ns ? Array.isArray(ns) ? ns : [ns] : [];
+      if (namespaces.includes(path[0])) {
+        return `${path[0]}${nsSeparator}${path.slice(1).join(keySeparator)}`;
+      }
+    }
+    return path.join(keySeparator);
   }
 
   const checkedLoadedFor = {};
