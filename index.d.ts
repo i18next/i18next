@@ -408,7 +408,7 @@ export interface i18n extends CustomInstanceExtensions {
   /**
    * Gets fired after initialization.
    */
-  on(event: 'initialized', callback: (options: InitOptions) => void): void;
+  on(event: 'initialized', callback: (options: InitOptions) => void): this;
 
   /**
    * Gets fired on loaded resources.
@@ -416,12 +416,12 @@ export interface i18n extends CustomInstanceExtensions {
   on(
     event: 'loaded',
     callback: (loaded: { [language: string]: { [namespace: string]: boolean } }) => void,
-  ): void;
+  ): this;
 
   /**
    * Gets fired if loading resources failed.
    */
-  on(event: 'failedLoading', callback: (lng: string, ns: string, msg: string) => void): void;
+  on(event: 'failedLoading', callback: (lng: string, ns: string, msg: string) => void): this;
 
   /**
    * Gets fired on accessing a key not existing.
@@ -429,17 +429,17 @@ export interface i18n extends CustomInstanceExtensions {
   on(
     event: 'missingKey',
     callback: (lngs: readonly string[], namespace: string, key: string, res: string) => void,
-  ): void;
+  ): this;
 
   /**
    * Gets fired when changeLanguage got called.
    */
-  on(event: 'languageChanged', callback: (lng: string) => void): void;
+  on(event: 'languageChanged', callback: (lng: string) => void): this;
 
   /**
    * Event listener
    */
-  on(event: string, listener: (...args: any[]) => void): void;
+  on(event: string, listener: (...args: any[]) => void): this;
 
   /**
    * Remove event listener
