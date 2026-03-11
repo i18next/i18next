@@ -397,7 +397,9 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     const Opts extends SelectorOptions<NewNs>,
     NewSrc extends GetSource<NewNs, KPrefix>,
   >(
-    selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>,
+    selector:
+      | SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>
+      | readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[],
     options: Opts & InterpolationMap<Target> & { ns: NewNs },
   ): SelectorReturn<Target, Opts>;
 
@@ -406,7 +408,9 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     const NewNs extends NsArg<Ns> = Ns[number],
     const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>,
   >(
-    selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
+    selector:
+      | SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>
+      | readonly SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>[],
     options?: Opts & InterpolationMap<Target>,
   ): SelectorReturn<Target, Opts>;
 }

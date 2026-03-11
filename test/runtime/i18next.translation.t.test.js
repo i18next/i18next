@@ -44,6 +44,67 @@ describe('i18next t default returns', () => {
     expect(i18n.t()).to.equal('');
   });
 
+  describe('with selector fallback arrays', () => {
+    /** @type {import('i18next').i18n} */
+    let i18nSel;
+    beforeAll(() => {
+      i18nSel = i18next.createInstance();
+      i18nSel.init({
+        showSupportNotice: false,
+        enableSelector: true,
+        fallbackLng: 'en',
+        resources: {
+          en: {
+            ns1: {
+              greeting: 'hello',
+              farewell: 'goodbye',
+              deep: { nested: 'deep value' },
+            },
+            ns2: {
+              fromNs2: 'from ns2',
+            },
+          },
+        },
+      });
+    });
+
+    it('resolves with the first selector when its key exists', () => {
+      expect(i18nSel.t([($) => $.greeting, ($) => $.farewell], { ns: 'ns1' })).toEqual('hello');
+    });
+
+    it('falls back to the second selector when the first key is missing', () => {
+      expect(i18nSel.t([($) => $.missing, ($) => $.farewell], { ns: 'ns1' })).toEqual('goodbye');
+    });
+
+    it('falls back through multiple missing keys to the last resolvable one', () => {
+      expect(
+        i18nSel.t([($) => $.missing1, ($) => $.missing2, ($) => $.greeting], { ns: 'ns1' }),
+      ).toEqual('hello');
+    });
+
+    it('works with deeply nested selector keys', () => {
+      expect(i18nSel.t([($) => $.missing, ($) => $.deep.nested], { ns: 'ns1' })).toEqual(
+        'deep value',
+      );
+    });
+
+    it('returns the key string when all selectors miss', () => {
+      const result = i18nSel.t([($) => $.missing1, ($) => $.missing2], { ns: 'ns1' });
+      // i18next returns the last key string when nothing resolves
+      expect(result).toEqual('missing2');
+    });
+
+    it('works across namespaces when ns option is provided', () => {
+      expect(i18nSel.t([($) => $.missing, ($) => $.fromNs2], { ns: 'ns2' })).toEqual('from ns2');
+    });
+
+    it('a single-element selector array behaves identically to the bare selector', () => {
+      expect(i18nSel.t([($) => $.greeting], { ns: 'ns1' })).toEqual(
+        i18nSel.t(($) => $.greeting, { ns: 'ns1' }),
+      );
+    });
+  });
+
   describe('with custome separators', () => {
     /** @type {import('i18next').i18n} */
     let i18nSep;
@@ -70,6 +131,10 @@ describe('i18next t default returns', () => {
       { args: ['root:::foo::bar'], expected: 'foobar' },
       { args: ['foo::bar', { ns: 'root' }], expected: 'foobar' },
       { args: [($) => $.foo.bar, { ns: 'root' }], expected: 'foobar' },
+      // Array of selectors: first key resolves, fallback never reached.
+      { args: [[($) => $.foo.bar, ($) => $.foo.missing], { ns: 'root' }], expected: 'foobar' },
+      // Array of selectors: first key missing, fallback resolves.
+      { args: [[($) => $.foo.missing, ($) => $.foo.bar], { ns: 'root' }], expected: 'foobar' },
     ];
 
     tests.forEach((test) => {

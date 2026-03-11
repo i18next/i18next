@@ -96,7 +96,14 @@ describe('i18next.translation.formatting.legacyFunction', () => {
             },
           },
         ],
-        expected: 'The value is $12,345.67 or CHF 16’543.21',
+        // The de-CH currency + thousands formatting changed across Node.js versions:
+        //   Node 18/20: "CHF\u00a016\u2019543.21" (NBSP + RIGHT SINGLE QUOTATION MARK)
+        //   Node 22:    "CHF 16&#39;543.21"        (space + HTML-escaped ASCII apostrophe)
+        //   Node 24:    "CHF&#39;16&#39;543.21"    (apostrophe as currency spacing AND thousands sep)
+        // Strategy: unescape/normalise all apostrophe variants to plain ' first, then
+        // normalise CHF'digit -> "CHF digit" so all three collapse to "CHF 16'543.21".
+        normalize: (s) => s.replace(/&#39;|[\u00a0\u2019]/g, "'").replace(/CHF'(\d)/g, 'CHF $1'),
+        expected: "The value is $12,345.67 or CHF 16'543.21",
       },
       {
         args: [
@@ -113,7 +120,9 @@ describe('i18next.translation.formatting.legacyFunction', () => {
 
     tests.forEach((test) => {
       it(`correctly formats translations for ${JSON.stringify(test.args)}`, () => {
-        expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
+        const result = instance.t.apply(instance, test.args);
+        const normalize = test.normalize ?? ((s) => s);
+        expect(normalize(result)).to.eql(normalize(test.expected));
       });
     });
   });

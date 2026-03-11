@@ -110,6 +110,9 @@ class Translator extends EventEmitter {
     if (keys == null /* || keys === '' */) return '';
     if (typeof keys === 'function') keys = keysFromSelector(keys, { ...this.options, ...opt });
     if (!Array.isArray(keys)) keys = [String(keys)];
+    keys = keys.map((k) =>
+      typeof k === 'function' ? keysFromSelector(k, { ...this.options, ...opt }) : String(k),
+    );
 
     const returnDetails =
       opt.returnDetails !== undefined ? opt.returnDetails : this.options.returnDetails;
@@ -463,6 +466,10 @@ class Translator extends EventEmitter {
     let usedNS;
 
     if (isString(keys)) keys = [keys];
+    if (Array.isArray(keys))
+      keys = keys.map((k) =>
+        typeof k === 'function' ? keysFromSelector(k, { ...this.options, ...opt }) : k,
+      );
 
     // forEach possible key
     keys.forEach((k) => {

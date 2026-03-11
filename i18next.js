@@ -538,6 +538,10 @@
         ...opt
       });
       if (!Array.isArray(keys)) keys = [String(keys)];
+      keys = keys.map(k => typeof k === 'function' ? keysFromSelector(k, {
+        ...this.options,
+        ...opt
+      }) : String(k));
       const returnDetails = opt.returnDetails !== undefined ? opt.returnDetails : this.options.returnDetails;
       const keySeparator = opt.keySeparator !== undefined ? opt.keySeparator : this.options.keySeparator;
       const {
@@ -784,6 +788,10 @@
       let usedLng;
       let usedNS;
       if (isString(keys)) keys = [keys];
+      if (Array.isArray(keys)) keys = keys.map(k => typeof k === 'function' ? keysFromSelector(k, {
+        ...this.options,
+        ...opt
+      }) : k);
       keys.forEach(k => {
         if (this.isValidLookup(found)) return;
         const extracted = this.extractFromKey(k, opt);

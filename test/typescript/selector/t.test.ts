@@ -215,4 +215,56 @@ describe('t', () => {
   it('supports interpolation', () => {
     t(($) => $.interpolation.val, { val: '' });
   });
+
+  it('selector fallback array — single namespace', () => {
+    // Both selectors resolve to the same type; result is the union.
+    expectTypeOf(t([($) => $.beverage, ($) => $.coffee.bar.shot])).toEqualTypeOf<
+      'beverage' | 'a shot of espresso'
+    >();
+
+    // Fallback between a plural group and a plain string.
+    expectTypeOf(t([($) => $.tea, ($) => $.coffee.drip.black])).toEqualTypeOf<
+      | 'a cuppa tea and a lie down'
+      | '{{count}} cups of tea and a big sleep'
+      | 'a strong cup of black coffee'
+    >();
+
+    // Fallback within nested keys.
+    expectTypeOf(t([($) => $.sodas.faygo.purple, ($) => $.sodas.coca_cola.coke])).toEqualTypeOf<
+      'purple faygo' | 'a can of coke'
+    >();
+  });
+
+  it('selector fallback array — with options', () => {
+    // defaultValue widens the return type for every selector in the array.
+    expectTypeOf(
+      t([($) => $.beverage, ($) => $.coffee.bar.shot], { defaultValue: 'fallback' }),
+    ).toEqualTypeOf<'beverage' | 'a shot of espresso' | 'fallback'>();
+
+    // Note: returnObjects: true with a selector array is not separately tested here —
+    // the existing single-selector returnObjects tests already cover that code path,
+    // and pinning the exact disjoint-union shape requires toEqualTypeOf (which fails
+    // on disjoint unions) or toMatchTypeOf (which is directional and cannot assert both
+    // members simultaneously). Coverage is provided by the single-selector suite above.
+  });
+
+  it('selector fallback array — explicit namespace', () => {
+    // Array of selectors targeting a non-default namespace.
+    expectTypeOf(
+      t([($) => $.fromNs2, ($) => $.fromNs2], { ns: 'ns2' }),
+    ).toEqualTypeOf<'hello from ns2'>();
+
+    // Mixed namespaces in fallback — GetSource merges Resources['ns2'] & { ns2: {...}; ns3: {...} },
+    // so ns3's keys are accessed via $.ns3.fromNs3, not $.fromNs3.
+    expectTypeOf(
+      t([($) => $.fromNs2, ($) => $.ns3.fromNs3], { ns: ['ns2', 'ns3'] as const }),
+    ).toEqualTypeOf<'hello from ns2' | 'hello from ns3'>();
+  });
+
+  it('selector fallback array — @ts-expect-error on invalid keys', () => {
+    expectTypeOf(
+      // @ts-expect-error: plural suffixed keys are removed from the selector source
+      t([($) => $.tea_one, ($) => $.tea_other]),
+    ).toEqualTypeOf<'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep'>();
+  });
 });

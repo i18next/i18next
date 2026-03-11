@@ -1,3 +1,7 @@
+## 25.8.18
+
+- improve selector api to accept array of selector functions, analogous to array of keys [2404](https://github.com/i18next/i18next/issues/2404)
+
 ## 25.8.17
 
 - update deps
@@ -8,7 +12,7 @@
 
 ## 25.8.15
 
-- fix: Selector API unable to resolve namespaces [#2402](https://github.com/i18next/i18next/issues/2402)
+- fix: Selector API unable to resolve namespaces [2402](https://github.com/i18next/i18next/issues/2402)
 
 ## 25.8.14
 
