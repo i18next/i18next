@@ -2053,21 +2053,19 @@
         o.lngs = o.lngs || fixedT.lngs;
         o.ns = o.ns || fixedT.ns;
         if (o.keyPrefix !== '') o.keyPrefix = o.keyPrefix || keyPrefix || fixedT.keyPrefix;
+        const selectorOpts = {
+          ...this.options,
+          ...o
+        };
         const keySeparator = this.options.keySeparator || '.';
         let resultKey;
         if (o.keyPrefix && Array.isArray(key)) {
           resultKey = key.map(k => {
-            if (typeof k === 'function') k = keysFromSelector(k, {
-              ...this.options,
-              ...opts
-            });
+            if (typeof k === 'function') k = keysFromSelector(k, selectorOpts);
             return `${o.keyPrefix}${keySeparator}${k}`;
           });
         } else {
-          if (typeof key === 'function') key = keysFromSelector(key, {
-            ...this.options,
-            ...opts
-          });
+          if (typeof key === 'function') key = keysFromSelector(key, selectorOpts);
           resultKey = o.keyPrefix ? `${o.keyPrefix}${keySeparator}${key}` : key;
         }
         return this.t(resultKey, o);

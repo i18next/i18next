@@ -1,3 +1,7 @@
+## 25.8.20
+
+- - fix: `getFixedT()` selector now resolves namespaces against the effective `ns` rather than the global init options [#2406](https://github.com/i18next/i18next/issues/2406)
+
 ## 25.8.19
 
 - fix: selector API namespace resolution regression for single-string `ns` and primary namespace in array [#2405](https://github.com/i18next/i18next/issues/2405). Reverts the broad namespace-prefix rewrite from v25.8.15 and replaces it with a targeted fix that only rewrites paths starting with a secondary namespace in a multi-namespace array, matching the type-level contract of `GetSource`
