@@ -459,8 +459,8 @@
     const nsSeparator = opts?.nsSeparator ?? ':';
     if (path.length > 1 && nsSeparator) {
       const ns = opts?.ns;
-      const namespaces = ns ? Array.isArray(ns) ? ns : [ns] : [];
-      if (namespaces.includes(path[0])) {
+      const nsArray = Array.isArray(ns) ? ns : null;
+      if (nsArray && nsArray.length > 1 && nsArray.slice(1).includes(path[0])) {
         return `${path[0]}${nsSeparator}${path.slice(1).join(keySeparator)}`;
       }
     }

@@ -25,24 +25,44 @@ describe('keysFromSelector', () => {
   });
 
   describe('namespace resolution', () => {
-    it('prepends namespace with nsSeparator when first segment matches a namespace in ns array', () => {
-      // Regression: previously produced "ns2.description.part1" (no namespace split),
-      // causing extractFromKey to look up the wrong key and emit a missingKey warning.
+    it('prepends nsSeparator for a secondary namespace in a multi-ns array', () => {
+      // ns1 is primary — its keys are on $ directly.
+      // ns2 is secondary — GetSource hangs it under $.ns2, so the path ['ns2','description','part1']
+      // must be rewritten to 'ns2:description.part1' for extractFromKey to route correctly.
       const keys = keysFromSelector(($) => $.ns2.description.part1, {
         ns: ['ns1', 'ns2'],
       });
       expect(keys).toEqual('ns2:description.part1');
     });
 
-    it('prepends namespace with nsSeparator when ns is a single string', () => {
-      const keys = keysFromSelector(($) => $.myNS.greeting, {
-        ns: 'myNS',
+    it('does NOT prepend nsSeparator when ns is a single string — regression for #2405', () => {
+      // When ns is a single string, GetSource returns Resources[ns] directly.
+      // $ IS the namespace resource, so $.common.name means key "common.name" inside
+      // the active namespace — "common" is NOT a namespace prefix here.
+      const keys = keysFromSelector(($) => $.common.name, {
+        ns: 'config',
       });
-      expect(keys).toEqual('myNS:greeting');
+      expect(keys).toEqual('common.name');
+    });
+
+    it('does NOT prepend nsSeparator when ns is a single-element array', () => {
+      // Same reasoning as single string: $ IS Resources[ns[0]] directly.
+      const keys = keysFromSelector(($) => $.common.name, {
+        ns: ['config'],
+      });
+      expect(keys).toEqual('common.name');
+    });
+
+    it('does NOT prepend nsSeparator for the primary namespace in a multi-ns array', () => {
+      // ns1 is primary — even though it appears in the ns list, its keys are on $ directly.
+      // A path starting with 'ns1' means a key literally named 'ns1', not a namespace switch.
+      const keys = keysFromSelector(($) => $.ns1.someKey, {
+        ns: ['ns1', 'ns2'],
+      });
+      expect(keys).toEqual('ns1.someKey');
     });
 
     it('does not prepend nsSeparator when first segment is not in the ns list', () => {
-      // "translation" is the default NS but not in the provided list — treat as plain key
       const keys = keysFromSelector(($) => $.someKey.nested, {
         ns: ['ns1', 'ns2'],
       });
@@ -54,38 +74,38 @@ describe('keysFromSelector', () => {
       expect(keys).toEqual('ns1.description');
     });
 
-    it('respects a custom nsSeparator', () => {
-      const keys = keysFromSelector(($) => $.ns1.a.b, {
-        ns: ['ns1'],
+    it('respects a custom nsSeparator for secondary namespaces', () => {
+      const keys = keysFromSelector(($) => $.ns2.a.b, {
+        ns: ['ns1', 'ns2'],
         nsSeparator: '|',
       });
-      expect(keys).toEqual('ns1|a.b');
+      expect(keys).toEqual('ns2|a.b');
     });
 
     it('respects custom keySeparator together with nsSeparator', () => {
-      const keys = keysFromSelector(($) => $.ns1.a.b, {
-        ns: ['ns1'],
+      const keys = keysFromSelector(($) => $.ns2.a.b, {
+        ns: ['ns1', 'ns2'],
         nsSeparator: '|',
         keySeparator: '/',
       });
-      expect(keys).toEqual('ns1|a/b');
+      expect(keys).toEqual('ns2|a/b');
     });
 
     it('does not apply namespace logic when nsSeparator is falsy', () => {
       // nsSeparator: false disables namespace splitting entirely
-      const keys = keysFromSelector(($) => $.ns1.a.b, {
-        ns: ['ns1'],
+      const keys = keysFromSelector(($) => $.ns2.a.b, {
+        ns: ['ns1', 'ns2'],
         nsSeparator: false,
       });
-      expect(keys).toEqual('ns1.a.b');
+      expect(keys).toEqual('ns2.a.b');
     });
 
-    it('handles a single-segment path that matches a namespace without mangling it', () => {
-      // Only one segment — nothing after the namespace to separate, leave as-is
-      const keys = keysFromSelector(($) => $.ns1, {
-        ns: ['ns1'],
+    it('handles a single-segment path that matches a secondary namespace without mangling it', () => {
+      // Only one segment — path.length is not > 1, so leave as-is regardless
+      const keys = keysFromSelector(($) => $.ns2, {
+        ns: ['ns1', 'ns2'],
       });
-      expect(keys).toEqual('ns1');
+      expect(keys).toEqual('ns2');
     });
   });
 });

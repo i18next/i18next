@@ -254,8 +254,10 @@ describe('t', () => {
       t([($) => $.fromNs2, ($) => $.fromNs2], { ns: 'ns2' }),
     ).toEqualTypeOf<'hello from ns2'>();
 
-    // Mixed namespaces in fallback — GetSource merges Resources['ns2'] & { ns2: {...}; ns3: {...} },
-    // so ns3's keys are accessed via $.ns3.fromNs3, not $.fromNs3.
+    // Mixed namespaces in fallback — GetSource exposes the primary namespace (ns2) keys
+    // directly on $, while secondary namespaces are hung under their name ($.ns3).
+    // At runtime, keysFromSelector rewrites secondary-namespace paths to "ns3:fromNs3"
+    // so extractFromKey routes them correctly, while primary-namespace paths are left as-is.
     expectTypeOf(
       t([($) => $.fromNs2, ($) => $.ns3.fromNs3], { ns: ['ns2', 'ns3'] as const }),
     ).toEqualTypeOf<'hello from ns2' | 'hello from ns3'>();
