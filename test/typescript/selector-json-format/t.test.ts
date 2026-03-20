@@ -11,21 +11,21 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $.coffee.bar['espresso|americano'])).toBeString();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toBeString();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 })).toBeString();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toBeString();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys have been removed
     t(($) => $.coffee.bar['espresso|cappuccino_one']);
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toBeString();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys have been removed
     t(($) => $.coffee.bar['espresso|cappuccino_other']);
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'])).toBeString();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'], { count: 1 })).toBeString();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'])).toBeString();
+    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'], { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys have been removed
     t(($) => $.coffee.bar['espresso|latte_one']);
@@ -39,9 +39,9 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $['dessert|cake'])).toBeString();
 
-    expectTypeOf(t(($) => $['dessert|muffin'])).toBeString();
+    expectTypeOf(t(($) => $['dessert|muffin'], { count: 1 })).toBeString();
 
-    expectTypeOf(t(($) => $['dessert|muffin'])).toBeString();
+    expectTypeOf(t(($) => $['dessert|muffin'], { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys have been removed
     t(($) => $['dessert|muffin_one']);
@@ -51,9 +51,9 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $.sodas.coca_cola.coke)).toBeString();
 
-    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'])).toBeString();
+    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'], { count: 1 })).toBeString();
 
-    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'])).toBeString();
+    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'], { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys have been removed
     t(($) => $.sodas.coca_cola['coke|diet_one']);
@@ -61,7 +61,7 @@ describe('t', () => {
     // @ts-expect-error: plural keys have been removed
     t(($) => $.sodas.coca_cola['coke|diet_other']);
 
-    expectTypeOf(t(($) => $.sodas.faygo.orange)).toBeString();
+    expectTypeOf(t(($) => $.sodas.faygo.orange, { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys have been removed
     t(($) => $.sodas.faygo.orange_one);
@@ -71,9 +71,9 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $.sodas.faygo.purple)).toBeString();
 
-    expectTypeOf(t(($) => $.tea)).toBeString();
+    expectTypeOf(t(($) => $.tea, { count: 1 })).toBeString();
 
-    expectTypeOf(t(($) => $.tea)).toBeString();
+    expectTypeOf(t(($) => $.tea, { count: 1 })).toBeString();
 
     // @ts-expect-error: plural keys are removed
     t(($) => $.tea_other);

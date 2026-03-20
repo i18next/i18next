@@ -429,9 +429,23 @@ export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace
 ///  ↆ selector ↆ  ///
 /// ////////////// ///
 
+declare const $PluralBrand: unique symbol;
+/** Marks a value as coming from a plural-form key, requiring `count` in the selector options. */
+type PluralValue<T extends string> = T & { readonly [$PluralBrand]: typeof $PluralBrand };
+/** Recursively strips the {@link PluralValue} brand from a type (handles nested objects for `returnObjects`). */
+type DeepUnwrapPlural<T> = T extends PluralValue<infer U>
+  ? U
+  : T extends readonly any[]
+    ? { [I in keyof T]: DeepUnwrapPlural<T[I]> }
+    : T extends object
+      ? { [K in keyof T]: DeepUnwrapPlural<T[K]> }
+      : T;
+
+
 type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
 
 interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
+  // ── Selector(s) with explicit `ns` ───────────────────────────────────────────
   <
     Target extends ConstrainTarget<Opts>,
     const NewNs extends NsArg<Ns> & Namespace,
@@ -444,16 +458,72 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     options: Opts & InterpolationMap<Target> & { ns: NewNs },
   ): SelectorReturn<Target, Opts>;
 
+  // ── Array of selectors with default `ns` ─────────────────────────────────────
+  // Captures the selector tuple as `const Fns` so TypeScript preserves each
+  // element's exact return type.  The union of return types is then extracted
+  // via a distributive `infer`, which correctly handles mixed PluralValue<T> and
+  // plain-string callbacks that would otherwise cause TypeScript to "lock in" the
+  // type from the first element.
+  <
+    const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[],
+    const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
+  >(
+    selectors: Fns,
+    options?: Opts &
+      InterpolationMap<
+        DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>
+      >,
+  ): SelectorReturn<Fns[number] extends (...args: any[]) => infer R ? R : never, Opts>;
+
+  // ── Single selector with context — bypasses count enforcement ────────────────
+  // When `context` is present in options, `Target` is derived from the
+  // context-filtered source (third mapped type of FilterKeys), which does NOT
+  // apply the PluralValue brand.  A separate overload avoids the circular
+  // inference that would otherwise occur when `Opts['context']` sits inside the
+  // conditional rest tuple of the overload below.
   <
     Target extends ConstrainTarget<Opts>,
     const NewNs extends NsArg<Ns> = Ns[number],
-    const Opts extends SelectorOptions<NewNs> = SelectorOptions<NewNs>,
+    const Opts extends SelectorOptions<NewNs> & { context: string } = SelectorOptions<NewNs> & {
+      context: string;
+    },
   >(
-    selector:
-      | SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>
-      | readonly SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>[],
-    options?: Opts & InterpolationMap<Target>,
+    selector: SelectorFn<Source, ApplyTarget<Target, Opts>, Opts>,
+    options: Opts & InterpolationMap<Target>,
   ): SelectorReturn<Target, Opts>;
+
+  // ── Single selector with defaultValue — preserves literal type of DV ────────
+  // `const Opts` loses literal precision for `defaultValue` when inferred
+  // through a conditional rest tuple (TypeScript limitation).  This dedicated
+  // overload captures `DV` from a regular (non-conditional) parameter position,
+  // preserving its literal type.  Count enforcement for plural keys is achieved
+  // via a conditional intersection on the options parameter.
+  <
+    const Fn extends (src: Select<Source, undefined>) => ConstrainTarget<Opts>,
+    const DV extends string,
+    const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
+  >(
+    selector: Fn,
+    options: Opts &
+      { defaultValue: DV } &
+      (ReturnType<Fn> extends PluralValue<string> ? { count: number } : {}) &
+      InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>,
+  ): SelectorReturn<ReturnType<Fn>, Opts, DV>;
+
+  // ── Single selector without context — enforces count for plural keys ──────────
+  // Uses `const Fn` to capture the selector's exact return type independently of
+  // `Opts`, breaking the circular dependency between `Target` inference and the
+  // conditional rest tuple.  `ReturnType<Fn>` drives both the plural check and
+  // the return type; `Opts` is inferred later from the resolved rest args.
+  <
+    const Fn extends (src: Select<Source, undefined>) => ConstrainTarget<Opts>,
+    const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
+  >(
+    selector: Fn,
+    ...args: ReturnType<Fn> extends PluralValue<string>
+      ? [options: Opts & { count: number } & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>]
+      : [options?: Opts & InterpolationMap<ReturnType<Fn>>]
+  ): SelectorReturn<ReturnType<Fn>, Opts>;
 }
 
 interface SelectorOptions<Ns = Namespace>
@@ -464,8 +534,9 @@ interface SelectorOptions<Ns = Namespace>
 type SelectorReturn<
   Target,
   Opts extends { defaultValue?: unknown; returnObjects?: boolean },
+  DV = Opts['defaultValue'],
 > = $IsResourcesDefined extends true
-  ? TFunctionReturnOptionalDetails<ProcessReturnValue<Target, Opts['defaultValue']>, Opts>
+  ? TFunctionReturnOptionalDetails<ProcessReturnValue<DeepUnwrapPlural<Target>, DV>, Opts>
   : DefaultTReturn<Opts>;
 
 interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
@@ -542,7 +613,7 @@ type FilterKeys<T, Context> = never | T extends readonly any[]
                   | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
                   | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
               ? Prefix
-              : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+              : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
       } & {
         [K in keyof T as T[K] extends object
           ? never

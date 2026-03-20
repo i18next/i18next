@@ -1,10 +1,11 @@
-## next (unreleased)
+## 25.9.0
 
-- fix(types): string unions with invalid members are now correctly detected as type errors when used as context option [#2172](https://github.com/i18next/i18next/issues/2172)
+- feat(types): selector API now enforces `{ count: number }` when a key resolves to plural forms [2373](https://github.com/i18next/i18next/issues/2373)
+- fix(types): string unions with invalid members are now correctly detected as type errors when used as context option [2172](https://github.com/i18next/i18next/issues/2172)
 
 ## 25.8.20
 
-- - fix: `getFixedT()` selector now resolves namespaces against the effective `ns` rather than the global init options [#2406](https://github.com/i18next/i18next/issues/2406)
+- - fix: `getFixedT()` selector now resolves namespaces against the effective `ns` rather than the global init options [2406](https://github.com/i18next/i18next/issues/2406)
 
 ## 25.8.19
 

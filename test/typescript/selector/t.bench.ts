@@ -5,5 +5,5 @@ import type { TFunction } from 'i18next';
 declare const t: TFunction;
 
 bench('selector usage benchmark', () => {
-  t(($) => $.coffee.bar['espresso|cappuccino']);
+  t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 });
 }).types([6646, 'instantiations']);

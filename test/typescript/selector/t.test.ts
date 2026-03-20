@@ -11,11 +11,11 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $.coffee.bar['espresso|americano'])).toEqualTypeOf<'a hot americano'>();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 })).toEqualTypeOf<
       'a dry cappuccino' | '{{count}} dry cappuccinos'
     >();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 })).toEqualTypeOf<
       'a dry cappuccino' | '{{count}} dry cappuccinos'
     >();
 
@@ -24,7 +24,7 @@ describe('t', () => {
       t(($) => $.coffee.bar['espresso|cappuccino_one']),
     ).toEqualTypeOf<'a dry cappuccino'>();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.coffee.bar['espresso|cappuccino'], { count: 1 })).toEqualTypeOf<
       'a dry cappuccino' | '{{count}} dry cappuccinos'
     >();
 
@@ -33,11 +33,11 @@ describe('t', () => {
       t(($) => $.coffee.bar['espresso|cappuccino_other']),
     ).toEqualTypeOf<'{{count}} dry cappuccinos'>();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'], { count: 1 })).toEqualTypeOf<
       'a foamy latte' | '{{count}} foamy lattes'
     >();
 
-    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.coffee.bar['espresso|latte'], { count: 1 })).toEqualTypeOf<
       'a foamy latte' | '{{count}} foamy lattes'
     >();
 
@@ -57,11 +57,11 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $['dessert|cake'])).toEqualTypeOf<'a nice cake'>();
 
-    expectTypeOf(t(($) => $['dessert|muffin'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $['dessert|muffin'], { count: 1 })).toEqualTypeOf<
       'a nice muffin' | '{{count}} nice muffins'
     >();
 
-    expectTypeOf(t(($) => $['dessert|muffin'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $['dessert|muffin'], { count: 1 })).toEqualTypeOf<
       'a nice muffin' | '{{count}} nice muffins'
     >();
 
@@ -77,11 +77,11 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $.sodas.coca_cola.coke)).toEqualTypeOf<'a can of coke'>();
 
-    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'], { count: 1 })).toEqualTypeOf<
       'a can of diet coke' | '{{count}} cans of diet coke'
     >();
 
-    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'])).toEqualTypeOf<
+    expectTypeOf(t(($) => $.sodas.coca_cola['coke|diet'], { count: 1 })).toEqualTypeOf<
       'a can of diet coke' | '{{count}} cans of diet coke'
     >();
 
@@ -95,7 +95,7 @@ describe('t', () => {
       t(($) => $.sodas.coca_cola['coke|diet_other']),
     ).toEqualTypeOf<'{{count}} cans of diet coke'>();
 
-    expectTypeOf(t(($) => $.sodas.faygo.orange)).toEqualTypeOf<
+    expectTypeOf(t(($) => $.sodas.faygo.orange, { count: 1 })).toEqualTypeOf<
       'one orange faygo' | '{{count}} orange faygo'
     >();
 
@@ -111,16 +111,22 @@ describe('t', () => {
 
     expectTypeOf(t(($) => $.sodas.faygo.purple)).toEqualTypeOf<'purple faygo'>();
 
-    expectTypeOf(t(($) => $.tea)).toEqualTypeOf<
+    expectTypeOf(t(($) => $.tea, { count: 1 })).toEqualTypeOf<
       'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep'
     >();
 
-    expectTypeOf(t(($) => $.tea)).toEqualTypeOf<
+    expectTypeOf(t(($) => $.tea, { count: 1 })).toEqualTypeOf<
       'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep'
     >();
 
     // @ts-expect-error: plural keys are removed
     expectTypeOf(t(($) => $.tea_other)).toEqualTypeOf<'{{count}} cups of tea and a big sleep'>();
+
+    // @ts-expect-error: plural selectors require count
+    t(($) => $.tea);
+
+    // @ts-expect-error: plural selectors require count
+    t(($) => $.sodas.faygo.orange);
   });
 
   it('selector works with arrays', () => {
@@ -234,6 +240,14 @@ describe('t', () => {
       'purple faygo' | 'a can of coke'
     >();
   });
+
+  // Both selectors resolve to plural groups; PluralValue brand is stripped from both.
+  expectTypeOf(t([($) => $.tea, ($) => $.sodas.faygo.orange])).toEqualTypeOf<
+    | 'a cuppa tea and a lie down'
+    | '{{count}} cups of tea and a big sleep'
+    | 'one orange faygo'
+    | '{{count}} orange faygo'
+  >();
 
   it('selector fallback array — with options', () => {
     // defaultValue widens the return type for every selector in the array.
