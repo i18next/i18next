@@ -234,6 +234,27 @@ export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
   : Key;
 
+export type ContextOfKey<
+  Key extends string,
+  Ns extends Namespace = DefaultNamespace,
+  TOpt extends TOptions = {},
+  KPrefix = undefined,
+  Keys extends $Dictionary = KeysByTOptions<TOpt>,
+  ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
+  ActualKeys =
+    | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+    | ParseKeysByNamespaces<ActualNS, Keys>
+    | ParseKeysByFallbackNs<Keys>,
+> = $IsResourcesDefined extends true
+  ? Key extends ActualKeys
+    ? string
+    : ActualKeys extends
+          | `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}`
+          | `${Key}${_ContextSeparator}${infer Context}`
+      ? Context
+      : never
+  : string;
+
 // helper that maps the configured fallbackNS value to the matching resources slice
 type FallbackResourcesOf<FallbackNS, R> = FallbackNS extends readonly (infer FN)[]
   ? R[FN & keyof R]
@@ -337,7 +358,12 @@ interface TFunctionStrict<
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
   >(
     key: Key | Key[],
-    options?: TOpt & InterpolationMap<Ret>,
+    options?: TOpt &
+      InterpolationMap<Ret> & {
+        context?: Key extends string
+          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          : never;
+      },
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
   <
     const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
@@ -346,7 +372,12 @@ interface TFunctionStrict<
   >(
     key: Key | Key[],
     defaultValue: string,
-    options?: TOpt & InterpolationMap<Ret>,
+    options?: TOpt &
+      InterpolationMap<Ret> & {
+        context?: Key extends string
+          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          : never;
+      },
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
 }
 
@@ -358,7 +389,17 @@ interface TFunctionNonStrict<
     const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
     const TOpt extends TOptions,
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
-    const ActualOptions extends TOpt & InterpolationMap<Ret> = TOpt & InterpolationMap<Ret>,
+    const ActualOptions extends Omit<TOpt, 'context'> &
+      InterpolationMap<Ret> & {
+        context?: Key extends string
+          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          : never;
+      } = TOpt &
+      InterpolationMap<Ret> & {
+        context?: Key extends string
+          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          : never;
+      },
     DefaultValue extends string = never,
   >(
     ...args:

@@ -208,12 +208,12 @@ describe('t', () => {
     });
 
     // @see https://github.com/i18next/i18next/issues/2172
-    // it('should trow error with string union with missing context value', () => {
-    //   expectTypeOf(
-    //     // @ts-expect-error
-    //     t('dessert', { context: 'muffin' as 'muffin' | 'cake' | 'pippo' }),
-    //   ).toMatchTypeOf<string>();
-    // });
+    it('should throw error with string union with missing context value', () => {
+      expectTypeOf(
+        // @ts-expect-error
+        t('dessert', { context: 'muffin' as 'muffin' | 'cake' | 'pippo' }),
+      ).toMatchTypeOf<string>();
+    });
   });
 
   describe('context + explicit namespace', () => {
