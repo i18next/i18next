@@ -433,14 +433,14 @@ declare const $PluralBrand: unique symbol;
 /** Marks a value as coming from a plural-form key, requiring `count` in the selector options. */
 type PluralValue<T extends string> = T & { readonly [$PluralBrand]: typeof $PluralBrand };
 /** Recursively strips the {@link PluralValue} brand from a type (handles nested objects for `returnObjects`). */
-type DeepUnwrapPlural<T> = T extends PluralValue<infer U>
-  ? U
-  : T extends readonly any[]
-    ? { [I in keyof T]: DeepUnwrapPlural<T[I]> }
-    : T extends object
-      ? { [K in keyof T]: DeepUnwrapPlural<T[K]> }
-      : T;
-
+type DeepUnwrapPlural<T> =
+  T extends PluralValue<infer U>
+    ? U
+    : T extends readonly any[]
+      ? { [I in keyof T]: DeepUnwrapPlural<T[I]> }
+      : T extends object
+        ? { [K in keyof T]: DeepUnwrapPlural<T[K]> }
+        : T;
 
 type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
 
@@ -504,9 +504,9 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
   >(
     selector: Fn,
-    options: Opts &
-      { defaultValue: DV } &
-      (ReturnType<Fn> extends PluralValue<string> ? { count: number } : {}) &
+    options: Opts & { defaultValue: DV } & (ReturnType<Fn> extends PluralValue<string>
+        ? { count: number }
+        : {}) &
       InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>,
   ): SelectorReturn<ReturnType<Fn>, Opts, DV>;
 
@@ -613,7 +613,9 @@ type FilterKeys<T, Context> = never | T extends readonly any[]
                   | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
                   | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
               ? Prefix
-              : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
+              : never]: T[K] extends object
+          ? FilterKeys<T[K], Context>
+          : PluralValue<T[K] & string>;
       } & {
         [K in keyof T as T[K] extends object
           ? never
