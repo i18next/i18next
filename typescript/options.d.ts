@@ -336,9 +336,10 @@ export interface ReactOptions {
   };
   /**
    * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
+   * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
    * @default undefined
    */
-  keyPrefix?: string;
+  keyPrefix?: string | (($: any) => any);
   /**
    * Unescape function
    * by default it unescapes some basic html entities
@@ -789,9 +790,10 @@ export interface TOptionsBase {
   interpolation?: InterpolationOptions;
   /**
    * Optional keyPrefix that will be applied to the key before resolving.
+   * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
    * Only supported on the TFunction returned by getFixedT().
    */
-  keyPrefix?: string;
+  keyPrefix?: string | (($: any) => any);
 }
 
 export type TOptions<TInterpolationMap extends object = $Dictionary> = TOptionsBase &

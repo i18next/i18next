@@ -200,11 +200,22 @@ describe('i18next', () => {
         expect(t(($) => $.key)).to.equal('ici!');
         expect(t.keyPrefix).to.equal('deeply.nested');
       });
+      it('should apply keyPrefix using a selector function', () => {
+        i18next.addResource('fr', 'translation', 'deeply.nested.key', 'ici!');
+        const t = i18next.getFixedT('fr', null, ($) => $.deeply.nested);
+        expect(t('key')).to.equal('ici!');
+        expect(t(($) => $.key)).to.equal('ici!');
+      });
       it('should apply keyPrefix and also be able to overwrite it', () => {
         i18next.addResource('it', 'translation', 'deeply.nested.key', 'quì!');
         const t = i18next.getFixedT('it', null, 'deeply.nested');
         expect(t('nested.key', { keyPrefix: 'deeply' })).to.equal('quì!');
         expect(t.keyPrefix).to.equal('deeply.nested');
+      });
+      it('should apply keyPrefix and also be able to overwrite it with a selector function', () => {
+        i18next.addResource('it', 'translation', 'deeply.nested.key', 'quì!');
+        const t = i18next.getFixedT('it', null, 'deeply.nested');
+        expect(t('nested.key', { keyPrefix: ($) => $.deeply })).to.equal('quì!');
       });
       it('should apply keyPrefix and also be able to "reset" it', () => {
         i18next.addResource('pt', 'translation', 'deeply.nested.key', 'quì!');

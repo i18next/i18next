@@ -292,8 +292,8 @@ export interface i18n extends CustomInstanceExtensions {
     ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns,
   >(
     ...args:
-      | [lng: string | readonly string[], ns?: Ns, keyPrefix?: TKPrefix]
-      | [lng: null, ns: Ns, keyPrefix?: TKPrefix]
+      | [lng: string | readonly string[], ns?: Ns, keyPrefix?: TKPrefix | (($: any) => any)]
+      | [lng: null, ns: Ns, keyPrefix?: TKPrefix | (($: any) => any)]
   ): TFunction<ActualNs, TKPrefix>;
 
   /**

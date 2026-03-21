@@ -451,6 +451,7 @@ class I18n extends EventEmitter {
       // rewriting uses the effective namespace (e.g. the one fixed by getFixedT) rather
       // than the raw global ns array from this.options.
       const selectorOpts = { ...this.options, ...o };
+      if (typeof o.keyPrefix === 'function') o.keyPrefix = keysFromSelector(o.keyPrefix, selectorOpts);
       const keySeparator = this.options.keySeparator || '.';
       let resultKey
       if (o.keyPrefix && Array.isArray(key)) {

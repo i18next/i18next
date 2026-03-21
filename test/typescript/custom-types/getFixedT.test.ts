@@ -58,4 +58,12 @@ describe('getFixedT', () => {
     // @ts-expect-error
     assertType(t('foobar.barfoo'));
   });
+
+  it('should accept a selector function as keyPrefix', () => {
+    // When keyPrefix is a selector function, TKPrefix cannot be inferred at the type level,
+    // so t() falls back to the full namespace type (no key narrowing).
+    // The selector is resolved to a string at runtime by keysFromSelector().
+    const t = i18next.getFixedT(null, 'alternate', ($: any) => $.foobar);
+    assertType(t('barfoo'));
+  });
 });
