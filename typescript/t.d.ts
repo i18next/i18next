@@ -478,6 +478,21 @@ declare const $SelectorKeyBrand: unique symbol;
  * Can be passed directly to `t()` when the selector API is enabled.
  */
 export type SelectorKey = string & { readonly [$SelectorKeyBrand]: typeof $SelectorKeyBrand };
+
+/**
+ * Type-safe signature for {@link keyFromSelector}.
+ * Constrains the selector callback against the default namespace's resources
+ * (same source that `t()` uses for selectors without explicit `ns`).
+ * When resources are not defined, accepts any selector.
+ */
+export type KeyFromSelectorFn = <
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix extends KeyPrefix<Ns> = undefined,
+>(
+  selector: (src: Select<GetSource<Ns, KPrefix>, undefined>) => any,
+  opts?: { ns?: Ns; keyPrefix?: KPrefix },
+) => SelectorKey;
+
 /** Recursively strips the {@link PluralValue} brand from a type (handles nested objects for `returnObjects`). */
 type DeepUnwrapPlural<T> =
   T extends PluralValue<infer U>

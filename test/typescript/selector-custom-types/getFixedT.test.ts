@@ -73,11 +73,11 @@ describe('getFixedT', () => {
     // so t() falls back to the full namespace type (no key narrowing).
     // The selector is resolved to a string at runtime by keysFromSelector().
     const t = i18next.getFixedT(null, 'alternate', ($: any) => $.foobar);
-    assertType(t(keyFromSelector(($) => $.barfoo)));
+    assertType(t(keyFromSelector(($) => $.barfoo, { ns: 'alternate', keyPrefix: 'foobar' })));
   });
 
   it('should accept a selector function as keyPrefix with language', () => {
     const t = i18next.getFixedT('en', 'alternate', ($: any) => $.foobar);
-    assertType(t(keyFromSelector(($) => $.barfoo)));
+    assertType(t(keyFromSelector(($) => $.barfoo, { ns: 'alternate', keyPrefix: 'foobar' })));
   });
 });

@@ -322,4 +322,24 @@ describe('t', () => {
     const result = t([key1, key2]);
     expectTypeOf(result).toBeString();
   });
+
+  it('keyFromSelector is type-safe against resources', () => {
+    // valid keys work
+    keyFromSelector(($) => $.beverage);
+    keyFromSelector(($) => $.coffee.bar.shot);
+    keyFromSelector(($) => $.sodas.faygo.purple);
+
+    // @ts-expect-error: invalid top-level key
+    keyFromSelector(($) => $.nonExistent);
+
+    // @ts-expect-error: invalid nested key
+    keyFromSelector(($) => $.coffee.bar.nonExistent);
+  });
+
+  it('keyFromSelector with explicit ns', () => {
+    keyFromSelector(($) => $.fromNs2, { ns: 'ns2' });
+
+    // @ts-expect-error: key from wrong namespace
+    keyFromSelector(($) => $.fromNs2, { ns: 'ns3' });
+  });
 });

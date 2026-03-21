@@ -1,3 +1,7 @@
+## 25.10.2
+
+- feat(types): `keyFromSelector` is now type-safe — the selector callback is constrained against your resource definitions, catching invalid keys at compile time. Supports optional `ns` and `keyPrefix` options for non-default namespace/prefix contexts [2364](https://github.com/i18next/i18next/issues/2364)
+
 ## 25.10.1
 
 - fix(types): `FilterKeys` now correctly excludes base keys that have context variants when the provided context doesn't match any of them (e.g. key `some` with variant `some_me` is no longer accessible with `context="one"`)
