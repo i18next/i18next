@@ -1,3 +1,7 @@
+## 25.10.3
+
+- check also for I18NEXT_NO_SUPPORT_NOTICE env variable
+
 ## 25.10.2
 
 - feat(types): `keyFromSelector` is now type-safe — the selector callback is constrained against your resource definitions, catching invalid keys at compile time. Supports optional `ns` and `keyPrefix` options for non-default namespace/prefix contexts [2364](https://github.com/i18next/i18next/issues/2364)

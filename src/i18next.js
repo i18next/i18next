@@ -26,8 +26,11 @@ const bindMemberFunctions = (inst) => {
 }
 
 const SUPPORT_NOTICE_KEY = '__i18next_supportNoticeShown'
-// eslint-disable-next-line no-undef
-const getSupportNoticeShown = () => typeof globalThis !== 'undefined' && !!globalThis[SUPPORT_NOTICE_KEY]
+const getSupportNoticeShown = () => { // eslint-disable-next-line no-undef
+  if (typeof globalThis !== 'undefined' && !!globalThis[SUPPORT_NOTICE_KEY]) return true;
+  if (typeof process !== 'undefined' && process.env && process.env.I18NEXT_NO_SUPPORT_NOTICE) return true;
+  return false;
+}
 // eslint-disable-next-line no-undef
 const setSupportNoticeShown = () => { if (typeof globalThis !== 'undefined') globalThis[SUPPORT_NOTICE_KEY] = true }
 const usesLocize = (inst) => {
