@@ -37,15 +37,15 @@
   "funding": [
     {
       "type": "individual",
-      "url": "https://locize.com"
-    },
-    {
-      "type": "individual",
-      "url": "https://locize.com/i18next.html"
+      "url": "https://www.locize.com/i18next"
     },
     {
       "type": "individual",
       "url": "https://www.i18next.com/how-to/faq#i18next-is-awesome.-how-can-i-support-the-project"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.locize.com"
     }
   ],
   "dependencies": {
