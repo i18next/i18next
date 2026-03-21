@@ -115,15 +115,33 @@ export type TypeOptions = $MergeBy<
     enableSelector: false;
 
     /**
-     * The type used for interpolation values extracted from translation strings.
+     * Maps interpolation format specifiers to their expected value types.
      *
-     * By default, interpolation values are typed as `unknown`. You can set this
-     * to `string` or another type to constrain what values can be passed for
-     * interpolation variables.
+     * By default, i18next infers types from built-in formatter names:
+     * - `number`, `currency` → `number`
+     * - `datetime` → `Date`
+     * - `relativetime` → `number`
+     * - `list` → `readonly string[]`
+     * - No format specifier → `string`
      *
-     * @default unknown
+     * Use this option to add mappings for custom formatters or to override
+     * the built-in defaults.
+     *
+     * @default {} (empty — built-in defaults apply)
+     *
+     * @example
+     * ```ts
+     * interface CustomTypeOptions {
+     *   interpolationFormatTypeMap: {
+     *     // custom formatter
+     *     uppercase: string;
+     *     // override built-in
+     *     currency: string;
+     *   };
+     * }
+     * ```
      */
-    interpolationValueType: unknown;
+    interpolationFormatTypeMap: {};
   },
   CustomTypeOptions
 >;

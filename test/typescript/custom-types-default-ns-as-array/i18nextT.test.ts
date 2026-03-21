@@ -48,7 +48,7 @@ describe('i18next.t', () => {
         i18next.t('inter', { val: 'asdf', ns: 'custom' }),
       ).toEqualTypeOf<'some {{val}}'>();
       expectTypeOf(i18next.t('inter', { val: 'asdf' })).toEqualTypeOf<'some {{val}}'>();
-      expectTypeOf(i18next.t('qux', { val: 'asdf' })).toEqualTypeOf<'some {{val, number}}'>();
+      expectTypeOf(i18next.t('qux', { val: 123 })).toEqualTypeOf<'some {{val, number}}'>();
     });
 
     it('should throw an error when value is not present inside key', () => {

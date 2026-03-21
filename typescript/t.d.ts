@@ -36,7 +36,7 @@ type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
 type _EnableSelector = TypeOptions['enableSelector'];
-type _InterpolationValueType = TypeOptions['interpolationValueType'];
+type _InterpolationFormatTypeMap = TypeOptions['interpolationFormatTypeMap'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -167,17 +167,55 @@ type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}
   ? TrimSpaces<ActualValue>
   : Ret;
 
-type ParseInterpolationValues<Ret> =
+/** Parses interpolation entries as `[variableName, formatSpecifier | never]` tuples. */
+type ParseInterpolationEntries<Ret> =
   Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
     ?
-        | (Value extends `${infer ActualValue},${string}`
-            ? ParseActualValue<ActualValue>
-            : ParseActualValue<Value>)
-        | ParseInterpolationValues<Rest>
+        | (Value extends `${infer ActualValue},${infer Format}`
+            ? [ParseActualValue<ActualValue>, TrimSpaces<Format>]
+            : [ParseActualValue<Value>, never])
+        | ParseInterpolationEntries<Rest>
     : never;
 
+/** Extracts just the variable names (kept for backward compat with ParseInterpolationValues usage). */
+type ParseInterpolationValues<Ret> = ParseInterpolationEntries<Ret>[0];
+
+/** Built-in i18next formatter name → value type mapping. */
+type _BuiltInFormatTypeMap = {
+  number: number;
+  currency: number;
+  datetime: Date;
+  relativetime: number;
+  list: readonly string[];
+};
+
+/** Resolves the type for a single interpolation entry based on name and format. */
+type _ResolveEntryType<Name extends string, Format> = [Format] extends [never]
+  ? Name extends 'count'
+    ? number
+    : string
+  : Format extends keyof _InterpolationFormatTypeMap
+    ? _InterpolationFormatTypeMap[Format]
+    : Format extends keyof _BuiltInFormatTypeMap
+      ? _BuiltInFormatTypeMap[Format]
+      : string;
+
+/** Local union-to-intersection (not exported from helpers). */
+type _UnionToIntersection<T> = (T extends unknown ? (k: T) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
+
+/** Builds a per-entry typed record from parsed interpolation entries and intersects them. */
+type _InterpolationMapFromEntries<E> = _UnionToIntersection<
+  E extends [infer Name extends string, infer Format]
+    ? $StringKeyPathToRecord<Name, _ResolveEntryType<Name, Format>>
+    : never
+>;
+
 export type InterpolationMap<Ret> = $PreservedValue<
-  $StringKeyPathToRecord<ParseInterpolationValues<Ret>, _InterpolationValueType>,
+  _InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>,
   Record<string, unknown>
 >;
 

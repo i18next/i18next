@@ -2,7 +2,7 @@
 
 - feat(types): `keyFromSelector` now returns a branded `SelectorKey` type that `t()` accepts directly, enabling pre-computed and reusable translation keys [2364](https://github.com/i18next/i18next/issues/2364)
 - feat: support selector syntax for `keyPrefix` in `getFixedT` and per-call options [2367](https://github.com/i18next/i18next/issues/2367)
-- feat(types): add `interpolationValueType` option to `CustomTypeOptions` to constrain the type of interpolation values (default: `unknown`) [2378](https://github.com/i18next/i18next/issues/2378)
+- feat(types): interpolation values are now automatically typed based on built-in format specifiers — `{{val, number}}` requires `number`, `{{val, datetime}}` requires `Date`, `{{name}}` requires `string`, etc. Custom formatters can be typed via `interpolationFormatTypeMap` in `CustomTypeOptions` [2378](https://github.com/i18next/i18next/issues/2378)
 - fix(types): `FilterKeys` in selector mode now preserves non-context, non-plural leaf keys when `context` is provided, fixing incorrect type narrowing when combining `returnObjects: true` with `context` [2398](https://github.com/i18next/i18next/issues/2398)
 
 ## 25.9.0

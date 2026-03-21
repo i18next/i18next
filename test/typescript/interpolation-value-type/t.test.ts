@@ -1,29 +1,55 @@
-import { describe, it, assertType, expectTypeOf } from 'vitest';
+import { describe, it, expectTypeOf } from 'vitest';
 import type { TFunction } from 'i18next';
 
-describe('interpolationValueType', () => {
+describe('interpolation types (zero-config, derived from format specifiers)', () => {
   const t: TFunction<'custom'> = (() => '') as never;
 
-  it('should constrain interpolation values to the configured type', () => {
-    // string values should be accepted
+  it('should type unformatted values as string', () => {
+    // {{name}} has no format specifier → string
     t('greeting', { name: 'World' });
 
     // @ts-expect-error number should not be assignable to string
     t('greeting', { name: 42 });
   });
 
-  it('should work with formatted values', () => {
-    t('count_message', { count: 'five' });
-
-    // @ts-expect-error number should not be assignable to string
+  it('should type "number" format as number', () => {
+    // {{count, number}} → number
     t('count_message', { count: 42 });
+
+    // @ts-expect-error string should not be assignable to number
+    t('count_message', { count: 'five' });
+  });
+
+  it('should type "datetime" format as Date', () => {
+    // {{date, datetime}} → Date
+    t('event_date', { date: new Date() });
+
+    // @ts-expect-error string should not be assignable to Date
+    t('event_date', { date: 'yesterday' });
+  });
+
+  it('should type "currency" format as number', () => {
+    // {{amount, currency}} → number
+    t('price', { amount: 9.99 });
+
+    // @ts-expect-error string should not be assignable to number
+    t('price', { amount: 'ten' });
   });
 
   it('should work with nested key paths', () => {
+    // nested value without format → string
     t('nested', { deep: { val: 'hello' } });
   });
 
   it('should not affect keys without interpolation', () => {
     expectTypeOf(t('no_interpolation')).toEqualTypeOf<'Just a plain string'>();
+  });
+
+  it('should handle mixed formats in a single translation', () => {
+    // label → string (no format), amount → number, when → Date
+    t('mixed', { label: 'Total', amount: 100, when: new Date() });
+
+    // @ts-expect-error amount should be number, not string
+    t('mixed', { label: 'Total', amount: 'hundred', when: new Date() });
   });
 });
