@@ -432,6 +432,13 @@ export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace
 declare const $PluralBrand: unique symbol;
 /** Marks a value as coming from a plural-form key, requiring `count` in the selector options. */
 type PluralValue<T extends string> = T & { readonly [$PluralBrand]: typeof $PluralBrand };
+
+declare const $SelectorKeyBrand: unique symbol;
+/**
+ * A branded string produced by {@link keyFromSelector}.
+ * Can be passed directly to `t()` when the selector API is enabled.
+ */
+export type SelectorKey = string & { readonly [$SelectorKeyBrand]: typeof $SelectorKeyBrand };
 /** Recursively strips the {@link PluralValue} brand from a type (handles nested objects for `returnObjects`). */
 type DeepUnwrapPlural<T> =
   T extends PluralValue<infer U>
@@ -524,6 +531,14 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
       ? [options: Opts & { count: number } & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>]
       : [options?: Opts & InterpolationMap<ReturnType<Fn>>]
   ): SelectorReturn<ReturnType<Fn>, Opts>;
+
+  // ── Pre-computed key(s) from keyFromSelector ────────────────────────────────
+  // Accepts a branded `SelectorKey` (or array of them) produced by `keyFromSelector`.
+  // Return-type precision is traded for the flexibility of decoupled key creation.
+  <const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(
+    key: SelectorKey | SelectorKey[],
+    ...args: [options?: Opts & $Dictionary]
+  ): DefaultTReturn<Opts>;
 }
 
 interface SelectorOptions<Ns = Namespace>

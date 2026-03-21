@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf } from 'vitest';
-import { getFixedT, TFunction } from 'i18next';
+import { getFixedT, TFunction, keyFromSelector, SelectorKey } from 'i18next';
 
 declare const t: TFunction;
 
@@ -282,5 +282,35 @@ describe('t', () => {
       // @ts-expect-error: plural suffixed keys are removed from the selector source
       t([($) => $.tea_one, ($) => $.tea_other]),
     ).toEqualTypeOf<'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep'>();
+  });
+
+  it('keyFromSelector returns SelectorKey', () => {
+    const key = keyFromSelector(($) => $.beverage);
+    expectTypeOf(key).toEqualTypeOf<SelectorKey>();
+
+    // plain strings are NOT assignable to SelectorKey (branded)
+    // @ts-expect-error
+    const badKey: SelectorKey = 'beverage';
+    // eslint-disable-next-line no-void
+    void badKey;
+  });
+
+  it('t accepts a single SelectorKey', () => {
+    const key = keyFromSelector(($) => $.beverage);
+    const result = t(key);
+    expectTypeOf(result).toBeString();
+  });
+
+  it('t accepts a SelectorKey with options', () => {
+    const key = keyFromSelector(($) => $.tea);
+    const result = t(key, { count: 1 });
+    expectTypeOf(result).toBeString();
+  });
+
+  it('t accepts an array of SelectorKeys', () => {
+    const key1 = keyFromSelector(($) => $.beverage);
+    const key2 = keyFromSelector(($) => $.coffee.bar.shot);
+    const result = t([key1, key2]);
+    expectTypeOf(result).toBeString();
   });
 });

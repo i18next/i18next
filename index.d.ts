@@ -12,7 +12,7 @@ import type {
   ResourceLanguage,
   TOptions,
 } from './typescript/options.js';
-import type { KeyPrefix, TFunction } from './typescript/t.js';
+import type { KeyPrefix, TFunction, SelectorKey } from './typescript/t.js';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
@@ -561,6 +561,7 @@ export type {
   TFunctionDetailedResult,
   KeyPrefix,
   InterpolationMap,
+  SelectorKey,
 } from './typescript/t.js';
 
 declare const i18next: i18n;
@@ -582,6 +583,6 @@ export const hasLoadedNamespace: i18n['hasLoadedNamespace'];
 export const loadNamespaces: i18n['loadNamespaces'];
 export const loadLanguages: i18n['loadLanguages'];
 
-export declare function keyFromSelector<S = Record<string, any>, T = string>(
-  selector: ($: S) => T,
-): T;
+export declare function keyFromSelector<S = Record<string, any>>(
+  selector: ($: S) => any,
+): SelectorKey;

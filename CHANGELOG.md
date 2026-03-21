@@ -1,3 +1,7 @@
+## 25.10.0 (next / unreleased)
+
+- feat(types): `keyFromSelector` now returns a branded `SelectorKey` type that `t()` accepts directly, enabling pre-computed and reusable translation keys [2364](https://github.com/i18next/i18next/issues/2364)
+
 ## 25.9.0
 
 - feat(types): selector API now enforces `{ count: number }` when a key resolves to plural forms [2373](https://github.com/i18next/i18next/issues/2373)
@@ -9,7 +13,7 @@
 
 ## 25.8.19
 
-- fix: selector API namespace resolution regression for single-string `ns` and primary namespace in array [#2405](https://github.com/i18next/i18next/issues/2405). Reverts the broad namespace-prefix rewrite from v25.8.15 and replaces it with a targeted fix that only rewrites paths starting with a secondary namespace in a multi-namespace array, matching the type-level contract of `GetSource`
+- fix: selector API namespace resolution regression for single-string `ns` and primary namespace in array [2405](https://github.com/i18next/i18next/issues/2405). Reverts the broad namespace-prefix rewrite from v25.8.15 and replaces it with a targeted fix that only rewrites paths starting with a secondary namespace in a multi-namespace array, matching the type-level contract of `GetSource`
 
 ## 25.8.18
 

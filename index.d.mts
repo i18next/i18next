@@ -2,6 +2,7 @@ import * as i18nextMod from './index.js';
 import type { $Dictionary } from './typescript/helpers.js';
 
 import type { DefaultNamespace, Namespace } from './typescript/options.js';
+import type { SelectorKey } from './typescript/t.js';
 
 export type WithT<Ns extends Namespace = DefaultNamespace> = i18nextMod.WithT<Ns>;
 export type Interpolator = i18nextMod.Interpolator;
@@ -58,6 +59,6 @@ export const hasLoadedNamespace: i18n['hasLoadedNamespace'];
 export const loadNamespaces: i18n['loadNamespaces'];
 export const loadLanguages: i18n['loadLanguages'];
 
-export declare function keyFromSelector<S = Record<string, any>, T = string>(
-  selector: ($: S) => T,
-): T;
+export declare function keyFromSelector<S = Record<string, any>>(
+  selector: ($: S) => any,
+): SelectorKey;
