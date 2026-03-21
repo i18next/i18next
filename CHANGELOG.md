@@ -1,3 +1,7 @@
+## 25.10.1
+
+- fix(types): `FilterKeys` now correctly excludes base keys that have context variants when the provided context doesn't match any of them (e.g. key `some` with variant `some_me` is no longer accessible with `context="one"`)
+
 ## 25.10.0
 
 - feat(types): `keyFromSelector` now returns a branded `SelectorKey` type that `t()` accepts directly, enabling pre-computed and reusable translation keys [2364](https://github.com/i18next/i18next/issues/2364)

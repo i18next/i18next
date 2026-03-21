@@ -657,6 +657,17 @@ type _HasContextVariant<T, K extends string, Context> = [
   ? false
   : true;
 
+/** Checks whether key K has **any** context variant in T (excluding pure plural suffixes). */
+type _IsContextualKey<T, K extends string> = [
+  Exclude<
+    keyof T & `${K}${_ContextSeparator}${string}`,
+    | `${K}${_PluralSeparator}${PluralSuffix}`
+    | `${K}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+  >,
+] extends [never]
+  ? false
+  : true;
+
 type FilterKeys<T, Context> = never | T extends readonly any[]
   ? { [I in keyof T]: FilterKeys<T[I], Context> }
   : $Prune<
@@ -674,7 +685,9 @@ type FilterKeys<T, Context> = never | T extends readonly any[]
                 : K extends string
                   ? _HasContextVariant<T, K, Context> extends true
                     ? never // context variant exists, drop base key (type 3 handles it)
-                    : K // no context variant exists, keep base key
+                    : _IsContextualKey<T, K> extends true
+                      ? never // key has context variants but not for this context
+                      : K // no context variants at all, keep base key
                   : K
             : K extends `${string}${_PluralSeparator}${PluralSuffix}`
               ? never
