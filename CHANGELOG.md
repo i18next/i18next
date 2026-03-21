@@ -1,4 +1,4 @@
-## 25.10.0 (next / unreleased)
+## 25.10.0
 
 - feat(types): `keyFromSelector` now returns a branded `SelectorKey` type that `t()` accepts directly, enabling pre-computed and reusable translation keys [2364](https://github.com/i18next/i18next/issues/2364)
 - feat: support selector syntax for `keyPrefix` in `getFixedT` and per-call options [2367](https://github.com/i18next/i18next/issues/2367)
