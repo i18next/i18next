@@ -113,6 +113,17 @@ export type TypeOptions = $MergeBy<
      * @default false
      */
     enableSelector: false;
+
+    /**
+     * The type used for interpolation values extracted from translation strings.
+     *
+     * By default, interpolation values are typed as `unknown`. You can set this
+     * to `string` or another type to constrain what values can be passed for
+     * interpolation variables.
+     *
+     * @default unknown
+     */
+    interpolationValueType: unknown;
   },
   CustomTypeOptions
 >;

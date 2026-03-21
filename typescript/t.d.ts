@@ -36,6 +36,7 @@ type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
 type _EnableSelector = TypeOptions['enableSelector'];
+type _InterpolationValueType = TypeOptions['interpolationValueType'];
 
 type $IsResourcesDefined = [keyof _Resources] extends [never] ? false : true;
 type $ValueIfResourcesDefined<Value, Fallback> = $IsResourcesDefined extends true
@@ -176,7 +177,7 @@ type ParseInterpolationValues<Ret> =
     : never;
 
 export type InterpolationMap<Ret> = $PreservedValue<
-  $StringKeyPathToRecord<ParseInterpolationValues<Ret>, unknown>,
+  $StringKeyPathToRecord<ParseInterpolationValues<Ret>, _InterpolationValueType>,
   Record<string, unknown>
 >;
 
@@ -608,22 +609,52 @@ type Select<T, Context> = $IsResourcesDefined extends false
     ? T
     : FilterKeys<T, Context>;
 
+type _HasContextVariant<T, K extends string, Context> = [
+  keyof T &
+    (
+      | `${K}${_ContextSeparator}${Context & string}`
+      | `${K}${_ContextSeparator}${Context & string}${_PluralSeparator}${PluralSuffix}`
+    ),
+] extends [never]
+  ? false
+  : true;
+
 type FilterKeys<T, Context> = never | T extends readonly any[]
   ? { [I in keyof T]: FilterKeys<T[I], Context> }
   : $Prune<
       {
+        // Mapped type 1: object-valued keys (recurse) + plain leaf keys (non-plural, non-context)
         [K in keyof T as T[K] extends object
           ? K
-          : Context extends string
-            ? never
+          : [Context] extends [string]
+            ? K extends
+                | `${string}${_ContextSeparator}${Context}`
+                | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+              ? never // context keys handled by mapped type 3
+              : K extends `${string}${_PluralSeparator}${PluralSuffix}`
+                ? never // plural keys handled by mapped type 2
+                : K extends string
+                  ? _HasContextVariant<T, K, Context> extends true
+                    ? never // context variant exists, drop base key (type 3 handles it)
+                    : K // no context variant exists, keep base key
+                  : K
             : K extends `${string}${_PluralSeparator}${PluralSuffix}`
               ? never
               : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
       } & {
+        // Mapped type 2: plural collapsing (active regardless of context)
         [K in keyof T as T[K] extends object
           ? never
-          : Context extends string
-            ? never
+          : [Context] extends [string]
+            ? K extends
+                | `${string}${_ContextSeparator}${Context}`
+                | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+              ? never // context keys handled by mapped type 3
+              : K extends
+                    | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+                    | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+                ? Prefix
+                : never
             : K extends
                   | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
                   | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
@@ -632,9 +663,10 @@ type FilterKeys<T, Context> = never | T extends readonly any[]
           ? FilterKeys<T[K], Context>
           : PluralValue<T[K] & string>;
       } & {
+        // Mapped type 3: context key collapsing
         [K in keyof T as T[K] extends object
           ? never
-          : Context extends string
+          : [Context] extends [string]
             ? K extends
                 | `${infer Prefix}${_ContextSeparator}${Context}`
                 | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`

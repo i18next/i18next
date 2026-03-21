@@ -159,6 +159,15 @@ describe('t', () => {
     >();
   });
 
+  it('returnObjects + context', () => {
+    // Array elements should preserve their properties when using context
+    expectTypeOf(
+      t(($) => $.array[1], { returnObjects: true, context: 'cappuccino' }),
+    ).toEqualTypeOf<{
+      elementTwo: 'element two';
+    }>();
+  });
+
   it('getFixedT', () => {
     const fixedT = getFixedT(null, 'ns1', 'coffee');
 
