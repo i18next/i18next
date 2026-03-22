@@ -1,6 +1,6 @@
 ## 25.10.4
 
-- feat(types): i18nKey of `<Trans i18nKey={sk} />` to accept a `SelectorKey` [2364](https://github.com/i18next/i18next/issues/2364)
+- feat(types): `exists()` is now a type guard that narrows the key to `SelectorKey`, so a validated key can be passed directly to `t()` [2364](https://github.com/i18next/i18next/issues/2364)
 
 ## 25.10.3
 
