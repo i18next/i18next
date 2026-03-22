@@ -12,7 +12,7 @@ import type {
   ResourceLanguage,
   TOptions,
 } from './typescript/options.js';
-import type { KeyPrefix, TFunction, KeyFromSelectorFn } from './typescript/t.js';
+import type { KeyPrefix, TFunction, KeyFromSelectorFn, SelectorKey } from './typescript/t.js';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
@@ -200,11 +200,13 @@ export type Callback = (error: any, t: TFunction) => void;
 
 /**
  * Uses similar args as the t function and returns true if a key exists.
+ * Acts as a type guard, narrowing the key to {@link SelectorKey} so it can be passed to `t()`.
  */
 export interface ExistsFunction<
   TKeys extends string = string,
   TInterpolationMap extends object = $Dictionary,
 > {
+  (key: TKeys, options?: TOptions<TInterpolationMap>): key is TKeys & SelectorKey;
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
 

@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf } from 'vitest';
-import { getFixedT, TFunction, keyFromSelector, SelectorKey } from 'i18next';
+import i18next, { getFixedT, TFunction, keyFromSelector, SelectorKey } from 'i18next';
 
 declare const t: TFunction;
 
@@ -341,5 +341,14 @@ describe('t', () => {
 
     // @ts-expect-error: key from wrong namespace
     keyFromSelector(($) => $.fromNs2, { ns: 'ns3' });
+  });
+
+  it('exists narrows to SelectorKey', () => {
+    const key = 'beverage' as string;
+    if (i18next.exists(key)) {
+      expectTypeOf(key).toEqualTypeOf<string & SelectorKey>();
+      // can now pass to t()
+      t(key);
+    }
   });
 });
