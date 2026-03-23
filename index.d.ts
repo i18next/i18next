@@ -11,8 +11,16 @@ import type {
   ResourceKey,
   ResourceLanguage,
   TOptions,
+  TypeOptions,
 } from './typescript/options.js';
-import type { KeyPrefix, TFunction, KeyFromSelectorFn, SelectorKey } from './typescript/t.js';
+import type {
+  KeyPrefix,
+  KeyPrefixSelector,
+  NsResource,
+  TFunction,
+  KeyFromSelectorFn,
+  SelectorKey,
+} from './typescript/t.js';
 
 export interface WithT<Ns extends Namespace = DefaultNamespace> {
   // Expose parameterized t in the i18next interface hierarchy
@@ -289,6 +297,18 @@ export interface i18n extends CustomInstanceExtensions {
    * Accepts optional keyPrefix that will be automatically applied to returned t function.
    */
   getFixedT<
+    Ns extends Namespace | null,
+    const TKPrefixFn extends TypeOptions['enableSelector'] extends true | 'optimize'
+      ? KeyPrefixSelector<ActualNs>
+      : never,
+    ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns,
+  >(
+    lng: string | readonly string[] | null,
+    ns: Ns,
+    keyPrefix: TKPrefixFn,
+  ): TFunction<ActualNs, TKPrefixFn>;
+
+  getFixedT<
     Ns extends Namespace | null = DefaultNamespace,
     TKPrefix extends KeyPrefix<ActualNs> = undefined,
     ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns,
@@ -562,6 +582,8 @@ export type {
   TFunctionReturn,
   TFunctionDetailedResult,
   KeyPrefix,
+  KeyPrefixSelector,
+  NsResource,
   InterpolationMap,
   SelectorKey,
 } from './typescript/t.js';

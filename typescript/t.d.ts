@@ -464,6 +464,14 @@ export interface TFunction<
 
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
+/** The raw (unfiltered) resource object for a given namespace. */
+export type NsResource<Ns extends Namespace> = Ns extends readonly [keyof Resources, any, ...any]
+  ? Resources[Ns[0]] & PickNamespaces<Resources, Ns[number]>
+  : Resources[$FirstNamespace<Ns>];
+
+/** A selector function that can be used as `keyPrefix` to scope `t()` to a sub-tree of the resource. */
+export type KeyPrefixSelector<Ns extends Namespace> = (src: NsResource<Ns>) => object;
+
 /// ////////////// ///
 ///  ↆ selector ↆ  ///
 /// ////////////// ///
@@ -644,17 +652,22 @@ type PickNamespaces<T, K extends keyof any> = {
   [P in K as P extends keyof T ? P : never]: T[P & keyof T];
 };
 
-type GetSource<
-  Ns extends Namespace,
-  KPrefix,
-  Res = Ns extends readonly [keyof Resources, any, ...any]
-    ? Resources[Ns[0]] & PickNamespaces<Resources, Ns[number]>
-    : Resources[$FirstNamespace<Ns>],
-> = KPrefix extends keyof Res
-  ? Res[KPrefix]
-  : undefined extends KPrefix
-    ? Res
-    : ApplyKeyPrefix<[Res], KPrefix>;
+/** Extracts the sub-tree returned by a selector function used as keyPrefix. */
+type SelectorReturnSource<KPrefix, Fallback> = KPrefix extends (...args: any[]) => infer R
+  ? R extends object
+    ? R
+    : Fallback
+  : Fallback;
+
+type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (
+  ...args: any[]
+) => any
+  ? SelectorReturnSource<KPrefix, Res>
+  : KPrefix extends keyof Res
+    ? Res[KPrefix]
+    : undefined extends KPrefix
+      ? Res
+      : ApplyKeyPrefix<[Res], KPrefix>;
 
 type Select<T, Context> = $IsResourcesDefined extends false
   ? $Turtles

@@ -1,3 +1,7 @@
+## 25.10.5
+
+- feat(types): selector functions as `keyPrefix` in `getFixedT` now provide full type-safe key narrowing — the returned `t` function is scoped to the prefix subtree [2367](https://github.com/i18next/i18next/issues/2367)
+
 ## 25.10.4
 
 - feat(types): `exists()` is now a type guard that narrows the key to `SelectorKey`, so a validated key can be passed directly to `t()` [2364](https://github.com/i18next/i18next/issues/2364)

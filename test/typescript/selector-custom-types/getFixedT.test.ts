@@ -68,16 +68,19 @@ describe('getFixedT', () => {
     expectTypeOf(t(($) => $.deeeeeper)).toEqualTypeOf<'foobar'>();
   });
 
-  it('should accept a selector function as keyPrefix', () => {
-    // When keyPrefix is a selector function, TKPrefix cannot be inferred at the type level,
-    // so t() falls back to the full namespace type (no key narrowing).
-    // The selector is resolved to a string at runtime by keysFromSelector().
-    const t = i18next.getFixedT(null, 'alternate', ($: any) => $.foobar);
-    assertType(t(keyFromSelector(($) => $.barfoo, { ns: 'alternate', keyPrefix: 'foobar' })));
+  it('should accept a selector function as keyPrefix with type-safe key narrowing', () => {
+    const t = i18next.getFixedT(null, 'alternate', ($) => $.foobar);
+    expectTypeOf(t(($) => $.barfoo)).toEqualTypeOf<'barfoo'>();
+    expectTypeOf(t(($) => $.deep.deeper.deeeeeper)).toEqualTypeOf<'foobar'>();
   });
 
-  it('should accept a selector function as keyPrefix with language', () => {
-    const t = i18next.getFixedT('en', 'alternate', ($: any) => $.foobar);
-    assertType(t(keyFromSelector(($) => $.barfoo, { ns: 'alternate', keyPrefix: 'foobar' })));
+  it('should accept a selector function as keyPrefix with language and type-safe key narrowing', () => {
+    const t = i18next.getFixedT('en', 'alternate', ($) => $.foobar);
+    expectTypeOf(t(($) => $.barfoo)).toEqualTypeOf<'barfoo'>();
+  });
+
+  it('should accept a deep selector function as keyPrefix', () => {
+    const t = i18next.getFixedT(null, 'alternate', ($) => $.foobar.deep);
+    expectTypeOf(t(($) => $.deeper.deeeeeper)).toEqualTypeOf<'foobar'>();
   });
 });
