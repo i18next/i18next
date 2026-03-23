@@ -1,5 +1,5 @@
 import { describe, it, assertType, expectTypeOf } from 'vitest';
-import i18next, { getFixedT, keyFromSelector, TFunction } from 'i18next';
+import i18next, { getFixedT, TFunction } from 'i18next';
 
 describe('getFixedT', () => {
   it('returns a `TFunction`', () => {

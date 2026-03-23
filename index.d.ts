@@ -16,7 +16,6 @@ import type {
 import type {
   KeyPrefix,
   KeyPrefixSelector,
-  NsResource,
   TFunction,
   KeyFromSelectorFn,
   SelectorKey,
