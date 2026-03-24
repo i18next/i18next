@@ -1,3 +1,7 @@
+## 25.10.8
+
+- fix(types): reorder `TFunctionSelector` overloads so `Parameters<TFunction>` resolves to the general selector signature instead of the branded `SelectorKey` type [2412](https://github.com/i18next/i18next/issues/2412)
+
 ## 25.10.7
 
 - feat(types): support typescript 6 to address https://github.com/i18next/react-i18next/issues/1910

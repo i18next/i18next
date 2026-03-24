@@ -514,6 +514,16 @@ type DeepUnwrapPlural<T> =
 type NsArg<Ns extends Namespace> = Ns[number] | readonly Ns[number][];
 
 interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Branded<Ns> {
+  // ── Pre-computed key(s) from keyFromSelector ────────────────────────────────
+  // Accepts a branded `SelectorKey` (or array of them) produced by `keyFromSelector`.
+  // Return-type precision is traded for the flexibility of decoupled key creation.
+  // Placed first so that the more general selector overloads (below) are last —
+  // TypeScript's `Parameters<>` utility resolves against the last call signature.
+  <const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(
+    key: SelectorKey | SelectorKey[],
+    ...args: [options?: Opts & $Dictionary]
+  ): DefaultTReturn<Opts>;
+
   // ── Selector(s) with explicit `ns` ───────────────────────────────────────────
   <
     Target extends ConstrainTarget<Opts>,
@@ -593,14 +603,6 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
       ? [options: Opts & { count: number } & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>]
       : [options?: Opts & InterpolationMap<ReturnType<Fn>>]
   ): SelectorReturn<ReturnType<Fn>, Opts>;
-
-  // ── Pre-computed key(s) from keyFromSelector ────────────────────────────────
-  // Accepts a branded `SelectorKey` (or array of them) produced by `keyFromSelector`.
-  // Return-type precision is traded for the flexibility of decoupled key creation.
-  <const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>>(
-    key: SelectorKey | SelectorKey[],
-    ...args: [options?: Opts & $Dictionary]
-  ): DefaultTReturn<Opts>;
 }
 
 interface SelectorOptions<Ns = Namespace>
