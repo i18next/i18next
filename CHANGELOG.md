@@ -1,3 +1,7 @@
+## 25.10.9
+
+- feat(types): export `SelectorParam<Ns, KPrefix>` helper type — a stable, readable alternative to `Parameters<TFunction<Ns>>[0]` for typing selector function props [2414](https://github.com/i18next/i18next/issues/2414)
+
 ## 25.10.8
 
 - fix(types): reorder `TFunctionSelector` overloads so `Parameters<TFunction>` resolves to the general selector signature instead of the branded `SelectorKey` type [2412](https://github.com/i18next/i18next/issues/2412)

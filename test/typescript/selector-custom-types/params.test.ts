@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf } from 'vitest';
-import { TFunction } from 'i18next';
+import type { TFunction, SelectorParam } from 'i18next';
 
 describe('Parameters<TFunction>', () => {
   it('should resolve first parameter to a callable type', () => {
@@ -13,5 +13,27 @@ describe('Parameters<TFunction>', () => {
   it('should allow extracting parameters from TFunction with default namespace', () => {
     type FirstParam = Parameters<TFunction>[0];
     expectTypeOf<FirstParam>().toBeFunction();
+  });
+});
+
+describe('SelectorParam', () => {
+  it('should accept a valid selector function for the default namespace', () => {
+    type Param = SelectorParam;
+    expectTypeOf<Param>().toBeFunction();
+    // Should be usable as a prop type
+    const fn: Param = ($) => $.bar;
+    expectTypeOf(fn).toEqualTypeOf<Param>();
+  });
+
+  it('should accept a valid selector function for a specific namespace', () => {
+    type Param = SelectorParam<'custom'>;
+    const fn: Param = ($) => $.bar;
+    expectTypeOf(fn).toEqualTypeOf<Param>();
+  });
+
+  it('should reject invalid keys', () => {
+    type Param = SelectorParam<'custom'>;
+    // @ts-expect-error — 'nonexistent' is not a valid key
+    const fn: Param = ($) => $.nonexistent;
   });
 });

@@ -472,6 +472,23 @@ export type NsResource<Ns extends Namespace> = Ns extends readonly [keyof Resour
 /** A selector function that can be used as `keyPrefix` to scope `t()` to a sub-tree of the resource. */
 export type KeyPrefixSelector<Ns extends Namespace> = (src: NsResource<Ns>) => object;
 
+/**
+ * The type of a selector function accepted by `t()` for a given namespace and optional key prefix.
+ * Use this instead of `Parameters<TFunction<Ns>>[0]` for a stable, readable type.
+ *
+ * @example
+ * ```ts
+ * import type { SelectorParam } from 'i18next';
+ *
+ * interface CmpProps {
+ *   i18nKey: SelectorParam<'myNamespace'>;
+ * }
+ * ```
+ */
+export type SelectorParam<Ns extends Namespace = DefaultNamespace, KPrefix = undefined> = (
+  src: Select<GetSource<Ns, KPrefix>, undefined>,
+) => string;
+
 /// ////////////// ///
 ///  ↆ selector ↆ  ///
 /// ////////////// ///
