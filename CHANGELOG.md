@@ -1,4 +1,4 @@
-## 25.10.6
+## 25.10.7
 
 - feat(types): support typescript 6 to address https://github.com/i18next/react-i18next/issues/1910
 
