@@ -34,6 +34,7 @@ describe('SelectorParam', () => {
   it('should reject invalid keys', () => {
     type Param = SelectorParam<'custom'>;
     // @ts-expect-error — 'nonexistent' is not a valid key
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fn: Param = ($) => $.nonexistent;
   });
 });
