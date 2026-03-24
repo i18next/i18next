@@ -1,3 +1,7 @@
+## 25.10.6
+
+- feat(types): support typescript 6 to address https://github.com/i18next/react-i18next/issues/1910
+
 ## 25.10.5
 
 - feat(types): selector functions as `keyPrefix` in `getFixedT` now provide full type-safe key narrowing — the returned `t` function is scoped to the prefix subtree [2367](https://github.com/i18next/i18next/issues/2367)
