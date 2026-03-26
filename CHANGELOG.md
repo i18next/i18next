@@ -8,7 +8,7 @@
 
 ## 25.10.7
 
-- feat(types): support typescript 6 to address https://github.com/i18next/react-i18next/issues/1910
+- feat(types): support typescript 6 to address [https://github.com/i18next/react-i18next/issues/1910](https://github.com/i18next/react-i18next/issues/1910)
 
 ## 25.10.5
 
@@ -44,7 +44,7 @@
 
 ## 25.8.20
 
-- - fix: `getFixedT()` selector now resolves namespaces against the effective `ns` rather than the global init options [2406](https://github.com/i18next/i18next/issues/2406)
+- fix: `getFixedT()` selector now resolves namespaces against the effective `ns` rather than the global init options [2406](https://github.com/i18next/i18next/issues/2406)
 
 ## 25.8.19
 
@@ -125,6 +125,7 @@
 ## 25.8.0
 
 - fix: TFunctionReturn fallback [2360](https://github.com/i18next/i18next/issues/2360)
+- chore: added a `console.info` support notice regarding the open-source sustainability of the i18next ecosystem. _(Note: This can be easily suppressed via `showSupportNotice: false`, `globalThis`, or environment variables. See [the FAQ](https://www.locize.com/docs/general-questions/why-am-i-seeing-a-support-notice-for-i18next) for details on how to disable it)._
 
 ## 25.7.4
 
