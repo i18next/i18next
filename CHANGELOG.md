@@ -1,3 +1,7 @@
+## 25.10.10
+
+- feat: suppress support notice automatically in production environments (`NODE_ENV=production`)
+
 ## 25.10.9
 
 - feat(types): export `SelectorParam<Ns, KPrefix>` helper type — a stable, readable alternative to `Parameters<TFunction<Ns>>[0]` for typing selector function props [2414](https://github.com/i18next/i18next/issues/2414)

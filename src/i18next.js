@@ -29,6 +29,8 @@ const SUPPORT_NOTICE_KEY = '__i18next_supportNoticeShown'
 const getSupportNoticeShown = () => { // eslint-disable-next-line no-undef
   if (typeof globalThis !== 'undefined' && !!globalThis[SUPPORT_NOTICE_KEY]) return true;
   if (typeof process !== 'undefined' && process.env && process.env.I18NEXT_NO_SUPPORT_NOTICE) return true;
+  // already safely guarded by typeof process check above
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'production') return true;
   return false;
 }
 // eslint-disable-next-line no-undef

@@ -1724,6 +1724,7 @@
   const getSupportNoticeShown = () => {
     if (typeof globalThis !== 'undefined' && !!globalThis[SUPPORT_NOTICE_KEY]) return true;
     if (typeof process !== 'undefined' && process.env && process.env.I18NEXT_NO_SUPPORT_NOTICE) return true;
+    if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'production') return true;
     return false;
   };
   const setSupportNoticeShown = () => {
