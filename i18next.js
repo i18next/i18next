@@ -1399,6 +1399,8 @@
       this.formats[name.toLowerCase().trim()] = createCachedFormatter(fc);
     }
     format(value, format, lng, options = {}) {
+      if (!format) return value;
+      if (value == null) return value;
       const formats = format.split(this.formatSeparator);
       if (formats.length > 1 && formats[0].indexOf('(') > 1 && !formats[0].includes(')') && formats.find(f => f.includes(')'))) {
         const lastIndex = formats.findIndex(f => f.includes(')'));

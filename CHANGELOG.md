@@ -1,3 +1,8 @@
+## 26.0.1
+
+- fix: Formatter no longer crashes when `alwaysFormat` is `true` and no format specifier is present (`format` is `undefined`)
+- fix: Formatter now returns `undefined`/`null` values as-is instead of producing `NaN` when the value is missing
+
 ## 26.0.0
 
 **This is a major breaking release:**

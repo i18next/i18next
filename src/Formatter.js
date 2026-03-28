@@ -115,6 +115,8 @@ class Formatter {
   }
 
   format(value, format, lng, options = {}) {
+    if (!format) return value;
+    if (value == null) return value;
     const formats = format.split(this.formatSeparator);
     if (
       formats.length > 1 &&
