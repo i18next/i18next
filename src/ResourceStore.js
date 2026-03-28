@@ -16,7 +16,7 @@ class ResourceStore extends EventEmitter {
   }
 
   addNamespaces(ns) {
-    if (this.options.ns.indexOf(ns) < 0) {
+    if (!this.options.ns.includes(ns)) {
       this.options.ns.push(ns);
     }
   }
@@ -38,7 +38,7 @@ class ResourceStore extends EventEmitter {
         : this.options.ignoreJSONStructure;
 
     let path;
-    if (lng.indexOf('.') > -1) {
+    if (lng.includes('.')) {
       path = lng.split('.');
     } else {
       path = [lng, ns];
@@ -54,7 +54,7 @@ class ResourceStore extends EventEmitter {
     }
 
     const result = getPath(this.data, path);
-    if (!result && !ns && !key && lng.indexOf('.') > -1) {
+    if (!result && !ns && !key && lng.includes('.')) {
       lng = path[0];
       ns = path[1];
       key = path.slice(2).join('.');
@@ -71,7 +71,7 @@ class ResourceStore extends EventEmitter {
     let path = [lng, ns];
     if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
 
-    if (lng.indexOf('.') > -1) {
+    if (lng.includes('.')) {
       path = lng.split('.');
       value = ns;
       ns = path[1];
@@ -85,7 +85,6 @@ class ResourceStore extends EventEmitter {
   }
 
   addResources(lng, ns, resources, options = { silent: false }) {
-    /* eslint no-restricted-syntax: 0 */
     for (const m in resources) {
       if (isString(resources[m]) || Array.isArray(resources[m]))
         this.addResource(lng, ns, m, resources[m], { silent: true });
@@ -102,7 +101,7 @@ class ResourceStore extends EventEmitter {
     options = { silent: false, skipCopy: false },
   ) {
     let path = [lng, ns];
-    if (lng.indexOf('.') > -1) {
+    if (lng.includes('.')) {
       path = lng.split('.');
       deep = resources;
       resources = ns;

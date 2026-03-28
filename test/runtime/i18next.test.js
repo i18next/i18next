@@ -5,7 +5,6 @@ import { get as getDefaults } from '../../src/defaults.js';
 describe('i18next', () => {
   beforeAll(() => {
     i18next.init({
-      showSupportNotice: false,
       foo: 'bar',
       debug: false,
     });
@@ -56,7 +55,6 @@ describe('i18next', () => {
 
       it('should interpolate list for cloned instance with empty interpolation config', async () => {
         const config = {
-          showSupportNotice: false,
           lng: 'en',
           resources: {
             en: {
@@ -108,7 +106,6 @@ describe('i18next', () => {
       beforeAll(() => {
         orgInstance = i18next.createInstance();
         orgInstance.init({
-          showSupportNotice: false,
           lng: 'en',
           resources: {
             en: {
@@ -159,7 +156,6 @@ describe('i18next', () => {
           const { createInstance } = i18next;
           i18nInst = createInstance();
           i18nInst.init({
-            showSupportNotice: false,
             fallbackLng: 'en',
             resources: {
               en: {
@@ -314,7 +310,7 @@ describe('i18next', () => {
 
     it('it should JSON.stringify initialized without errors', () => {
       expect.assertions(1);
-      newInstance.init({ other: 'opts', showSupportNotice: false }, (err) => {
+      newInstance.init({ other: 'opts' }, (err) => {
         if (err) throw err;
 
         newInstance.addResourceBundle('en', 'translation', { key: 'value' });
@@ -366,7 +362,7 @@ describe('i18next', () => {
           },
         },
       });
-      await newInstance.init({ showSupportNotice: false });
+      await newInstance.init();
     });
 
     describe('after init', () => {
@@ -433,7 +429,7 @@ describe('i18next', () => {
           supportedLngs: ['en', 'de', 'it'],
           preload: ['en', 'de'],
         });
-        await newInstance.init({ showSupportNotice: false });
+        await newInstance.init();
       });
 
       describe('passing a supported lng', () => {
@@ -459,7 +455,7 @@ describe('i18next', () => {
           fallbackLng: 'en',
           preload: ['en', 'de'],
         });
-        await newInstance.init({ showSupportNotice: false });
+        await newInstance.init();
       });
 
       describe('passing a supported lng', () => {
@@ -515,7 +511,6 @@ describe('i18next', () => {
               })
               .init(
                 {
-                  showSupportNotice: false,
                   fallbackLng: 'en',
                 },
                 (err, t) => {

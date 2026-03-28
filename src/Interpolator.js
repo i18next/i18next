@@ -34,7 +34,6 @@ class Interpolator {
     this.init(options);
   }
 
-  /* eslint no-param-reassign: 0 */
   init(options = {}) {
     if (!options.interpolation) options.interpolation = { escapeValue: true };
 
@@ -121,7 +120,7 @@ class Interpolator {
       {};
 
     const handleFormat = (key) => {
-      if (key.indexOf(this.formatSeparator) < 0) {
+      if (!key.includes(this.formatSeparator)) {
         const path = deepFindWithDefaults(
           data,
           defaultData,
@@ -180,7 +179,6 @@ class Interpolator {
     ];
     todos.forEach((todo) => {
       replaces = 0;
-      /* eslint no-cond-assign: 0 */
       while ((match = todo.regex.exec(str))) {
         const matchedVar = match[1].trim();
         value = handleFormat(matchedVar);
@@ -226,7 +224,7 @@ class Interpolator {
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
     const handleHasOptions = (key, inheritedOptions) => {
       const sep = this.nestingOptionsSeparator;
-      if (key.indexOf(sep) < 0) return key;
+      if (!key.includes(sep)) return key;
 
       const c = key.split(new RegExp(`${regexEscape(sep)}[ ]*{`));
 
@@ -252,7 +250,7 @@ class Interpolator {
       }
 
       // assert we do not get a endless loop on interpolating defaultValue again and again
-      if (clonedOptions.defaultValue && clonedOptions.defaultValue.indexOf(this.prefix) > -1)
+      if (clonedOptions.defaultValue && clonedOptions.defaultValue.includes(this.prefix))
         delete clonedOptions.defaultValue;
       return key;
     };
@@ -306,7 +304,6 @@ class Interpolator {
 
       if (formatters.length) {
         value = formatters.reduce(
-          // eslint-disable-next-line no-loop-func
           (v, f) =>
             this.format(v, f, options.lng, { ...options, interpolationkey: match[1].trim() }),
           value.trim(),

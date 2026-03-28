@@ -7,7 +7,7 @@
     "./typescript",
     "./test",
     "./index.*",
-    ".eslintrc.js",
+    "eslint.config.mjs",
     "vitest.*.mts",
     "rollup.config.mjs"
   ]

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export function getResourceBundle(lng, ns) {
   if (!ns) ns = this.options.defaultNS;
 

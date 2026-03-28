@@ -1,13 +1,17 @@
-import { defineWorkspace } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
 
 /**
  * See CONTRIBUTING.md for more information
  */
-export default defineWorkspace([
-  {
-    test: {
-      name: 'local',
-      dir: './test/local',
-    },
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        test: {
+          name: 'local',
+          dir: './test/local',
+        },
+      },
+    ],
   },
-]);
+});

@@ -300,7 +300,7 @@ describe('t', () => {
     // plain strings are NOT assignable to SelectorKey (branded)
     // @ts-expect-error
     const badKey: SelectorKey = 'beverage';
-    // eslint-disable-next-line no-void
+
     void badKey;
   });
 

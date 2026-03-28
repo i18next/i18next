@@ -4,16 +4,16 @@ import { getCleanedCode } from './utils.js';
 const parseFormatStr = (formatStr) => {
   let formatName = formatStr.toLowerCase().trim();
   const formatOptions = {};
-  if (formatStr.indexOf('(') > -1) {
+  if (formatStr.includes('(')) {
     const p = formatStr.split('(');
     formatName = p[0].toLowerCase().trim();
 
-    const optStr = p[1].substring(0, p[1].length - 1);
+    const optStr = p[1].slice(0, -1);
 
     // extra for currency
-    if (formatName === 'currency' && optStr.indexOf(':') < 0) {
+    if (formatName === 'currency' && !optStr.includes(':')) {
       if (!formatOptions.currency) formatOptions.currency = optStr.trim();
-    } else if (formatName === 'relativetime' && optStr.indexOf(':') < 0) {
+    } else if (formatName === 'relativetime' && !optStr.includes(':')) {
       if (!formatOptions.range) formatOptions.range = optStr.trim();
     } else {
       const opts = optStr.split(';');
@@ -31,7 +31,6 @@ const parseFormatStr = (formatStr) => {
           if (!formatOptions[trimmedKey]) formatOptions[trimmedKey] = val;
           if (val === 'false') formatOptions[trimmedKey] = false;
           if (val === 'true') formatOptions[trimmedKey] = true;
-          // eslint-disable-next-line no-restricted-globals
           if (!isNaN(val)) formatOptions[trimmedKey] = parseInt(val, 10);
         }
       });
@@ -80,7 +79,6 @@ class Formatter {
     this.init(options);
   }
 
-  /* eslint no-param-reassign: 0 */
   init(services, options = { interpolation: {} }) {
     this.formatSeparator = options.interpolation.formatSeparator || ',';
     const cf = options.cacheInBuiltFormats ? createCachedFormatter : createNonCachedFormatter;
@@ -121,10 +119,10 @@ class Formatter {
     if (
       formats.length > 1 &&
       formats[0].indexOf('(') > 1 &&
-      formats[0].indexOf(')') < 0 &&
-      formats.find((f) => f.indexOf(')') > -1)
+      !formats[0].includes(')') &&
+      formats.find((f) => f.includes(')'))
     ) {
-      const lastIndex = formats.findIndex((f) => f.indexOf(')') > -1);
+      const lastIndex = formats.findIndex((f) => f.includes(')'));
       formats[0] = [formats[0], ...formats.splice(1, lastIndex)].join(this.formatSeparator);
     }
 
@@ -149,7 +147,6 @@ class Formatter {
           this.logger.warn(error);
         }
         return formatted;
-        // eslint-disable-next-line no-else-return
       } else {
         this.logger.warn(`there was no format function for ${formatName}`);
       }

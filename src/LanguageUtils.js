@@ -11,7 +11,7 @@ class LanguageUtil {
 
   getScriptPartFromCode(code) {
     code = getCleanedCode(code);
-    if (!code || code.indexOf('-') < 0) return null;
+    if (!code || !code.includes('-')) return null;
 
     const p = code.split('-');
     if (p.length === 2) return null;
@@ -22,7 +22,7 @@ class LanguageUtil {
 
   getLanguagePartFromCode(code) {
     code = getCleanedCode(code);
-    if (!code || code.indexOf('-') < 0) return code;
+    if (!code || !code.includes('-')) return code;
 
     const p = code.split('-');
     return this.formatLanguageCode(p[0]);
@@ -30,11 +30,10 @@ class LanguageUtil {
 
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
-    if (isString(code) && code.indexOf('-') > -1) {
+    if (isString(code) && code.includes('-')) {
       let formattedCode;
       try {
         formattedCode = Intl.getCanonicalLocales(code)[0];
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         /* fall through */
       }
@@ -57,9 +56,7 @@ class LanguageUtil {
     if (this.options.load === 'languageOnly' || this.options.nonExplicitSupportedLngs) {
       code = this.getLanguagePartFromCode(code);
     }
-    return (
-      !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.indexOf(code) > -1
-    );
+    return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.includes(code);
   }
 
   getBestMatchFromCodes(codes) {
@@ -82,24 +79,24 @@ class LanguageUtil {
         if (found) return;
 
         const lngScOnly = this.getScriptPartFromCode(code);
-        // eslint-disable-next-line no-return-assign
+
         if (this.isSupportedCode(lngScOnly)) return (found = lngScOnly);
 
         const lngOnly = this.getLanguagePartFromCode(code);
-        // eslint-disable-next-line no-return-assign
+
         if (this.isSupportedCode(lngOnly)) return (found = lngOnly);
 
-        // eslint-disable-next-line array-callback-return
         found = this.options.supportedLngs.find((supportedLng) => {
-          if (supportedLng === lngOnly) return supportedLng;
-          if (supportedLng.indexOf('-') < 0 && lngOnly.indexOf('-') < 0) return;
+          if (supportedLng === lngOnly) return true;
+          if (!supportedLng.includes('-') && !lngOnly.includes('-')) return false;
           if (
-            supportedLng.indexOf('-') > 0 &&
-            lngOnly.indexOf('-') < 0 &&
-            supportedLng.substring(0, supportedLng.indexOf('-')) === lngOnly
+            supportedLng.includes('-') &&
+            !lngOnly.includes('-') &&
+            supportedLng.slice(0, supportedLng.indexOf('-')) === lngOnly
           )
-            return supportedLng;
-          if (supportedLng.indexOf(lngOnly) === 0 && lngOnly.length > 1) return supportedLng;
+            return true;
+          if (supportedLng.startsWith(lngOnly) && lngOnly.length > 1) return true;
+          return false;
         });
       });
     }
@@ -143,7 +140,7 @@ class LanguageUtil {
       }
     };
 
-    if (isString(code) && (code.indexOf('-') > -1 || code.indexOf('_') > -1)) {
+    if (isString(code) && (code.includes('-') || code.includes('_'))) {
       if (this.options.load !== 'languageOnly') addCode(this.formatLanguageCode(code));
       if (this.options.load !== 'languageOnly' && this.options.load !== 'currentOnly')
         addCode(this.getScriptPartFromCode(code));
@@ -153,7 +150,7 @@ class LanguageUtil {
     }
 
     fallbackCodes.forEach((fc) => {
-      if (codes.indexOf(fc) < 0) addCode(this.formatLanguageCode(fc));
+      if (!codes.includes(fc)) addCode(this.formatLanguageCode(fc));
     });
 
     return codes;

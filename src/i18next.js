@@ -25,29 +25,6 @@ const bindMemberFunctions = (inst) => {
   })
 }
 
-const SUPPORT_NOTICE_KEY = '__i18next_supportNoticeShown'
-const getSupportNoticeShown = () => { // eslint-disable-next-line no-undef
-  if (typeof globalThis !== 'undefined' && !!globalThis[SUPPORT_NOTICE_KEY]) return true;
-  if (typeof process !== 'undefined' && process.env && process.env.I18NEXT_NO_SUPPORT_NOTICE) return true;
-  // already safely guarded by typeof process check above
-  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'production') return true;
-  return false;
-}
-// eslint-disable-next-line no-undef
-const setSupportNoticeShown = () => { if (typeof globalThis !== 'undefined') globalThis[SUPPORT_NOTICE_KEY] = true }
-const usesLocize = (inst) => {
-  if (inst?.modules?.backend?.name?.indexOf('Locize') > 0) return true
-  if (inst?.modules?.backend?.constructor?.name?.indexOf('Locize') > 0) return true
-  if (inst?.options?.backend?.backends) {
-    if (inst.options.backend.backends.some((b) => b?.name?.indexOf('Locize') > 0 || b?.constructor?.name?.indexOf('Locize') > 0)) return true
-  }
-  if (inst?.options?.backend?.projectId) return true
-  if (inst?.options?.backend?.backendOptions) {
-    if (inst.options.backend.backendOptions.some(b => b?.projectId)) return true
-  }
-  return false
-}
-
 class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
@@ -81,7 +58,7 @@ class I18n extends EventEmitter {
     if (options.defaultNS == null && options.ns) {
       if (isString(options.ns)) {
         options.defaultNS = options.ns;
-      } else if (options.ns.indexOf('translation') < 0) {
+      } else if (!options.ns.includes('translation')) {
         options.defaultNS = options.ns[0];
       }
     }
@@ -98,12 +75,6 @@ class I18n extends EventEmitter {
 
     if (typeof this.options.overloadTranslationOptionHandler !== 'function') {
       this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
-    }
-    
-    if (this.options.showSupportNotice !== false && !usesLocize(this) && !getSupportNoticeShown()) {
-      // eslint-disable-next-line no-console
-      if (typeof console !== 'undefined' && typeof console.info !== 'undefined') console.info('🌐 i18next is made possible by our own product, Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙');
-      setSupportNoticeShown()
     }
 
     const createClassOnDemand = (ClassOrObject) => {
@@ -148,15 +119,9 @@ class I18n extends EventEmitter {
       s.languageUtils = lu;
       s.pluralResolver = new PluralResolver(lu, {
         prepend: this.options.pluralSeparator,
-        simplifyPluralSuffix: this.options.simplifyPluralSuffix,
       });
 
-      const usingLegacyFormatFunction = this.options.interpolation.format && this.options.interpolation.format !== defOpts.interpolation.format;
-      if (usingLegacyFormatFunction) {
-        this.logger.deprecate(`init: you are still using the legacy format function, please use the new approach: https://www.i18next.com/translation-function/formatting`);
-      }
-
-      if (formatter && (!this.options.interpolation.format || this.options.interpolation.format === defOpts.interpolation.format)) {
+      if (formatter) {
         s.formatter = createClassOnDemand(formatter);
         if (s.formatter.init) s.formatter.init(s, this.options);
         this.options.interpolation.format = s.formatter.format.bind(s.formatter);
@@ -260,7 +225,6 @@ class I18n extends EventEmitter {
     return deferred;
   }
 
-  /* eslint consistent-return: 0 */
   loadResources(language, callback = noop) {
     let usedCallback = callback;
     const usedLng = isString(language) ? language : this.language;
@@ -277,7 +241,7 @@ class I18n extends EventEmitter {
         const lngs = this.services.languageUtils.toResolveHierarchy(lng);
         lngs.forEach(l => {
           if (l === 'cimode') return;
-          if (toLoad.indexOf(l) < 0) toLoad.push(l);
+          if (!toLoad.includes(l)) toLoad.push(l);
         });
       };
 
@@ -357,16 +321,16 @@ class I18n extends EventEmitter {
 
   setResolvedLanguage(l) {
     if (!l || !this.languages) return;
-    if (['cimode', 'dev'].indexOf(l) > -1) return;
+    if (['cimode', 'dev'].includes(l)) return;
     for (let li = 0; li < this.languages.length; li++) {
       const lngInLngs = this.languages[li];
-      if (['cimode', 'dev'].indexOf(lngInLngs) > -1) continue;
+      if (['cimode', 'dev'].includes(lngInLngs)) continue;
       if (this.store.hasLanguageSomeTranslations(lngInLngs)) {
         this.resolvedLanguage = lngInLngs;
         break;
       }
     }
-    if (!this.resolvedLanguage && this.languages.indexOf(l) < 0 && this.store.hasLanguageSomeTranslations(l)) {
+    if (!this.resolvedLanguage && !this.languages.includes(l) && this.store.hasLanguageSomeTranslations(l)) {
       this.resolvedLanguage = l;
       this.languages.unshift(l);
     }
@@ -542,7 +506,7 @@ class I18n extends EventEmitter {
     if (isString(ns)) ns = [ns];
 
     ns.forEach(n => {
-      if (this.options.ns.indexOf(n) < 0) this.options.ns.push(n);
+      if (!this.options.ns.includes(n)) this.options.ns.push(n);
     });
 
     this.loadResources(err => {
@@ -559,7 +523,7 @@ class I18n extends EventEmitter {
     if (isString(lngs)) lngs = [lngs];
     const preloaded = this.options.preload || [];
 
-    const newLngs = lngs.filter(lng => preloaded.indexOf(lng) < 0 && this.services.languageUtils.isSupportedCode(lng));
+    const newLngs = lngs.filter(lng => !preloaded.includes(lng) && this.services.languageUtils.isSupportedCode(lng));
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
       if (callback) callback();
@@ -585,7 +549,6 @@ class I18n extends EventEmitter {
         const ti = l.getTextInfo()
         if (ti && ti.direction) return ti.direction
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {/* fall through */}
 
     const rtlLngs = [
@@ -656,7 +619,7 @@ class I18n extends EventEmitter {
     const languageUtils = this.services?.languageUtils || new LanguageUtils(getDefaults()) // for uninitialized usage
     if (lng.toLowerCase().indexOf('-latn') > 1) return 'ltr';
 
-    return rtlLngs.indexOf(languageUtils.getLanguagePartFromCode(lng)) > -1 || lng.toLowerCase().indexOf('-arab') > 1
+    return rtlLngs.includes(languageUtils.getLanguagePartFromCode(lng)) || lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'
       : 'ltr';
   }

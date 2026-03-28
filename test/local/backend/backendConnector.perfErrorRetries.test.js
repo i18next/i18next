@@ -22,10 +22,11 @@ describe('BackendConnector performance (retry) test', () => {
     );
   });
 
-  describe(
-    '#load',
-    () => {
-      it('should load retry (failed) items mixed with concurrent longer items in under the 12 seconds timeout', async () => {
+  describe('#load', () => {
+    it(
+      'should load retry (failed) items mixed with concurrent longer items in under the 12 seconds timeout',
+      { timeout: 12000 },
+      async () => {
         const namespaces = [];
         for (let i = 0; i < 20; i++) {
           namespaces.push(`concurrentlyLonger${i}`);
@@ -50,8 +51,7 @@ describe('BackendConnector performance (retry) test', () => {
           'failed loading',
           'failed loading',
         ]);
-      });
-    },
-    { timeout: 12000 },
-  );
+      },
+    );
+  });
 });

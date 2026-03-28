@@ -14,7 +14,7 @@ export type Module = i18nextMod.Module;
 export type CallbackError = i18nextMod.CallbackError;
 export type ReadCallback = i18nextMod.ReadCallback;
 export type MultiReadCallback = i18nextMod.MultiReadCallback;
-export type BackendModule<TOptions = object> = i18nextMod.BackendModule<TOptions>;
+export type BackendModule<Options = object> = i18nextMod.BackendModule<Options>;
 export type LanguageDetectorModule = i18nextMod.LanguageDetectorModule;
 export type LanguageDetectorAsyncModule = i18nextMod.LanguageDetectorAsyncModule;
 export type PostProcessorModule = i18nextMod.PostProcessorModule;

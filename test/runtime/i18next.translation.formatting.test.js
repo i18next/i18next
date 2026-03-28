@@ -9,7 +9,6 @@ describe('i18next.translation.formatting', () => {
       new Promise((resolve) => {
         instance.init(
           {
-            showSupportNotice: false,
             lng: 'en',
             resources: {
               en: {

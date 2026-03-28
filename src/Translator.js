@@ -4,8 +4,6 @@ import postProcessor from './postProcessor.js';
 import { copy as utilsCopy, looksLikeObjectPath, isString } from './utils.js';
 import keysFromSelector from './selector.js';
 
-const checkedLoadedFor = {};
-
 const shouldHandleAsObject = (res) =>
   !isString(res) && typeof res !== 'boolean' && typeof res !== 'number';
 
@@ -33,6 +31,8 @@ class Translator extends EventEmitter {
     }
 
     this.logger = baseLogger.create('translator');
+
+    this.checkedLoadedFor = {};
   }
 
   changeLanguage(lng) {
@@ -67,7 +67,7 @@ class Translator extends EventEmitter {
       opt.keySeparator !== undefined ? opt.keySeparator : this.options.keySeparator;
 
     let namespaces = opt.ns || this.options.defaultNS || [];
-    const wouldCheckForNsInKey = nsSeparator && key.indexOf(nsSeparator) > -1;
+    const wouldCheckForNsInKey = nsSeparator && key.includes(nsSeparator);
     const seemsNaturalLanguage =
       !this.options.userDefinedKeySeparator &&
       !opt.keySeparator &&
@@ -85,7 +85,7 @@ class Translator extends EventEmitter {
       const parts = key.split(nsSeparator);
       if (
         nsSeparator !== keySeparator ||
-        (nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]) > -1)
+        (nsSeparator === keySeparator && this.options.ns.includes(parts[0]))
       )
         namespaces = parts.shift();
       key = parts.join(keySeparator);
@@ -100,7 +100,6 @@ class Translator extends EventEmitter {
   translate(keys, o, lastKey) {
     let opt = typeof o === 'object' ? { ...o } : o;
     if (typeof opt !== 'object' && this.options.overloadTranslationOptionHandler) {
-      /* eslint prefer-rest-params: 0 */
       opt = this.options.overloadTranslationOptionHandler(arguments);
     }
     if (typeof opt === 'object') opt = { ...opt };
@@ -199,7 +198,7 @@ class Translator extends EventEmitter {
       handleAsObjectInI18nFormat &&
       resForObjHndl &&
       handleAsObject &&
-      noObject.indexOf(resType) < 0 &&
+      !noObject.includes(resType) &&
       !(isString(joinArrays) && Array.isArray(resForObjHndl))
     ) {
       if (!opt.returnObjects && !this.options.returnObjects) {
@@ -226,7 +225,6 @@ class Translator extends EventEmitter {
         const resTypeIsArray = Array.isArray(resForObjHndl);
         const copy = resTypeIsArray ? [] : {}; // apply child translation on a copy
 
-        /* eslint no-restricted-syntax: 0 */
         const newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
         for (const m in resForObjHndl) {
           if (Object.prototype.hasOwnProperty.call(resForObjHndl, m)) {
@@ -329,7 +327,7 @@ class Translator extends EventEmitter {
               if (
                 needsZeroSuffixLookup &&
                 opt[`defaultValue${this.options.pluralSeparator}zero`] &&
-                suffixes.indexOf(`${this.options.pluralSeparator}zero`) < 0
+                !suffixes.includes(`${this.options.pluralSeparator}zero`)
               ) {
                 suffixes.push(`${this.options.pluralSeparator}zero`);
               }
@@ -496,11 +494,11 @@ class Translator extends EventEmitter {
         usedNS = ns;
 
         if (
-          !checkedLoadedFor[`${codes[0]}-${ns}`] &&
+          !this.checkedLoadedFor[`${codes[0]}-${ns}`] &&
           this.utils?.hasLoadedNamespace &&
           !this.utils?.hasLoadedNamespace(usedNS)
         ) {
-          checkedLoadedFor[`${codes[0]}-${ns}`] = true;
+          this.checkedLoadedFor[`${codes[0]}-${ns}`] = true;
           this.logger.warn(
             `key "${usedKey}" for languages "${codes.join(
               ', ',
@@ -525,7 +523,7 @@ class Translator extends EventEmitter {
             const ordinalPrefix = `${this.options.pluralSeparator}ordinal${this.options.pluralSeparator}`;
             // get key for plural if needed
             if (needsPluralHandling) {
-              if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+              if (opt.ordinal && pluralSuffix.startsWith(ordinalPrefix)) {
                 finalKeys.push(
                   key + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator),
                 );
@@ -543,7 +541,7 @@ class Translator extends EventEmitter {
 
               // get key for context + plural if needed
               if (needsPluralHandling) {
-                if (opt.ordinal && pluralSuffix.indexOf(ordinalPrefix) === 0) {
+                if (opt.ordinal && pluralSuffix.startsWith(ordinalPrefix)) {
                   finalKeys.push(
                     contextKey + pluralSuffix.replace(ordinalPrefix, this.options.pluralSeparator),
                   );
@@ -558,7 +556,6 @@ class Translator extends EventEmitter {
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
           let possibleKey;
-          /* eslint no-cond-assign: 0 */
           while ((possibleKey = finalKeys.pop())) {
             if (!this.isValidLookup(found)) {
               exactUsedKey = possibleKey;
@@ -632,7 +629,7 @@ class Translator extends EventEmitter {
     for (const option in options) {
       if (
         Object.prototype.hasOwnProperty.call(options, option) &&
-        prefix === option.substring(0, prefix.length) &&
+        option.startsWith(prefix) &&
         undefined !== options[option]
       ) {
         return true;

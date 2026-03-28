@@ -81,7 +81,7 @@ describe('defaults', () => {
     });
   });
 
-  it('it should have default format function', () => {
-    expect(defaults.interpolation.format('my value', '###', 'de')).to.equal('my value');
+  it('it should not have a default format function (legacy format removed)', () => {
+    expect(defaults.interpolation.format).to.be.undefined;
   });
 });

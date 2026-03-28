@@ -87,9 +87,8 @@ describe("don't break prefixes", () => {
 
   it('should work with useTranslation', () => {
     const useTranslation = <Ns extends Namespace, KPrefix extends KeyPrefix<Ns> = undefined>(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _: Ns,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       __: {
         keyPrefix?: KPrefix;
       },

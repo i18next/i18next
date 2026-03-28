@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, vitest } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vitest } from 'vitest';
 import PluralResolver from './lib/PluralResolver';
 import { createInstance } from '../../../src/index';
 import compatibilityLayer from './v4Compatibility';
@@ -12,8 +12,16 @@ describe('PluralResolver', () => {
       i18next
         .use({ type: 'formatter', init: () => {}, format: (v) => v })
         .use(compatibilityLayer)
-        .init({ showSupportNotice: false, fallbackLng: 'en' });
+        .init({ fallbackLng: 'en' });
       pr = i18next.services.pluralResolver;
+    });
+
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
     });
 
     it('correctly returns getRule for a supported locale', () => {
@@ -21,35 +29,32 @@ describe('PluralResolver', () => {
         resolvedOptions: () => {},
         select: () => {},
       };
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue(expected);
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return expected;
+      });
 
       const locale = 'en';
 
-      expect(pr.getRule(locale)).toStrictEqual(expected);
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(pr.getRule(locale)).toEqual(expected);
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
 
     it('correctly returns getRule for an unsupported locale', () => {
-      pr.clearCache();
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockImplementation(() => {
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
         throw Error('mock error');
       });
 
       const locale = 'en';
 
       expect(pr.getRule(locale)).toBeUndefined();
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -58,42 +63,46 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ showSupportNotice: false, fallbackLng: 'en' });
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
       pr = i18next.services.pluralResolver;
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns needsPlural for locale with more than one plural form', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }) };
       });
 
       const locale = 'en';
 
       expect(pr.needsPlural(locale)).toBeTruthy();
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
 
     it('correctly returns needsPlural for locale with just one plural form', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({ pluralCategories: ['other'] }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { resolvedOptions: () => ({ pluralCategories: ['other'] }) };
       });
 
       const locale = 'ja';
 
       expect(pr.needsPlural(locale)).toBeFalsy();
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -102,10 +111,16 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({ showSupportNotice: false, fallbackLng: 'en', prepend: '_' });
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
       pr = i18next.services.pluralResolver;
+    });
+
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
     });
 
     it('correctly returns suffix for a supported locale', () => {
@@ -114,37 +129,33 @@ describe('PluralResolver', () => {
       const expected = 'other';
 
       const selectStub = vitest.fn().mockReturnValue(expected);
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        select: selectStub,
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { select: selectStub };
       });
 
       expect(pr.getSuffix(locale, count)).to.equal(`_${expected}`);
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
       expect(selectStub).toHaveBeenCalledOnce();
       expect(selectStub).toHaveBeenCalledWith(count);
-
-      pluralRulesSpy.mockReset();
     });
 
     it('correctly returns suffix for an unsupported locale', () => {
       const locale = 'nonexistent';
 
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockImplementation(() => {
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
         throw Error('mock error');
       });
 
       expect(pr.getSuffix(locale, 10.5)).toEqual('');
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -153,27 +164,31 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({ showSupportNotice: false, fallbackLng: 'en', prepend: '_' });
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
       pr = i18next.services.pluralResolver;
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns plural forms for a given key', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }) };
       });
 
       const locale = 'en';
 
       expect(pr.getPluralFormsOfKey(locale, 'key')).toStrictEqual(['key_one', 'key_other']);
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -182,17 +197,25 @@ describe('PluralResolver', () => {
     let pr;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next
-        .use(compatibilityLayer)
-        .init({ showSupportNotice: false, fallbackLng: 'en', prepend: '_' });
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en', prepend: '_' });
       pr = i18next.services.pluralResolver;
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns plural suffixes for a given key', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({
-          pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'],
-        }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return {
+          resolvedOptions: () => ({
+            pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'],
+          }),
+        };
       });
 
       const locale = 'en';
@@ -205,13 +228,11 @@ describe('PluralResolver', () => {
         '_many',
         '_other',
       ]);
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -221,7 +242,7 @@ describe('PluralResolver', () => {
     let logger;
     beforeAll(() => {
       const i18next = createInstance();
-      i18next.use(compatibilityLayer).init({ showSupportNotice: false, fallbackLng: 'en' });
+      i18next.use(compatibilityLayer).init({ fallbackLng: 'en' });
       lu = i18next.services.languageUtils;
       logger = i18next.services.logger;
     });

@@ -92,13 +92,11 @@ describe('modules', () => {
 
           type = 'logger' as const;
 
-          /* eslint-disable class-methods-use-this */
           log = () => null;
 
           warn = () => null;
 
           error = () => null;
-          /* eslint-enable class-methods-use-this */
         }
 
         expectTypeOf(i18next.use<MyLoggerModule>)

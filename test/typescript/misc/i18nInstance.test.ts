@@ -137,7 +137,6 @@ describe('i18nInstance', () => {
         interpolation: {
           escapeValue: false, // not needed for react!!
           formatSeparator: ',',
-          format: (value) => value,
         },
       });
     });
@@ -145,7 +144,6 @@ describe('i18nInstance', () => {
     it('should infer namespace from initOptions', () => {
       i18next.init(
         {
-          showSupportNotice: false,
           ns: ['common', 'moduleA', 'moduleB'] as const,
           defaultNS: 'moduleA',
         },
@@ -163,7 +161,6 @@ describe('i18nInstance', () => {
     // i18next.js export default as esm module because the build is apart from commonjs.
     i18next.init(
       {
-        showSupportNotice: false,
         lng: 'en',
         debug: true,
         resources: {

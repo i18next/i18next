@@ -14,7 +14,6 @@ export const get = () => ({
   load: 'all', // | currentOnly | languageOnly
   preload: false, // array with preload languages
 
-  simplifyPluralSuffix: true,
   keySeparator: '.',
   nsSeparator: ':',
   pluralSeparator: '_',
@@ -53,8 +52,6 @@ export const get = () => ({
   },
   interpolation: {
     escapeValue: true,
-    /** @type {import('i18next').FormatFunction} */
-    format: (value) => value,
     prefix: '{{',
     suffix: '}}',
     formatSeparator: ',',
@@ -75,7 +72,6 @@ export const get = () => ({
   cacheInBuiltFormats: true,
 });
 
-/* eslint no-param-reassign: 0 */
 export const transformOptions = (options) => {
   // create namespace object if namespace is passed in as string
   if (isString(options.ns)) options.ns = [options.ns];
@@ -83,12 +79,9 @@ export const transformOptions = (options) => {
   if (isString(options.fallbackNS)) options.fallbackNS = [options.fallbackNS];
 
   // extend supportedLngs with cimode
-  if (options.supportedLngs?.indexOf?.('cimode') < 0) {
+  if (options.supportedLngs && !options.supportedLngs.includes('cimode')) {
     options.supportedLngs = options.supportedLngs.concat(['cimode']);
   }
-
-  // for backward compatibility, assign initImmediate to initAsync (if set)
-  if (typeof options.initImmediate === 'boolean') options.initAsync = options.initImmediate;
 
   return options;
 };

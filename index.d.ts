@@ -51,6 +51,11 @@ export class ResourceStore {
    * removes all callback when callback not specified
    */
   off(event: 'added' | 'removed', callback?: (lng: string, ns: string) => void): void;
+
+  /**
+   * Subscribe to an event, but only once. The listener is removed after the first call.
+   */
+  once(event: 'added' | 'removed', callback: (lng: string, ns: string) => void): this;
 }
 
 export interface Formatter {
@@ -233,7 +238,6 @@ export interface CustomInstanceExtensions {}
 // Due to this only very special usage I'm not moving this inside helpers.
 type InferArrayValuesElseReturnType<T> = T extends (infer A)[] ? A : T;
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface i18n extends CustomInstanceExtensions {
   // Expose parameterized t in the i18next interface hierarchy
   t: TFunction<
@@ -467,6 +471,11 @@ export interface i18n extends CustomInstanceExtensions {
    * removes all callback when callback not specified
    */
   off(event: string, listener?: (...args: any[]) => void): void;
+
+  /**
+   * Subscribe to an event, but only once. The listener is removed after the first call.
+   */
+  once(event: string, listener: (...args: any[]) => void): this;
 
   /**
    * Gets one value by given key.

@@ -12,7 +12,6 @@ describe('v1.11.1 initialisation', () => {
 
   beforeEach(() => {
     opts = compat.convertAPIOptions(getI18nCompatibilityV1InitOptions());
-    opts.showSupportNotice = false;
   });
 
   describe('determining language directionality', () => {
@@ -21,7 +20,7 @@ describe('v1.11.1 initialisation', () => {
 
     beforeEach(async () => {
       spy = vitest.spyOn(httpApi, 'read').mockImplementation(httpApiReadMockImplementation);
-      await i18n.init({ showSupportNotice: false });
+      await i18n.init();
       return () => {
         spy.mockReset();
       };

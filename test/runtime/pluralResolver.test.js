@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, vitest } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vitest } from 'vitest';
 import PluralResolver from '../../src/PluralResolver';
 import LanguageUtils from '../../src/LanguageUtils';
 
@@ -11,40 +11,45 @@ describe('PluralResolver', () => {
       pr = new PluralResolver(lu, {});
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns getRule for a supported locale', () => {
       const expected = {
-        resolvedOptions: () => {},
-        select: () => {},
+        resolvedOptions() {},
+        select() {},
       };
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue(expected);
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return expected;
+      });
 
       const locale = 'en';
 
-      expect(pr.getRule(locale)).toStrictEqual(expected);
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(pr.getRule(locale)).toEqual(expected);
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
 
     it('correctly returns getRule for an unsupported locale', () => {
-      pr.clearCache();
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockImplementation(() => {
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
         throw Error('mock error');
       });
 
       const locale = 'en';
 
       expect(pr.getRule(locale)).not.toBeUndefined(); // we return dummy rule
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -56,38 +61,42 @@ describe('PluralResolver', () => {
       pr = new PluralResolver(lu, {});
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns needsPlural for locale with more than one plural form', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }) };
       });
 
       const locale = 'en';
 
       expect(pr.needsPlural(locale)).toBeTruthy();
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
 
     it('correctly returns needsPlural for locale with just one plural form', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({ pluralCategories: ['other'] }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { resolvedOptions: () => ({ pluralCategories: ['other'] }) };
       });
 
       const locale = 'ja';
 
       expect(pr.needsPlural(locale)).toBeFalsy();
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -99,43 +108,47 @@ describe('PluralResolver', () => {
       pr = new PluralResolver(lu, { prepend: '_' });
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns suffix for a supported locale', () => {
       const locale = 'en';
       const count = 10.5;
       const expected = 'other';
 
       const selectStub = vitest.fn().mockReturnValue(expected);
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        select: selectStub,
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { select: selectStub };
       });
 
       expect(pr.getSuffix(locale, count)).to.equal(`_${expected}`);
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
       expect(selectStub).toHaveBeenCalledOnce();
       expect(selectStub).toHaveBeenCalledWith(count);
-
-      pluralRulesSpy.mockReset();
     });
 
     it('correctly returns suffix for an unsupported locale', () => {
       const locale = 'nonexistent';
 
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockImplementation(() => {
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
         throw Error('mock error');
       });
 
       expect(pr.getSuffix(locale, 10.5)).toEqual('_other');
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -147,21 +160,27 @@ describe('PluralResolver', () => {
       pr = new PluralResolver(lu, { prepend: '_' });
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns plural forms for a given key', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return { resolvedOptions: () => ({ pluralCategories: ['one', 'other'] }) };
       });
 
       const locale = 'en';
 
       expect(pr.getPluralFormsOfKey(locale, 'key')).toStrictEqual(['key_one', 'key_other']);
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 
@@ -173,11 +192,21 @@ describe('PluralResolver', () => {
       pr = new PluralResolver(lu, { prepend: '_' });
     });
 
+    beforeEach(() => {
+      pr.clearCache();
+    });
+
+    afterEach(() => {
+      vitest.restoreAllMocks();
+    });
+
     it('correctly returns plural suffixes for a given key', () => {
-      const pluralRulesSpy = vitest.spyOn(Intl, 'PluralRules').mockReturnValue({
-        resolvedOptions: () => ({
-          pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'],
-        }),
+      vitest.spyOn(Intl, 'PluralRules').mockImplementation(function () {
+        return {
+          resolvedOptions: () => ({
+            pluralCategories: ['zero', 'one', 'two', 'few', 'many', 'other'],
+          }),
+        };
       });
 
       const locale = 'en';
@@ -190,13 +219,11 @@ describe('PluralResolver', () => {
         '_many',
         '_other',
       ]);
-      expect(pluralRulesSpy).toHaveBeenCalledOnce();
-      expect(pluralRulesSpy).toHaveBeenCalledWith(
+      expect(Intl.PluralRules).toHaveBeenCalledOnce();
+      expect(Intl.PluralRules).toHaveBeenCalledWith(
         locale,
         expect.objectContaining({ type: expect.any(String) }),
       );
-
-      pluralRulesSpy.mockReset();
     });
   });
 });

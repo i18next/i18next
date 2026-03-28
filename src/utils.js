@@ -18,8 +18,7 @@ export const defer = () => {
 
 export const makeString = (object) => {
   if (object == null) return '';
-  /* eslint prefer-template: 0 */
-  return '' + object;
+  return String(object);
 };
 
 export const copy = (a, s, t) => {
@@ -33,7 +32,7 @@ export const copy = (a, s, t) => {
 const lastOfPathSeparatorRegExp = /###/g;
 
 const cleanKey = (key) =>
-  key && key.indexOf('###') > -1 ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
+  key && key.includes('###') ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
 
 const canNotTraverseDeeper = (object) => !object || isString(object);
 
@@ -109,7 +108,6 @@ export const getPathWithDefaults = (data, defaultData, key) => {
 };
 
 export const deepExtend = (target, source, overwrite) => {
-  /* eslint no-restricted-syntax: 0 */
   for (const prop in source) {
     if (prop !== '__proto__' && prop !== 'constructor') {
       if (prop in target) {
@@ -136,8 +134,7 @@ export const regexEscape = (str) =>
   /* eslint no-useless-escape: 0 */
   str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
-/* eslint-disable */
-var _entityMap = {
+const _entityMap = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
@@ -145,7 +142,6 @@ var _entityMap = {
   "'": '&#39;',
   '/': '&#x2F;',
 };
-/* eslint-enable */
 
 export const escape = (data) => {
   if (isString(data)) {
@@ -192,9 +188,7 @@ const looksLikeObjectPathRegExpCache = new RegExpCache(20);
 export const looksLikeObjectPath = (key, nsSeparator, keySeparator) => {
   nsSeparator = nsSeparator || '';
   keySeparator = keySeparator || '';
-  const possibleChars = chars.filter(
-    (c) => nsSeparator.indexOf(c) < 0 && keySeparator.indexOf(c) < 0,
-  );
+  const possibleChars = chars.filter((c) => !nsSeparator.includes(c) && !keySeparator.includes(c));
   if (possibleChars.length === 0) return true;
   const r = looksLikeObjectPathRegExpCache.getRegExp(
     `(${possibleChars.map((c) => (c === '?' ? '\\?' : c)).join('|')})`,
@@ -240,7 +234,7 @@ export const deepFind = (obj, path, keySeparator = '.') => {
       nextPath += tokens[j];
       next = current[nextPath];
       if (next !== undefined) {
-        if (['string', 'number', 'boolean'].indexOf(typeof next) > -1 && j < tokens.length - 1) {
+        if (['string', 'number', 'boolean'].includes(typeof next) && j < tokens.length - 1) {
           continue;
         }
         i += j - i + 1;

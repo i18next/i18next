@@ -1,3 +1,32 @@
+## 26.0.0
+
+**This is a major breaking release:**
+
+### Breaking Changes
+
+- **Remove deprecated `initImmediate` option** — the backward-compatibility mapping from `initImmediate` to `initAsync` (introduced in v24) has been removed. Use `initAsync` instead.
+- **Remove legacy `interpolation.format` function** — the old monolithic format function (`interpolation: { format: (value, format, lng) => ... }`) is no longer supported. The built-in Formatter (or a custom Formatter module via `.use()`) is now always used. Migrate to the [new formatting approach](https://www.i18next.com/translation-function/formatting) using `i18next.services.formatter.add()` or `.addCached()` for custom formatters.
+- **Remove console support notice** — the console support notice introduced in v25.8.0 has been removed, along with the `showSupportNotice` option and all related internal suppression logic (`globalThis.__i18next_supportNoticeShown`, `I18NEXT_NO_SUPPORT_NOTICE` env var). See our blog post for the [full story](https://www.locize.com/blog/i18next-support-notice).
+- **Remove `simplifyPluralSuffix` option** — this option was unused by the core PluralResolver (which relies entirely on `Intl.PluralRules`). It only had an effect in the old v1/v2/v3 compatibility layer. The v4 test compatibility layer now defaults to `true` internally.
+- **Remove deprecated `@babel/polyfill`** from devDependencies.
+
+### Improvements
+
+- **Code modernization** across all source files:
+  - Replace `indexOf() > -1` / `indexOf() < 0` with `.includes()` (~40+ occurrences)
+  - Replace `indexOf() === 0` with `.startsWith()` where appropriate
+  - Replace `var` with `const`, `'' + object` with `String(object)`, `.substring()` with `.slice()`
+  - Replace `.apply(observer, [event, ...args])` with direct call `observer(event, ...args)`
+  - Remove unnecessary `.call(this, ...)` in BackendConnector retry logic
+  - Fix `array-callback-return` in LanguageUtils `getBestMatchFromCodes`
+  - Clean up all stale `eslint-disable` comments from source files
+- **EventEmitter**: add `once()` method for one-time event subscriptions
+- **Memory leak fix**: move module-level `checkedLoadedFor` cache to Translator instance, preventing cross-instance state leakage
+- **TypeScript**: fix `BackendModule` generic parameter naming inconsistency between CJS and ESM type definitions
+- **TypeScript**: add `once()` method to `i18n` and `ResourceStore` type interfaces
+- **ESLint 9**: migrate from ESLint 8 (airbnb-base) to ESLint 9 flat config with [neostandard](https://github.com/neostandard/neostandard)
+- **Vitest 4**: upgrade from vitest 3 to vitest 4, migrate workspace files to `test.projects` config
+
 ## 25.10.10
 
 - feat: suppress support notice automatically in production environments (`NODE_ENV=production`)

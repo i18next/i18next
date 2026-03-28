@@ -184,11 +184,6 @@ export type FormatFunction = (
 
 export interface InterpolationOptions {
   /**
-   * Format function see formatting for details
-   * @default noop
-   */
-  format?: FormatFunction;
-  /**
    * Used to separate format from interpolation value
    * @default ','
    */
@@ -398,12 +393,6 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   debug?: boolean;
 
   /**
-   * Show support notice in console during initialization.
-   * @default true
-   */
-  showSupportNotice?: boolean;
-
-  /**
    * Resources to initialize with (if not using loading or not appending using addResourceBundle)
    * @default undefined
    */
@@ -551,12 +540,6 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   missingInterpolationHandler?: (text: string, value: any, options: InitOptions) => any;
 
   /**
-   * Will use 'plural' as suffix for languages only having 1 plural form, setting it to false will suffix all with numbers
-   * @default true
-   */
-  simplifyPluralSuffix?: boolean;
-
-  /**
    * String or array of postProcessors to apply per default
    * @default false
    */
@@ -628,11 +611,6 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * @default true
    */
   initAsync?: boolean;
-
-  /**
-   * @deprecated Use initAsync instead.
-   */
-  initImmediate?: boolean;
 
   /**
    * Char to separate keys

@@ -7,7 +7,6 @@ describe('i18next t default returns', () => {
   beforeAll(() => {
     i18n = i18next.createInstance();
     i18n.init({
-      showSupportNotice: false,
       fallbackLng: 'en',
       resources: {
         en: {
@@ -50,7 +49,6 @@ describe('i18next t default returns', () => {
     beforeAll(() => {
       i18nSel = i18next.createInstance();
       i18nSel.init({
-        showSupportNotice: false,
         enableSelector: true,
         fallbackLng: 'en',
         resources: {
@@ -111,7 +109,6 @@ describe('i18next t default returns', () => {
     beforeAll(() => {
       i18nSep = i18next.createInstance();
       i18nSep.init({
-        showSupportNotice: false,
         keySeparator: '::',
         nsSeparator: ':::',
         fallbackLng: 'en',

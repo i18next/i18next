@@ -1,5 +1,0 @@
-**/dist/*
-**/node_modules/*
-**/*.min.*
-examples
-jsr.json

@@ -19,7 +19,7 @@ export default {
       {
         prepend: instance.options.pluralSeparator,
         compatibilityJSON: instance.options.compatibilityJSON,
-        simplifyPluralSuffix: instance.options.simplifyPluralSuffix,
+        simplifyPluralSuffix: instance.options.simplifyPluralSuffix ?? true,
       },
       instance.services.logger,
     );

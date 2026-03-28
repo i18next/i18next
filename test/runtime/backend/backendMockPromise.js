@@ -9,7 +9,6 @@ class BackendMockPromise {
     this.created = {};
   }
 
-  // eslint-disable-next-line class-methods-use-this
   read(language, namespace) {
     return new Promise((resolve) => {
       setTimeout(() => {

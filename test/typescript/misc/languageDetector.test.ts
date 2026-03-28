@@ -6,7 +6,7 @@ i18n
     type: 'languageDetector',
     detect: () => 'en',
   })
-  .init({ showSupportNotice: false });
+  .init();
 
 i18n = createInstance();
 i18n
@@ -15,7 +15,7 @@ i18n
     async: true,
     detect: (clb) => clb('en'),
   })
-  .init({ showSupportNotice: false });
+  .init();
 
 i18n = createInstance();
 i18n
@@ -24,7 +24,7 @@ i18n
     async: true,
     detect: async () => 'en',
   })
-  .init({ showSupportNotice: false });
+  .init();
 
 i18n = createInstance();
 i18n
@@ -33,4 +33,4 @@ i18n
     async: true,
     detect: (clb: (lng: string) => void) => clb('en'),
   })
-  .init({ showSupportNotice: false });
+  .init();

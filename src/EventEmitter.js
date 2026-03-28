@@ -30,6 +30,15 @@ class EventEmitter {
     this.observers[event].delete(listener);
   }
 
+  once(event, listener) {
+    const wrapper = (...args) => {
+      listener(...args);
+      this.off(event, wrapper);
+    };
+    this.on(event, wrapper);
+    return this;
+  }
+
   emit(event, ...args) {
     if (this.observers[event]) {
       const cloned = Array.from(this.observers[event].entries());
@@ -44,7 +53,7 @@ class EventEmitter {
       const cloned = Array.from(this.observers['*'].entries());
       cloned.forEach(([observer, numTimesAdded]) => {
         for (let i = 0; i < numTimesAdded; i++) {
-          observer.apply(observer, [event, ...args]);
+          observer(event, ...args);
         }
       });
     }

@@ -12,13 +12,11 @@ import * as compat from './v1.js';
 export function extend(obj, ...rest) {
   Array.prototype.forEach.call(Array.prototype.slice.call([obj, ...rest], 1), (source) => {
     if (source) {
-      // eslint-disable-next-line no-restricted-syntax, guard-for-in
       for (const prop in source) {
         obj[prop] = source[prop];
       }
     }
   });
-  obj.showSupportNotice = false;
   return compat.convertAPIOptions(obj);
   // return obj;
 }

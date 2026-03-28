@@ -281,7 +281,6 @@ class PluralResolver {
 
       try {
         rule = new Intl.PluralRules(cleanedCode, { type });
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         if (!code.match(/-|_/)) return;
         const lngPart = this.languageUtils.getLanguagePartFromCode(code);
@@ -375,7 +374,6 @@ class PluralResolver {
       if (suffix === 1) return '';
       if (typeof suffix === 'number') return `_plural_${suffix.toString()}`;
       return returnSuffix();
-      // eslint-disable-next-line no-else-return
     } else if (/* v2 */ this.options.compatibilityJSON === 'v2') {
       return returnSuffix();
     } else if (

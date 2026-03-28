@@ -23,7 +23,7 @@ describe('Translator', () => {
         {
           resourceStore: rs,
           languageUtils: lu,
-          pluralResolver: new PluralResolver(lu, { prepend: '_', simplifyPluralSuffix: true }),
+          pluralResolver: new PluralResolver(lu, { prepend: '_' }),
           interpolator: new Interpolator(),
         },
         {

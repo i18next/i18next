@@ -121,7 +121,6 @@ class Connector extends EventEmitter {
           }
         });
 
-        /* eslint no-param-reassign: 0 */
         q.done = true;
         if (q.errors.length) {
           q.callback(q.errors);
@@ -159,7 +158,7 @@ class Connector extends EventEmitter {
       }
       if (err && data /* = retryFlag */ && tried < this.maxRetries) {
         setTimeout(() => {
-          this.read.call(this, lng, ns, fcName, tried + 1, wait * 2, callback);
+          this.read(lng, ns, fcName, tried + 1, wait * 2, callback);
         }, wait);
         return;
       }
@@ -188,7 +187,6 @@ class Connector extends EventEmitter {
     return fc(lng, ns, resolver);
   }
 
-  /* eslint consistent-return: 0 */
   prepareLoading(languages, namespaces, options = {}, callback) {
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
