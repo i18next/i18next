@@ -1,3 +1,7 @@
+## 26.0.2
+
+- fix(types): `t("key", {} as TOptions)` no longer produces a type error — the context constraint now bypasses strict checking when `context` is `unknown` (e.g. from `TOptions`) [2418](https://github.com/i18next/i18next/issues/2418)
+
 ## 26.0.1
 
 - fix: Formatter no longer crashes when `alwaysFormat` is `true` and no format specifier is present (`format` is `undefined`)

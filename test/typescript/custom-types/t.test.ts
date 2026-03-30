@@ -1,5 +1,5 @@
 import { describe, it, assertType, expectTypeOf } from 'vitest';
-import { TFunction } from 'i18next';
+import { TFunction, TOptions } from 'i18next';
 
 describe('t', () => {
   describe('default namespace usage', () => {
@@ -213,6 +213,12 @@ describe('t', () => {
         // @ts-expect-error
         t('dessert', { context: 'muffin' as 'muffin' | 'cake' | 'pippo' }),
       ).toMatchTypeOf<string>();
+    });
+
+    // @see https://github.com/i18next/i18next/issues/2418
+    it('should accept TOptions as options parameter', () => {
+      const opts = {} as TOptions;
+      expectTypeOf(t('beverage', opts)).toBeString();
     });
   });
 

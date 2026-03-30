@@ -400,7 +400,9 @@ interface TFunctionStrict<
     options?: TOpt &
       InterpolationMap<Ret> & {
         context?: Key extends string
-          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          ? unknown extends TOpt['context']
+            ? TOpt['context']
+            : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       },
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
@@ -414,7 +416,9 @@ interface TFunctionStrict<
     options?: TOpt &
       InterpolationMap<Ret> & {
         context?: Key extends string
-          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          ? unknown extends TOpt['context']
+            ? TOpt['context']
+            : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       },
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
@@ -431,12 +435,16 @@ interface TFunctionNonStrict<
     const ActualOptions extends Omit<TOpt, 'context'> &
       InterpolationMap<Ret> & {
         context?: Key extends string
-          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          ? unknown extends TOpt['context']
+            ? TOpt['context']
+            : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       } = TOpt &
       InterpolationMap<Ret> & {
         context?: Key extends string
-          ? ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
+          ? unknown extends TOpt['context']
+            ? TOpt['context']
+            : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       },
     DefaultValue extends string = never,
