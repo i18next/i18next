@@ -1,4 +1,4 @@
-import { describe, it, expectTypeOf } from 'vitest';
+import { describe, it } from 'vitest';
 import type { TFunction } from 'i18next';
 
 // Reproduces https://github.com/i18next/i18next/issues/2398 (Problem 1)
@@ -21,6 +21,7 @@ import type { TFunction } from 'i18next';
 // parameter depends on `Opts['context']`, creating an inference dependency).
 
 describe('issue #2398 - returnObjects + context + array with selector', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const t = (() => []) as unknown as TFunction;
 
   it.todo('should return full object shape for all array elements, not a union of partial types');
