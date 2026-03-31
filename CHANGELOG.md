@@ -1,3 +1,7 @@
+## 26.0.3
+
+- fix(types): `addResourceBundle` now accepts an optional 6th `options` parameter (`{ silent?: boolean; skipCopy?: boolean }`) matching the runtime API [2419](https://github.com/i18next/i18next/issues/2419)
+
 ## 26.0.2
 
 - fix(types): `t("key", {} as TOptions)` no longer produces a type error — the context constraint now bypasses strict checking when `context` is `unknown` (e.g. from `TOptions`) [2418](https://github.com/i18next/i18next/issues/2418)

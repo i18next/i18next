@@ -514,6 +514,7 @@ export interface i18n extends CustomInstanceExtensions {
     resources: any,
     deep?: boolean,
     overwrite?: boolean,
+    options?: { silent?: boolean; skipCopy?: boolean },
   ): i18n;
 
   /**

@@ -338,6 +338,26 @@ describe('i18nInstance', () => {
       );
     });
 
+    // @see https://github.com/i18next/i18next/issues/2419
+    it('`addResourceBundle` with options', () => {
+      expectTypeOf(i18next.addResourceBundle).toBeCallableWith(
+        'en',
+        'translations',
+        { key: 'value' },
+        true,
+        true,
+        { silent: true },
+      );
+      expectTypeOf(i18next.addResourceBundle).toBeCallableWith(
+        'en',
+        'translations',
+        { key: 'value' },
+        true,
+        true,
+        { skipCopy: true },
+      );
+    });
+
     it('`hasResourceBundle`', () => {
       expectTypeOf(i18next.hasResourceBundle).toBeCallableWith('en', 'test');
       expectTypeOf(i18next.hasResourceBundle).returns.toBeBoolean();
