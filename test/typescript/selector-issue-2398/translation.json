@@ -10,5 +10,18 @@
       "transKey2": "Hello trans key 2 from object 2"
     }
   ],
+  "transWithArrayAndPlurals": [
+    {
+      "transKey1": "Hello singular from object 1",
+      "transKey1_other": "Hello plural from object 1",
+      "transKey2": "Hello trans key 2 from object 1"
+    },
+    {
+      "transKey1": "Hello singular from object 2",
+      "transKey1_withContext": "Hello context from object 2",
+      "transKey1_other": "Hello plural from object 2",
+      "transKey2": "Hello trans key 2 from object 2"
+    }
+  ],
   "otherTransKey": "Hello from the other trans key"
 }

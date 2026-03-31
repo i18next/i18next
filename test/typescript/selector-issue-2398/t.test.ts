@@ -34,4 +34,16 @@ describe('issue #2398 - returnObjects + context + array with selector', () => {
   //   expectTypeOf(result[0]).toHaveProperty('transKey1');
   //   expectTypeOf(result[0]).toHaveProperty('transKey2');
   // });
+
+  it.todo('should also work when context and plurals are combined on array elements');
+  // When fixed, replace the .todo above with:
+  // it('should work with context + plurals combined on array elements', () => {
+  //   const result = t(($) => $.transWithArrayAndPlurals, {
+  //     returnObjects: true,
+  //     context: 'withContext',
+  //     count: 5,
+  //   });
+  //   expectTypeOf(result[0]).toHaveProperty('transKey1');
+  //   expectTypeOf(result[0]).toHaveProperty('transKey2');
+  // });
 });
