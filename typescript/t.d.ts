@@ -189,6 +189,9 @@ type _BuiltInFormatTypeMap = {
   list: readonly string[];
 };
 
+/** Strips inline formatting options, e.g. `currency(EUR)` → `currency`. */
+type _StripFormatOptions<F> = F extends `${infer Name}(${string})` ? Name : F;
+
 /** Resolves the type for a single interpolation entry based on name and format. */
 type _ResolveEntryType<Name extends string, Format> = [Format] extends [never]
   ? Name extends 'count'
@@ -196,9 +199,13 @@ type _ResolveEntryType<Name extends string, Format> = [Format] extends [never]
     : string
   : Format extends keyof _InterpolationFormatTypeMap
     ? _InterpolationFormatTypeMap[Format]
-    : Format extends keyof _BuiltInFormatTypeMap
-      ? _BuiltInFormatTypeMap[Format]
-      : string;
+    : _StripFormatOptions<Format> extends keyof _InterpolationFormatTypeMap
+      ? _InterpolationFormatTypeMap[_StripFormatOptions<Format> & keyof _InterpolationFormatTypeMap]
+      : Format extends keyof _BuiltInFormatTypeMap
+        ? _BuiltInFormatTypeMap[Format]
+        : _StripFormatOptions<Format> extends keyof _BuiltInFormatTypeMap
+          ? _BuiltInFormatTypeMap[_StripFormatOptions<Format> & keyof _BuiltInFormatTypeMap]
+          : string;
 
 /** Local union-to-intersection (not exported from helpers). */
 type _UnionToIntersection<T> = (T extends unknown ? (k: T) => void : never) extends (

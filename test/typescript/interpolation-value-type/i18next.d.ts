@@ -12,6 +12,8 @@ declare module 'i18next' {
         nested: 'Value is {{deep.val}}';
         no_interpolation: 'Just a plain string';
         mixed: '{{label}}: {{amount, number}} on {{when, datetime}}';
+        price_eur: 'Price: {{price, currency(EUR)}}';
+        event_relative: 'Happened {{when, relativetime(quarter)}}';
       };
     };
   }

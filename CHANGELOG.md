@@ -1,3 +1,7 @@
+## 26.0.4
+
+- fix(types): inline formatting options like `{{price, currency(EUR)}}` are now correctly resolved to their base format type (e.g. `number` for `currency`) instead of falling back to `string` [2378](https://github.com/i18next/i18next/issues/2378)
+
 ## 26.0.3
 
 - fix(types): `addResourceBundle` now accepts an optional 6th `options` parameter (`{ silent?: boolean; skipCopy?: boolean }`) matching the runtime API [2419](https://github.com/i18next/i18next/issues/2419)

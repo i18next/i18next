@@ -52,4 +52,20 @@ describe('interpolation types (zero-config, derived from format specifiers)', ()
     // @ts-expect-error amount should be number, not string
     t('mixed', { label: 'Total', amount: 'hundred', when: new Date() });
   });
+
+  it('should strip inline formatting options like currency(EUR)', () => {
+    // {{price, currency(EUR)}} → currency → number
+    t('price_eur', { price: 42 });
+
+    // @ts-expect-error string should not be assignable to number
+    t('price_eur', { price: 'forty-two' });
+  });
+
+  it('should strip inline formatting options for relativetime', () => {
+    // {{when, relativetime(quarter)}} → relativetime → number
+    t('event_relative', { when: -1 });
+
+    // @ts-expect-error string should not be assignable to number
+    t('event_relative', { when: 'last quarter' });
+  });
 });
