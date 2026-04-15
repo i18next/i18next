@@ -53,6 +53,39 @@ describe('i18next', () => {
         expect(i18next.language).to.equal('en');
       });
 
+      it('changeLanguage on clone should not be overridden by deferred init load', () => {
+        vi.useFakeTimers();
+
+        const instance = i18next.createInstance();
+        instance.use({
+          type: 'backend',
+          read: (language, namespace, callback) => {
+            const delay = language === 'en' ? 50 : 200;
+            setTimeout(() => {
+              callback(null, { key: `value_${language}` });
+            }, delay);
+          },
+        });
+
+        const task = new Promise((resolve) => {
+          instance.init({ fallbackLng: 'en' }, () => {
+            const clone = instance.cloneInstance();
+            resolve(
+              clone.changeLanguage('de').then(() => {
+                expect(clone.language).to.equal('de');
+                expect(clone.resolvedLanguage).to.equal('de');
+              }),
+            );
+          });
+        });
+
+        vi.advanceTimersByTime(1000);
+
+        return task.finally(() => {
+          vi.useRealTimers();
+        });
+      });
+
       it('should interpolate list for cloned instance with empty interpolation config', async () => {
         const config = {
           lng: 'en',

@@ -1,3 +1,7 @@
+## 26.0.5
+
+- fix: `cloneInstance().changeLanguage()` no longer fails to update language state when the target language is not yet loaded — a race between `init()`'s deferred `load()` and the user's `changeLanguage()` could overwrite `isLanguageChangingTo`, causing `setLngProps` to be skipped [2422](https://github.com/i18next/i18next/issues/2422)
+
 ## 26.0.4
 
 - fix(types): inline formatting options like `{{price, currency(EUR)}}` are now correctly resolved to their base format type (e.g. `number` for `currency`) instead of falling back to `string` [2378](https://github.com/i18next/i18next/issues/2378)

@@ -1866,7 +1866,7 @@
           deferred.resolve(t);
           callback(err, t);
         };
-        if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
+        if ((this.languages || this.isLanguageChangingTo) && !this.isInitialized) return finish(null, this.t.bind(this));
         this.changeLanguage(this.options.lng, finish);
       };
       if (this.options.resources || !this.options.initAsync) {

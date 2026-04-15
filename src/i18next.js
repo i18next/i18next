@@ -212,7 +212,8 @@ class I18n extends EventEmitter {
         callback(err, t);
       };
       // fix for use cases when calling changeLanguage before finished to initialized (i.e. https://github.com/i18next/i18next/issues/1552)
-      if (this.languages && !this.isInitialized) return finish(null, this.t.bind(this));
+      // also covers cloneInstance race where deferred load() would overwrite a pending changeLanguage (https://github.com/i18next/i18next/issues/2422)
+      if ((this.languages || this.isLanguageChangingTo) && !this.isInitialized) return finish(null, this.t.bind(this));
       this.changeLanguage(this.options.lng, finish);
     };
 
