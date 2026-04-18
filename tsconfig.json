@@ -2,13 +2,14 @@
   "compilerOptions": {
     "module": "ES6",
     "target": "ES2017",
-    "lib": ["ES6", "DOM"],
+    "lib": ["ES2020", "DOM"],
     "jsx": "react",
     "moduleResolution": "Bundler",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noEmit": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "i18next": ["./index.d.mts"]
     },

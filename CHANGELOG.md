@@ -1,8 +1,8 @@
 ## 26.0.6
 
-Security release — all issues found via an internal audit. GHSA advisory filed after release.
+Security release — all issues found via an internal audit.
 
-- security: warn when a translation string combines `escapeValue: false` with interpolated variables inside a `$t(key, { ... "{{var}}" ... })` nesting-options block. In that narrow combination, attacker-controlled string values containing `"` can break out of the JSON options literal and inject additional nesting options (e.g. redirect `lng`/`ns`). The default `escapeValue: true` configuration is unaffected because HTML-escaping neutralises the quote before `JSON.parse`. See the security docs for mitigation guidance (GHSA-TBD)
+- security: warn when a translation string combines `escapeValue: false` with interpolated variables inside a `$t(key, { ... "{{var}}" ... })` nesting-options block. In that narrow combination, attacker-controlled string values containing `"` can break out of the JSON options literal and inject additional nesting options (e.g. redirect `lng`/`ns`). The default `escapeValue: true` configuration is unaffected because HTML-escaping neutralises the quote before `JSON.parse`. See the [security note in the Nesting docs](https://www.i18next.com/translation-function/nesting#security-note-interpolated-values-inside-a-nesting-options-block) for the full pattern and mitigations
 - security: apply `regexEscape` to `unescapePrefix` / `unescapeSuffix` on par with the other interpolation delimiters. Prevents ReDoS (catastrophic-backtracking) when a misconfigured delimiter contains regex metacharacters, and fixes silent breakage of the `{{- var}}` syntax when the delimiter contains characters like `(`, `[`, `.`
 - security: strip CR/LF/NUL and other C0/C1 control characters from string log arguments to prevent log forging via user-controlled translation keys, language codes, namespaces, or interpolation variable names (CWE-117)
 - chore: ignore `.env*` and `*.pem`/`*.key` files in `.gitignore`
