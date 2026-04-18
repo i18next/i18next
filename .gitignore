@@ -25,3 +25,10 @@ dist/**/*
 # vitest temp / cache files
 tsconfig.vitest-temp.json
 tsconfig.nonEsModuleInterop.vitest-temp.json
+
+# Secrets & credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key

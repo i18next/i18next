@@ -51,6 +51,11 @@ class Logger {
 
   forward(args, lvl, prefix, debugOnly) {
     if (debugOnly && !this.debug) return null;
+    // Strip control characters from string args to prevent log forging via
+    // user-controlled translation keys, languages, namespaces, or interpolation
+    // variable names (CWE-117).
+    // eslint-disable-next-line no-control-regex
+    args = args.map((a) => (isString(a) ? a.replace(/[\r\n\x00-\x1F\x7F]/g, ' ') : a));
     if (isString(args[0])) args[0] = `${prefix}${this.prefix} ${args[0]}`;
     return this.logger[lvl](args);
   }

@@ -66,8 +66,12 @@ class Interpolator {
 
     this.formatSeparator = formatSeparator || ',';
 
-    this.unescapePrefix = unescapeSuffix ? '' : unescapePrefix || '-';
-    this.unescapeSuffix = this.unescapePrefix ? '' : unescapeSuffix || '';
+    this.unescapePrefix = unescapeSuffix ? '' : unescapePrefix ? regexEscape(unescapePrefix) : '-';
+    this.unescapeSuffix = this.unescapePrefix
+      ? ''
+      : unescapeSuffix
+        ? regexEscape(unescapeSuffix)
+        : '';
 
     this.nestingPrefix = nestingPrefix
       ? regexEscape(nestingPrefix)
@@ -156,6 +160,22 @@ class Interpolator {
     };
 
     this.resetRegExp();
+
+    // Security warning: when escapeValue is false AND the translation embeds
+    // interpolation placeholders inside a $t() nesting options block (i.e.
+    // $t(key, { ... "{{var}}" ... })), attacker-controlled string values that
+    // contain `"` can break out of the JSON string literal and inject extra
+    // nesting options (e.g. redirect lng/ns). This is safe under the default
+    // escapeValue: true, where HTML-escaping neutralises the quote before
+    // JSON.parse. See CHANGELOG entry for 26.0.6 and the security docs.
+    if (!this.escapeValue && typeof str === 'string' && /\$t\([^)]*\{[^}]*\{\{/.test(str)) {
+      this.logger.warn(
+        'nesting options string contains interpolated variables with escapeValue: false — ' +
+          'if any of those values are attacker-controlled they can inject additional ' +
+          'nesting options (e.g. redirect lng/ns). Sanitise untrusted input before passing ' +
+          'it to t(), or keep escapeValue: true.',
+      );
+    }
 
     const missingInterpolationHandler =
       options?.missingInterpolationHandler || this.options.missingInterpolationHandler;

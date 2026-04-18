@@ -235,6 +235,7 @@
     }
     forward(args, lvl, prefix, debugOnly) {
       if (debugOnly && !this.debug) return null;
+      args = args.map(a => isString(a) ? a.replace(/[\r\n\x00-\x1F\x7F]/g, ' ') : a);
       if (isString(args[0])) args[0] = `${prefix}${this.prefix} ${args[0]}`;
       return this.logger[lvl](args);
     }
@@ -1140,8 +1141,8 @@
       this.prefix = prefix ? regexEscape(prefix) : prefixEscaped || '{{';
       this.suffix = suffix ? regexEscape(suffix) : suffixEscaped || '}}';
       this.formatSeparator = formatSeparator || ',';
-      this.unescapePrefix = unescapeSuffix ? '' : unescapePrefix || '-';
-      this.unescapeSuffix = this.unescapePrefix ? '' : unescapeSuffix || '';
+      this.unescapePrefix = unescapeSuffix ? '' : unescapePrefix ? regexEscape(unescapePrefix) : '-';
+      this.unescapeSuffix = this.unescapePrefix ? '' : unescapeSuffix ? regexEscape(unescapeSuffix) : '';
       this.nestingPrefix = nestingPrefix ? regexEscape(nestingPrefix) : nestingPrefixEscaped || regexEscape('$t(');
       this.nestingSuffix = nestingSuffix ? regexEscape(nestingSuffix) : nestingSuffixEscaped || regexEscape(')');
       this.nestingOptionsSeparator = nestingOptionsSeparator || ',';
@@ -1188,6 +1189,9 @@
         });
       };
       this.resetRegExp();
+      if (!this.escapeValue && typeof str === 'string' && /\$t\([^)]*\{[^}]*\{\{/.test(str)) {
+        this.logger.warn('nesting options string contains interpolated variables with escapeValue: false — ' + 'if any of those values are attacker-controlled they can inject additional ' + 'nesting options (e.g. redirect lng/ns). Sanitise untrusted input before passing ' + 'it to t(), or keep escapeValue: true.');
+      }
       const missingInterpolationHandler = options?.missingInterpolationHandler || this.options.missingInterpolationHandler;
       const skipOnVariables = options?.interpolation?.skipOnVariables !== undefined ? options.interpolation.skipOnVariables : this.options.interpolation.skipOnVariables;
       const todos = [{
