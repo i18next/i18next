@@ -276,7 +276,9 @@ class Translator extends EventEmitter {
           updateMissing ? 'updateKey' : 'missingKey',
           lng,
           namespace,
-          key,
+          needsPluralHandling && !updateMissing
+            ? `${key}${this.pluralResolver.getSuffix(lng, opt.count, opt)}`
+            : key,
           updateMissing ? defaultValue : res,
         );
         if (keySeparator) {

@@ -1,3 +1,7 @@
+## 26.0.7
+
+- fix: when a plural lookup misses, the `missingKey` debug log now shows the actual plural-resolved key (e.g. `foo.bar_many` for Polish `count: 14`) instead of the base key — making it obvious which plural category was expected and missing [2423](https://github.com/i18next/i18next/issues/2423)
+
 ## 26.0.6
 
 Security release — all issues found via an internal audit.
