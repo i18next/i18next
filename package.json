@@ -48,9 +48,6 @@
       "url": "https://www.locize.com"
     }
   ],
-  "dependencies": {
-    "@babel/runtime": "^7.29.2"
-  },
   "peerDependencies": {
     "typescript": "^5 || ^6"
   },
@@ -64,7 +61,6 @@
     "@babel/core": "^7.29.0",
     "@babel/plugin-transform-async-generator-functions": "^7.29.0",
     "@babel/plugin-transform-modules-commonjs": "^7.28.6",
-    "@babel/plugin-transform-runtime": "^7.29.0",
     "@babel/preset-env": "^7.29.2",
     "@babel/preset-react": "^7.28.5",
     "@babel/register": "^7.28.6",

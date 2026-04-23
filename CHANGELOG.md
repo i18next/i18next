@@ -1,6 +1,8 @@
 ## 26.0.7
 
 - fix: when a plural lookup misses, the `missingKey` debug log now shows the actual plural-resolved key (e.g. `foo.bar_many` for Polish `count: 14`) instead of the base key — making it obvious which plural category was expected and missing [2423](https://github.com/i18next/i18next/issues/2423)
+- chore: drop `@babel/runtime` runtime dependency. The build no longer generates any `@babel/runtime` imports, so the package is unused by consumers. Rollup now uses `babelHelpers: 'bundled'` so any helpers that are ever needed in the future will be inlined rather than imported externally [2424](https://github.com/i18next/i18next/issues/2424)
+- chore: stop emitting `dist/esm/i18next.bundled.js`. It was byte-identical to `dist/esm/i18next.js` because no helpers were being imported [2424](https://github.com/i18next/i18next/issues/2424)
 
 ## 26.0.6
 

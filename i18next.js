@@ -673,7 +673,7 @@
         const resForMissing = missingKeyNoValueFallbackToKey && usedKey ? undefined : res;
         const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
         if (usedKey || usedDefault || updateMissing) {
-          this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? defaultValue : res);
+          this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, needsPluralHandling && !updateMissing ? `${key}${this.pluralResolver.getSuffix(lng, opt.count, opt)}` : key, updateMissing ? defaultValue : res);
           if (keySeparator) {
             const fk = this.resolve(key, {
               ...opt,

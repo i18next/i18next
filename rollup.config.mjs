@@ -5,12 +5,11 @@ import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url)));
 
-const getBabelOptions = ({ useESModules }) => ({
+const babelOptions = {
   exclude: /node_modules/,
-  babelHelpers: 'runtime',
-  plugins: [['@babel/transform-runtime', { useESModules }]],
+  babelHelpers: 'bundled',
   comments: false,
-});
+};
 
 const input = './src/index.js';
 const inputCjs = './src/index.cjs';
@@ -23,37 +22,24 @@ export default [
     input: inputCjs,
     output: { format: 'cjs', file: pkg.main },
     external,
-    plugins: [babel(getBabelOptions({ useESModules: false }))],
+    plugins: [babel(babelOptions)],
   },
 
   {
     input,
     output: { format: 'esm', file: pkg.module },
     external,
-    plugins: [babel(getBabelOptions({ useESModules: true }))],
-  },
-
-  {
-    input,
-    output: { format: 'esm', file: './dist/esm/i18next.bundled.js' },
-    external,
-    plugins: [
-      babel({
-        exclude: /node_modules/,
-        babelHelpers: 'bundled',
-        comments: false,
-      }),
-    ],
+    plugins: [babel(babelOptions)],
   },
 
   {
     input: inputCjs,
     output: { format: 'umd', name, file: `dist/umd/${name}.js` },
-    plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve()],
+    plugins: [babel(babelOptions), nodeResolve()],
   },
   {
     input: inputCjs,
     output: { format: 'umd', name, file: `dist/umd/${name}.min.js` },
-    plugins: [babel(getBabelOptions({ useESModules: true })), nodeResolve(), terser()],
+    plugins: [babel(babelOptions), nodeResolve(), terser()],
   },
 ];
