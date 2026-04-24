@@ -212,13 +212,17 @@ export type Callback = (error: any, t: TFunction) => void;
 
 /**
  * Uses similar args as the t function and returns true if a key exists.
- * Acts as a type guard, narrowing the key to {@link SelectorKey} so it can be passed to `t()`.
+ *
+ * Note: this shape intentionally does not include a type-guard overload so it
+ * remains easy to assign arrow functions to. The type guard narrowing to
+ * {@link SelectorKey} is declared directly on `i18n.exists` instead.
+ * Users who want narrowing on a custom wrapper can type it as
+ * `typeof i18next.exists`.
  */
 export interface ExistsFunction<
   TKeys extends string = string,
   TInterpolationMap extends object = $Dictionary,
 > {
-  (key: TKeys, options?: TOptions<TInterpolationMap>): key is TKeys & SelectorKey;
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
 
@@ -284,8 +288,13 @@ export interface i18n extends CustomInstanceExtensions {
 
   /**
    * Uses similar args as the t function and returns true if a key exists.
+   * Acts as a type guard on single-key calls, narrowing the key to
+   * {@link SelectorKey} so it can be passed to `t()`.
    */
-  exists: ExistsFunction;
+  exists: {
+    <K extends string>(key: K, options?: TOptions): key is K & SelectorKey;
+    (key: string | string[], options?: TOptions): boolean;
+  };
 
   /**
    * Returns a resource data by language.
