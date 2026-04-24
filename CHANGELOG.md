@@ -1,3 +1,7 @@
+## 26.0.8
+
+- fix(types): restore the pre-v25.10.4 `ExistsFunction` shape so plain arrow functions can again be assigned to `ExistsFunction`-typed variables (TypeScript cannot infer type predicates through multi-overload assignment). Direct `i18next.exists(key)` calls still narrow `key` to `SelectorKey` — the predicate is now declared inline on `i18n.exists`. Custom wrappers that want the narrowing can type themselves as `typeof i18next.exists` [2425](https://github.com/i18next/i18next/issues/2425)
+
 ## 26.0.7
 
 - fix: when a plural lookup misses, the `missingKey` debug log now shows the actual plural-resolved key (e.g. `foo.bar_many` for Polish `count: 14`) instead of the base key — making it obvious which plural category was expected and missing [2423](https://github.com/i18next/i18next/issues/2423)
