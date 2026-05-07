@@ -223,6 +223,7 @@ export interface ExistsFunction<
   TKeys extends string = string,
   TInterpolationMap extends object = $Dictionary,
 > {
+  <K extends TKeys>(key: K, options?: TOptions<TInterpolationMap>): key is K & SelectorKey;
   (key: TKeys | TKeys[], options?: TOptions<TInterpolationMap>): boolean;
 }
 
