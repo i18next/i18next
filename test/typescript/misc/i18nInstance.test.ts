@@ -66,6 +66,21 @@ describe('i18nInstance', () => {
       });
     });
 
+    it('should accept `enableSelector`', () => {
+      expectTypeOf(i18next.init).toBeCallableWith({
+        enableSelector: false,
+      });
+      expectTypeOf(i18next.init).toBeCallableWith({
+        enableSelector: true,
+      });
+      expectTypeOf(i18next.init).toBeCallableWith({
+        enableSelector: 'optimize',
+      });
+      expectTypeOf(i18next.init).toBeCallableWith({
+        enableSelector: 'strict',
+      });
+    });
+
     it('should accept `backend` options', () => {
       expectTypeOf(i18next.init).toBeCallableWith({
         fallbackLng: 'en',

@@ -642,6 +642,19 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   nsSeparator?: false | string;
 
   /**
+   * Selector-API mode. Mirrors `CustomTypeOptions['enableSelector']`.
+   *
+   * - `false` (default): selector API disabled.
+   * - `true` / `'optimize'`: selector resolution enabled.
+   * - `'strict'`: require an explicit namespace as the first selector
+   *   path segment in every call. The resolver always rewrites a leading
+   *   namespace-matching segment as a namespace prefix.
+   *
+   * @default false
+   */
+  enableSelector?: false | true | 'optimize' | 'strict';
+
+  /**
    * Char to split plural from key
    * @default '_'
    */
