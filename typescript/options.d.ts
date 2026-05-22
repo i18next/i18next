@@ -28,160 +28,198 @@ import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.js';
 export interface CustomTypeOptions {}
 
 /**
+ * Per-package namespace types for monorepos. Augment this in each package's
+ * `i18next.d.ts` instead of `CustomTypeOptions.resources` when several packages
+ * need their own namespaces — otherwise TypeScript reports TS2717 on merge.
+ *
+ * Works alongside the legacy `CustomTypeOptions.resources` field; both end up
+ * in `TypeOptions['resources']`.
+ *
+ * @see https://github.com/i18next/i18next/issues/2409
+ *
+ * @example
+ * ```ts
+ * // packages/ui/i18next.d.ts
+ * declare module 'i18next' {
+ *   interface ResourceNamespaceMap {
+ *     '@repo/ui': typeof uiTranslations;
+ *   }
+ * }
+ * ```
+ */
+export interface ResourceNamespaceMap {}
+
+/**
  * This interface can be augmented by users to add types to `i18next` default PluginOptions.
  */
 export interface CustomPluginOptions {}
 
+type _LegacyResources = CustomTypeOptions extends { resources: infer R } ? R : object;
+
+// NOTE: empty legacy + empty registry must stay `object` so unconfigured projects
+// still get `$IsResourcesDefined === false`.
+type _MergedResources = [keyof _LegacyResources] extends [never]
+  ? [keyof ResourceNamespaceMap] extends [never]
+    ? object
+    : ResourceNamespaceMap
+  : [keyof ResourceNamespaceMap] extends [never]
+    ? _LegacyResources
+    : _LegacyResources & ResourceNamespaceMap;
+
 export type TypeOptions = $MergeBy<
-  {
-    /** @see {InitOptions.returnNull} */
-    returnNull: false;
+  $MergeBy<
+    {
+      /** @see {InitOptions.returnNull} */
+      returnNull: false;
 
-    /** @see {InitOptions.returnEmptyString} */
-    returnEmptyString: true;
+      /** @see {InitOptions.returnEmptyString} */
+      returnEmptyString: true;
 
-    /** @see {InitOptions.returnObjects} */
-    returnObjects: false;
+      /** @see {InitOptions.returnObjects} */
+      returnObjects: false;
 
-    /** @see {InitOptions.keySeparator} */
-    keySeparator: '.';
+      /** @see {InitOptions.keySeparator} */
+      keySeparator: '.';
 
-    /** @see {InitOptions.nsSeparator} */
-    nsSeparator: ':';
+      /** @see {InitOptions.nsSeparator} */
+      nsSeparator: ':';
 
-    /** @see {InitOptions.pluralSeparator} */
-    pluralSeparator: '_';
+      /** @see {InitOptions.pluralSeparator} */
+      pluralSeparator: '_';
 
-    /** @see {InitOptions.contextSeparator} */
-    contextSeparator: '_';
+      /** @see {InitOptions.contextSeparator} */
+      contextSeparator: '_';
 
-    /** @see {InitOptions.defaultNS} */
-    defaultNS: 'translation';
+      /** @see {InitOptions.defaultNS} */
+      defaultNS: 'translation';
 
-    /** @see {InitOptions.fallbackNS} */
-    fallbackNS: false;
+      /** @see {InitOptions.fallbackNS} */
+      fallbackNS: false;
 
-    /** @see {InitOptions.compatibilityJSON} */
-    compatibilityJSON: 'v4';
+      /** @see {InitOptions.compatibilityJSON} */
+      compatibilityJSON: 'v4';
 
-    /** @see {InitOptions.resources} */
-    resources: object;
+      /** @see {InitOptions.resources} */
+      resources: object;
 
-    /**
-     * Flag that allows HTML elements to receive objects. This is only useful for React applications
-     * where you pass objects to HTML elements so they can be replaced to their respective interpolation
-     * values (mostly with Trans component)
-     */
-    allowObjectInHTMLChildren: false;
+      /**
+       * Flag that allows HTML elements to receive objects. This is only useful for React applications
+       * where you pass objects to HTML elements so they can be replaced to their respective interpolation
+       * values (mostly with Trans component)
+       */
+      allowObjectInHTMLChildren: false;
 
-    /**
-     * Flag that enables strict key checking even if a `defaultValue` has been provided.
-     * This ensures all calls of `t` function don't accidentally use implicitly missing keys.
-     */
-    strictKeyChecks: false;
+      /**
+       * Flag that enables strict key checking even if a `defaultValue` has been provided.
+       * This ensures all calls of `t` function don't accidentally use implicitly missing keys.
+       */
+      strictKeyChecks: false;
 
-    /**
-     * Prefix for interpolation
-     */
-    interpolationPrefix: '{{';
+      /**
+       * Prefix for interpolation
+       */
+      interpolationPrefix: '{{';
 
-    /**
-     * Suffix for interpolation
-     */
-    interpolationSuffix: '}}';
+      /**
+       * Suffix for interpolation
+       */
+      interpolationSuffix: '}}';
 
-    /** @see {InterpolationOptions.unescapePrefix} */
-    unescapePrefix: '-';
+      /** @see {InterpolationOptions.unescapePrefix} */
+      unescapePrefix: '-';
 
-    /** @see {InterpolationOptions.unescapeSuffix} */
-    unescapeSuffix: '';
+      /** @see {InterpolationOptions.unescapeSuffix} */
+      unescapeSuffix: '';
 
-    /**
-     * Whether to extract interpolation variables from translation strings at
-     * the type level. When `true` (default), the type system parses each
-     * resource value for `{{variable}}` patterns and types the `t()` options
-     * accordingly.
-     *
-     * Set to `false` when your translation strings use a different
-     * interpolation syntax that the i18next type extractor cannot understand
-     * — e.g. ICU MessageFormat plurals like `{count, plural, one {{count} row}
-     * other {{count} rows}}` would otherwise produce phantom variable names
-     * because the default extractor naively matches the outermost `{{` …
-     * `}}`. This flag is type-only; runtime interpolation is governed by
-     * `InterpolationOptions` and is unaffected.
-     *
-     * Required by `i18next-icu` users — see that package's docs for the
-     * recommended `CustomTypeOptions` augmentation.
-     *
-     * @default true
-     */
-    parseInterpolation: true;
+      /**
+       * Whether to extract interpolation variables from translation strings at
+       * the type level. When `true` (default), the type system parses each
+       * resource value for `{{variable}}` patterns and types the `t()` options
+       * accordingly.
+       *
+       * Set to `false` when your translation strings use a different
+       * interpolation syntax that the i18next type extractor cannot understand
+       * — e.g. ICU MessageFormat plurals like `{count, plural, one {{count} row}
+       * other {{count} rows}}` would otherwise produce phantom variable names
+       * because the default extractor naively matches the outermost `{{` …
+       * `}}`. This flag is type-only; runtime interpolation is governed by
+       * `InterpolationOptions` and is unaffected.
+       *
+       * Required by `i18next-icu` users — see that package's docs for the
+       * recommended `CustomTypeOptions` augmentation.
+       *
+       * @default true
+       */
+      parseInterpolation: true;
 
-    /**
-     * Use a proxy-based selector to select a translation.
-     *
-     * Enables features like go-to definition, and better DX/faster autocompletion
-     * for TypeScript developers.
-     *
-     * If you're working with an especially large set of translations and aren't
-     * using context, you set `enableSelector` to `"optimize"` and i18next won't do
-     * any type-level processing of your translations at all.
-     *
-     * With `enableSelector` set to `"optimize"`, i18next is capable of supporting
-     * arbitrarily large/deep translation sets without causing any IDE slowdown
-     * whatsoever.
-     *
-     * Set `enableSelector` to `"strict"` to require an explicit namespace as the
-     * first selector path segment in every call. The selector proxy stops
-     * exposing the primary namespace's keys flat on `$` — even
-     * `useTranslation('only')` must use `$.only.foo`, never `$.foo`. At runtime,
-     * a leading segment matching the scope's namespace list (primary included)
-     * is always rewritten as a namespace prefix, fully decoupling selector
-     * shape from resolution scope. Use this when you want a single mental model
-     * for selector paths regardless of how many namespaces a hook was created
-     * with, and to remove the silent miss that flat-primary paths can otherwise
-     * cause in multi-ns hooks (see [#2429](https://github.com/i18next/i18next/issues/2429)).
-     *
-     * `"strict"` mode is incompatible with the `"optimize"` shortcut. If you
-     * have keys whose names match sibling namespaces (the
-     * [#2405](https://github.com/i18next/i18next/issues/2405) pattern), do not
-     * enable strict mode — the leading-segment rewrite would route those keys
-     * into the wrong namespace.
-     *
-     * @default false
-     */
-    enableSelector: false;
+      /**
+       * Use a proxy-based selector to select a translation.
+       *
+       * Enables features like go-to definition, and better DX/faster autocompletion
+       * for TypeScript developers.
+       *
+       * If you're working with an especially large set of translations and aren't
+       * using context, you set `enableSelector` to `"optimize"` and i18next won't do
+       * any type-level processing of your translations at all.
+       *
+       * With `enableSelector` set to `"optimize"`, i18next is capable of supporting
+       * arbitrarily large/deep translation sets without causing any IDE slowdown
+       * whatsoever.
+       *
+       * Set `enableSelector` to `"strict"` to require an explicit namespace as the
+       * first selector path segment in every call. The selector proxy stops
+       * exposing the primary namespace's keys flat on `$` — even
+       * `useTranslation('only')` must use `$.only.foo`, never `$.foo`. At runtime,
+       * a leading segment matching the scope's namespace list (primary included)
+       * is always rewritten as a namespace prefix, fully decoupling selector
+       * shape from resolution scope. Use this when you want a single mental model
+       * for selector paths regardless of how many namespaces a hook was created
+       * with, and to remove the silent miss that flat-primary paths can otherwise
+       * cause in multi-ns hooks (see [#2429](https://github.com/i18next/i18next/issues/2429)).
+       *
+       * `"strict"` mode is incompatible with the `"optimize"` shortcut. If you
+       * have keys whose names match sibling namespaces (the
+       * [#2405](https://github.com/i18next/i18next/issues/2405) pattern), do not
+       * enable strict mode — the leading-segment rewrite would route those keys
+       * into the wrong namespace.
+       *
+       * @default false
+       */
+      enableSelector: false;
 
-    /**
-     * Maps interpolation format specifiers to their expected value types.
-     *
-     * By default, i18next infers types from built-in formatter names:
-     * - `number`, `currency` → `number`
-     * - `datetime` → `Date`
-     * - `relativetime` → `number`
-     * - `list` → `readonly string[]`
-     * - No format specifier → `string | number` (since i18next stringifies values at runtime)
-     *
-     * Use this option to add mappings for custom formatters or to override
-     * the built-in defaults.
-     *
-     * @default {} (empty — built-in defaults apply)
-     *
-     * @example
-     * ```ts
-     * interface CustomTypeOptions {
-     *   interpolationFormatTypeMap: {
-     *     // custom formatter
-     *     uppercase: string;
-     *     // override built-in
-     *     currency: string;
-     *   };
-     * }
-     * ```
-     */
-    interpolationFormatTypeMap: {};
-  },
-  CustomTypeOptions
+      /**
+       * Maps interpolation format specifiers to their expected value types.
+       *
+       * By default, i18next infers types from built-in formatter names:
+       * - `number`, `currency` → `number`
+       * - `datetime` → `Date`
+       * - `relativetime` → `number`
+       * - `list` → `readonly string[]`
+       * - No format specifier → `string | number` (since i18next stringifies values at runtime)
+       *
+       * Use this option to add mappings for custom formatters or to override
+       * the built-in defaults.
+       *
+       * @default {} (empty — built-in defaults apply)
+       *
+       * @example
+       * ```ts
+       * interface CustomTypeOptions {
+       *   interpolationFormatTypeMap: {
+       *     // custom formatter
+       *     uppercase: string;
+       *     // override built-in
+       *     currency: string;
+       *   };
+       * }
+       * ```
+       */
+      interpolationFormatTypeMap: {};
+    },
+    CustomTypeOptions
+  >,
+  // HACK: apply merged resources after CustomTypeOptions so registry + legacy both count.
+  { resources: _MergedResources }
 >;
 
 export type PluginOptions<T> = $MergeBy<

@@ -584,6 +584,7 @@ export type {
   InitOptions,
   TypeOptions,
   CustomTypeOptions,
+  ResourceNamespaceMap,
   CustomPluginOptions,
   PluginOptions,
   FormatFunction,
