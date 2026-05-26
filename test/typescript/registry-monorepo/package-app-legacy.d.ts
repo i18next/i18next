@@ -10,6 +10,7 @@ declare module 'i18next' {
       overlap: {
         legacy_only: 'from legacy';
         shared_literal: 'same value';
+        shared_conflict: 'A';
       };
     };
   }

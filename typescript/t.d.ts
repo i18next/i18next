@@ -77,19 +77,23 @@ interface Branded<Ns extends Namespace> {
 /** ****************************************************
  * Build all keys and key prefixes based on Resources *
  ***************************************************** */
-type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
-  ? Res[Key] extends $Dictionary | readonly unknown[]
-    ?
-        | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
-        | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
-    : never
-  : never;
+type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = [Res] extends [never]
+  ? never
+  : Key extends keyof Res
+    ? Res[Key] extends $Dictionary | readonly unknown[]
+      ?
+          | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
+          | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
+      : never
+    : never;
 
-type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res
-  ? Res[Key] extends $Dictionary | readonly unknown[]
-    ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
-    : Key
-  : never;
+type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = [Res] extends [never]
+  ? never
+  : Key extends keyof Res
+    ? Res[Key] extends $Dictionary | readonly unknown[]
+      ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
+      : Key
+    : never;
 
 type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true
   ? WithReturnObjects extends true

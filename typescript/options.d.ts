@@ -35,6 +35,10 @@ export interface CustomTypeOptions {}
  * Works alongside the legacy `CustomTypeOptions.resources` field; both end up
  * in `TypeOptions['resources']`.
  *
+ * Scalar type options like `defaultNS`, `returnNull`, `enableSelector`, etc.,
+ * still belong on `CustomTypeOptions` — this interface is for namespace
+ * resource types only.
+ *
  * @see https://github.com/i18next/i18next/issues/2409
  *
  * @example
@@ -56,6 +60,46 @@ export interface CustomPluginOptions {}
 
 type _LegacyResources = CustomTypeOptions extends { resources: infer R } ? R : object;
 
+// Per-property merge of two object types. Unlike `L & R`, which TypeScript
+// collapses to `never` whenever ANY property has incompatible literals (so a
+// single same-key/different-literal conflict wipes out the whole namespace),
+// this iterates keys and intersects them individually — the conflicting key
+// becomes `never`, the rest survive.
+type _PerPropMerge<L, R> = {
+  [K in keyof L | keyof R]: K extends keyof L
+    ? K extends keyof R
+      ? L[K] & R[K]
+      : L[K]
+    : K extends keyof R
+      ? R[K]
+      : never;
+};
+
+// Drop properties whose value resolved to `never`. Without this, the
+// conflict key would leak into `keyof Resources[ns]`, then poison
+// `KeysBuilder` recursion (it tries to walk a `never` value) and break
+// `t()` overload resolution for the entire namespace.
+// NOTE: must use the `Pick<T, NonNeverKeys>` form. A `[K in keyof T as ...]`
+// remap does NOT eagerly evaluate `T[K]` for intersection types, so conflict
+// keys would survive the filter.
+type _NonNeverKeys<T> = {
+  [K in keyof T]: [T[K]] extends [never] ? never : K;
+}[keyof T];
+type _DropConflictKeys<T> = Pick<T, _NonNeverKeys<T>>;
+
+// When the same namespace exists on both sides, deep-merge per property and
+// strip same-key/different-literal conflicts. Otherwise pick from whichever
+// side has it.
+type _MergeNamespaces<L, R> = {
+  [K in keyof L | keyof R]: K extends keyof L
+    ? K extends keyof R
+      ? _DropConflictKeys<_PerPropMerge<L[K], R[K]>>
+      : L[K]
+    : K extends keyof R
+      ? R[K]
+      : never;
+};
+
 // NOTE: empty legacy + empty registry must stay `object` so unconfigured projects
 // still get `$IsResourcesDefined === false`.
 type _MergedResources = [keyof _LegacyResources] extends [never]
@@ -64,7 +108,7 @@ type _MergedResources = [keyof _LegacyResources] extends [never]
     : ResourceNamespaceMap
   : [keyof ResourceNamespaceMap] extends [never]
     ? _LegacyResources
-    : _LegacyResources & ResourceNamespaceMap;
+    : _MergeNamespaces<_LegacyResources, ResourceNamespaceMap>;
 
 export type TypeOptions = $MergeBy<
   $MergeBy<
@@ -218,7 +262,10 @@ export type TypeOptions = $MergeBy<
     },
     CustomTypeOptions
   >,
-  // HACK: apply merged resources after CustomTypeOptions so registry + legacy both count.
+  // HACK: apply merged resources *after* CustomTypeOptions so registry contributions
+  // survive when CustomTypeOptions.resources is also defined. Without this
+  // second step, the inner $MergeBy would replace the default `resources: object`
+  // with CustomTypeOptions['resources'] alone, dropping the registry namespaces.
   { resources: _MergedResources }
 >;
 
