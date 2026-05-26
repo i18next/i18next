@@ -6,6 +6,7 @@ declare module 'i18next' {
     overlap: {
       registry_only: 'from registry';
       shared_literal: 'same value';
+      shared_conflict: 'B';
     };
   }
 }

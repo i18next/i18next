@@ -67,11 +67,13 @@ describe('ResourceNamespaceMap registry (issue #2409)', () => {
       expectTypeOf<OverlapNs['shared_literal']>().toEqualTypeOf<'same value'>();
     });
 
-    it('turns clashing literals on the same key into never', () => {
-      type ConflictLegacy = { shared_conflict: 'legacy version' };
-      type ConflictRegistry = { shared_conflict: 'registry version' };
-      type ConflictMerged = ConflictLegacy & ConflictRegistry;
-      expectTypeOf<ConflictMerged['shared_conflict']>().toEqualTypeOf<never>();
+    it('drops same-key/different-literal conflicts from the merged namespace', () => {
+      // `shared_conflict` is 'A' in legacy and 'B' in registry. Without
+      // filtering, the entire `overlap` namespace would collapse to `never`
+      // (TS reduces `{ x:'A' } & { x:'B' }` to `never`) and poison `t()`
+      // overload resolution.
+      // @ts-expect-error 'shared_conflict' is dropped because legacy says 'A', registry says 'B'
+      assertType(t('shared_conflict'));
     });
   });
 
