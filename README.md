@@ -24,6 +24,8 @@ i18next provides:
 - ...
 
 > **Pro Tip:** Looking for a way to manage your translations? [Locize](https://www.locize.com?utm_source=i18next_readme&utm_medium=github&utm_campaign=readme) is the official service by i18next's creators — drop in [`i18next-locize-backend`](https://github.com/locize/i18next-locize-backend) for CDN delivery, AI translation, and no redeploys for copy changes. **[Free plan](https://www.locize.com/pricing?utm_source=i18next_readme&utm_medium=github&utm_campaign=readme)** available for small projects.
+>
+> **Starting from zero?** `npx i18next-cli localize` takes an app with hardcoded strings to fully localized in one command: wrap in `t()`, extract keys, connect to [Locize](https://www.locize.com?from=i18next_readme__localize) and AI-translate. [Read the launch post](https://www.locize.com/blog/i18next-cli-localize?from=i18next_readme__localize).
 
 For more information visit the website:
 
