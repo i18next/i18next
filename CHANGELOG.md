@@ -1,3 +1,7 @@
+## 26.3.2
+
+- fix: chained formatters with a parenthesised option that contains the format separator (e.g. `join(separator: ', ')`) now work at **any** position in the chain, not just first. Previously the comma-in-parens reassembly only repaired `formats[0]`, so `{{v, uppercase, join(separator: ', ')}}` split the `join(...)` option on the inner comma and never rejoined it, producing corrupt output. Replaced the first-position-only repair with a position-independent pass that re-joins fragments until each open paren closes. Thanks @spokodev ([#2437](https://github.com/i18next/i18next/pull/2437)).
+
 ## 26.3.1
 
 - fix(types): `t()` with a `keyPrefix` no longer pollutes its return type with sibling keys' values. A regression in 26.3.0 — the `[Res] extends [never]` guards added to `KeysBuilderWithReturnObjects` / `KeysBuilderWithoutReturnObjects` turned the builders into deferred conditional types, so `KeyPrefix<Ns>` stopped resolving to a literal union and `keyPrefix` inference widened to the whole namespace. Symptom: `useTranslation(ns, { keyPrefix: 'a.b' })` then `t('title')` would resolve to `'<a.b>.title' | '<other.path>.title' | ...` instead of just the scoped value. Affected every `react-i18next` user using `keyPrefix`. Restored to the eager 26.2.0 form. The same-namespace conflict handling from #2434 still works via `_DropConflictKeys` at the merge layer (in `options.d.ts`). Thanks @aaronrosenthal ([#2436](https://github.com/i18next/i18next/pull/2436)).
