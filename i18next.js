@@ -1409,10 +1409,14 @@
     format(value, format, lng, options = {}) {
       if (!format) return value;
       if (value == null) return value;
-      const formats = format.split(this.formatSeparator);
-      if (formats.length > 1 && formats[0].indexOf('(') > 1 && !formats[0].includes(')') && formats.find(f => f.includes(')'))) {
-        const lastIndex = formats.findIndex(f => f.includes(')'));
-        formats[0] = [formats[0], ...formats.splice(1, lastIndex)].join(this.formatSeparator);
+      const rawFormats = format.split(this.formatSeparator);
+      const formats = [];
+      for (let i = 0; i < rawFormats.length; i++) {
+        let f = rawFormats[i];
+        while (f.indexOf('(') > -1 && !f.includes(')') && i + 1 < rawFormats.length) {
+          f = `${f}${this.formatSeparator}${rawFormats[++i]}`;
+        }
+        formats.push(f);
       }
       const result = formats.reduce((mem, f) => {
         const {
