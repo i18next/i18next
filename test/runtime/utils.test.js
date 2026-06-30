@@ -30,6 +30,24 @@ describe('utils', () => {
 
       expect(res).toEqual({ some: 'thing' });
     });
+
+    it('it should not corrupt shared built-ins via inherited keys', () => {
+      const target = {};
+      const res = deepExtend(target, { hasOwnProperty: { call: 'corrupted' } }, true);
+
+      // the inherited Object.prototype.hasOwnProperty function must stay intact
+      expect(typeof Object.prototype.hasOwnProperty.call).toBe('function');
+      expect(() => Object.prototype.hasOwnProperty.call({}, 'x')).not.toThrow();
+      // the attacker key is copied as a plain own property instead
+      expect(Object.prototype.hasOwnProperty.call(res, 'hasOwnProperty')).toBe(true);
+      expect(res.hasOwnProperty).toEqual({ call: 'corrupted' });
+    });
+
+    it('it should still merge nested own properties', () => {
+      const res = deepExtend({ a: { b: 'old', c: 'keep' } }, { a: { b: 'new', d: 'add' } }, true);
+
+      expect(res).toEqual({ a: { b: 'new', c: 'keep', d: 'add' } });
+    });
   });
 
   describe('#deepFind', () => {

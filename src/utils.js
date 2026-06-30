@@ -110,7 +110,7 @@ export const getPathWithDefaults = (data, defaultData, key) => {
 export const deepExtend = (target, source, overwrite) => {
   for (const prop in source) {
     if (prop !== '__proto__' && prop !== 'constructor') {
-      if (prop in target) {
+      if (Object.prototype.hasOwnProperty.call(target, prop)) {
         // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
         if (
           isString(target[prop]) ||
