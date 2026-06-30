@@ -97,7 +97,7 @@
   const deepExtend = (target, source, overwrite) => {
     for (const prop in source) {
       if (prop !== '__proto__' && prop !== 'constructor') {
-        if (prop in target) {
+        if (Object.prototype.hasOwnProperty.call(target, prop)) {
           if (isString(target[prop]) || target[prop] instanceof String || isString(source[prop]) || source[prop] instanceof String) {
             if (overwrite) target[prop] = source[prop];
           } else {
