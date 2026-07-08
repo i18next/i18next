@@ -298,7 +298,7 @@ class Interpolator {
        *
        * Since v25.3.0 also this is possible: https://github.com/i18next/i18next/pull/2325
        */
-      const keyEndIndex = /{.*}/.test(match[1])
+      const keyEndIndex = /{.*}/s.test(match[1])
         ? match[1].lastIndexOf('}') + 1
         : match[1].indexOf(this.formatSeparator);
       if (keyEndIndex !== -1) {
