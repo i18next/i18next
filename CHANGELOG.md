@@ -1,3 +1,7 @@
+## 26.3.6
+
+- fix: allow TypeScript 7 in the optional `typescript` peer dependency range (`^5 || ^6 || ^7`). With `typescript@7.0.2` in a project, `npm install` failed with an `ERESOLVE` peer conflict. The published types are TS7-compatible as-is: every `test/typescript` suite produces identical results under 6.0 and 7.0.2. Reported in [react-i18next#1927](https://github.com/i18next/react-i18next/issues/1927), thanks @andikapradanaarif.
+
 ## 26.3.5
 
 - fix: `$t()` nesting options blocks that span multiple lines are now parsed. `nest()` decided where the nested key ends by testing `match[1]` with `/{.*}/`, whose dot does not cross line breaks — so a `$t(key, { ... })` options object containing a newline was treated as having no options, mis-split as formatters, and the nested lookup ran without its options (placeholders stayed unresolved). The nesting regexp itself already matches newlines inside `$t(...)`; adding the `s` (dotAll) flag makes multiline options behave like the single-line form. Thanks @spokodev ([#2440](https://github.com/i18next/i18next/pull/2440)).
