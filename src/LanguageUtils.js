@@ -7,6 +7,10 @@ class LanguageUtil {
 
     this.supportedLngs = this.options.supportedLngs || false;
     this.logger = baseLogger.create('languageUtils');
+    this.formatLanguageCodeCache = {};
+  }
+  clearCache() {
+    this.formatLanguageCodeCache = {};
   }
 
   getScriptPartFromCode(code) {
@@ -31,6 +35,9 @@ class LanguageUtil {
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
     if (isString(code) && code.includes('-')) {
+      if (code in this.formatLanguageCodeCache) {
+        return this.formatLanguageCodeCache[code];
+      }
       let formattedCode;
       try {
         formattedCode = Intl.getCanonicalLocales(code)[0];
@@ -40,13 +47,12 @@ class LanguageUtil {
       if (formattedCode && this.options.lowerCaseLng) {
         formattedCode = formattedCode.toLowerCase();
       }
-      if (formattedCode) return formattedCode;
-
-      if (this.options.lowerCaseLng) {
-        return code.toLowerCase();
+      if (!formattedCode) {
+        formattedCode = this.options.lowerCaseLng ? code.toLowerCase() : code;
       }
 
-      return code;
+      this.formatLanguageCodeCache[code] = formattedCode;
+      return formattedCode;
     }
 
     return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
