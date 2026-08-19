@@ -7,10 +7,11 @@ class LanguageUtil {
 
     this.supportedLngs = this.options.supportedLngs || false;
     this.logger = baseLogger.create('languageUtils');
-    this.formatLanguageCodeCache = {};
+    this.resolveHierarchyCache = {};
   }
+
   clearCache() {
-    this.formatLanguageCodeCache = {};
+    this.resolveHierarchyCache = {};
   }
 
   getScriptPartFromCode(code) {
@@ -35,9 +36,6 @@ class LanguageUtil {
   formatLanguageCode(code) {
     // http://www.iana.org/assignments/language-tags/language-tags.xhtml
     if (isString(code) && code.includes('-')) {
-      if (code in this.formatLanguageCodeCache) {
-        return this.formatLanguageCodeCache[code];
-      }
       let formattedCode;
       try {
         formattedCode = Intl.getCanonicalLocales(code)[0];
@@ -47,12 +45,13 @@ class LanguageUtil {
       if (formattedCode && this.options.lowerCaseLng) {
         formattedCode = formattedCode.toLowerCase();
       }
-      if (!formattedCode) {
-        formattedCode = this.options.lowerCaseLng ? code.toLowerCase() : code;
+      if (formattedCode) return formattedCode;
+
+      if (this.options.lowerCaseLng) {
+        return code.toLowerCase();
       }
 
-      this.formatLanguageCodeCache[code] = formattedCode;
-      return formattedCode;
+      return code;
     }
 
     return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
@@ -131,6 +130,15 @@ class LanguageUtil {
   }
 
   toResolveHierarchy(code, fallbackCode) {
+    const hasCacheableFallback =
+      fallbackCode === undefined || fallbackCode === false || isString(fallbackCode);
+    const cacheable = isString(code) && hasCacheableFallback;
+    const cacheKey = cacheable ? `${code}|${fallbackCode}` : null;
+    if (cacheKey !== null) {
+      const cached = this.resolveHierarchyCache[cacheKey];
+      if (cached !== undefined) return cached.slice();
+    }
+
     const fallbackCodes = this.getFallbackCodes(
       (fallbackCode === false ? [] : fallbackCode) || this.options.fallbackLng || [],
       code,
@@ -158,6 +166,11 @@ class LanguageUtil {
     fallbackCodes.forEach((fc) => {
       if (!codes.includes(fc)) addCode(this.formatLanguageCode(fc));
     });
+
+    if (cacheKey !== null) {
+      this.resolveHierarchyCache[cacheKey] = codes;
+      return codes.slice();
+    }
 
     return codes;
   }
