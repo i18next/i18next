@@ -221,7 +221,7 @@ export const deepFind = (obj, path, keySeparator = '.') => {
   }
   const tokens = path.split(keySeparator);
   let current = obj;
-  for (let i = 0; i < tokens.length; ) {
+  for (let i = 0; i < tokens.length;) {
     if (!current || typeof current !== 'object') {
       return undefined;
     }

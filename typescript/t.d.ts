@@ -83,9 +83,8 @@ interface Branded<Ns extends Namespace> {
 // return types with sibling keys (#2434 regression). Guard `never` in the merge.
 type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
   ? Res[Key] extends $Dictionary | readonly unknown[]
-    ?
-        | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
-        | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
+    ? | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
+      | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
     : never
   : never;
 
@@ -176,11 +175,10 @@ type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}
 type ParseInterpolationEntries<Ret> = [_ParseInterpolation] extends [false]
   ? never
   : Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
-    ?
-        | (Value extends `${infer ActualValue},${infer Format}`
-            ? [ParseActualValue<ActualValue>, TrimSpaces<Format>]
-            : [ParseActualValue<Value>, never])
-        | ParseInterpolationEntries<Rest>
+    ? | (Value extends `${infer ActualValue},${infer Format}`
+          ? [ParseActualValue<ActualValue>, TrimSpaces<Format>]
+          : [ParseActualValue<Value>, never])
+      | ParseInterpolationEntries<Rest>
     : never;
 
 /** Extracts just the variable names (kept for backward compat with ParseInterpolationValues usage). */
@@ -279,8 +277,7 @@ type TReturnOptionalObjects<TOpt extends { returnObjects?: unknown }> = _ReturnO
     ? $SpecialObject
     : string;
 type DefaultTReturn<TOpt extends { returnObjects?: unknown }> =
-  | TReturnOptionalObjects<TOpt>
-  | TReturnOptionalNull;
+  TReturnOptionalObjects<TOpt> | TReturnOptionalNull;
 
 export type KeyWithContext<Key, TOpt extends TOptions> = TOpt['context'] extends string
   ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
@@ -791,56 +788,62 @@ type FilterKeys<T, Context> = [T] extends [readonly any[]]
 type FilterKeysObject<T, Context> = $Prune<
   {
     // Mapped type 1: object-valued keys (recurse) + plain leaf keys (non-plural, non-context)
-    [K in keyof T as T[K] extends object
-      ? K
-      : [Context] extends [string]
-        ? K extends
-            | `${string}${_ContextSeparator}${Context}`
-            | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
-          ? never // context keys handled by mapped type 3
+    [
+      K in keyof T as T[K] extends object
+        ? K
+        : [Context] extends [string]
+          ? K extends
+              | `${string}${_ContextSeparator}${Context}`
+              | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+            ? never // context keys handled by mapped type 3
+            : K extends `${string}${_PluralSeparator}${PluralSuffix}`
+              ? never // plural keys handled by mapped type 2
+              : K extends string
+                ? _HasContextVariant<T, K, Context> extends true
+                  ? never // context variant exists, drop base key (type 3 handles it)
+                  : _IsContextualKey<T, K> extends true
+                    ? never // key has context variants but not for this context
+                    : K // no context variants at all, keep base key
+                : K
           : K extends `${string}${_PluralSeparator}${PluralSuffix}`
-            ? never // plural keys handled by mapped type 2
-            : K extends string
-              ? _HasContextVariant<T, K, Context> extends true
-                ? never // context variant exists, drop base key (type 3 handles it)
-                : _IsContextualKey<T, K> extends true
-                  ? never // key has context variants but not for this context
-                  : K // no context variants at all, keep base key
-              : K
-        : K extends `${string}${_PluralSeparator}${PluralSuffix}`
-          ? never
-          : K]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+            ? never
+            : K
+    ]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
   } & {
     // Mapped type 2: plural collapsing (active regardless of context)
-    [K in keyof T as T[K] extends object
-      ? never
-      : [Context] extends [string]
-        ? K extends
-            | `${string}${_ContextSeparator}${Context}`
-            | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
-          ? never // context keys handled by mapped type 3
+    [
+      K in keyof T as T[K] extends object
+        ? never
+        : [Context] extends [string]
+          ? K extends
+              | `${string}${_ContextSeparator}${Context}`
+              | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+            ? never // context keys handled by mapped type 3
+            : K extends
+                  | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+                  | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+              ? Prefix
+              : never
           : K extends
                 | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
                 | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
             ? Prefix
             : never
-        : K extends
-              | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
-              | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
-          ? Prefix
-          : never]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
+    ]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
   } & {
     // Mapped type 3: context key collapsing (skip JSON-union phantoms typed as `undefined`)
-    [K in keyof T as T[K] extends object
-      ? never
-      : [T[K]] extends [undefined]
+    [
+      K in keyof T as T[K] extends object
         ? never
-        : [Context] extends [string]
-          ? K extends
-              | `${infer Prefix}${_ContextSeparator}${Context}`
-              | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
-            ? Prefix
+        : [T[K]] extends [undefined]
+          ? never
+          : [Context] extends [string]
+            ? K extends
+                | `${infer Prefix}${_ContextSeparator}${Context}`
+                | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+              ? Prefix
+              : never
             : never
-          : never]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+    ]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
   }
 >;
