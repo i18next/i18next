@@ -130,10 +130,23 @@ class LanguageUtil {
   }
 
   toResolveHierarchy(code, fallbackCode) {
+    if (this.options.fallbackLng !== this._cachedFallbackLng) {
+      this.resolveHierarchyCache = {};
+      this._cachedFallbackLng = this.options.fallbackLng;
+    }
+
+    const effectiveFallback = fallbackCode === undefined ? this.options.fallbackLng : fallbackCode;
     const hasCacheableFallback =
-      fallbackCode === undefined || fallbackCode === false || isString(fallbackCode);
+      effectiveFallback === undefined || effectiveFallback === false || isString(effectiveFallback);
     const cacheable = isString(code) && hasCacheableFallback;
-    const cacheKey = cacheable ? `${code}|${fallbackCode}` : null;
+    let cacheKey = null;
+    if (cacheable) {
+      let fallbackCacheKey;
+      if (fallbackCode === undefined) fallbackCacheKey = 'undefined';
+      else if (fallbackCode === false) fallbackCacheKey = 'boolean:false';
+      else fallbackCacheKey = `string:${fallbackCode}`;
+      cacheKey = `${code.length}:${code}|${fallbackCacheKey}`;
+    }
     if (cacheKey !== null) {
       const cached = this.resolveHierarchyCache[cacheKey];
       if (cached !== undefined) return cached.slice();
