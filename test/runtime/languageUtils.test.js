@@ -29,6 +29,91 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('toResolveHierarchy() cache', () => {
+    it('returns a copy of a cached hierarchy', () => {
+      const cu = new LanguageUtils({ fallbackLng: 'en' });
+
+      const first = cu.toResolveHierarchy('de', 'fr');
+      const second = cu.toResolveHierarchy('de', 'fr');
+
+      expect(second).to.eql(first);
+      expect(second).not.toBe(first);
+    });
+
+    it('does not allow returned arrays to modify the cached hierarchy', () => {
+      const cu = new LanguageUtils({ fallbackLng: 'en' });
+
+      const first = cu.toResolveHierarchy('de');
+      first.push('fr');
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en']);
+    });
+
+    it('does not cache array or object fallbackCode values', () => {
+      const cu = new LanguageUtils({ fallbackLng: 'en' });
+
+      expect(cu.toResolveHierarchy('de', ['fr', 'en'])).to.eql(['de', 'fr', 'en']);
+      expect(cu.toResolveHierarchy('de-CH', { 'de-CH': ['fr'], default: ['en'] })).to.eql([
+        'de-CH',
+        'de',
+        'fr',
+      ]);
+      expect(cu.resolveHierarchyCache).to.eql({});
+    });
+
+    it('invalidates the cache when fallbackLng changes', () => {
+      const options = { fallbackLng: 'en' };
+      const cu = new LanguageUtils(options);
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en']);
+      options.fallbackLng = 'fr';
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'fr']);
+    });
+
+    it('clears the cache', () => {
+      const cu = new LanguageUtils({ fallbackLng: 'en' });
+
+      cu.toResolveHierarchy('de');
+      expect(Object.keys(cu.resolveHierarchyCache)).toHaveLength(1);
+
+      cu.clearCache();
+
+      expect(cu.resolveHierarchyCache).to.eql({});
+    });
+
+    it('recalculates after another option changes and the cache is cleared', () => {
+      const options = { fallbackLng: 'en', load: 'all' };
+      const cu = new LanguageUtils(options);
+
+      expect(cu.toResolveHierarchy('de-CH')).to.eql(['de-CH', 'de', 'en']);
+      options.load = 'languageOnly';
+      cu.clearCache();
+
+      expect(cu.toResolveHierarchy('de-CH')).to.eql(['de', 'en']);
+    });
+
+    it('does not cache a function-valued fallbackLng', () => {
+      let fallbackLng = 'en';
+      const cu = new LanguageUtils({ fallbackLng: () => fallbackLng });
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en']);
+      fallbackLng = 'fr';
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'fr']);
+      expect(cu.resolveHierarchyCache).to.eql({});
+    });
+
+    it('distinguishes fallbackCode types in cache keys', () => {
+      const cu = new LanguageUtils({ fallbackLng: 'en' });
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en']);
+      expect(cu.toResolveHierarchy('de', 'undefined')).to.eql(['de', 'undefined']);
+      expect(cu.toResolveHierarchy('de', false)).to.eql(['de']);
+      expect(cu.toResolveHierarchy('de', 'false')).to.eql(['de', 'false']);
+    });
+  });
+
   describe('toResolveHierarchy() - extended fallback object', () => {
     /** @type {LanguageUtils} */
     let cu;
