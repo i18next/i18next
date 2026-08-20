@@ -135,10 +135,11 @@ class LanguageUtil {
       this._cachedFallbackLng = this.options.fallbackLng;
     }
 
-    const effectiveFallback = fallbackCode === undefined ? this.options.fallbackLng : fallbackCode;
     const hasCacheableFallback =
-      effectiveFallback === undefined || effectiveFallback === false || isString(effectiveFallback);
-    const cacheable = isString(code) && hasCacheableFallback;
+      fallbackCode === undefined || fallbackCode === false || isString(fallbackCode);
+    const usesUncacheableOptionsFallback =
+      fallbackCode === undefined && typeof this.options.fallbackLng === 'function';
+    const cacheable = isString(code) && hasCacheableFallback && !usesUncacheableOptionsFallback;
     let cacheKey = null;
     if (cacheable) {
       let fallbackCacheKey;

@@ -49,6 +49,16 @@ describe('LanguageUtils', () => {
       expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en']);
     });
 
+    it('caches a hierarchy when fallbackLng is an array', () => {
+      const cu = new LanguageUtils({ fallbackLng: ['en'] });
+
+      const first = cu.toResolveHierarchy('de');
+      expect(Object.keys(cu.resolveHierarchyCache)).toHaveLength(1);
+
+      const second = cu.toResolveHierarchy('de');
+      expect(second).to.eql(first);
+    });
+
     it('does not cache array or object fallbackCode values', () => {
       const cu = new LanguageUtils({ fallbackLng: 'en' });
 
