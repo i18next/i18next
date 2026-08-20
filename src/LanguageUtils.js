@@ -130,9 +130,12 @@ class LanguageUtil {
   }
 
   toResolveHierarchy(code, fallbackCode) {
-    if (this.options.fallbackLng !== this._cachedFallbackLng) {
+    const fallbackLng = this.options.fallbackLng;
+    // join so in-place array mutation (fallbackLng.push(...)) also invalidates, not only reassignment
+    const fallbackLngKey = Array.isArray(fallbackLng) ? fallbackLng.join('|') : fallbackLng;
+    if (fallbackLngKey !== this._cachedFallbackLng) {
       this.resolveHierarchyCache = {};
-      this._cachedFallbackLng = this.options.fallbackLng;
+      this._cachedFallbackLng = fallbackLngKey;
     }
 
     const hasCacheableFallback =

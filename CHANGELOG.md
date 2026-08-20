@@ -1,3 +1,7 @@
+## 26.4.0
+
+- perf: cache `toResolveHierarchy` results per `(code, fallbackCode)` pair. The hierarchy resolver runs on every `t()` call and calls `Intl.getCanonicalLocales` multiple times, which showed up prominently when profiling render-heavy UIs (e.g. virtualized data grids); with the cache the per-call cost drops from ~886 ns to ~41 ns. The cache is invalidated automatically when `options.fallbackLng` changes (reassignment or in-place array mutation); if you mutate other resolution-relevant options at runtime (`load`, `lowerCaseLng`, `cleanCode`, `nonExplicitSupportedLngs`), call `i18next.services.languageUtils.clearCache()` afterwards. Function-valued `fallbackLng` and per-call array/object `fallbackLng` options are never cached, so dynamic fallbacks keep working as before. Thanks @equaterina ([#2444](https://github.com/i18next/i18next/pull/2444)).
+
 ## 26.3.6
 
 - fix: allow TypeScript 7 in the optional `typescript` peer dependency range (`^5 || ^6 || ^7`). With `typescript@7.0.2` in a project, `npm install` failed with an `ERESOLVE` peer conflict. The published types are TS7-compatible as-is: every `test/typescript` suite produces identical results under 6.0 and 7.0.2. Reported in [react-i18next#1927](https://github.com/i18next/react-i18next/issues/1927), thanks @andikapradanaarif.

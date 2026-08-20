@@ -71,6 +71,16 @@ describe('LanguageUtils', () => {
       expect(cu.resolveHierarchyCache).to.eql({});
     });
 
+    it('invalidates the cache when the fallbackLng array is mutated in place', () => {
+      const options = { fallbackLng: ['en'] };
+      const cu = new LanguageUtils(options);
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en']);
+      options.fallbackLng.push('fr');
+
+      expect(cu.toResolveHierarchy('de')).to.eql(['de', 'en', 'fr']);
+    });
+
     it('invalidates the cache when fallbackLng changes', () => {
       const options = { fallbackLng: 'en' };
       const cu = new LanguageUtils(options);
