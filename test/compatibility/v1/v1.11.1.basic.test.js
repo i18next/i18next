@@ -1,5 +1,5 @@
 import { describe, it, expect, vitest, beforeEach, afterEach, beforeAll } from 'vitest';
-import sinon from 'sinon';
+import nise from 'nise';
 import {
   i18nCompatibilityV1 as i18n,
   getI18nCompatibilityV1InitOptions,
@@ -173,13 +173,13 @@ describe('v1.11.1 basic usage', () => {
 
   describe('post missing resources', () => {
     describe('to fallback', () => {
-      /** @type {import('sinon').SinonFakeServer}  */
+      /** @type {ReturnType<import('nise')['fakeServer']['create']>}  */
       let server;
       /** @type {import('vitest').MockInstance}  */
       let spy;
 
       beforeEach(async () => {
-        server = sinon.fakeServer.create();
+        server = nise.fakeServer.create();
         spy = vitest.spyOn(httpApi, 'create');
         // spy = sinon.spy(i18n.services.backendConnector, 'saveMissing');
 
@@ -271,13 +271,13 @@ describe('v1.11.1 basic usage', () => {
     });
 
     describe('to current', () => {
-      /** @type {import('sinon').SinonFakeServer}  */
+      /** @type {ReturnType<import('nise')['fakeServer']['create']>}  */
       let server;
       /** @type {import('vitest').MockInstance}  */
       let spy;
 
       beforeEach(() => {
-        server = sinon.fakeServer.create();
+        server = nise.fakeServer.create();
         spy = vitest.spyOn(httpApi, 'create');
 
         server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
@@ -326,20 +326,20 @@ describe('v1.11.1 basic usage', () => {
     });
 
     describe('to all', () => {
-      /** @type {import('sinon').SinonFakeServer}  */
+      /** @type {ReturnType<import('nise')['fakeServer']['create']>}  */
       let server;
       /** @type {import('vitest').MockInstance}  */
       let spy;
 
       beforeEach(() => {
-        server = sinon.fakeServer.create();
-        spy = sinon.spy(httpApi, 'create');
+        server = nise.fakeServer.create();
+        spy = vitest.spyOn(httpApi, 'create');
 
         server.respondWith([200, { 'Content-Type': 'text/html', 'Content-Length': 2 }, 'OK']);
 
         return () => {
           server.restore();
-          spy.restore();
+          spy.mockRestore();
         };
       });
 
@@ -360,15 +360,15 @@ describe('v1.11.1 basic usage', () => {
       it('it should post missing resource for all lng to server', () => {
         i18n.t('missing');
         server.respond();
-        expect(spy.calledOnce).to.equal(true);
+        expect(spy).toHaveBeenCalledOnce();
       });
 
       it('it should call post missing with right arguments', () => {
         i18n.t('missing2');
-        expect(spy.args[0][0]).to.eql(['en-US', 'en', 'dev']);
-        expect(spy.args[0][1]).to.equal('translation');
-        expect(spy.args[0][2]).to.equal('missing2');
-        expect(spy.args[0][3]).to.equal('missing2');
+        expect(spy.mock.calls[0][0]).to.eql(['en-US', 'en', 'dev']);
+        expect(spy.mock.calls[0][1]).to.equal('translation');
+        expect(spy.mock.calls[0][2]).to.equal('missing2');
+        expect(spy.mock.calls[0][3]).to.equal('missing2');
       });
     });
   });

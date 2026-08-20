@@ -1,6 +1,7 @@
 ## 26.4.0
 
 - perf: cache `toResolveHierarchy` results per `(code, fallbackCode)` pair. The hierarchy resolver runs on every `t()` call and calls `Intl.getCanonicalLocales` multiple times, which showed up prominently when profiling render-heavy UIs (e.g. virtualized data grids); with the cache the per-call cost drops from ~886 ns to ~41 ns. The cache is invalidated automatically when `options.fallbackLng` changes (reassignment or in-place array mutation); if you mutate other resolution-relevant options at runtime (`load`, `lowerCaseLng`, `cleanCode`, `nonExplicitSupportedLngs`), call `i18next.services.languageUtils.clearCache()` afterwards. Function-valued `fallbackLng` and per-call array/object `fallbackLng` options are never cached, so dynamic fallbacks keep working as before. Thanks @equaterina ([#2444](https://github.com/i18next/i18next/pull/2444)).
+- chore: update all devDependencies (Babel stays on 7.x until `@rollup/plugin-babel` supports 8, eslint on 9.x for neostandard). Removed the unused `coveralls` package (CI uses the Coveralls GitHub Action) and replaced `sinon` with `nise` + `vitest.spyOn` in the v1 compatibility tests, which resolves all open `npm audit` findings (0 vulnerabilities) and should close the dependabot alerts on the lockfile.
 
 ## 26.3.6
 

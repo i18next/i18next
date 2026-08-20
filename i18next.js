@@ -924,6 +924,10 @@
       this.options = options;
       this.supportedLngs = this.options.supportedLngs || false;
       this.logger = baseLogger.create('languageUtils');
+      this.resolveHierarchyCache = {};
+    }
+    clearCache() {
+      this.resolveHierarchyCache = {};
     }
     getScriptPartFromCode(code) {
       code = getCleanedCode(code);
@@ -1004,6 +1008,25 @@
       return found || [];
     }
     toResolveHierarchy(code, fallbackCode) {
+      const fallbackLng = this.options.fallbackLng;
+      const fallbackLngKey = Array.isArray(fallbackLng) ? fallbackLng.join('|') : fallbackLng;
+      if (fallbackLngKey !== this._cachedFallbackLng) {
+        this.resolveHierarchyCache = {};
+        this._cachedFallbackLng = fallbackLngKey;
+      }
+      const hasCacheableFallback = fallbackCode === undefined || fallbackCode === false || isString(fallbackCode);
+      const usesUncacheableOptionsFallback = fallbackCode === undefined && typeof this.options.fallbackLng === 'function';
+      const cacheable = isString(code) && hasCacheableFallback && !usesUncacheableOptionsFallback;
+      let cacheKey = null;
+      if (cacheable) {
+        let fallbackCacheKey;
+        if (fallbackCode === undefined) fallbackCacheKey = 'undefined';else if (fallbackCode === false) fallbackCacheKey = 'boolean:false';else fallbackCacheKey = `string:${fallbackCode}`;
+        cacheKey = `${code.length}:${code}|${fallbackCacheKey}`;
+      }
+      if (cacheKey !== null) {
+        const cached = this.resolveHierarchyCache[cacheKey];
+        if (cached !== undefined) return cached.slice();
+      }
       const fallbackCodes = this.getFallbackCodes((fallbackCode === false ? [] : fallbackCode) || this.options.fallbackLng || [], code);
       const codes = [];
       const addCode = c => {
@@ -1024,6 +1047,10 @@
       fallbackCodes.forEach(fc => {
         if (!codes.includes(fc)) addCode(this.formatLanguageCode(fc));
       });
+      if (cacheKey !== null) {
+        this.resolveHierarchyCache[cacheKey] = codes;
+        return codes.slice();
+      }
       return codes;
     }
   }
