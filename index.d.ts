@@ -314,7 +314,7 @@ export interface i18n extends CustomInstanceExtensions {
    */
   getFixedT<
     Ns extends Namespace | null,
-    const TKPrefixFn extends (TypeOptions['enableSelector'] extends true | 'optimize'
+    const TKPrefixFn extends (TypeOptions['enableSelector'] extends true | 'optimize' | 'strict'
       ? KeyPrefixSelector<ActualNs>
       : never),
     ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns,

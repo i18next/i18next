@@ -50,4 +50,13 @@ describe('t (strict)', () => {
   it('getFixedT works the same way', () => {
     expectTypeOf(getFixedT(null, 'ns1')(($) => $.ns1.beverage)).toEqualTypeOf<'beverage'>();
   });
+
+  it('getFixedT scopes the returned t to a selector keyPrefix', () => {
+    // The selector-form `keyPrefix` overload is gated on `enableSelector`, so
+    // 'strict' has to be listed alongside `true` and 'optimize' — otherwise the
+    // overload drops out and keyPrefix scoping is silently lost.
+    const tScoped = getFixedT(null, 'ns2', ($) => $.ns2.nested);
+
+    expectTypeOf(tScoped(($) => $.deep)).toEqualTypeOf<'deeply nested in ns2'>();
+  });
 });
