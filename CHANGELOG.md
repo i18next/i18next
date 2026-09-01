@@ -1,3 +1,7 @@
+## 26.4.1
+
+- fix(types): the selector-form `keyPrefix` overload of `getFixedT()` is now available under `enableSelector: 'strict'`. Its constraint was gated on `true | 'optimize'` only, so under `'strict'` it collapsed to `never`, the overload dropped out, and the returned `t` silently lost its `keyPrefix` scope (`t(($) => $.deep)` failed with `Property 'deep' does not exist on type '{}'`). The same call already typechecked under `true` and `'optimize'`. Thanks @hovelopin ([#2446](https://github.com/i18next/i18next/pull/2446)).
+
 ## 26.4.0
 
 - perf: cache `toResolveHierarchy` results per `(code, fallbackCode)` pair. The hierarchy resolver runs on every `t()` call and calls `Intl.getCanonicalLocales` multiple times, which showed up prominently when profiling render-heavy UIs (e.g. virtualized data grids); with the cache the per-call cost drops from ~886 ns to ~41 ns. The cache is invalidated automatically when `options.fallbackLng` changes (reassignment or in-place array mutation); if you mutate other resolution-relevant options at runtime (`load`, `lowerCaseLng`, `cleanCode`, `nonExplicitSupportedLngs`), call `i18next.services.languageUtils.clearCache()` afterwards. Function-valued `fallbackLng` and per-call array/object `fallbackLng` options are never cached, so dynamic fallbacks keep working as before. Thanks @equaterina ([#2444](https://github.com/i18next/i18next/pull/2444)).
