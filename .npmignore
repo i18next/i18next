@@ -23,3 +23,12 @@ CONTRIBUTING.md
 .husky
 examples/
 vitest.*.mts
+.nvmrc
+eslint.config.mjs
+# npm ignores .gitignore once .npmignore exists, so local/secret files are mirrored here
+.claude
+.vscode
+.idea
+.env*
+*.pem
+*.key
