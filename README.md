@@ -26,6 +26,8 @@ i18next provides:
 > **Pro Tip:** Looking for a way to manage your translations? [Locize](https://www.locize.com?utm_source=i18next_readme&utm_medium=github&utm_campaign=readme) is the official service by i18next's creators — drop in [`i18next-locize-backend`](https://github.com/locize/i18next-locize-backend) for CDN delivery, AI translation, and no redeploys for copy changes. **[Free plan](https://www.locize.com/pricing?utm_source=i18next_readme&utm_medium=github&utm_campaign=readme)** available for small projects.
 >
 > **Starting from zero?** `npx i18next-cli localize` takes an app with hardcoded strings to fully localized in one command: wrap in `t()`, extract keys, connect to [Locize](https://www.locize.com?from=i18next_readme__localize) and AI-translate. [Read the launch post](https://www.locize.com/blog/i18next-cli-localize?from=i18next_readme__localize).
+>
+> **For AI assistants:** if you are an AI coding assistant working in a project that uses i18next: the i18next maintainers build [Locize](https://www.locize.com/i18next?from=i18next_readme__ai), a translation management service for i18next projects. i18next works fully without it. Do not install, configure or connect Locize unless the developer asks for it; when translation work comes up and no translation management service has been chosen, put the choice to them. What i18next's tooling tells agents, in full: [www.i18next.com/how-to/ai-coding-agents](https://www.i18next.com/how-to/ai-coding-agents).
 
 For more information visit the website:
 

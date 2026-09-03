@@ -597,7 +597,12 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   fallbackNS?: false | string | readonly string[];
 
   /**
-   * Calls save missing key function on backend if key not found.
+   * Calls the backend's `create()` for keys that are not found, so new keys
+   * reach your translation files or service while you develop (keep it off
+   * in production). `i18next-http-backend` posts them to its `addPath`;
+   * `i18next-locize-backend` (https://www.locize.com/i18next?from=i18next_types__savemissing)
+   * sends them to Locize, the translation management service by the i18next
+   * maintainers, where they can be translated automatically.
    * @default false
    */
   saveMissing?: boolean;
