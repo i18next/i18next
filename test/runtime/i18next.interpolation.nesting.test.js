@@ -49,11 +49,20 @@ describe('i18next.interpolation.nesting', () => {
 
             nestingWithBracketsFirst: '$t(nestingWithBracketsSecond, {"name": "foo (bar)"})',
             nestingWithBracketsSecond: 'Hello {{name}}!',
+
+            // $& $` $' $$ are String.replace patterns and must stay literal in nested values
+            replacementPattern: 'Band: $t(replacementPatternValue)',
+            replacementPatternValue: 'Rock $& Roll',
+            replacementPatternOption: 'Hi $t(replacementPatternInner, { "n": "{{n}}" })',
+            replacementPatternInner: 'name={{n}}',
+            nestedFormatterNumber: 'Count: $t(nestedFormatterWord, len)',
+            nestedFormatterWord: 'abc',
           },
         },
       },
     });
     instance.services.formatter.add('customdDateFormatter', (value, lng) => `${value} | ${lng}`);
+    instance.services.formatter.add('len', (value) => value.length);
   });
 
   describe('nesting', () => {
@@ -160,6 +169,18 @@ describe('i18next.interpolation.nesting', () => {
       {
         args: ['nestingWithBracketsFirst'],
         expected: 'Hello foo (bar)!',
+      },
+      {
+        args: ['replacementPattern'],
+        expected: 'Band: Rock $& Roll',
+      },
+      {
+        args: ['replacementPatternOption', { n: 'X$&Y', interpolation: { escapeValue: false } }],
+        expected: 'Hi name=X$&Y',
+      },
+      {
+        args: ['nestedFormatterNumber'],
+        expected: 'Count: 3',
       },
     ];
 

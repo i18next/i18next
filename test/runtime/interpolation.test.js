@@ -422,6 +422,13 @@ describe('Interpolator', () => {
         expect(ip.nest('Band: $t(key)', () => test.value)).to.eql(test.expected);
       });
     });
+
+    it('stringifies a non-string value returned by a formatter', () => {
+      const ipFormat = new Interpolator({
+        interpolation: { escapeValue: false, format: (v, f) => (f === 'len' ? v.length : v) },
+      });
+      expect(ipFormat.nest('Count: $t(key, len)', () => 'abc')).to.eql('Count: 3');
+    });
   });
 
   describe('interpolate() - backwards compatible', () => {
