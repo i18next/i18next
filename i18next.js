@@ -1327,7 +1327,7 @@
             interpolationkey: match[1].trim()
           }), value.trim());
         }
-        str = str.replace(match[0], value);
+        str = str.replace(match[0], regexSafe(makeString(value)));
         this.regexp.lastIndex = 0;
       }
       return str;
