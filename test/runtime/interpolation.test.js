@@ -402,6 +402,28 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('nest() - replacement patterns in the nested value', () => {
+    /** @type {Interpolator} */
+    let ip;
+
+    beforeAll(() => {
+      ip = new Interpolator({ interpolation: { escapeValue: false } });
+    });
+
+    const tests = [
+      { value: 'Rock $& Roll', expected: 'Band: Rock $& Roll' },
+      { value: 'a$`b', expected: 'Band: a$`b' },
+      { value: "a$'b", expected: "Band: a$'b" },
+      { value: 'US$$5', expected: 'Band: US$$5' },
+    ];
+
+    tests.forEach((test) => {
+      it(`keeps ${JSON.stringify(test.value)} literal`, () => {
+        expect(ip.nest('Band: $t(key)', () => test.value)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('interpolate() - backwards compatible', () => {
     /** @type {Interpolator} */
     let ip;
