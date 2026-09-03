@@ -332,7 +332,9 @@ class Interpolator {
 
       // Nested keys should not be escaped by default #854
       // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
-      str = str.replace(match[0], value);
+      // regexSafe on the replacement argument only, so `$&`, `$'`, "$`" and `$$`
+      // in the resolved value stay literal instead of being read as replacement patterns
+      str = str.replace(match[0], regexSafe(value));
       this.regexp.lastIndex = 0;
     }
     return str;
