@@ -86,6 +86,29 @@ jobs:
         if: ${{ matrix.collectCoverage }}
         uses: coverallsapp/github-action@v2
 
+  examples:
+    name: Build example ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example: [typescript, typescript-selector]
+    defaults:
+      run:
+        working-directory: examples/${{ matrix.example }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and run
+        run: npm start
+
   testTypescript:
     name: Test typescript
     runs-on: ubuntu-latest

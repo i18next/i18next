@@ -8,9 +8,10 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "22.20.5",
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "i18next": "25.7.4"
+    "i18next": "26.4.2"
   }
 }
