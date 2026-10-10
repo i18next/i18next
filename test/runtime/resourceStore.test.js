@@ -217,5 +217,33 @@ describe('ResourceStore', () => {
         expect(rs.getDataByLanguage('en')).to.be.eql({ translation: { test: 'test' } });
       });
     });
+
+    describe('can check if a language has some translations', () => {
+      it('it checks by hasLanguageSomeTranslations', () => {
+        rs = new ResourceStore({
+          en: { empty: {}, translation: { test: 'test' } },
+          de: { empty: {} },
+        });
+        expect(rs.hasLanguageSomeTranslations('en')).toBe(true);
+        expect(rs.hasLanguageSomeTranslations('de')).toBe(false);
+        expect(rs.hasLanguageSomeTranslations('fr')).toBe(false);
+
+        rs.addResource('de', 'translation', 'key', 'value');
+        expect(rs.hasLanguageSomeTranslations('de')).toBe(true);
+        rs.removeResourceBundle('en', 'translation');
+        expect(rs.hasLanguageSomeTranslations('en')).toBe(false);
+
+        // empty results are not cached: a key added directly to the bundle counts right away
+        const bundle = {};
+        rs = new ResourceStore({ it: { translation: bundle } });
+        expect(rs.hasLanguageSomeTranslations('it')).toBe(false);
+        bundle.key = 'value';
+        expect(rs.hasLanguageSomeTranslations('it')).toBe(true);
+        // the same bundle object is known to be non-empty in a new store, too
+        expect(
+          new ResourceStore({ es: { translation: bundle } }).hasLanguageSomeTranslations('es'),
+        ).toBe(true);
+      });
+    });
   });
 });

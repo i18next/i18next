@@ -1,6 +1,12 @@
 import EventEmitter from './EventEmitter.js';
 import { getPath, deepFind, setPath, deepExtend, isString } from './utils.js';
 
+// Bundles already seen with keys, shared across instances so SSR setups reusing the same
+// resources skip enumerating large bundles on every init (#2449). Only "non-empty" is cached:
+// no API removes single keys from a bundle, so a non-empty bundle stays non-empty.
+// ponytail: a bundle emptied by hand with `delete` on every key keeps counting as non-empty
+const nonEmptyBundles = new WeakSet();
+
 class ResourceStore extends EventEmitter {
   constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
     super();
@@ -150,7 +156,13 @@ class ResourceStore extends EventEmitter {
   hasLanguageSomeTranslations(lng) {
     const data = this.getDataByLanguage(lng);
     const n = (data && Object.keys(data)) || [];
-    return !!n.find((v) => data[v] && Object.keys(data[v]).length > 0);
+    return !!n.find((v) => {
+      const bundle = data[v];
+      if (nonEmptyBundles.has(bundle)) return true;
+      if (!bundle || Object.keys(bundle).length === 0) return false;
+      if (typeof bundle === 'object') nonEmptyBundles.add(bundle);
+      return true;
+    });
   }
 
   toJSON() {
