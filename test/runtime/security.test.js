@@ -197,11 +197,13 @@ describe('security: nest() does not rescan resolved values', () => {
 
   it('stays linear with many nestings behind an unclosed $t(', async () => {
     const instance = await init();
-    // Used to rescan from the unclosed $t( after every match (~1.4s here).
-    const key = `ns:$t(${'$t(x)'.repeat(20000)}`;
+    // Used to rescan the filler from the unclosed $t( after every match: nestings x filler
+    // (~1.7s locally). Few nestings keep the JS work small, so coverage runs stay fast.
+    const filler = 'a'.repeat(500000);
+    const key = `ns:$t(${filler}${'$t(x)'.repeat(2000)}`;
     const start = Date.now();
     const out = instance.t(key);
-    expect(Date.now() - start).toBeLessThan(300);
-    expect(out).to.equal(`ns:$t(${'X'.repeat(20000)}`);
+    expect(Date.now() - start).toBeLessThan(500);
+    expect(out).to.equal(`ns:$t(${filler}${'X'.repeat(2000)}`);
   });
 });
