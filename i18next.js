@@ -1204,7 +1204,7 @@
       };
       this.regexp = getOrResetRegExp(this.regexp, `${this.prefix}(.+?)${this.suffix}`);
       this.regexpUnescape = getOrResetRegExp(this.regexpUnescape, `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`);
-      this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}((?:[^()"']+|"[^"]*"|'[^']*'|\\((?:[^()]|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`);
+      this.nestingRegexp = getOrResetRegExp(this.nestingRegexp, `${this.nestingPrefix}((?:[^()"']|"[^"]*"|'[^']*'|\\((?:[^()"']|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`);
     }
     interpolate(str, data, lng, options) {
       let match;
@@ -1308,7 +1308,10 @@
         if (clonedOptions.defaultValue && clonedOptions.defaultValue.includes(this.prefix)) delete clonedOptions.defaultValue;
         return key;
       };
-      while (match = this.nestingRegexp.exec(str)) {
+      const nestingRegexp = new RegExp(this.nestingRegexp);
+      let out = '';
+      let lastEnd = 0;
+      while (match = nestingRegexp.exec(str)) {
         let formatters = [];
         clonedOptions = {
           ...options
@@ -1334,10 +1337,11 @@
             interpolationkey: match[1].trim()
           }), value.trim());
         }
-        str = str.replace(match[0], regexSafe(makeString(value)));
+        out += str.slice(lastEnd, match.index) + makeString(value);
+        lastEnd = nestingRegexp.lastIndex;
         this.regexp.lastIndex = 0;
       }
-      return str;
+      return lastEnd ? out + str.slice(lastEnd) : str;
     }
   }
 
