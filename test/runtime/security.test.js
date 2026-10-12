@@ -149,3 +149,59 @@ describe('security: log injection control-character stripping', () => {
     expect(seen[0][0]).to.include('normal message with {variables} and "quotes"');
   });
 });
+
+describe('security: nesting regexp ReDoS on an unclosed $t(', () => {
+  // The old nesting regexp backtracked exponentially here (~2x per char) and hung t().
+  const cases = [
+    ['interpolated value', '$t(' + 'a'.repeat(18), {}],
+    ['interpolated value with nest:false', '$t(' + 'a'.repeat(18), { nest: false }],
+    ['quotes inside an unclosed group', '$t((' + 'a""'.repeat(17), {}],
+  ];
+  cases.forEach(([name, payload, opts]) => {
+    it(`does not hang: ${name}`, async () => {
+      const instance = i18next.createInstance();
+      await instance.init({
+        lng: 'en',
+        resources: { en: { translation: { greet: 'Hello {{- name}}, welcome!' } } },
+      });
+      const start = Date.now();
+      const out = instance.t('greet', { name: payload, ...opts });
+      expect(Date.now() - start).toBeLessThan(100);
+      expect(out).to.equal(`Hello ${payload}, welcome!`);
+    });
+  });
+});
+
+describe('security: nest() does not rescan resolved values', () => {
+  const init = async (interpolation) => {
+    const instance = i18next.createInstance();
+    await instance.init({
+      lng: 'en',
+      interpolation,
+      resources: {
+        en: { translation: { outer: 'A $t(inner) B', inner: 'Hi {{name}}', secret: 'S', x: 'X' } },
+      },
+    });
+    return instance;
+  };
+
+  it('keeps a $t() forwarded into a nested value literal under skipOnVariables', async () => {
+    const instance = await init();
+    expect(instance.t('outer', { name: '$t(secret)' })).to.equal('A Hi $t(secret) B');
+  });
+
+  it('still nests it with skipOnVariables: false', async () => {
+    const instance = await init({ skipOnVariables: false });
+    expect(instance.t('outer', { name: '$t(secret)' })).to.equal('A Hi S B');
+  });
+
+  it('stays linear with many nestings behind an unclosed $t(', async () => {
+    const instance = await init();
+    // Used to rescan from the unclosed $t( after every match (~1.4s here).
+    const key = `ns:$t(${'$t(x)'.repeat(20000)}`;
+    const start = Date.now();
+    const out = instance.t(key);
+    expect(Date.now() - start).toBeLessThan(300);
+    expect(out).to.equal(`ns:$t(${'X'.repeat(20000)}`);
+  });
+});

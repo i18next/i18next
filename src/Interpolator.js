@@ -108,9 +108,12 @@ class Interpolator {
       this.regexpUnescape,
       `${this.prefix}${this.unescapePrefix}(.+?)${this.unescapeSuffix}${this.suffix}`,
     );
+    // Every alternative starts with a different char (plain / " / ' / "("), so there is
+    // only one way to split the input. Overlapping alternatives (e.g. `[^()"']+` inside
+    // `*?`) backtrack exponentially on an unclosed `$t(` (ReDoS).
     this.nestingRegexp = getOrResetRegExp(
       this.nestingRegexp,
-      `${this.nestingPrefix}((?:[^()"']+|"[^"]*"|'[^']*'|\\((?:[^()]|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`,
+      `${this.nestingPrefix}((?:[^()"']|"[^"]*"|'[^']*'|\\((?:[^()"']|"[^"]*"|'[^']*')*\\))*?)${this.nestingSuffix}`,
     );
   }
 
@@ -275,8 +278,14 @@ class Interpolator {
       return key;
     };
 
-    // regular escape on demand
-    while ((match = this.nestingRegexp.exec(str))) {
+    // One pass over the original str with an own copy of the regexp. The nested lookups
+    // (fc) reset the shared nestingRegexp, so the loop used to rescan from 0 after every
+    // match: quadratic, and it nested again any `$t(...)` inside a resolved value (e.g. a
+    // variable the nested lookup kept literal under skipOnVariables).
+    const nestingRegexp = new RegExp(this.nestingRegexp);
+    let out = '';
+    let lastEnd = 0;
+    while ((match = nestingRegexp.exec(str))) {
       let formatters = [];
 
       clonedOptions = { ...options };
@@ -332,13 +341,14 @@ class Interpolator {
 
       // Nested keys should not be escaped by default #854
       // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
-      // regexSafe on the replacement argument only, so `$&`, `$'`, "$`" and `$$`
-      // in the resolved value stay literal instead of being read as replacement patterns.
+      // Sliced in, not String.replace, so `$&`, `$'`, "$`" and `$$` in the value stay literal.
       // makeString: a formatter in the nesting chain may have returned a non-string.
-      str = str.replace(match[0], regexSafe(makeString(value)));
+      out += str.slice(lastEnd, match.index) + makeString(value);
+      lastEnd = nestingRegexp.lastIndex;
       this.regexp.lastIndex = 0;
     }
-    return str;
+    // no match: str untouched (it may be a non-string)
+    return lastEnd ? out + str.slice(lastEnd) : str;
   }
 }
 
