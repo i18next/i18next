@@ -2151,7 +2151,11 @@
       }
       if (this.hasResourceBundle(lng, ns)) return true;
       if (!this.services.backendConnector.backend || this.options.resources && !this.options.partialBundledLanguages) return true;
-      if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
+      const {
+        languageUtils
+      } = this.services;
+      const loadLng = !options.lng ? lng : languageUtils.isSupportedCode(lng) && languageUtils.toResolveHierarchy(lng, false)[0];
+      if ((!loadLng || loadNotPending(loadLng, ns)) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
       return false;
     }
     loadNamespaces(ns, callback) {
