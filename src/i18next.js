@@ -516,8 +516,13 @@ class I18n extends EventEmitter {
     // were not loading at all -> SEMI SUCCESS
     if (!this.services.backendConnector.backend || (this.options.resources && !this.options.partialBundledLanguages)) return true;
 
+    // a passed in lng is a raw code: loadLanguages() stores it under its resolved code (formatted, reduced
+    // per `load`), or skips it entirely outside supportedLngs - checking the raw code would wait forever
+    const { languageUtils } = this.services;
+    const loadLng = !options.lng ? lng : languageUtils.isSupportedCode(lng) && languageUtils.toResolveHierarchy(lng, false)[0];
+
     // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
-    if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
+    if ((!loadLng || loadNotPending(loadLng, ns)) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
 
     return false;
   }

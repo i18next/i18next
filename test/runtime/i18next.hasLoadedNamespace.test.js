@@ -174,6 +174,53 @@ describe('i18next', () => {
     });
   });
 
+  // https://github.com/i18next/react-i18next/issues/1934
+  describe('for a passed in lng loaded under another code (or not at all)', () => {
+    const create = async (options, lng) => {
+      const inst = i18next.createInstance();
+      inst.use(Backend);
+      await inst.init({ fallbackLng: 'en', lng: 'en', ...options });
+      if (lng) await inst.loadLanguages(lng);
+      return inst;
+    };
+
+    it('it should ok for a lng outside supportedLngs - only the fallback gets loaded', async () => {
+      const inst = await create({ supportedLngs: ['en'] }, 'xx');
+      expect(inst.hasLoadedNamespace('translation', { lng: 'xx' })).to.equal(true);
+    });
+
+    it('it should ok for a lng stored under its formatted code', async () => {
+      const inst = await create({}, 'de-ch');
+      expect(inst.hasResourceBundle('de-CH', 'translation')).to.equal(true);
+      expect(inst.hasLoadedNamespace('translation', { lng: 'de-ch' })).to.equal(true);
+    });
+
+    it('it should ok for a lng reduced by load: languageOnly', async () => {
+      const inst = await create({ load: 'languageOnly' }, 'de-CH');
+      expect(inst.hasLoadedNamespace('translation', { lng: 'de-CH' })).to.equal(true);
+    });
+
+    it('it should still nok before that lng was loaded', async () => {
+      const inst = await create({});
+      expect(inst.hasLoadedNamespace('translation', { lng: 'de-ch' })).to.equal(false);
+    });
+
+    it('it should keep waiting while changing to a lng resolved from outside supportedLngs', async () => {
+      const inst = i18next.createInstance();
+      inst.use({ ...Backend, read: (l, n, cb) => setTimeout(() => cb(null, { key: l }), 10) });
+      await inst.init({ supportedLngs: ['en', 'de'], fallbackLng: 'en', lng: 'en' });
+      // the precheck react-i18next passes with bindI18n: 'languageChanging'
+      const precheck = (i, loadNotPending) =>
+        i.isLanguageChangingTo && !loadNotPending(i.isLanguageChangingTo, 'translation')
+          ? false
+          : undefined;
+      const changing = inst.changeLanguage('de-CH');
+      expect(inst.hasLoadedNamespace('translation', { precheck })).to.equal(false);
+      await changing;
+      expect(inst.hasLoadedNamespace('translation', { precheck })).to.equal(true);
+    });
+  });
+
   describe('not having a backend', () => {
     /** @type {import('i18next').i18n} */
     const i18n2 = i18next.createInstance();
