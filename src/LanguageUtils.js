@@ -181,7 +181,9 @@ class LanguageUtil {
     }
 
     fallbackCodes.forEach((fc) => {
-      if (!codes.includes(fc)) addCode(this.formatLanguageCode(fc));
+      // compare the formatted code, so a fallback like 'de-ch' doesn't repeat 'de-CH'
+      const formattedFc = this.formatLanguageCode(fc);
+      if (!codes.includes(formattedFc)) addCode(formattedFc);
     });
 
     if (cacheKey !== null) {

@@ -20,6 +20,11 @@ describe('LanguageUtils', () => {
       { args: ['zh-Hant-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en'] },
       { args: ['de-x-custom1'], expected: ['de-x-custom1', 'de', 'en'] },
       { args: ['de-DE-x-custom1'], expected: ['de-DE-x-custom1', 'de', 'en'] },
+      { args: ['de-CH', 'de-ch'], expected: ['de-CH', 'de'] },
+      {
+        args: ['zh-Hant-MO', ['zh-hant-mo', 'en']],
+        expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en'],
+      },
     ];
 
     tests.forEach((test) => {
@@ -272,6 +277,7 @@ describe('LanguageUtils', () => {
       { args: ['DE-CH'], expected: ['de-CH', 'de', 'en'] },
       { args: ['NB-NO'], expected: ['nb-NO', 'nb', 'en'] },
       { args: ['ZH-HANT-MO'], expected: ['zh-Hant-MO', 'zh-Hant', 'zh', 'en'] },
+      { args: ['en', 'EN'], expected: ['en'] },
     ];
 
     tests.forEach((test) => {
