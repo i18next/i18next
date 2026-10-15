@@ -1052,7 +1052,8 @@
         addCode(this.formatLanguageCode(code));
       }
       fallbackCodes.forEach(fc => {
-        if (!codes.includes(fc)) addCode(this.formatLanguageCode(fc));
+        const formattedFc = this.formatLanguageCode(fc);
+        if (!codes.includes(formattedFc)) addCode(formattedFc);
       });
       if (cacheKey !== null) {
         this.resolveHierarchyCache[cacheKey] = codes;
