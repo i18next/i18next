@@ -664,7 +664,9 @@ class I18n extends EventEmitter {
   cloneInstance(options = {}, callback = noop) {
     const forkResourceStore = options.forkResourceStore;
     if (forkResourceStore) delete options.forkResourceStore;
-    const mergedOptions = { ...this.options, ...options, ...{ isClone: true } };
+    // preload is not inherited: the parent already loaded it into the shared store, and re-queueing it on every clone's
+    // changeLanguage costs languages × namespaces per call (https://github.com/i18next/i18next/issues/2451)
+    const mergedOptions = { ...this.options, preload: false, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
     if ((options.debug !== undefined || options.prefix !== undefined)) {
       clone.logger = clone.logger.clone(options);

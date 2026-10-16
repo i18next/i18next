@@ -86,6 +86,26 @@ describe('i18next', () => {
         });
       });
 
+      it('should not re-queue the parent preload on clone changeLanguage (#2451)', async () => {
+        const instance = i18next.createInstance();
+        instance.use({
+          type: 'backend',
+          read: (language, namespace, callback) => callback(null, { key: `value_${language}` }),
+        });
+        await instance.init({ fallbackLng: 'en', preload: ['en', 'de', 'fr', 'it'] });
+
+        const queueLoad = vi.spyOn(instance.services.backendConnector, 'queueLoad');
+        const clone = instance.cloneInstance({ initAsync: false });
+        await clone.changeLanguage('de');
+
+        const queued = queueLoad.mock.calls.flatMap(([lngs]) => lngs);
+        expect(queued).not.to.include('fr');
+        expect(queued).not.to.include('it');
+        expect(clone.t('key')).to.equal('value_de');
+        expect(instance.options.preload).to.eql(['en', 'de', 'fr', 'it']);
+        expect(instance.cloneInstance({ preload: ['fr'] }).options.preload).to.eql(['fr']);
+      });
+
       it('should interpolate list for cloned instance with empty interpolation config', async () => {
         const config = {
           lng: 'en',
