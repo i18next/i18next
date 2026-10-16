@@ -2216,6 +2216,7 @@
       if (forkResourceStore) delete options.forkResourceStore;
       const mergedOptions = {
         ...this.options,
+        preload: false,
         ...options,
         ...{
           isClone: true
