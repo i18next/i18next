@@ -189,8 +189,24 @@ export type TypeOptions = $MergeBy<
        * `}}`. This flag is type-only; runtime interpolation is governed by
        * `InterpolationOptions` and is unaffected.
        *
-       * Required by `i18next-icu` users — see that package's docs for the
-       * recommended `CustomTypeOptions` augmentation.
+       * Set to `'icu'` with `i18next-icu` to type `t()` options from the ICU
+       * MessageFormat arguments instead: `{name}` takes `string | number`,
+       * `{n, number}`, `plural` and `selectordinal` take `number`, `{d, date}`
+       * and `{t, time}` take `Date`, `select` takes its case keys or any string
+       * (for `other`), and arguments nested in cases are required too.
+       * `interpolationFormatTypeMap` overrides a type by its format name (e.g.
+       * `date: Date | number`). Options become required for a message with
+       * arguments.
+       *
+       * Set to `'mf2'` with `i18next-mf2` to type `t()` options from the
+       * MessageFormat 2 variables: `{$name}` takes `string | number`, a
+       * variable annotated with `:number`, `:integer`, `:currency`, `:percent`
+       * or `:unit` (directly or through `.input`/`.local`) takes `number`,
+       * `:datetime`, `:date` and `:time` take `Date`, `:string` takes `string`,
+       * option and markup variables (`minimumFractionDigits=$digits`,
+       * `{#link href=$url}`) take `string | number`, and `.local` variables are
+       * not arguments. `interpolationFormatTypeMap` overrides a type by its
+       * function name.
        *
        * @default true
        */

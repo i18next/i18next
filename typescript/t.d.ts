@@ -172,7 +172,7 @@ type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}
   : Ret;
 
 /** Parses interpolation entries as `[variableName, formatSpecifier | never]` tuples. */
-type ParseInterpolationEntries<Ret> = [_ParseInterpolation] extends [false]
+type ParseInterpolationEntries<Ret> = [_ParseInterpolation] extends [false | 'icu' | 'mf2']
   ? never
   : Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
     ? | (Value extends `${infer ActualValue},${infer Format}`
@@ -225,10 +225,200 @@ type _InterpolationMapFromEntries<E> = _UnionToIntersection<
     : never
 >;
 
-export type InterpolationMap<Ret> = $PreservedValue<
-  _InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>,
-  Record<string, unknown>
->;
+/** *********************************************************************
+ * ICU MessageFormat arguments (`parseInterpolation: 'icu'`)            *
+ *********************************************************************** */
+type _IcuWhitespace = ' ' | '\n' | '\t' | '\r';
+type _IcuTrim<S> = S extends `${_IcuWhitespace}${infer R}`
+  ? _IcuTrim<R>
+  : S extends `${infer R}${_IcuWhitespace}`
+    ? _IcuTrim<R>
+    : S;
+
+/**
+ * Drops ICU apostrophe quoting as intl-messageformat (i18next-icu) reads it:
+ * `''` is a literal apostrophe, `'{...}'` (also `'}'`, `'<'`, `'>'`, `'#'`) is
+ * literal text up to the next single apostrophe.
+ * Simplification: `'#` quotes everywhere here, at runtime only inside plurals.
+ */
+type _IcuStripQuotes<S, Acc extends string = ''> = S extends `${infer L}'${infer R}`
+  ? R extends `'${infer R2}`
+    ? _IcuStripQuotes<R2, `${Acc}${L}`>
+    : R extends `${'{' | '}' | '<' | '>' | '#'}${string}`
+      ? _IcuStripQuotes<_IcuSkipQuoted<R>, `${Acc}${L}`>
+      : _IcuStripQuotes<R, `${Acc}${L}'`>
+  : `${Acc}${S & string}`;
+type _IcuSkipQuoted<S> = S extends `${string}'${infer R}`
+  ? R extends `'${infer R2}`
+    ? _IcuSkipQuoted<R2>
+    : R
+  : '';
+
+/** Reads up to the `}` closing an already opened `{`; returns `[content, rest]`. */
+type _IcuBlock<
+  S,
+  Acc extends string = '',
+  Depth extends 0[] = [],
+> = S extends `${infer L}}${infer R}`
+  ? L extends `${infer L2}{${infer R2}`
+    ? _IcuBlock<`${R2}}${R}`, `${Acc}${L2}{`, [...Depth, 0]>
+    : Depth extends [0, ...infer D extends 0[]]
+      ? _IcuBlock<R, `${Acc}${L}}`, D>
+      : [`${Acc}${L}`, R]
+  : never;
+
+/** `[name, type]` entries of every argument in a message, nested cases included. */
+type _IcuEntries<S, Acc = never> = S extends `${string}{${infer R}`
+  ? _IcuBlock<R> extends [infer Arg, infer Rest]
+    ? _IcuEntries<Rest, Acc | _IcuArg<Arg>>
+    : Acc
+  : Acc;
+
+/** Walks plural/select cases: `[selector keys, entries of all case messages]`. */
+type _IcuCases<S, Keys = never, Acc = never> = S extends `${infer L}{${infer R}`
+  ? _IcuBlock<R> extends [infer Msg, infer Rest]
+    ? _IcuCases<Rest, Keys | _IcuTrim<L>, Acc | _IcuEntries<Msg>>
+    : [Keys, Acc]
+  : [Keys, Acc];
+
+type _IcuArg<A> = A extends `${infer Name},${infer Type},${infer Cases}`
+  ? _IcuTrim<Type> extends 'plural' | 'selectordinal'
+    ? [_IcuTrim<Name>, _IcuFormatType<_IcuTrim<Type>>] | _IcuCases<Cases>[1]
+    : _IcuTrim<Type> extends 'select'
+      ? _IcuCases<Cases> extends [infer Keys, infer E]
+        ? [_IcuTrim<Name>, 'other' extends Keys ? Exclude<Keys, 'other'> | (string & {}) : Keys] | E
+        : never
+      : [_IcuTrim<Name>, _IcuFormatType<_IcuTrim<Type>>] // `{n, number, ::currency/EUR}`
+  : A extends `${infer Name},${infer Type}`
+    ? [_IcuTrim<Name>, _IcuFormatType<_IcuTrim<Type>>]
+    : [_IcuTrim<A>, _IcuFormatType<never>];
+
+/** `interpolationFormatTypeMap` wins, then ICU's built-in argument types. */
+type _IcuFormatType<F> = [F] extends [never]
+  ? string | number
+  : F extends keyof _InterpolationFormatTypeMap
+    ? _InterpolationFormatTypeMap[F]
+    : F extends 'number' | 'plural' | 'selectordinal'
+      ? number
+      : F extends 'date' | 'time'
+        ? Date
+        : string | number;
+
+/**
+ * Merges `[name, type]` entries into one record: a name used twice gets both
+ * types, a dotted MF2 name (`$user.name`) becomes a nested object.
+ */
+type _ArgsFromEntries<E> =
+  _UnionToIntersection<
+    E extends [infer Name extends string, infer Type]
+      ? Name extends `${string}.${string}`
+        ? $StringKeyPathToRecord<Name, Type>
+        : { [K in Name]: Type }
+      : never
+  > extends infer M
+    ? [E] extends [never]
+      ? never
+      : { [K in keyof M]: M[K] }
+    : never;
+
+type _IcuArgsMap<Ret> = Ret extends string
+  ? string extends Ret
+    ? never
+    : _ArgsFromEntries<_IcuEntries<_IcuStripQuotes<Ret>>>
+  : never;
+
+/** *********************************************************************
+ * MessageFormat 2 variables (`parseInterpolation: 'mf2'`)              *
+ *********************************************************************** */
+/** Drops `\`-escapes (`\{`, `\}`, `\|`, `\\`), so they are neither braces nor quotes. */
+type _Mf2StripEscapes<S, Acc extends string = ''> = S extends `${infer L}\\${string}${infer R}`
+  ? _Mf2StripEscapes<R, `${Acc}${L}`>
+  : `${Acc}${S & string}`;
+
+/** Reads an expression up to its `}`, skipping `|quoted literals|`; returns `[body, rest]`. */
+type _Mf2Expression<S, Acc extends string = ''> = S extends `${infer B}}${infer Rest}`
+  ? B extends `${infer Before}|${infer Lit}`
+    ? `${Lit}}${Rest}` extends `${string}|${infer After}`
+      ? _Mf2Expression<After, `${Acc}${Before} `>
+      : never
+    : [`${Acc}${B}`, Rest]
+  : never;
+
+/** `[name, type]` entries of every variable in a message's expressions; `{{` opens a quoted pattern. */
+type _Mf2Entries<S, Acc = never> = S extends `${string}{${infer R}`
+  ? R extends `{${infer Pattern}`
+    ? _Mf2Entries<Pattern, Acc>
+    : _Mf2Expression<R> extends [infer Body, infer Rest]
+      ? _Mf2Entries<Rest, Acc | _Mf2ExprEntries<_Mf2Spaces<Body>>>
+      : Acc
+  : Acc;
+
+type _Mf2Space<S, C extends string> = S extends `${infer L}${C}${infer R}`
+  ? _Mf2Space<`${L} ${R}`, C>
+  : S;
+type _Mf2Spaces<S> = _IcuTrim<_Mf2Space<_Mf2Space<_Mf2Space<S, '\n'>, '\t'>, '\r'>>;
+type _Mf2Name<S> = S extends `${infer N} ${string}`
+  ? _Mf2Name<N>
+  : S extends `${infer N}/${string}`
+    ? N
+    : S;
+
+/** `{$x :fn opt=$y}`: `$x` typed by its function, option and markup variables `string | number`. */
+type _Mf2ExprEntries<Body> = Body extends `$${infer R}`
+  ? R extends `${infer Name} ${infer Tail}`
+    ? | [Name, _Mf2FunctionType<_IcuTrim<Tail> extends `:${infer F}` ? _Mf2Name<F> : never>]
+      | _Mf2Vars<Tail>
+    : [_Mf2Name<R>, _Mf2FunctionType<never>]
+  : _Mf2Vars<Body>;
+
+/** Every `$name` in a string, typed `string | number`. */
+type _Mf2Vars<S, Acc = never> = S extends `${string}$${infer R}`
+  ? _Mf2Vars<R, Acc | [_Mf2Name<R>, string | number]>
+  : Acc;
+
+/** `interpolationFormatTypeMap` wins, then messageformat's built-in functions. */
+type _Mf2FunctionType<F> = [F] extends [never]
+  ? string | number
+  : F extends keyof _InterpolationFormatTypeMap
+    ? _InterpolationFormatTypeMap[F]
+    : F extends 'number' | 'integer' | 'currency' | 'percent' | 'offset' | 'unit' | 'math'
+      ? number
+      : F extends 'datetime' | 'date' | 'time'
+        ? Date
+        : F extends 'string'
+          ? string
+          : string | number;
+
+/** Names declared by `.local $name = ...` (local, not passed in). */
+type _Mf2Locals<S, Acc = never> = S extends `${string}.local${infer R}`
+  ? _Mf2Locals<R, Acc | (_IcuTrim<R> extends `$${infer N}=${string}` ? _IcuTrim<N> : never)>
+  : Acc;
+/** `.match $a $b`: selectors, normally also declared by `.input` or `.local`. */
+type _Mf2Selectors<S> = S extends `${string}.match${infer R}`
+  ? _Mf2Vars<_Mf2Spaces<R extends `${infer Sel}{${string}` ? Sel : R>>
+  : never;
+
+type _Mf2ArgsMap<Ret> = Ret extends string
+  ? string extends Ret
+    ? never
+    : _Mf2StripEscapes<Ret> extends infer S
+      ? _ArgsFromEntries<
+          Exclude<
+            _Mf2Entries<S> | _Mf2Selectors<S>,
+            [_IcuTrim<S> extends `.${string}` ? _Mf2Locals<S> : never, unknown]
+          >
+        >
+      : never
+  : never;
+
+export type InterpolationMap<Ret> = [_ParseInterpolation] extends ['icu']
+  ? $PreservedValue<_IcuArgsMap<Ret>, Record<string, unknown>>
+  : [_ParseInterpolation] extends ['mf2']
+    ? $PreservedValue<_Mf2ArgsMap<Ret>, Record<string, unknown>>
+    : $PreservedValue<
+        _InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>,
+        Record<string, unknown>
+      >;
 
 type ParseTReturnPlural<
   Res,
@@ -393,6 +583,28 @@ type EffectiveKPrefix<KPrefix, TOpt> = TOpt extends { keyPrefix: infer OptKP ext
   ? OptKP
   : KPrefix;
 
+/** `parseInterpolation: 'icu'` or `'mf2'`: messages are typed by their arguments. */
+type _ParsesMessageFormat = [_ParseInterpolation] extends ['icu'] | ['mf2'] ? true : false;
+
+/**
+ * `t()` options are optional, except for a message with arguments under
+ * `parseInterpolation: 'icu'` or `'mf2'` (on a missing one, i18next-icu renders
+ * the raw message and i18next-mf2 a `{$name}` fallback). The conditional
+ * resolves eagerly; a generic one here would break inference.
+ */
+type _KeyAndOptions<Key, Ret, Opts> = _ParsesMessageFormat extends true
+  ? [key: Key | Key[], options: Opts] | [key: (Key | Key[]) & _IfOptionalOptions<Ret>]
+  : [key: Key | Key[], options?: Opts];
+/** `unknown` when options may be left out, else a type naming the missing arguments. */
+type _IfOptionalOptions<Ret> = _ParsesMessageFormat extends true
+  ? {} extends InterpolationMap<Ret>
+    ? unknown
+    : { 'pass these arguments as t() options': InterpolationMap<Ret> }
+  : unknown;
+/** Options parameter of a selector overload: required for a message with arguments. */
+type _SelectorOptionsArg<Ret, Opts> =
+  unknown extends _IfOptionalOptions<Ret> ? [options?: Opts] : [options: Opts];
+
 /** ************************
  * T function declaration *
  ************************* */
@@ -407,7 +619,7 @@ interface TFunctionStrict<
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
   >(
     key: Key | Key[],
-    options?: TOpt &
+    options: TOpt &
       InterpolationMap<Ret> & {
         context?: Key extends string
           ? unknown extends TOpt['context']
@@ -415,6 +627,13 @@ interface TFunctionStrict<
             : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       },
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+  <
+    const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
+  >(
+    key: (Key | Key[]) & _IfOptionalOptions<$NoInfer<Ret>>,
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
   <
     const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
@@ -460,9 +679,9 @@ interface TFunctionNonStrict<
     DefaultValue extends string = never,
   >(
     ...args:
-      | [key: Key | Key[], options?: ActualOptions]
       | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
       | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+      | _KeyAndOptions<Key, $NoInfer<Ret>, ActualOptions>
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }
 
@@ -596,10 +815,13 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
   >(
     selectors: Fns,
-    options?: Opts &
-      InterpolationMap<
-        DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>
-      >,
+    ...args: _SelectorOptionsArg<
+      DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>,
+      Opts &
+        InterpolationMap<
+          DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>
+        >
+    >
   ): SelectorReturn<Fns[number] extends (...args: any[]) => infer R ? R : never, Opts>;
 
   // ── Single selector with context + returnObjects ────────────────────────────
@@ -667,7 +889,7 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     selector: Fn,
     ...args: ReturnType<Fn> extends PluralValue<string>
       ? [options: Opts & { count: number } & InterpolationMap<DeepUnwrapPlural<ReturnType<Fn>>>]
-      : [options?: Opts & InterpolationMap<ReturnType<Fn>>]
+      : _SelectorOptionsArg<ReturnType<Fn>, Opts & InterpolationMap<ReturnType<Fn>>>
   ): SelectorReturn<ReturnType<Fn>, Opts>;
 }
 
