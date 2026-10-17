@@ -74,6 +74,26 @@ interface Branded<Ns extends Namespace> {
     : never;
 }
 
+/**
+ * `keyof Res`, built once per resource object. TypeScript does not cache
+ * `keyof` of an object type, so `keyof Res` inside a conditional that runs per
+ * key (or per `t()` call) rebuilt the union of all keys every time: quadratic
+ * in the namespace size. Conditional type instantiations are cached.
+ */
+type _KeysOf<Res> = [Res] extends [unknown] ? keyof Res : never;
+
+/**
+ * `Res[Key & keyof Res]`: a literal key is looked up directly instead of being
+ * intersected with every key; a wide key (`string`, `${string}_suffix` from a
+ * string context) still matches all keys it covers.
+ */
+type _ValueOf<Res, Key> =
+  Key extends _KeysOf<Res>
+    ? Res[Key]
+    : _IsLiteral<Key & PropertyKey> extends true
+      ? never
+      : Res[Key & _KeysOf<Res>];
+
 /** ****************************************************
  * Build all keys and key prefixes based on Resources *
  ***************************************************** */
@@ -81,18 +101,20 @@ interface Branded<Ns extends Namespace> {
 // conditional types, so `KeyPrefix<Ns>` no longer resolves to a literal union
 // and `keyPrefix` inference widens to the whole namespace, polluting `t()`
 // return types with sibling keys (#2434 regression). Guard `never` in the merge.
-type KeysBuilderWithReturnObjects<Res, Key = keyof Res> = Key extends keyof Res
-  ? Res[Key] extends $Dictionary | readonly unknown[]
-    ? | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
-      | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
-    : never
-  : never;
+type KeysBuilderWithReturnObjects<Res, Key = keyof Res> =
+  Key extends _KeysOf<Res>
+    ? Res[Key] extends $Dictionary | readonly unknown[]
+      ? | JoinKeys<Key, WithOrWithoutPlural<keyof $OmitArrayKeys<Res[Key]>>>
+        | JoinKeys<Key, KeysBuilderWithReturnObjects<Res[Key]>>
+      : never
+    : never;
 
-type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> = Key extends keyof Res
-  ? Res[Key] extends $Dictionary | readonly unknown[]
-    ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
-    : Key
-  : never;
+type KeysBuilderWithoutReturnObjects<Res, Key = keyof $OmitArrayKeys<Res>> =
+  Key extends _KeysOf<Res>
+    ? Res[Key] extends $Dictionary | readonly unknown[]
+      ? JoinKeys<Key, KeysBuilderWithoutReturnObjects<Res[Key]>>
+      : Key
+    : never;
 
 type KeysBuilder<Res, WithReturnObjects> = $IsResourcesDefined extends true
   ? WithReturnObjects extends true
@@ -424,14 +446,14 @@ type ParseTReturnPlural<
   Res,
   Key,
   KeyWithPlural = `${Key & string}${_PluralSeparator}${PluralSuffix}`,
-> = Res[(KeyWithPlural | Key) & keyof Res];
+> = _ValueOf<Res, KeyWithPlural | Key>;
 
 type ParseTReturnPluralOrdinal<
   Res,
   Key,
   KeyWithOrdinalPlural = `${Key &
     string}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`,
-> = Res[(KeyWithOrdinalPlural | Key) & keyof Res];
+> = _ValueOf<Res, KeyWithOrdinalPlural | Key>;
 
 type ParseTReturnWithFallback<Key, Val> = Val extends ''
   ? _ReturnEmptyString extends true
@@ -446,7 +468,7 @@ type ParseTReturnWithFallback<Key, Val> = Val extends ''
 type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallback<
   Key,
   Key extends `${infer K1}${_KeySeparator}${infer RestKey}`
-    ? ParseTReturn<RestKey, Res[K1 & keyof Res], TOpt>
+    ? ParseTReturn<RestKey, _ValueOf<Res, K1>, TOpt>
     : // Process plurals only if count is provided inside options
       TOpt['count'] extends number
       ? TOpt['ordinal'] extends boolean
@@ -457,7 +479,7 @@ type ParseTReturn<Key, Res, TOpt extends TOptions = {}> = ParseTReturnWithFallba
         ? Key extends `${infer NKey extends number}`
           ? Res[NKey]
           : never
-        : Res[Key & keyof Res]
+        : _ValueOf<Res, Key>
 >;
 
 type TReturnOptionalNull = _ReturnNull extends true ? null : never;
@@ -973,26 +995,97 @@ type _DefinedContextKeys<T, Pattern extends string> = {
   [P in keyof T as P extends Pattern ? ([T[P]] extends [undefined] ? never : P) : never]: true;
 };
 
-type _HasContextVariant<T, K extends string, Context> = [
-  keyof _DefinedContextKeys<
-    T,
-    | `${K}${_ContextSeparator}${Context & string}`
-    | `${K}${_ContextSeparator}${Context & string}${_PluralSeparator}${PluralSuffix}`
-  >,
+/**
+ * Keys of T whose value is not `undefined` (JSON-union phantoms are typed as
+ * optional `undefined`), built once per object.
+ */
+type _DefinedKeys<T> = [T] extends [unknown]
+  ? keyof { [P in keyof T as [T[P]] extends [undefined] ? never : P]: true }
+  : never;
+
+/**
+ * For every defined key, the prefixes K before each context separator, as
+ * `[all, bases]`: `all` has every K with a defined key `${K}${_ContextSeparator}...`,
+ * `bases` only those where the rest is not just a plural suffix. Jumps from one
+ * separator occurrence to the next (so the recursion depth is the number of
+ * separators, not the key length, which can be a whole sentence) and resumes one
+ * character after the match, so overlapping occurrences (`a___b` with `__`) count.
+ */
+type _ContextPrefixesOf<
+  P,
+  Head extends string = '',
+  All = never,
+  Bases = never,
+> = P extends `${infer B}${_ContextSeparator}${string}`
+  ? P extends `${B}${infer FromSep}`
+    ? FromSep extends `${infer C}${infer Rest}`
+      ? _ContextPrefixesOf<
+          Rest,
+          `${Head}${B}${C}`,
+          All | `${Head}${B}`,
+          FromSep extends
+            | `${_PluralSeparator}${PluralSuffix}`
+            | `${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+            ? Bases
+            : Bases | `${Head}${B}`
+        >
+      : [All, Bases]
+    : [All, Bases]
+  : [All, Bases];
+
+/**
+ * The context prefixes of an object, built once per object (conditional type
+ * instantiations are cached): scanning all keys for every key was quadratic
+ * in the object size, TS2589 at about 1,000 keys with context variants.
+ */
+type _ContextPrefixes<T> = [T] extends [unknown]
+  ? _ContextPrefixesOf<_DefinedKeys<T> & string>
+  : never;
+type _AllContextPrefixes<T> = [T] extends [unknown] ? _ContextPrefixes<T>[0] : never;
+type _ContextBases<T> = [T] extends [unknown] ? _ContextPrefixes<T>[1] : never;
+
+/** Whether a string type is a single literal (not `string` or a `${string}` pattern). */
+type _IsLiteral<S extends PropertyKey> = {} extends Record<S, unknown> ? false : true;
+
+/**
+ * Whether T has a defined key matching Pattern: literal keys are looked up, a
+ * pattern with a wide member scans the keys.
+ */
+type _HasDefinedKey<T, Pattern extends string> = [
+  false extends (Pattern extends unknown ? _IsLiteral<Pattern> : never)
+    ? keyof _DefinedContextKeys<T, Pattern>
+    : Extract<Pattern, _DefinedKeys<T>>,
 ] extends [never]
   ? false
   : true;
 
+type _HasContextVariant<T, K extends string, Context> = string extends Context
+  ? _IsLiteral<K> extends true
+    ? K extends _AllContextPrefixes<T>
+      ? true
+      : false
+    : _HasDefinedKey<T, `${K}${_ContextSeparator}${string}`>
+  : _HasDefinedKey<
+      T,
+      | `${K}${_ContextSeparator}${Context & string}`
+      | `${K}${_ContextSeparator}${Context & string}${_PluralSeparator}${PluralSuffix}`
+    >;
+
 /** Checks whether key K has **any** context variant in T (excluding pure plural suffixes). */
-type _IsContextualKey<T, K extends string> = [
-  Exclude<
-    keyof _DefinedContextKeys<T, `${K}${_ContextSeparator}${string}`>,
-    | `${K}${_PluralSeparator}${PluralSuffix}`
-    | `${K}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
-  >,
-] extends [never]
-  ? false
-  : true;
+type _IsContextualKey<T, K extends string> =
+  _IsLiteral<K> extends true
+    ? K extends _ContextBases<T>
+      ? true
+      : false
+    : [
+          Exclude<
+            keyof _DefinedContextKeys<T, `${K}${_ContextSeparator}${string}`>,
+            | `${K}${_PluralSeparator}${PluralSuffix}`
+            | `${K}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+          >,
+        ] extends [never]
+      ? false
+      : true;
 
 /**
  * Distributes {@link FilterKeysObject} over unions so heterogeneous JSON array
