@@ -700,9 +700,15 @@ interface TFunctionNonStrict<
       },
     DefaultValue extends string = never,
   >(
+    // `[key, defaultValue, options?]` is written as two tuples: on a failed call,
+    // TypeScript elaborates the error against the last of the equally matching
+    // members, and TypeScript 7 sorts a 3-element tuple last, so a wrong options
+    // object was reported as "not assignable to type 'string'" instead of the
+    // missing or mistyped argument.
     ...args:
       | [key: string | string[], options: TOpt & $Dictionary & { defaultValue: DefaultValue }]
-      | [key: string | string[], defaultValue: DefaultValue, options?: TOpt & $Dictionary]
+      | [key: string | string[], defaultValue: DefaultValue]
+      | [key: string | string[], defaultValue: DefaultValue, options: TOpt & $Dictionary]
       | _KeyAndOptions<Key, $NoInfer<Ret>, ActualOptions>
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, DefaultValue>, TOpt>;
 }

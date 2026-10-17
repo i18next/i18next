@@ -1,3 +1,7 @@
+## 26.5.2
+
+- fix(types): on TypeScript 7, a `t()` call with a missing, misspelled or wrongly typed option now reports that option again (`Property 'album' is missing`, `Type 'string' is not assignable to type 'number'`), as TypeScript 5 and 6 do. TypeScript 7 elaborated the error against the default-value signature instead and ended in `'{ count: 3; albm: "Summer"; }' is not assignable to type 'string'`: on a failed call TypeScript explains the last of the equally matching signatures, and TypeScript 7 sorts the 3-element `[key, defaultValue, options?]` last. It is now written as two signatures, `[key, defaultValue]` and `[key, defaultValue, options]`. This affects the default key checks with i18next `{{name}}` messages as well as `parseInterpolation: 'icu'` and `'mf2'`. Which calls compile, their return types and the error positions are unchanged on TypeScript 5.9, 6 and 7.
+
 ## 26.5.1
 
 - perf(types): type-checking `t()` calls against a large namespace is no longer quadratic in the number of keys. TypeScript does not cache `keyof` of an object type, and the types rebuilt the union of all keys of a namespace once per key while building the key union, and again in every `t()` call to look up the return type. Both now use a cached key union, and a literal key is looked up directly instead of being intersected with every key. With 5,000 keys in one namespace and one call per key, the check time went from 14.8s to 1.1s (TypeScript 6); with 1,000 keys from 0.75s to 0.27s. Keys, return types and errors are unchanged.
