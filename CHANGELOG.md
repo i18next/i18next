@@ -1,3 +1,7 @@
+## 26.5.3
+
+- fix(types): with the selector API, a plural key now requires `count` also when the call passes an explicit `ns`. `t(($) => $.item)` already failed without `count`, but `t(($) => $.item, { ns: 'items' })` compiled, although at runtime it looks up `item` instead of `item_one` / `item_other` and returns the key. It now fails the same way, also with `ordinal: true`, `defaultValue`, an `ns` array, a key prefix and `i18n.t`. Calls with `count`, `context`, `returnObjects: true` and arrays of selectors, as well as return types, are unchanged. Thanks @nyarthan ([#2452](https://github.com/i18next/i18next/pull/2452)).
+
 ## 26.5.2
 
 - fix(types): on TypeScript 7, a `t()` call with a missing, misspelled or wrongly typed option now reports that option again (`Property 'album' is missing`, `Type 'string' is not assignable to type 'number'`), as TypeScript 5 and 6 do. TypeScript 7 elaborated the error against the default-value signature instead and ended in `'{ count: 3; albm: "Summer"; }' is not assignable to type 'string'`: on a failed call TypeScript explains the last of the equally matching signatures, and TypeScript 7 sorts the 3-element `[key, defaultValue, options?]` last. It is now written as two signatures, `[key, defaultValue]` and `[key, defaultValue, options]`. This affects the default key checks with i18next `{{name}}` messages as well as `parseInterpolation: 'icu'` and `'mf2'`. Which calls compile, their return types and the error positions are unchanged on TypeScript 5.9, 6 and 7.
