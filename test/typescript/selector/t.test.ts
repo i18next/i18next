@@ -178,6 +178,29 @@ describe('t', () => {
     expectTypeOf(t(($) => $.fromNs2, { ns: 'ns2' })).toEqualTypeOf<'hello from ns2'>();
   });
 
+  it('requires count for plural selectors with an explicit namespace', () => {
+    expectTypeOf(t(($) => $.tea, { ns: 'ns1', count: 1 })).toEqualTypeOf<
+      'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep'
+    >();
+
+    expectTypeOf(t(($) => $.sodas.faygo.orange, { ns: ['ns1', 'ns2'], count: 2 })).toEqualTypeOf<
+      'one orange faygo' | '{{count}} orange faygo'
+    >();
+
+    expectTypeOf(t(($) => $.tea, { ns: 'ns1', count: 1, defaultValue: 'fallback' })).toEqualTypeOf<
+      'a cuppa tea and a lie down' | '{{count}} cups of tea and a big sleep' | 'fallback'
+    >();
+
+    // @ts-expect-error: plural selectors require count with an explicit namespace
+    t(($) => $.tea, { ns: 'ns1' });
+
+    // @ts-expect-error: plural selectors require count with an explicit namespace list
+    t(($) => $.sodas.faygo.orange, { ns: ['ns1', 'ns2'] });
+
+    // @ts-expect-error: defaultValue does not make count optional for a plural selector
+    t(($) => $.tea, { ns: 'ns1', defaultValue: 'fallback' });
+  });
+
   it('namespace: multiple', () => {
     expectTypeOf(t(($) => $.fromNs2, { ns: ['ns2', 'ns3'] })).toEqualTypeOf<'hello from ns2'>();
     expectTypeOf(t(($) => $.fromNs3, { ns: ['ns3', 'ns2'] })).toEqualTypeOf<'hello from ns3'>();
