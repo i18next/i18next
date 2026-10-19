@@ -819,17 +819,29 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     ...args: [options?: Opts & $Dictionary]
   ): DefaultTReturn<Opts>;
 
-  // ── Selector(s) with explicit `ns` ───────────────────────────────────────────
+  // ── Array of selectors with explicit `ns` ───────────────────────────────────
   <
     Target extends ConstrainTarget<Opts>,
     const NewNs extends NsArg<Ns> & Namespace,
     const Opts extends SelectorOptions<NewNs>,
     NewSrc extends GetSource<NewNs, KPrefix>,
   >(
-    selector:
-      | SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>
-      | readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[],
+    selectors: readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[],
     options: Opts & InterpolationMap<Target> & { ns: NewNs },
+  ): SelectorReturn<Target, Opts>;
+
+  // ── Single selector with explicit `ns` ──────────────────────────────────────
+  <
+    Target extends ConstrainTarget<Opts>,
+    const NewNs extends NsArg<Ns> & Namespace,
+    const Opts extends SelectorOptions<NewNs>,
+    NewSrc extends GetSource<NewNs, KPrefix>,
+  >(
+    selector: SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>,
+    options: Opts &
+      InterpolationMap<DeepUnwrapPlural<Target>> & {
+        ns: NewNs;
+      } & (Target extends PluralValue<string> ? { count: number } : {}),
   ): SelectorReturn<Target, Opts>;
 
   // ── Array of selectors with default `ns` ─────────────────────────────────────

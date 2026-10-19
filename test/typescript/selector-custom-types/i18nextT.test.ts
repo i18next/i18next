@@ -82,8 +82,20 @@ describe('i18next.t', () => {
   it('should work with plurals', () => {
     expectTypeOf(i18next.t(($) => $.foo, { count: 1, ns: 'plurals' })).toEqualTypeOf<'foo'>();
 
+    // @ts-expect-error plural selectors require count with an explicit namespace
+    i18next.t(($) => $.foo, { ns: 'plurals' });
+
     // @ts-expect-error plural keys have been removed from the translations object
     expectTypeOf(i18next.t(($) => $.foo_many, { count: 10, ns: 'plurals' })).toEqualTypeOf<'foo'>();
+  });
+
+  it('should require count for ordinal plurals with an explicit namespace', () => {
+    expectTypeOf(i18next.t(($) => $.place, { count: 1, ordinal: true, ns: 'ord' })).toEqualTypeOf<
+      '1st place' | '2nd place' | '3rd place' | '{{count}}th place'
+    >();
+
+    // @ts-expect-error ordinal plural selectors require count with an explicit namespace
+    i18next.t(($) => $.place, { ordinal: true, ns: 'ord' });
   });
 
   it('should throw error with invalid key', () => {
