@@ -396,7 +396,7 @@ describe('v1.11.1 initialisation', () => {
         });
 
         it('it should load only unspecific and fallback language', () => {
-          expect(spy).toBeCalled(3); // en-US, en
+          expect(spy).toHaveBeenCalledTimes(2); // en, dev
         });
 
         it('it should provide loaded resources for translation', () => {
@@ -427,7 +427,7 @@ describe('v1.11.1 initialisation', () => {
       });
 
       it('it should load only specific and unspecific languages', () => {
-        expect(spy).toBeCalledTimes(2); // en-US, en
+        expect(spy).toHaveBeenCalledTimes(2); // en-US, en
       });
 
       it('it should provide loaded resources for translation', () => {
@@ -453,7 +453,7 @@ describe('v1.11.1 initialisation', () => {
       });
 
       it('it should load additional languages', () => {
-        expect(spy).toBeCalledTimes(6); // en-US, en, de-DE, de, fr, dev
+        expect(spy).toHaveBeenCalledTimes(6); // en-US, en, de-DE, de, fr, dev
       });
 
       describe('changing the language', () => {
@@ -464,7 +464,7 @@ describe('v1.11.1 initialisation', () => {
         });
 
         it('it should not reload the preloaded languages', () => {
-          expect(spy).not.toBeCalled(); // de-DE the missing one
+          expect(spy).not.toHaveBeenCalled(); // de-DE the missing one
         });
       });
     });
