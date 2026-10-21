@@ -23,8 +23,6 @@ const deepFindWithDefaults = (
   return path;
 };
 
-const regexSafe = (val) => val.replace(/\$/g, '$$$$');
-
 class Interpolator {
   constructor(options = {}) {
     this.logger = baseLogger.create('interpolator');
@@ -222,7 +220,8 @@ class Interpolator {
           value = makeString(value);
         }
         const safeValue = todo.safeValue(value);
-        str = str.replace(match[0], regexSafe(safeValue));
+        // Sliced in at match.index: String.replace may hit a copy inside an earlier value.
+        str = str.slice(0, match.index) + safeValue + str.slice(match.index + match[0].length);
         if (skipOnVariables) {
           todo.regex.lastIndex += safeValue.length;
           todo.regex.lastIndex -= match[0].length;

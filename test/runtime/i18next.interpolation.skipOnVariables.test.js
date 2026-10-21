@@ -80,6 +80,14 @@ describe('i18next.interpolation.nesting', () => {
         args: ['key', { a: '&&&{{b}}', b: 'leaked' }],
         expected: 'value &amp;&amp;&amp;{{b}}',
       },
+      {
+        args: ['key2', { a: '{{b}}', b: 'something' }],
+        expected: 'value {{b}} something',
+      },
+      {
+        args: ['key2', { a: '<{{b}}>', b: 'something' }],
+        expected: 'value &lt;{{b}}&gt; something',
+      },
     ];
 
     tests.forEach((test) => {
