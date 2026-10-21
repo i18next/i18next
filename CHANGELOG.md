@@ -1,3 +1,8 @@
+## 26.5.4
+
+- fix: with the default `skipOnVariables: true`, a `{{placeholder}}` inside an interpolated value now stays literal also when the same placeholder appears later in the translation. Each value was written with `String.replace`, which replaces the first copy of the placeholder text, and that could be the copy inside an earlier value: `t('{{name}} has {{count}} items', { name: '{{count}}', count: 5 })` returned `'5 has {{count}} items'` instead of `'{{count}} has 5 items'`. The value is now written at the position of the matched placeholder. Results with `skipOnVariables: false` are unchanged. Thanks @nk-batman21 ([#2454](https://github.com/i18next/i18next/pull/2454), reported in [#1595](https://github.com/i18next/i18next/issues/1595#issuecomment-814609503)).
+- fix: with `useRawValueToEscape: true`, a non-string value in an unescaped `{{- var}}` placeholder or with `escapeValue: false` no longer throws `val.replace is not a function`; it is converted to a string like any other value.
+
 ## 26.5.3
 
 - fix(types): with the selector API, a plural key now requires `count` also when the call passes an explicit `ns`. `t(($) => $.item)` already failed without `count`, but `t(($) => $.item, { ns: 'items' })` compiled, although at runtime it looks up `item` instead of `item_one` / `item_other` and returns the key. It now fails the same way, also with `ordinal: true`, `defaultValue`, an `ns` array, a key prefix and `i18n.t`. Calls with `count`, `context`, `returnObjects: true` and arrays of selectors, as well as return types, are unchanged. Thanks @nyarthan ([#2452](https://github.com/i18next/i18next/pull/2452)).
