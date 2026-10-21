@@ -88,6 +88,18 @@ describe('i18next.interpolation.nesting', () => {
         args: ['key2', { a: '<{{b}}>', b: 'something' }],
         expected: 'value &lt;{{b}}&gt; something',
       },
+      {
+        args: [
+          'key2',
+          {
+            a: '{{c}}',
+            b: 5,
+            c: 'leaked',
+            interpolation: { useRawValueToEscape: true, escapeValue: false },
+          },
+        ],
+        expected: 'value {{c}} 5',
+      },
     ];
 
     tests.forEach((test) => {

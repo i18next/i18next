@@ -219,7 +219,8 @@ class Interpolator {
         } else if (!isString(value) && !this.useRawValueToEscape) {
           value = makeString(value);
         }
-        const safeValue = todo.safeValue(value);
+        // makeString: with useRawValueToEscape, `{{- var}}` and escapeValue: false pass the raw value.
+        const safeValue = makeString(todo.safeValue(value));
         // Sliced in at match.index: String.replace may hit a copy inside an earlier value.
         str = str.slice(0, match.index) + safeValue + str.slice(match.index + match[0].length);
         if (skipOnVariables) {
@@ -339,7 +340,6 @@ class Interpolator {
       }
 
       // Nested keys should not be escaped by default #854
-      // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
       // Sliced in, not String.replace, so `$&`, `$'`, "$`" and `$$` in the value stay literal.
       // makeString: a formatter in the nesting chain may have returned a non-string.
       out += str.slice(lastEnd, match.index) + makeString(value);
