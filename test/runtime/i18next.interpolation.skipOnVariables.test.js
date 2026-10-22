@@ -100,6 +100,18 @@ describe('i18next.interpolation.nesting', () => {
         ],
         expected: 'value {{c}} 5',
       },
+      {
+        args: ['{{- a}}', { a: '{{b}}', b: 'c' }],
+        expected: '{{b}}',
+      },
+      {
+        args: ['{{- a}} {{b}}', { a: '<i>{{b}}</i>', b: '<b>' }],
+        expected: '<i>{{b}}</i> &lt;b&gt;',
+      },
+      {
+        args: ['{{b}} at {{- a}}', { a: '<i>{{b}}</i>', b: 'c' }],
+        expected: 'c at <i>{{b}}</i>',
+      },
     ];
 
     tests.forEach((test) => {
