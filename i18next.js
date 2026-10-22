@@ -2249,18 +2249,16 @@
         hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
       };
       if (forkResourceStore) {
-        const clonedData = Object.keys(this.store.data).reduce((prev, l) => {
-          prev[l] = {
-            ...this.store.data[l]
+        const copyData = obj => {
+          const copied = Array.isArray(obj) ? [...obj] : {
+            ...obj
           };
-          prev[l] = Object.keys(prev[l]).reduce((acc, n) => {
-            acc[n] = {
-              ...prev[l][n]
-            };
-            return acc;
-          }, prev[l]);
-          return prev;
-        }, {});
+          Object.keys(copied).forEach(k => {
+            if (copied[k] && typeof copied[k] === 'object') copied[k] = copyData(copied[k]);
+          });
+          return copied;
+        };
+        const clonedData = copyData(this.store.data);
         clone.store = new ResourceStore(clonedData, mergedOptions);
         clone.services.resourceStore = clone.store;
       }
