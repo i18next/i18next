@@ -193,6 +193,29 @@ describe('i18next', () => {
         expect(newInstance.t('deeper__key')).to.equal('value here cloned');
         expect(newInstance.t('some__key')).to.equal('another value here');
       });
+
+      it('it does not change nested resources of the original instance', () => {
+        const org = i18next.createInstance();
+        org.init({
+          lng: 'en',
+          resources: { en: { translation: { deeper: { key: 'value here', list: ['a', 'b'] } } } },
+        });
+        const forked = org.cloneInstance({ forkResourceStore: true });
+        forked.addResource('en', 'translation', 'deeper.key', 'value here cloned');
+        forked.addResourceBundle(
+          'en',
+          'translation',
+          { deeper: { other: 'other cloned', list: ['c'] } },
+          true,
+          true,
+        );
+
+        expect(forked.t('deeper.key')).to.equal('value here cloned');
+        expect(forked.t('deeper.other')).to.equal('other cloned');
+        expect(org.t('deeper.key')).to.equal('value here');
+        expect(org.exists('deeper.other')).to.equal(false);
+        expect(org.t('deeper.list', { returnObjects: true })).to.deep.equal(['a', 'b']);
+      });
     });
   });
 
