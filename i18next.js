@@ -1242,9 +1242,17 @@
         regex: this.regexp,
         safeValue: val => this.escapeValue ? this.escape(val) : val
       }];
+      const unescapedValues = [];
+      let shift = 0;
       todos.forEach(todo => {
         replaces = 0;
         while (match = todo.regex.exec(str)) {
+          const at = match.index - shift;
+          const written = unescapedValues.find(([start, end]) => at >= start && at < end);
+          if (written) {
+            todo.regex.lastIndex = written[1] + shift;
+            continue;
+          }
           const matchedVar = match[1].trim();
           value = handleFormat(matchedVar);
           if (value === undefined) {
@@ -1266,6 +1274,11 @@
           const safeValue = makeString(todo.safeValue(value));
           str = str.slice(0, match.index) + safeValue + str.slice(match.index + match[0].length);
           if (skipOnVariables) {
+            if (todo.regex === this.regexpUnescape) {
+              unescapedValues.push([match.index, match.index + safeValue.length]);
+            } else {
+              shift += safeValue.length - match[0].length;
+            }
             todo.regex.lastIndex += safeValue.length;
             todo.regex.lastIndex -= match[0].length;
           } else {
