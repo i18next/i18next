@@ -1399,7 +1399,12 @@
           [o.interpolationkey]: undefined
         };
       }
-      const key = l + JSON.stringify(optForCache);
+      let key;
+      try {
+        key = l + JSON.stringify(optForCache);
+      } catch (e) {
+        return fn(getCleanedCode(l), o)(v);
+      }
       let frm = cache[key];
       if (!frm) {
         frm = fn(getCleanedCode(l), o);
