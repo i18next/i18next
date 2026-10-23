@@ -249,7 +249,7 @@ class Translator extends EventEmitter {
     } else if (handleAsObjectInI18nFormat && isString(joinArrays) && Array.isArray(res)) {
       // array special treatment
       res = res.join(joinArrays);
-      if (res) res = this.extendTranslation(res, keys, opt, lastKey);
+      if (res) res = this.extendTranslation(res, keys, opt, resolved, lastKey);
     } else {
       // string, empty or null
       let usedDefault = false;

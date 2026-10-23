@@ -4,6 +4,7 @@ import ResourceStore from '../../../src/ResourceStore.js';
 import LanguageUtils from '../../../src/LanguageUtils';
 import PluralResolver from '../../../src/PluralResolver';
 import Interpolator from '../../../src/Interpolator';
+import PostProcessor from '../../../src/postProcessor';
 
 describe('Translator', () => {
   describe('translate() with arrays', () => {
@@ -27,6 +28,8 @@ describe('Translator', () => {
             },
             keyArray_one: ['hello world {{count}}', 'hey {{count}}'],
             keyArray_other: ['hello world plural {{count}}', 'hey plural {{count}}'],
+            recursiveA: ['a', '$t(recursiveB)'],
+            recursiveB: ['b', '$t(recursiveA)'],
           },
         },
       });
@@ -43,6 +46,7 @@ describe('Translator', () => {
           ns: 'translation',
           defaultNS: 'translation',
           keySeparator: '.',
+          postProcessPassResolved: true,
           interpolation: {
             // interpolateResult: true,
             // interpolateDefaultValue: true,
@@ -50,6 +54,11 @@ describe('Translator', () => {
           },
         },
       );
+      PostProcessor.addPostProcessor({
+        name: 'appendResolvedKey',
+        process: (value, key, options) =>
+          `${value} (${options.i18nResolved.usedNS}:${options.i18nResolved.exactUsedKey})`,
+      });
       t.changeLanguage('en');
     });
 
@@ -63,6 +72,17 @@ describe('Translator', () => {
       {
         args: ['translation:test', { myVar: 'test', joinArrays: '' }],
         expected: 'test_en_1test_en_2test',
+      },
+      {
+        args: [
+          'translation:test',
+          { myVar: 'test', joinArrays: '+', postProcess: 'appendResolvedKey' },
+        ],
+        expected: 'test_en_1+test_en_2+test (translation:test)',
+      },
+      {
+        args: ['recursiveA', { joinArrays: ' ' }],
+        expected: 'a b ',
       },
       {
         args: [['search.flagList', 'flagList'], {}],
