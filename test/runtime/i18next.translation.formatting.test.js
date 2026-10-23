@@ -306,5 +306,14 @@ describe('i18next.translation.formatting', () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
     });
+
+    it('formats values when the options cannot be serialized to JSON', () => {
+      expect(instance.t('intlNumber', { val: 12345678901234567890n })).to.eql(
+        'Some 12,345,678,901,234,567,890',
+      );
+      const user = { name: 'Ann' };
+      user.self = user;
+      expect(instance.t('intlNumber', { val: 1000, user })).to.eql('Some 1,000');
+    });
   });
 });

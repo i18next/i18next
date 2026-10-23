@@ -60,7 +60,13 @@ const createCachedFormatter = (fn) => {
         [o.interpolationkey]: undefined,
       };
     }
-    const key = l + JSON.stringify(optForCache);
+    let key;
+    try {
+      key = l + JSON.stringify(optForCache);
+    } catch (e) {
+      // options are not serializable (e.g. BigInt or circular values): format without the cache
+      return fn(getCleanedCode(l), o)(v);
+    }
     let frm = cache[key];
     if (!frm) {
       frm = fn(getCleanedCode(l), o);
