@@ -80,6 +80,19 @@ describe('utils', () => {
       expect(deepFind(obj, 'items.map')).toEqual(undefined);
     });
 
+    it('does not walk into the prototype via __proto__', () => {
+      class User {
+        greet() {
+          return 'hi';
+        }
+      }
+      const obj = { user: new User(), items: ['a'] };
+      expect(deepFind(obj, 'user.__proto__')).toEqual(undefined);
+      expect(deepFind(obj, 'user.__proto__.constructor')).toEqual(undefined);
+      expect(deepFind(obj, 'user.__proto__.greet')).toEqual(undefined);
+      expect(deepFind(obj, 'items.__proto__.map')).toEqual(undefined);
+    });
+
     it('still resolves getters inherited from a class', () => {
       class User {
         constructor(first, last) {

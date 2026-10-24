@@ -16,6 +16,7 @@ describe('Translator', () => {
           translation: {
             test: 'test_en',
             notInDE: 'test_notInDE_en',
+            roles: { constructor: 'roles_constructor_en' },
           },
         },
         fr: {
@@ -27,6 +28,7 @@ describe('Translator', () => {
         de: {
           translation: {
             test: 'test_de',
+            roles: { admin: 'roles_admin_de' },
           },
         },
       });
@@ -54,6 +56,9 @@ describe('Translator', () => {
     const tests = [
       { args: ['translation:notInDE', {}], expected: 'test_notInDE_en' },
       { args: ['translation:notInDE', { fallbackLng: 'fr' }], expected: 'test_notInDE_fr' },
+      // keys named like inherited methods are missing in de, not resolved to Object.prototype
+      { args: ['translation:roles.constructor', {}], expected: 'roles_constructor_en' },
+      { args: ['translation:roles.toString', {}], expected: 'roles.toString' },
     ];
 
     tests.forEach((test) => {

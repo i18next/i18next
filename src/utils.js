@@ -234,8 +234,12 @@ export const deepFind = (obj, path, keySeparator = '.') => {
       nextPath += tokens[j];
       next = current[nextPath];
       // like the top-level lookup above, don't resolve to built-in methods such as
-      // `constructor` or `toString`, which would be printed as function source
-      if (typeof next === 'function' && !Object.prototype.hasOwnProperty.call(current, nextPath)) {
+      // `constructor` or `toString`, which would be printed as function source,
+      // and don't walk into the prototype via `__proto__`
+      if (
+        (typeof next === 'function' || nextPath === '__proto__') &&
+        !Object.prototype.hasOwnProperty.call(current, nextPath)
+      ) {
         next = undefined;
       }
       if (next !== undefined) {
