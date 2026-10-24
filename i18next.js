@@ -182,6 +182,9 @@
         }
         nextPath += tokens[j];
         next = current[nextPath];
+        if ((typeof next === 'function' || nextPath === '__proto__') && !Object.prototype.hasOwnProperty.call(current, nextPath)) {
+          next = undefined;
+        }
         if (next !== undefined) {
           if (['string', 'number', 'boolean'].includes(typeof next) && j < tokens.length - 1) {
             continue;
