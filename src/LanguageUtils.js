@@ -100,7 +100,6 @@ class LanguageUtil {
             supportedLng.slice(0, supportedLng.indexOf('-')) === lngOnly
           )
             return true;
-          if (supportedLng.startsWith(lngOnly) && lngOnly.length > 1) return true;
           return false;
         });
       });
