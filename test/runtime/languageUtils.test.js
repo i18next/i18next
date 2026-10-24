@@ -446,6 +446,32 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('getBestMatchFromCodes() does not match a longer language code', () => {
+    /** @type {LanguageUtils} */
+    let cu;
+    beforeAll(() => {
+      cu = new LanguageUtils({
+        fallbackLng: ['en'],
+        supportedLngs: ['en', 'fil-PH', 'haw-US', 'pt-BR'],
+      });
+    });
+
+    const tests = [
+      // Finnish is not Filipino, Hausa is not Hawaiian
+      { args: [['fi-FI']], expected: 'en' },
+      { args: [['ha']], expected: 'en' },
+      // a region of the same language still matches
+      { args: [['fil']], expected: 'fil-PH' },
+      { args: [['pt-PT']], expected: 'pt-BR' },
+    ];
+
+    tests.forEach((test) => {
+      it(`correctly get best match for ${JSON.stringify(test.args)} args`, () => {
+        expect(cu.getBestMatchFromCodes.apply(cu, test.args)).to.eql(test.expected);
+      });
+    });
+  });
+
   describe('getBestMatchFromCodes() with dev', () => {
     /** @type {LanguageUtils} */
     let cu;
