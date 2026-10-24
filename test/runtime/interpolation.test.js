@@ -22,6 +22,8 @@ describe('Interpolator', () => {
       { args: ['test {{ test }}', { test: undefined }], expected: 'test ' },
       { args: ['test {{ test }}', {}], expected: 'test ' },
       { args: ['test {{test.deep}}', { test: { deep: '123' } }], expected: 'test 123' },
+      { args: ['test {{test.constructor}}', { test: { deep: '123' } }], expected: 'test ' },
+      { args: ['test {{test.toString}}', { test: {} }], expected: 'test ' },
     ];
 
     tests.forEach((test) => {

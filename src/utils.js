@@ -233,6 +233,11 @@ export const deepFind = (obj, path, keySeparator = '.') => {
       }
       nextPath += tokens[j];
       next = current[nextPath];
+      // like the top-level lookup above, don't resolve to built-in methods such as
+      // `constructor` or `toString`, which would be printed as function source
+      if (typeof next === 'function' && !Object.prototype.hasOwnProperty.call(current, nextPath)) {
+        next = undefined;
+      }
       if (next !== undefined) {
         if (['string', 'number', 'boolean'].includes(typeof next) && j < tokens.length - 1) {
           continue;

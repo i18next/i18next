@@ -73,6 +73,29 @@ describe('utils', () => {
       expect(value3).toEqual({ c: 1 });
     });
 
+    it('does not resolve inherited methods', () => {
+      const obj = { user: { name: 'Bob' }, items: ['a'] };
+      expect(deepFind(obj, 'user.constructor')).toEqual(undefined);
+      expect(deepFind(obj, 'user.toString')).toEqual(undefined);
+      expect(deepFind(obj, 'items.map')).toEqual(undefined);
+    });
+
+    it('still resolves getters inherited from a class', () => {
+      class User {
+        constructor(first, last) {
+          this.first = first;
+          this.last = last;
+        }
+
+        get fullName() {
+          return `${this.first} ${this.last}`;
+        }
+      }
+      expect(deepFind({ user: new User('Ada', 'Lovelace') }, 'user.fullName')).toEqual(
+        'Ada Lovelace',
+      );
+    });
+
     it('finds value for an array index', () => {
       const obj = { a: [{ c: 1 }] };
       const value = deepFind(obj, 'a.0.c');
