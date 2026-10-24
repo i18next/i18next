@@ -668,7 +668,7 @@
         }
       } else if (handleAsObjectInI18nFormat && isString(joinArrays) && Array.isArray(res)) {
         res = res.join(joinArrays);
-        if (res) res = this.extendTranslation(res, keys, opt, lastKey);
+        if (res) res = this.extendTranslation(res, keys, opt, resolved, lastKey);
       } else {
         let usedDefault = false;
         let usedKey = false;
