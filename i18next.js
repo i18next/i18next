@@ -996,7 +996,6 @@
             if (supportedLng === lngOnly) return true;
             if (!supportedLng.includes('-') && !lngOnly.includes('-')) return false;
             if (supportedLng.includes('-') && !lngOnly.includes('-') && supportedLng.slice(0, supportedLng.indexOf('-')) === lngOnly) return true;
-            if (supportedLng.startsWith(lngOnly) && lngOnly.length > 1) return true;
             return false;
           });
         });
