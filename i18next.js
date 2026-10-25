@@ -352,12 +352,12 @@
         }
       }
       const result = getPath(this.data, path);
-      if (!result && !ns && !key && lng.includes('.')) {
+      if (result == null && !ns && !key && lng.includes('.')) {
         lng = path[0];
         ns = path[1];
         key = path.slice(2).join('.');
       }
-      if (result || !ignoreJSONStructure || !isString(key)) return result;
+      if (result != null || !ignoreJSONStructure || !isString(key)) return result;
       return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
     }
     addResource(lng, ns, key, value, options = {
