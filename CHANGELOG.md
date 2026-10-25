@@ -1,3 +1,7 @@
+## 26.5.11
+
+- fix: a nested `false`, `0` or `''` is now returned when a flat key with the same dotted name also exists. With `{ a: { b: false }, 'a.b': 'flat' }`, `getResource('en', 'translation', 'a.b')` and `t('a.b')` returned `'flat'`: the nested result was checked for truthiness, so these present values fell through to the flat-key lookup. Without such a flat key they were already returned. A nested `null`, which is not a valid lookup by default (`returnNull: false`), still falls back to the flat key. Thanks @lprnmns ([#2461](https://github.com/i18next/i18next/pull/2461)).
+
 ## 26.5.10
 
 - fix: when none of the detected languages is in `supportedLngs`, the best match no longer picks a different language whose code only starts with the same letters. The last fuzzy check took any supported code starting with the language part, so with `supportedLngs: ['en', 'fil-PH']` a Finnish user (`fi-FI`) got Filipino instead of the fallback language, and `ha` (Hausa) picked `haw-US` (Hawaiian). Other regions of the same language still match as before (`de-CH` → `de-DE`, `pt-PT` → `pt-BR`, `fil` → `fil-PH`). Compatibility note: a two-letter code no longer matches a supported three-letter code that extends it, like `ar` → `arz-EG`, `sw` → `swh-KE` or `no` → `nob-NO`; list the two-letter code in `supportedLngs` (or map it with `fallbackLng`) if you relied on that. Thanks @Pharex38 ([#2460](https://github.com/i18next/i18next/pull/2460)).
