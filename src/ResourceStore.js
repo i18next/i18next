@@ -60,12 +60,12 @@ class ResourceStore extends EventEmitter {
     }
 
     const result = getPath(this.data, path);
-    if (!result && !ns && !key && lng.includes('.')) {
+    if (result === undefined && !ns && !key && lng.includes('.')) {
       lng = path[0];
       ns = path[1];
       key = path.slice(2).join('.');
     }
-    if (result || !ignoreJSONStructure || !isString(key)) return result;
+    if (result !== undefined || !ignoreJSONStructure || !isString(key)) return result;
 
     return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
   }

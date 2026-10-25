@@ -3,6 +3,13 @@ import ResourceStore from '../../src/ResourceStore.js';
 
 describe('ResourceStore', () => {
   describe('nestedFlatFallback', () => {
+    it.each([false, 0, ''])('prefers a nested %s value over a flat key', (value) => {
+      const rs = new ResourceStore({ en: { translation: { a: { b: value }, 'a.b': 'flat' } } });
+
+      expect(rs.getResource('en', 'translation', 'a.b')).toBe(value);
+      expect(rs.getResource('en.translation.a.b')).toBe(value);
+    });
+
     it('it should find the resource in various flat/nested combinations', () => {
       const data = {
         en: {
