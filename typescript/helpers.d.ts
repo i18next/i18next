@@ -6,9 +6,6 @@ export type $SpecialObject = object | Array<string | object>;
 
 // Types Operators
 
-export type $Prune<T> =
-  never | { [K in keyof T as [keyof T[K]] extends [never] ? never : K]: T[K] };
-
 /** All the way down. */
 export interface $Turtles {
   [x: string]: $Turtles;

@@ -5,7 +5,6 @@ import type {
   $SpecialObject,
   $StringKeyPathToRecord,
   $NoInfer,
-  $Prune,
   $Turtles,
 } from './helpers.js';
 import type {
@@ -1118,11 +1117,12 @@ type FilterKeys<T, Context> = [T] extends [readonly any[]]
     ? FilterKeysObject<T, Context>
     : never;
 
-type FilterKeysObject<T, Context> = $Prune<
-  {
-    // Mapped type 1: object-valued keys (recurse) + plain leaf keys (non-plural, non-context)
-    [
-      K in keyof T as T[K] extends object
+type FilterKeysObject<T, Context> = {
+  // Mapped type 1: object-valued keys (recurse) + plain leaf keys (non-plural, non-context)
+  [
+    K in keyof T as [keyof T[K]] extends [never]
+      ? never // nothing to select (empty object, null, undefined, optional or unknown)
+      : T[K] extends object
         ? K
         : [Context] extends [string]
           ? K extends
@@ -1141,42 +1141,41 @@ type FilterKeysObject<T, Context> = $Prune<
           : K extends `${string}${_PluralSeparator}${PluralSuffix}`
             ? never
             : K
-    ]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
-  } & {
-    // Mapped type 2: plural collapsing (active regardless of context)
-    [
-      K in keyof T as T[K] extends object
-        ? never
-        : [Context] extends [string]
-          ? K extends
-              | `${string}${_ContextSeparator}${Context}`
-              | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
-            ? never // context keys handled by mapped type 3
-            : K extends
-                  | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
-                  | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
-              ? Prefix
-              : never
+  ]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+} & {
+  // Mapped type 2: plural collapsing (active regardless of context)
+  [
+    K in keyof T as T[K] extends object
+      ? never
+      : [Context] extends [string]
+        ? K extends
+            | `${string}${_ContextSeparator}${Context}`
+            | `${string}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+          ? never // context keys handled by mapped type 3
           : K extends
                 | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
                 | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
             ? Prefix
             : never
-    ]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
-  } & {
-    // Mapped type 3: context key collapsing (skip JSON-union phantoms typed as `undefined`)
-    [
-      K in keyof T as T[K] extends object
+        : K extends
+              | `${infer Prefix}${_PluralSeparator}${PluralSuffix}`
+              | `${infer Prefix}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+          ? Prefix
+          : never
+  ]: T[K] extends object ? FilterKeys<T[K], Context> : PluralValue<T[K] & string>;
+} & {
+  // Mapped type 3: context key collapsing (skip JSON-union phantoms typed as `undefined`)
+  [
+    K in keyof T as T[K] extends object
+      ? never
+      : [keyof T[K]] extends [never]
         ? never
-        : [T[K]] extends [undefined]
-          ? never
-          : [Context] extends [string]
-            ? K extends
-                | `${infer Prefix}${_ContextSeparator}${Context}`
-                | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
-              ? Prefix
-              : never
+        : [Context] extends [string]
+          ? K extends
+              | `${infer Prefix}${_ContextSeparator}${Context}`
+              | `${infer Prefix}${_ContextSeparator}${Context}${_PluralSeparator}${PluralSuffix}`
+            ? Prefix
             : never
-    ]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
-  }
->;
+          : never
+  ]: T[K] extends object ? FilterKeys<T[K], Context> : T[K];
+};
