@@ -83,6 +83,19 @@ describe('Interpolator', () => {
         ),
       ).toBe('0|false||3|flat');
     });
+
+    it.each(['.', false, '::'])(
+      'prefers a nested falsy value over a flat key, but not a nested null, with %s',
+      (keySeparator) => {
+        const ip = new Interpolator({
+          keySeparator,
+          interpolation: { escapeValue: false, skipOnVariables: true },
+        });
+        const data = { a: { zero: 0, nil: null }, 'a.zero': 'flat zero', 'a.nil': 'flat nil' };
+
+        expect(ip.interpolate('{{a.zero}}|{{a.nil}}', data)).toBe('0|flat nil');
+      },
+    );
   });
 
   describe('interpolate() - options', () => {

@@ -16,7 +16,8 @@ const deepFindWithDefaults = (
   ignoreJSONStructure = true,
 ) => {
   let path = getPathWithDefaults(data, defaultData, key);
-  if (path === undefined && ignoreJSONStructure && isString(key)) {
+  // false, 0 and '' are values; null still falls back to a flat key
+  if (path == null && ignoreJSONStructure && isString(key)) {
     path = deepFind(data, key, keySeparator);
     if (path === undefined) path = deepFind(defaultData, key, keySeparator);
   }
