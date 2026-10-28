@@ -68,6 +68,23 @@ describe('Interpolator', () => {
     });
   });
 
+  describe('interpolate() - with a custom keySeparator', () => {
+    it.each([false, '::'])('keeps nested 0, false and empty values with %s', (keySeparator) => {
+      const ip = new Interpolator({
+        keySeparator,
+        interpolation: { escapeValue: false, skipOnVariables: true },
+      });
+      const data = { stats: { unread: 0, muted: false, label: '', total: 3 }, 'flat.key': 'flat' };
+
+      expect(
+        ip.interpolate(
+          '{{stats.unread}}|{{stats.muted}}|{{stats.label}}|{{stats.total}}|{{flat.key}}',
+          data,
+        ),
+      ).toBe('0|false||3|flat');
+    });
+  });
+
   describe('interpolate() - options', () => {
     const tests = [
       {
