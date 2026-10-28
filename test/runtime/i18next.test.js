@@ -216,6 +216,53 @@ describe('i18next', () => {
         expect(org.exists('deeper.other')).to.equal(false);
         expect(org.t('deeper.list', { returnObjects: true })).to.deep.equal(['a', 'b']);
       });
+
+      it('keeps reused fork options and every cloned store independent', () => {
+        const org = i18next.createInstance();
+        org.init({
+          initAsync: false,
+          lng: 'en',
+          resources: { en: { translation: { key: 'original' } } },
+        });
+        const options = { forkResourceStore: true, initAsync: false };
+        const first = org.cloneInstance(options);
+        const second = org.cloneInstance(options);
+
+        first.addResource('en', 'translation', 'key', 'first');
+        second.addResource('en', 'translation', 'key', 'second');
+
+        expect(org.t('key')).to.equal('original');
+        expect(first.t('key')).to.equal('first');
+        expect(second.t('key')).to.equal('second');
+        expect(first.store).not.to.equal(org.store);
+        expect(second.store).not.to.equal(org.store);
+        expect(second.store).not.to.equal(first.store);
+        expect(options).to.deep.equal({ forkResourceStore: true, initAsync: false });
+        expect(first.options).not.to.have.property('forkResourceStore');
+        expect(second.options).not.to.have.property('forkResourceStore');
+      });
+
+      it('accepts frozen options when forking the resource store', () => {
+        const options = Object.freeze({ forkResourceStore: true, initAsync: false });
+        const forked = orgInstance.cloneInstance(options);
+
+        expect(forked.store).not.to.equal(orgInstance.store);
+        expect(forked.t('deeper.key')).to.equal(orgInstance.t('deeper.key'));
+        expect(options.forkResourceStore).to.equal(true);
+        expect(forked.options).not.to.have.property('forkResourceStore');
+      });
+
+      it.each([undefined, false])(
+        'keeps the shared store when forking is %s',
+        (forkResourceStore) => {
+          const options = Object.freeze({ forkResourceStore, initAsync: false });
+          const cloned = orgInstance.cloneInstance(options);
+
+          expect(cloned.store).to.equal(orgInstance.store);
+          expect(cloned.options.forkResourceStore).to.equal(forkResourceStore);
+          expect(options).to.deep.equal({ forkResourceStore, initAsync: false });
+        },
+      );
     });
   });
 
