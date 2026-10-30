@@ -1142,7 +1142,7 @@
 
   const deepFindWithDefaults = (data, defaultData, key, keySeparator = '.', ignoreJSONStructure = true) => {
     let path = getPathWithDefaults(data, defaultData, key);
-    if (!path && ignoreJSONStructure && isString(key)) {
+    if (path == null && ignoreJSONStructure && isString(key)) {
       path = deepFind(data, key, keySeparator);
       if (path === undefined) path = deepFind(defaultData, key, keySeparator);
     }
@@ -2232,7 +2232,12 @@
     }
     cloneInstance(options = {}, callback = noop) {
       const forkResourceStore = options.forkResourceStore;
-      if (forkResourceStore) delete options.forkResourceStore;
+      if (forkResourceStore) {
+        options = {
+          ...options
+        };
+        delete options.forkResourceStore;
+      }
       const mergedOptions = {
         ...this.options,
         preload: false,
