@@ -34,6 +34,7 @@ type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
+type _StrictInterpolationChecks = TypeOptions['strictInterpolationChecks'];
 type _EnableSelector = TypeOptions['enableSelector'];
 type _ParseInterpolation = TypeOptions['parseInterpolation'];
 type _InterpolationFormatTypeMap = TypeOptions['interpolationFormatTypeMap'];
@@ -606,18 +607,37 @@ type EffectiveKPrefix<KPrefix, TOpt> = TOpt extends { keyPrefix: infer OptKP ext
 
 /** `parseInterpolation: 'icu'` or `'mf2'`: messages are typed by their arguments. */
 type _ParsesMessageFormat = [_ParseInterpolation] extends ['icu'] | ['mf2'] ? true : false;
+/**
+ * Whether `t()` options are required for a message with variables: always under
+ * ICU / MF2 (on a missing one, i18next-icu renders the raw message and
+ * i18next-mf2 a `{$name}` fallback), and with `strictInterpolationChecks: true`
+ * for `{{variables}}` (i18next renders the raw placeholder).
+ */
+type _RequiresMessageOptions = _ParsesMessageFormat extends true
+  ? true
+  : [_ParseInterpolation] extends [true]
+    ? _StrictInterpolationChecks extends true
+      ? true
+      : false
+    : false;
 
 /**
- * `t()` options are optional, except for a message with arguments under
- * `parseInterpolation: 'icu'` or `'mf2'` (on a missing one, i18next-icu renders
- * the raw message and i18next-mf2 a `{$name}` fallback). The conditional
- * resolves eagerly; a generic one here would break inference.
+ * `t()` options are optional, except for a message with variables when
+ * `_RequiresMessageOptions` is true. The conditional resolves eagerly; a generic
+ * one here would break inference.
  */
-type _KeyAndOptions<Key, Ret, Opts> = _ParsesMessageFormat extends true
+type _KeyAndOptions<Key, Ret, Opts> = _RequiresMessageOptions extends true
   ? [key: Key | Key[], options: Opts] | [key: (Key | Key[]) & _IfOptionalOptions<Ret>]
   : [key: Key | Key[], options?: Opts];
+/**
+ * `t(key, defaultValue)` under `strictKeyChecks`: the variables are required only
+ * with `strictInterpolationChecks`, else `unknown` (the call stays as before).
+ */
+type _IfOptionalDefaultOptions<Ret> = _StrictInterpolationChecks extends true
+  ? _IfOptionalOptions<Ret>
+  : unknown;
 /** `unknown` when options may be left out, else a type naming the missing arguments. */
-type _IfOptionalOptions<Ret> = _ParsesMessageFormat extends true
+type _IfOptionalOptions<Ret> = _RequiresMessageOptions extends true
   ? {} extends InterpolationMap<Ret>
     ? unknown
     : { 'pass these arguments as t() options': InterpolationMap<Ret> }
@@ -625,6 +645,25 @@ type _IfOptionalOptions<Ret> = _ParsesMessageFormat extends true
 /** Options parameter of a selector overload: required for a message with arguments. */
 type _SelectorOptionsArg<Ret, Opts> =
   unknown extends _IfOptionalOptions<Ret> ? [options?: Opts] : [options: Opts];
+/** Union of the values an array of selectors resolves to (plural brands kept). */
+type _SelectorsReturn<Fns extends readonly unknown[]> = Fns[number] extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : never;
+/** Whether any member of the union is a plural group (`false` for `any`). */
+type _HasPlural<R> = 0 extends 1 & R
+  ? false
+  : [Extract<R, PluralValue<string>>] extends [never]
+    ? false
+    : true;
+/** `{ count: number }` when any member of the union is a plural group. */
+type _CountIfPlural<R> = _HasPlural<R> extends true ? { count: number } : {};
+/** Options of a selector-array overload: required for variables or a plural member. */
+type _SelectorArrayOptionsArg<R, Opts> =
+  _HasPlural<R> extends true
+    ? [options: Opts & { count: number } & InterpolationMap<DeepUnwrapPlural<R>>]
+    : _SelectorOptionsArg<DeepUnwrapPlural<R>, Opts & InterpolationMap<DeepUnwrapPlural<R>>>;
 
 /** ************************
  * T function declaration *
@@ -663,7 +702,7 @@ interface TFunctionStrict<
   >(
     key: Key | Key[],
     defaultValue: string,
-    options?: TOpt &
+    options: TOpt &
       InterpolationMap<Ret> & {
         context?: Key extends string
           ? unknown extends TOpt['context']
@@ -671,6 +710,14 @@ interface TFunctionStrict<
             : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       },
+  ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
+  <
+    const Key extends ParseKeys<Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>> | TemplateStringsArray,
+    const TOpt extends TOptions,
+    Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
+  >(
+    key: (Key | Key[]) & _IfOptionalDefaultOptions<$NoInfer<Ret>>,
+    defaultValue: string,
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
 }
 
@@ -826,7 +873,7 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     NewSrc extends GetSource<NewNs, KPrefix>,
   >(
     selectors: readonly SelectorFn<NewSrc, ApplyTarget<Target, Opts>, Opts>[],
-    options: Opts & InterpolationMap<Target> & { ns: NewNs },
+    options: Opts & InterpolationMap<Target> & { ns: NewNs } & _CountIfPlural<Target>,
   ): SelectorReturn<Target, Opts>;
 
   // ── Single selector with explicit `ns` ──────────────────────────────────────
@@ -843,6 +890,21 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
       } & (Target extends PluralValue<string> ? { count: number } : {}),
   ): SelectorReturn<Target, Opts>;
 
+  // ── Array of selectors with defaultValue — preserves literal type of DV ─────
+  // Same TypeScript limitation as the single-selector defaultValue overload below:
+  // `const Opts` loses the `defaultValue` literal when inferred through the
+  // conditional rest tuple of the general array overload. A plural member
+  // requires `count`, as in the single-selector overload.
+  <
+    const Fns extends readonly ((src: Select<Source, Opts['context']>) => string | object)[],
+    const DV extends string,
+    const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
+  >(
+    selectors: Fns,
+    options: Opts & { defaultValue: DV } & _CountIfPlural<_SelectorsReturn<Fns>> &
+      InterpolationMap<DeepUnwrapPlural<_SelectorsReturn<Fns>>>,
+  ): SelectorReturn<_SelectorsReturn<Fns>, Opts, DV>;
+
   // ── Array of selectors with default `ns` ─────────────────────────────────────
   // Captures the selector tuple as `const Fns` so TypeScript preserves each
   // element's exact return type.  The union of return types is then extracted
@@ -854,14 +916,8 @@ interface TFunctionSelector<Ns extends Namespace, KPrefix, Source> extends Brand
     const Opts extends SelectorOptions<Ns[number]> = SelectorOptions<Ns[number]>,
   >(
     selectors: Fns,
-    ...args: _SelectorOptionsArg<
-      DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>,
-      Opts &
-        InterpolationMap<
-          DeepUnwrapPlural<Fns[number] extends (...args: any[]) => infer R ? R : never>
-        >
-    >
-  ): SelectorReturn<Fns[number] extends (...args: any[]) => infer R ? R : never, Opts>;
+    ...args: _SelectorArrayOptionsArg<_SelectorsReturn<Fns>, Opts>
+  ): SelectorReturn<_SelectorsReturn<Fns>, Opts>;
 
   // ── Single selector with context + returnObjects ────────────────────────────
   // More specific than the general context overload below. Captures `Context` as

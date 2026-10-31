@@ -43,4 +43,10 @@ describe("parseInterpolation: 'icu' with enableSelector", () => {
     // @ts-expect-error missing argument (defaultValue)
     t(($) => $.greeting, { defaultValue: 'Hi' });
   });
+
+  it('keeps literal types for a selector array with defaultValue', () => {
+    expectTypeOf(
+      t([($) => $.plain, ($) => $.deep.inner], { defaultValue: 'fallback', value: 1 }),
+    ).toEqualTypeOf<'Just a plain string' | 'Inner {value}' | 'fallback'>();
+  });
 });
