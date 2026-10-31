@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf } from 'vitest';
-import type { TFunction } from 'i18next';
+import type { SelectorParam, TFunction } from 'i18next';
 
 describe('strictInterpolationChecks with the selector API', () => {
   const t = (() => '') as unknown as TFunction<'interpolators'>;
@@ -28,5 +28,14 @@ describe('strictInterpolationChecks with the selector API', () => {
 
   it('leaves a string without variables alone', () => {
     expectTypeOf(t(($) => $.just_a_string)).toEqualTypeOf<string>();
+  });
+
+  it('a SelectorParam prop keeps compiling', () => {
+    // `SelectorParam` resolves to `string`, so a component that takes a selector
+    // as a prop is not affected by the flag; the check happens at its call site.
+    function label(selector: SelectorParam<'interpolators'>) {
+      return t(selector);
+    }
+    label(($) => $.simple);
   });
 });

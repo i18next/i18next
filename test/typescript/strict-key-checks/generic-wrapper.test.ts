@@ -5,10 +5,13 @@ describe('generic wrapper without strictInterpolationChecks', () => {
   const t = (() => '') as unknown as TFunction<'interpolators'>;
 
   it('a key-only wrapper keeps compiling', () => {
-    function tr<K extends ParseKeys<'interpolators'>>(key: K) {
+    function trGeneric<K extends ParseKeys<'interpolators'>>(key: K) {
       return t(key);
     }
-    tr('simple');
-    tr('just_a_string');
+    function trUnion(key: ParseKeys<'interpolators'>) {
+      return t(key);
+    }
+    trGeneric('simple');
+    trUnion('simple');
   });
 });
