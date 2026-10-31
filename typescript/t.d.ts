@@ -34,6 +34,7 @@ type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
+type _StrictInterpolationChecks = TypeOptions['strictInterpolationChecks'];
 type _EnableSelector = TypeOptions['enableSelector'];
 type _ParseInterpolation = TypeOptions['parseInterpolation'];
 type _InterpolationFormatTypeMap = TypeOptions['interpolationFormatTypeMap'];
@@ -604,20 +605,37 @@ type EffectiveKPrefix<KPrefix, TOpt> = TOpt extends { keyPrefix: infer OptKP ext
   ? OptKP
   : KPrefix;
 
-/** Options are required for a message with variables unless `parseInterpolation: false`. */
-type _RequiresMessageOptions = [_ParseInterpolation] extends [false] ? false : true;
+/** `parseInterpolation: 'icu'` or `'mf2'`: messages are typed by their arguments. */
+type _ParsesMessageFormat = [_ParseInterpolation] extends ['icu'] | ['mf2'] ? true : false;
+/**
+ * Whether `t()` options are required for a message with variables: always under
+ * ICU / MF2 (on a missing one, i18next-icu renders the raw message and
+ * i18next-mf2 a `{$name}` fallback), and with `strictInterpolationChecks: true`
+ * for `{{variables}}` (i18next renders the raw placeholder).
+ */
+type _RequiresMessageOptions = _ParsesMessageFormat extends true
+  ? true
+  : [_ParseInterpolation] extends [true]
+    ? _StrictInterpolationChecks extends true
+      ? true
+      : false
+    : false;
 
 /**
- * `t()` options are optional, except for a message with variables (`{{name}}`,
- * or ICU / MF2 arguments under `parseInterpolation: 'icu'` / `'mf2'`): left out,
- * i18next renders the raw placeholder, i18next-icu the raw message and
- * i18next-mf2 a `{$name}` fallback. `parseInterpolation: false` turns the
- * requirement off. The conditional resolves eagerly; a generic one here would
- * break inference.
+ * `t()` options are optional, except for a message with variables when
+ * `_RequiresMessageOptions` is true. The conditional resolves eagerly; a generic
+ * one here would break inference.
  */
 type _KeyAndOptions<Key, Ret, Opts> = _RequiresMessageOptions extends true
   ? [key: Key | Key[], options: Opts] | [key: (Key | Key[]) & _IfOptionalOptions<Ret>]
   : [key: Key | Key[], options?: Opts];
+/**
+ * `t(key, defaultValue)` under `strictKeyChecks`: the variables are required only
+ * with `strictInterpolationChecks`, else `unknown` (the call stays as before).
+ */
+type _IfOptionalDefaultOptions<Ret> = _StrictInterpolationChecks extends true
+  ? _IfOptionalOptions<Ret>
+  : unknown;
 /** `unknown` when options may be left out, else a type naming the missing arguments. */
 type _IfOptionalOptions<Ret> = _RequiresMessageOptions extends true
   ? {} extends InterpolationMap<Ret>
@@ -698,7 +716,7 @@ interface TFunctionStrict<
     const TOpt extends TOptions,
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
   >(
-    key: (Key | Key[]) & _IfOptionalOptions<$NoInfer<Ret>>,
+    key: (Key | Key[]) & _IfOptionalDefaultOptions<$NoInfer<Ret>>,
     defaultValue: string,
   ): TFunctionReturnOptionalDetails<TFunctionProcessReturnValue<$NoInfer<Ret>, never>, TOpt>;
 }

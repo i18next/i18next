@@ -112,10 +112,7 @@ describe('interpolation values with strictKeyChecks == true', () => {
   });
 
   it('simple key', () => {
-    // @ts-expect-error options are required for a string with variables
-    t('simple');
-    // @ts-expect-error same with a default value
-    t('simple', 'some default value');
+    expectTypeOf(t('simple')).toEqualTypeOf<'This is {{olim}}'>();
     expectTypeOf(t('simple', { olim: 'yes' })).toEqualTypeOf<'This is {{olim}}'>();
     expectTypeOf(
       t('simple', 'some default value', { olim: 'yes' }),

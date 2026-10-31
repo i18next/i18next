@@ -252,7 +252,7 @@ describe('t', () => {
 
   it('supports interpolation', () => {
     t(($) => $.interpolation.val, { val: '' });
-    // @ts-expect-error options are required for a string with variables
+    // without strictInterpolationChecks the options may be left out
     t(($) => $.interpolation.val);
     // @ts-expect-error misspelled variable
     t(($) => $.interpolation.val, { vla: '' });

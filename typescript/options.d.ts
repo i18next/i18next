@@ -160,6 +160,15 @@ export type TypeOptions = $MergeBy<
       strictKeyChecks: false;
 
       /**
+       * Flag that makes the `t()` options required for a string with interpolation
+       * variables, so that `{{name}}` cannot be left out of a call. Applies to the
+       * string-key API (with `strictKeyChecks`, also to `t(key, defaultValue)`) and
+       * to the selector API. Messages under `parseInterpolation: 'icu'` or `'mf2'`
+       * require their arguments regardless of this flag.
+       */
+      strictInterpolationChecks: false;
+
+      /**
        * Prefix for interpolation
        */
       interpolationPrefix: '{{';
