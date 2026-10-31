@@ -8,7 +8,7 @@ describe('main', () => {
 
   it('should fallback for empty string translations with returnEmpty set to false in config', () => {
     expectTypeOf(
-      i18next.t('empty string with {{val}}'),
+      i18next.t('empty string with {{val}}', { val: 1 }),
     ).toEqualTypeOf<'empty string with {{val}}'>();
   });
 });

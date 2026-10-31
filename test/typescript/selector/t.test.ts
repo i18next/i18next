@@ -252,6 +252,25 @@ describe('t', () => {
 
   it('supports interpolation', () => {
     t(($) => $.interpolation.val, { val: '' });
+    // @ts-expect-error options are required for a string with variables
+    t(($) => $.interpolation.val);
+    // @ts-expect-error misspelled variable
+    t(($) => $.interpolation.val, { vla: '' });
+  });
+
+  it('selector fallback array — a plural member requires count', () => {
+    // `soup_other` has no {{count}} in its text: the requirement comes from the
+    // plural group, not from the variable.
+    t([($) => $.soup, ($) => $.beverage], { count: 1 });
+    // @ts-expect-error count missing
+    t([($) => $.soup, ($) => $.beverage]);
+    // @ts-expect-error count missing (with defaultValue)
+    t([($) => $.soup, ($) => $.beverage], { defaultValue: 'x' });
+    // @ts-expect-error count missing (explicit ns)
+    t([($) => $.soup], { ns: 'ns1' });
+    expectTypeOf(
+      t([($) => $.soup, ($) => $.beverage], { count: 1, defaultValue: 'x' }),
+    ).toEqualTypeOf<'a bowl of soup' | 'several bowls of soup' | 'beverage' | 'x'>();
   });
 
   it('selector fallback array — single namespace', () => {
@@ -261,7 +280,7 @@ describe('t', () => {
     >();
 
     // Fallback between a plural group and a plain string.
-    expectTypeOf(t([($) => $.tea, ($) => $.coffee.drip.black])).toEqualTypeOf<
+    expectTypeOf(t([($) => $.tea, ($) => $.coffee.drip.black], { count: 2 })).toEqualTypeOf<
       | 'a cuppa tea and a lie down'
       | '{{count}} cups of tea and a big sleep'
       | 'a strong cup of black coffee'
@@ -274,7 +293,7 @@ describe('t', () => {
   });
 
   // Both selectors resolve to plural groups; PluralValue brand is stripped from both.
-  expectTypeOf(t([($) => $.tea, ($) => $.sodas.faygo.orange])).toEqualTypeOf<
+  expectTypeOf(t([($) => $.tea, ($) => $.sodas.faygo.orange], { count: 2 })).toEqualTypeOf<
     | 'a cuppa tea and a lie down'
     | '{{count}} cups of tea and a big sleep'
     | 'one orange faygo'

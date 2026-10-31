@@ -16,6 +16,8 @@ declare const ns1: {
   'beverage|beer': 'beer';
   tea_one: 'a cuppa tea and a lie down';
   tea_other: '{{count}} cups of tea and a big sleep';
+  soup_one: 'a bowl of soup';
+  soup_other: 'several bowls of soup';
   'dessert|cake': 'a nice cake';
   'dessert|muffin_one': 'a nice muffin';
   'dessert|muffin_other': '{{count}} nice muffins';
