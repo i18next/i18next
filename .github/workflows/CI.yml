@@ -126,3 +126,24 @@ jobs:
 
       - name: Test
         run: npm run test:typescript
+
+  testTypescriptFloor:
+    # the lowest TypeScript of the peer range (`^5 || ^6 || ^7`): the public types, without the test suite's tooling
+    name: Test typescript ${{ matrix.typescript }} (lowest supported)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        typescript: ['5.0']
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Type check (string keys)
+        run: npx --yes -p typescript@${{ matrix.typescript }} tsc -p test/typescript-floor
+
+      - name: Type check (selector API)
+        run: npx --yes -p typescript@${{ matrix.typescript }} tsc -p test/typescript-floor/selector

@@ -1,0 +1,15 @@
+{
+  // Checked with the lowest TypeScript of the peer range (5.0) in CI: `npx -p typescript@5.0 tsc -p test/typescript-floor`
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "skipLibCheck": false,
+    "types": [],
+    "paths": { "i18next": ["../../index.d.mts"] }
+  },
+  "files": ["i18next.d.ts", "floor.ts"]
+}

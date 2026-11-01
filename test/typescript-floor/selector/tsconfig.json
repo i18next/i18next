@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "paths": { "i18next": ["../../../index.d.mts"] } },
+  "files": ["i18next.d.ts", "floor.ts"]
+}
