@@ -1,3 +1,8 @@
+## 26.7.1
+
+- fix: `reloadResources()` retries the bundles that failed to load. The load queue skipped them also when reloading, so a language whose first load failed (a backend or network outage at startup) stayed missing. i18next-http-backend 4.0.8, i18next-chained-backend 5.0.7 and i18next-locize-backend 10.0.5 reload through `reloadResources()` with i18next 26.7, so their `reloadInterval` no longer recovered from such a failure, as their own reload did before.
+- fix: `reloadResources()` without languages reloads the current languages and every language the backend loaded or tried to load, for the instance and its clones, as the API docs describe ("pass languages and namespaces if you don't want to reload all"). It reloaded only the current languages, so on a server (one clone per request with i18next-http-middleware) a backend's `reloadInterval` never refreshed the languages loaded for requests. It never requests `cimode`. With languages given, nothing changes.
+
 ## 26.7.0
 
 The last 26.x minor before v27, which follows in about a week. It adds the APIs v27 builds on, and with `debug: true` it warns wherever a setup relies on something v27 changes. Most of the v27 defaults are existing options, so you can try them now:
