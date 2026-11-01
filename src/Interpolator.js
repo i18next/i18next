@@ -56,6 +56,23 @@ class Interpolator {
       alwaysFormat,
     } = options.interpolation;
 
+    // init() runs on every t() call with interpolation options, so the names are only built when needed
+    if (prefixEscaped || suffixEscaped || nestingPrefixEscaped || nestingSuffixEscaped) {
+      const names = Object.entries({
+        prefixEscaped,
+        suffixEscaped,
+        nestingPrefixEscaped,
+        nestingSuffixEscaped,
+      })
+        .filter(([, v]) => v)
+        .map(([k]) => k);
+      this.logger.once(
+        names.join(),
+        'deprecate',
+        `interpolation.${names.join(', interpolation.')}: the regex-escaped delimiter options are removed in v27; pass the literal delimiters as prefix, suffix, nestingPrefix and nestingSuffix`,
+      );
+    }
+
     this.escape = escape !== undefined ? escape : utilsEscape;
     this.escapeValue = escapeValue !== undefined ? escapeValue : true;
     this.useRawValueToEscape = useRawValueToEscape !== undefined ? useRawValueToEscape : false;
@@ -120,6 +137,7 @@ class Interpolator {
     let match;
     let value;
     let replaces;
+    const original = str;
 
     const defaultData =
       (this.options && this.options.interpolation && this.options.interpolation.defaultVariables) ||
@@ -196,7 +214,25 @@ class Interpolator {
       {
         // regular escape on demand
         regex: this.regexp,
-        safeValue: (val) => (this.escapeValue ? this.escape(val) : val),
+        safeValue: (val) => {
+          if (!this.escapeValue) return val;
+          // v27 no longer escapes '/', which only changes the default escape. An instance with
+          // escapeValue: false escapes only on request (react-i18next Trans forces it for one t()
+          // call and decodes the entities after)
+          if (
+            this.escape === utilsEscape &&
+            this.options?.interpolation?.escapeValue !== false &&
+            isString(val) &&
+            val.includes('/')
+          ) {
+            this.logger.once(
+              '/',
+              'deprecate',
+              "escapeValue renders '/' in a value as '&#x2F;' today; from v27 the default escape leaves '/' as it is",
+            );
+          }
+          return this.escape(val);
+        },
       },
     ];
     // skipOnVariables: the escape pass skips the unescaped values, offset by its own edits.
@@ -220,6 +256,15 @@ class Interpolator {
           } else if (options && Object.prototype.hasOwnProperty.call(options, matchedVar)) {
             value = ''; // undefined becomes empty string
           } else if (skipOnVariables) {
+            // keyed by the placeholder text: both passes see an unescaped `{{- var}}`.
+            // Checked here too, so a call without debug does not build the strings.
+            if (this.logger.debug) {
+              this.logger.once(
+                `${original}\u0000${match[0]}`,
+                'warn',
+                `missed to pass in variable ${matchedVar} for interpolating ${original}`,
+              );
+            }
             value = match[0];
             continue; // this makes sure it continues to detect others
           } else {

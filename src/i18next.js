@@ -14,6 +14,9 @@ import keysFromSelector from './selector.js';
 
 const noop = () => {}
 
+// the instance whose use() set the shared logger, to warn when another instance's init() replaces it
+let loggerOwner;
+
 // Binds the member functions of the given class instance so that they can be
 // destructured or used as callbacks.
 const bindMemberFunctions = (inst) => {
@@ -30,7 +33,8 @@ class I18n extends EventEmitter {
     super();
 
     this.options = transformOptions(options);
-    this.services = {};
+    // ownPostProcessors: names registered with this instance's use(), shared with its clones
+    this.services = { ownPostProcessors: new Set() };
     this.logger = baseLogger;
     this.modules = { external: [] };
 
@@ -63,6 +67,7 @@ class I18n extends EventEmitter {
       }
     }
 
+    const fallbackLngIsDefault = options.fallbackLng === undefined && this.options.fallbackLng === undefined;
     const defOpts = getDefaults();
     this.options = { ...defOpts, ...this.options, ...transformOptions(options) };
     this.options.interpolation = { ...defOpts.interpolation, ...this.options.interpolation }; // do not use reference
@@ -85,11 +90,20 @@ class I18n extends EventEmitter {
 
     // init services
     if (!this.options.isClone) {
+      // v27 keeps a logger per instance; in v26 the last non-clone init() sets it for all
+      if (loggerOwner && loggerOwner !== this && loggerOwner.modules.logger !== this.modules.logger) {
+        baseLogger.deprecate(
+          'init: this init() replaces the logger another i18next instance set with use(), as the logger is shared in v26; from v27 each instance keeps its own logger',
+        );
+      }
+      loggerOwner = this.modules.logger ? this : undefined;
       if (this.modules.logger) {
         baseLogger.init(createClassOnDemand(this.modules.logger), this.options);
       } else {
         baseLogger.init(null, this.options);
       }
+      this.pendingWarnings?.forEach((msg) => this.logger.warn(msg));
+      this.pendingWarnings = undefined;
 
       let formatter;
       if (this.modules.formatter) {
@@ -138,6 +152,7 @@ class I18n extends EventEmitter {
         s,
         this.options,
       );
+      s.backendConnector.devIsDefaultFallback = fallbackLngIsDefault;
       // pipe events from backendConnector
       s.backendConnector.on('*', (event, ...args) => {
         this.emit(event, ...args);
@@ -289,8 +304,19 @@ class I18n extends EventEmitter {
     if (!module) throw new Error('You are passing an undefined module! Please check the object you are passing to i18next.use()')
     if (!module.type) throw new Error('You are passing a wrong module! Please check the object you are passing to i18next.use()')
 
+    // a second backend, detector, i18nFormat or formatter replaces the first one
+    const setModule = (type) => {
+      if (this.modules[type] && this.modules[type] !== module) {
+        const msg = `use: this ${type} replaces the ${type} passed to an earlier use() call; only one ${type} is used per instance`;
+        // use() mostly runs before init() has set up the logger (and debug), so the warning waits for init()
+        if (this.isInitializing || this.isInitialized) this.logger.warn(msg);
+        else (this.pendingWarnings = this.pendingWarnings || []).push(msg);
+      }
+      this.modules[type] = module;
+    };
+
     if (module.type === 'backend') {
-      this.modules.backend = module;
+      setModule('backend');
     }
 
     if (module.type === 'logger' || (module.log && module.warn && module.error)) {
@@ -298,19 +324,20 @@ class I18n extends EventEmitter {
     }
 
     if (module.type === 'languageDetector') {
-      this.modules.languageDetector = module;
+      setModule('languageDetector');
     }
 
     if (module.type === 'i18nFormat') {
-      this.modules.i18nFormat = module;
+      setModule('i18nFormat');
     }
 
     if (module.type === 'postProcessor') {
       postProcessor.addPostProcessor(module);
+      this.services.ownPostProcessors?.add(module.name);
     }
 
     if (module.type === 'formatter') {
-      this.modules.formatter = module;
+      setModule('formatter');
     }
 
     if (module.type === '3rdParty') {

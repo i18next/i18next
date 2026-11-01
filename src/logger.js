@@ -31,6 +31,7 @@ class Logger {
     this.logger = concreteLogger || consoleLogger;
     this.options = options;
     this.debug = options.debug;
+    this.seen = new Set();
   }
 
   log(...args) {
@@ -47,6 +48,13 @@ class Logger {
 
   deprecate(...args) {
     return this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
+  }
+
+  // A debug message logged once per key. ponytail: remembers 1000 keys per logger, then stays quiet
+  once(key, lvl, ...args) {
+    if (!this.debug || this.seen.has(key) || this.seen.size >= 1000) return null;
+    this.seen.add(key);
+    return this[lvl](...args);
   }
 
   forward(args, lvl, prefix, debugOnly) {

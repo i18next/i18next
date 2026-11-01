@@ -112,6 +112,7 @@ describe('Translator', () => {
       loggerStub.mockReturnValue({
         warn: loggerSpy,
         log: vitest.fn(),
+        once: vitest.fn(),
       });
 
       rs = new ResourceStore({

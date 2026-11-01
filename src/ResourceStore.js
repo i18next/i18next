@@ -1,4 +1,5 @@
 import EventEmitter from './EventEmitter.js';
+import baseLogger from './logger.js';
 import { getPath, deepFind, setPath, deepExtend, isString } from './utils.js';
 
 // Bundles already seen with keys, shared across instances so SSR setups reusing the same
@@ -13,6 +14,7 @@ class ResourceStore extends EventEmitter {
 
     this.data = data || {};
     this.options = options;
+    this.logger = baseLogger.create('resourceStore');
     if (this.options.keySeparator === undefined) {
       this.options.keySeparator = '.';
     }
@@ -34,6 +36,15 @@ class ResourceStore extends EventEmitter {
     }
   }
 
+  // the dotted-language form, getResource('en.translation.a.b') and friends, is removed in v27
+  deprecateDottedLng(method) {
+    this.logger.once(
+      method,
+      'deprecate',
+      `${method}: a dotted language ('en.translation.key') that carries the namespace and key is removed in v27; pass language, namespace and key as separate arguments`,
+    );
+  }
+
   getResource(lng, ns, key, options = {}) {
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
@@ -45,6 +56,7 @@ class ResourceStore extends EventEmitter {
 
     let path;
     if (lng.includes('.')) {
+      this.deprecateDottedLng('getResource');
       path = lng.split('.');
     } else {
       path = [lng, ns];
@@ -79,6 +91,7 @@ class ResourceStore extends EventEmitter {
     if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
 
     if (lng.includes('.')) {
+      this.deprecateDottedLng('addResource');
       path = lng.split('.');
       value = ns;
       ns = path[1];
@@ -109,6 +122,7 @@ class ResourceStore extends EventEmitter {
   ) {
     let path = [lng, ns];
     if (lng.includes('.')) {
+      this.deprecateDottedLng('addResourceBundle');
       path = lng.split('.');
       deep = resources;
       resources = ns;

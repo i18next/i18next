@@ -215,10 +215,21 @@ class Connector extends EventEmitter {
     this.prepareLoading(languages, namespaces, { reload: true }, callback);
   }
 
+  // v27 defaults to fallbackLng: false, so `dev` is no longer requested unless set
+  noticeDevFallback(lng) {
+    if (lng !== 'dev' || !this.devIsDefaultFallback) return;
+    this.logger.once(
+      'dev',
+      'warn',
+      "language 'dev' is requested because fallbackLng is not set (its default is ['dev']); i18next v27 defaults to fallbackLng: false and loads and saves missing keys in the requested language instead. Set fallbackLng to your source language, or to 'dev' to keep this behavior",
+    );
+  }
+
   loadOne(name, prefix = '') {
     const s = name.split('|');
     const lng = s[0];
     const ns = s[1];
+    this.noticeDevFallback(lng);
 
     this.read(lng, ns, 'read', undefined, undefined, (err, data) => {
       if (err) this.logger.warn(`${prefix}loading namespace ${ns} for language ${lng} failed`, err);
@@ -254,6 +265,7 @@ class Connector extends EventEmitter {
     if (key === undefined || key === null || key === '') return;
 
     if (this.backend?.create) {
+      languages?.forEach?.((l) => this.noticeDevFallback(l));
       const opts = {
         ...options,
         isUpdate,

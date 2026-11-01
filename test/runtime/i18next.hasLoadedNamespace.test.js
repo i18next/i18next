@@ -83,7 +83,9 @@ describe('i18next', () => {
         expect(Logger.entries.warn[0]).to.equal(
           'i18next: init: no languageDetector is used and no lng is defined',
         );
-        expect(Logger.entries.warn[1]).to.equal(
+        // no fallbackLng set: the default ['dev'] is loaded, with the 26.7 notice about v27
+        expect(Logger.entries.warn[1]).to.contain("language 'dev' is requested");
+        expect(Logger.entries.warn[2]).to.equal(
           'i18next: hasLoadedNamespace: i18n.languages were undefined or empty',
         );
         Logger.reset();

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import i18next from '../../src/i18next.js';
 
 /** @type {import('i18next').i18n} */
@@ -119,5 +119,46 @@ describe('i18next.interpolation.nesting', () => {
         expect(instance.t.apply(instance, test.args)).to.eql(test.expected);
       });
     });
+  });
+});
+
+describe('missing variables with skipOnVariables', () => {
+  const setup = async (debug) => {
+    const warn = vi.fn();
+    const inst = i18next.createInstance();
+    await inst.use({ type: 'logger', log: () => {}, warn, error: () => {} }).init({
+      debug,
+      lng: 'en',
+      resources: {
+        en: { translation: { greet: 'Hello {{name}} from {{- place}}', other: 'Bye {{name}}' } },
+      },
+    });
+    const missing = () =>
+      warn.mock.calls
+        .map((args) => args[0][0])
+        .filter((m) => m.includes('missed to pass in variable'));
+    return { inst, missing };
+  };
+
+  it('warns once per string and variable in debug mode', async () => {
+    const { inst, missing } = await setup(true);
+    expect(inst.t('greet')).to.equal('Hello {{name}} from {{- place}}');
+    inst.t('greet');
+    inst.t('greet', { name: 'Ann' });
+    inst.t('other');
+    expect(missing()).to.eql([
+      'i18next::interpolator: missed to pass in variable place for interpolating Hello {{name}} from {{- place}}',
+      'i18next::interpolator: missed to pass in variable name for interpolating Hello {{name}} from {{- place}}',
+      'i18next::interpolator: missed to pass in variable name for interpolating Bye {{name}}',
+    ]);
+  });
+
+  it('does not warn for a variable passed as undefined, or without debug', async () => {
+    const { inst, missing } = await setup(true);
+    inst.t('other', { name: undefined });
+    expect(missing()).to.eql([]);
+    const quiet = await setup(false);
+    quiet.inst.t('other');
+    expect(quiet.missing()).to.eql([]);
   });
 });

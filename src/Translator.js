@@ -20,6 +20,7 @@ class Translator extends EventEmitter {
         'backendConnector',
         'i18nFormat',
         'utils',
+        'ownPostProcessors',
       ],
       services,
       this,
@@ -204,6 +205,12 @@ class Translator extends EventEmitter {
       if (!opt.returnObjects && !this.options.returnObjects) {
         if (!this.options.returnedObjectHandler) {
           this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+          // v27 returns the key here
+          this.logger.once(
+            'returnedObject',
+            'deprecate',
+            "accessing an object without returnObjects returns a sentence about it today; from v27 t() returns the key, as for a missing key (returnedObjectHandler can keep today's text)",
+          );
         }
         const r = this.options.returnedObjectHandler
           ? this.options.returnedObjectHandler(resUsedKey, resForObjHndl, {
@@ -443,6 +450,21 @@ class Translator extends EventEmitter {
     const postProcessorNames = isString(postProcess) ? [postProcess] : postProcess;
 
     if (res != null && postProcessorNames?.length && opt.applyPostProcessor !== false) {
+      // v27 keeps post-processors per instance (clones keep their parent's)
+      postProcessorNames.forEach((name) => {
+        if (
+          this.logger.debug &&
+          postProcessor.processors[name] &&
+          this.ownPostProcessors &&
+          !this.ownPostProcessors.has(name)
+        ) {
+          this.logger.once(
+            name,
+            'deprecate',
+            `postProcess: '${name}' was registered with use() on another i18next instance; from v27 post-processors are per instance, so call use() with it on this instance too`,
+          );
+        }
+      });
       res = postProcessor.handle(
         postProcessorNames,
         res,

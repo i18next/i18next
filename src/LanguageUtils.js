@@ -54,7 +54,27 @@ class LanguageUtil {
       return code;
     }
 
-    return this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
+    const formatted =
+      this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
+    if (this.logger.debug && isString(code)) this.deprecateBareCode(code, formatted);
+    return formatted;
+  }
+
+  // v27 canonicalizes codes without a region as it already does with one ('EN' -> 'en', 'iw' -> 'he')
+  deprecateBareCode(code, formatted) {
+    let v27;
+    try {
+      v27 = Intl.getCanonicalLocales(code)[0];
+    } catch (e) {
+      return; // not BCP 47: v27 keeps it as it is
+    }
+    if (this.options.lowerCaseLng) v27 = v27.toLowerCase();
+    if (v27 === formatted) return;
+    this.logger.once(
+      code,
+      'deprecate',
+      `language code '${code}' is used as '${formatted}'; i18next v27 canonicalizes it to '${v27}', use '${v27}' in lng, fallbackLng, supportedLngs and the resources`,
+    );
   }
 
   isSupportedCode(code) {
