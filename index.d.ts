@@ -417,6 +417,8 @@ export interface i18n extends CustomInstanceExtensions {
 
   /**
    * Reloads resources on given state. Optionally you can pass an array of languages and namespaces as params if you don't want to reload all.
+   * Without languages it reloads the current languages and every language the backend loaded or tried to load, for this
+   * instance and its clones (since v26.7.1), and it retries the bundles that failed.
    */
   reloadResources(
     lngs?: string | readonly string[],

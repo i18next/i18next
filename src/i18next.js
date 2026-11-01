@@ -297,8 +297,13 @@ class I18n extends EventEmitter {
       callback = ns;
       ns = undefined;
     }
-    // no languages yet (no lng, no detector, the default fallbackLng): nothing to reload
-    if (!lngs) lngs = this.languages || [];
+    // without languages: the current ones and every language the backend loaded or tried to load for this
+    // instance and its clones (they share the connector), so a periodic reload of a backend also covers the
+    // languages a clone loaded on demand
+    if (!lngs) {
+      const requested = Object.keys(this.services.backendConnector.state).map((name) => name.split('|')[0]);
+      lngs = [...new Set([...(this.languages || []), ...requested])].filter((l) => l !== 'cimode');
+    }
     if (!ns) ns = this.options.ns;
     if (!callback) callback = noop;
     this.services.backendConnector.reload(lngs, ns, err => {

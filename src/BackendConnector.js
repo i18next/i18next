@@ -58,8 +58,8 @@ class Connector extends EventEmitter {
 
         if (!options.reload && this.store.hasResourceBundle(lng, ns)) {
           this.state[name] = 2; // loaded
-        } else if (this.state[name] < 0) {
-          // nothing to do for err
+        } else if (!options.reload && this.state[name] < 0) {
+          // nothing to do for err; a reload tries again
         } else if (this.state[name] === 1) {
           if (pending[name] === undefined) pending[name] = true;
         } else {

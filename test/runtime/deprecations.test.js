@@ -294,10 +294,10 @@ describe('26.7 deprecations', () => {
       expect(parent.t('a')).to.equal('A');
     });
 
-    it('reloadResources() without languages reloads nothing instead of throwing', async () => {
+    it('reloadResources() without languages and with nothing loaded reloads nothing instead of throwing', async () => {
       const read = vi.fn((lng, ns, callback) => callback(null, {}));
       const instance = i18next.createInstance().use({ type: 'backend', callbackApi: true, read });
-      await instance.init({});
+      await instance.init({ fallbackLng: false });
       expect(instance.languages).to.equal(undefined);
       read.mockClear();
       await instance.services.utils.reloadResources();
