@@ -60,3 +60,11 @@ export const loadNamespaces: i18n['loadNamespaces'];
 export const loadLanguages: i18n['loadLanguages'];
 
 export declare const keyFromSelector: KeyFromSelectorFn;
+
+/**
+ * Whether a language code has the shape i18next v27 accepts from outside (`changeLanguage()`, language
+ * detectors) without it being configured: letters, digits, `-`, `_`, `@` and `.` (no `..`), at most
+ * 128 characters, not a prototype key. Not a BCP 47 check: `'en_US'` and `'sr@latin'` pass. For plugins
+ * that take a language from a request, a URL or storage. Since v26.7.0.
+ */
+export declare const isSafeLanguageCode: (code: unknown) => boolean;

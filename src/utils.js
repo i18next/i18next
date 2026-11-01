@@ -21,6 +21,19 @@ export const makeString = (object) => {
   return String(object);
 };
 
+// The shape of a language code that i18next v27 accepts from outside (changeLanguage, detectors) unless it is
+// configured. Not a BCP 47 check: 'en_US', 'zh_Hant_TW', 'sr@latin' and 'de_DE.UTF-8' pass; markup, slashes, spaces,
+// '..', prototype keys and codes over 128 characters do not. Exported for plugins (detectors, backends, middleware).
+export const isSafeLanguageCode = (code) =>
+  isString(code) &&
+  /^[A-Za-z0-9_@.-]{1,128}$/.test(code) &&
+  !code.includes('..') &&
+  !['__proto__', 'constructor', 'prototype'].includes(code);
+
+// A plugin declares its calling convention with `callbackApi` (instance or static property):
+// true for callbacks, false for promises (or sync values), undefined to have it guessed from Function.length
+export const callbackApiOf = (plugin) => plugin?.callbackApi ?? plugin?.constructor?.callbackApi;
+
 export const copy = (a, s, t) => {
   a.forEach((m) => {
     if (s[m]) t[m] = s[m];

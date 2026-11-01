@@ -1,4 +1,4 @@
-import { pushPath, isString } from './utils.js';
+import { pushPath, isString, callbackApiOf } from './utils.js';
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
@@ -31,6 +31,16 @@ class Connector extends EventEmitter {
     this.queue = [];
 
     this.backend?.init?.(services, options.backend, options);
+    this.callbackApi = callbackApiOf(this.backend);
+    if (
+      this.backend &&
+      this.callbackApi === undefined &&
+      (this.backend.read || this.backend.create)
+    ) {
+      this.logger.deprecate(
+        'backend: set callbackApi to declare the calling convention (true: read(language, namespace, callback) and create(languages, namespace, key, fallbackValue, callback, options); false: both return a promise or a value); guessing it from the number of parameters is deprecated',
+      );
+    }
   }
 
   queueLoad(languages, namespaces, options, callback) {
@@ -166,7 +176,7 @@ class Connector extends EventEmitter {
     };
 
     const fc = this.backend[fcName].bind(this.backend);
-    if (fc.length === 2) {
+    if (this.callbackApi === false || (this.callbackApi === undefined && fc.length === 2)) {
       // no callback
       try {
         const r = fc(lng, ns);
@@ -271,11 +281,11 @@ class Connector extends EventEmitter {
         isUpdate,
       };
       const fc = this.backend.create.bind(this.backend);
-      if (fc.length < 6) {
+      if (this.callbackApi === false || (this.callbackApi === undefined && fc.length < 6)) {
         // no callback
         try {
           let r;
-          if (fc.length === 5) {
+          if (this.callbackApi === false || fc.length === 5) {
             // future callback-less api for i18next-locize-backend
             r = fc(languages, namespace, key, fallbackValue, opts);
           } else {

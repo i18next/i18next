@@ -34,6 +34,13 @@ describe('modules', () => {
         save: () => null,
       });
 
+      assertType<BackendModule>({
+        type: 'backend',
+        callbackApi: true,
+        init: () => null,
+        read: (_language, _namespace, callback) => callback(null, {}),
+      });
+
       expectTypeOf(i18next.use<BackendModule>)
         .parameter(0)
         .extract<BackendModule>()
@@ -61,6 +68,13 @@ describe('modules', () => {
         init: () => null,
         detect: () => Promise.resolve(''),
         cacheUserLanguage: () => Promise.resolve(),
+      });
+
+      assertType<LanguageDetectorAsyncModule>({
+        type: 'languageDetector',
+        async: true,
+        callbackApi: false,
+        detect: () => Promise.resolve('de'),
       });
 
       expectTypeOf(i18next.use<LanguageDetectorAsyncModule>)

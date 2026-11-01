@@ -78,6 +78,12 @@ export interface Services {
   pluralResolver: any;
   resourceStore: ResourceStore;
   formatter?: Formatter;
+  /** Calls bound to the i18next instance, for plugins */
+  utils?: {
+    hasLoadedNamespace: i18n['hasLoadedNamespace'];
+    /** Reloads resources through the backend, as `i18next.reloadResources()` (since v26.7.0) */
+    reloadResources: i18n['reloadResources'];
+  };
 }
 
 export type ModuleType =
@@ -107,6 +113,16 @@ export type MultiReadCallback = (err: CallbackError, data: Resource | null | und
  */
 export interface BackendModule<Options = object> extends Module {
   type: 'backend';
+  /**
+   * Declares how i18next calls `read` and `create` (since v26.7.0; as an instance or static property):
+   * - `true`: `read(language, namespace, callback)` and
+   *   `create(languages, namespace, key, fallbackValue, callback, options)`
+   * - `false`: `read(language, namespace)` and `create(languages, namespace, key, fallbackValue, options)`
+   *   return a promise or a value
+   *
+   * Left out, i18next guesses it from the number of parameters, which is deprecated.
+   */
+  callbackApi?: boolean;
   init(services: Services, backendOptions: Options, i18nextOptions: InitOptions): void;
   read(language: string, namespace: string, callback: ReadCallback): void;
   /** Save the missing translation */
@@ -148,6 +164,12 @@ export interface LanguageDetectorAsyncModule extends Module {
   type: 'languageDetector';
   /** Set to true to enable async detection */
   async: true;
+  /**
+   * Declares how the async `detect` answers (since v26.7.0; as an instance or static property):
+   * `true` for `detect(callback)`, `false` for `detect()` returning a promise.
+   * Left out, i18next guesses it from the number of parameters, which is deprecated.
+   */
+  callbackApi?: boolean;
   init?(services: Services, detectorOptions: object, i18nextOptions: InitOptions): void;
   /** Must call callback passing detected language or return a Promise */
   detect(
@@ -414,6 +436,13 @@ export interface i18n extends CustomInstanceExtensions {
   dir(lng?: string): 'ltr' | 'rtl';
 
   /**
+   * Puts resources rendered on the server into the store and changes to the server's language, each
+   * only the first time (sets `initializedStoreOnce` and `initializedLanguageOnce`). For SSR
+   * integrations like react-i18next's `useSSR`. Call it after `init()`. Since v26.7.0.
+   */
+  hydrate(resources?: Resource, lng?: string): i18n;
+
+  /**
    * Exposes interpolation.format function added on init.
    */
   format: FormatFunction;
@@ -561,12 +590,12 @@ export interface i18n extends CustomInstanceExtensions {
   isInitializing: boolean;
 
   /**
-   * Store was initialized
+   * Store was initialized. Set by `hydrate()`; SSR integrations should call that instead of setting it.
    */
   initializedStoreOnce: boolean;
 
   /**
-   * Language was initialized
+   * Language was initialized. Set by `hydrate()`; SSR integrations should call that instead of setting it.
    */
   initializedLanguageOnce: boolean;
 
@@ -637,3 +666,11 @@ export const loadNamespaces: i18n['loadNamespaces'];
 export const loadLanguages: i18n['loadLanguages'];
 
 export declare const keyFromSelector: KeyFromSelectorFn;
+
+/**
+ * Whether a language code has the shape i18next v27 accepts from outside (`changeLanguage()`, language
+ * detectors) without it being configured: letters, digits, `-`, `_`, `@` and `.` (no `..`), at most
+ * 128 characters, not a prototype key. Not a BCP 47 check: `'en_US'` and `'sr@latin'` pass. For plugins
+ * that take a language from a request, a URL or storage. Since v26.7.0.
+ */
+export declare const isSafeLanguageCode: (code: unknown) => boolean;

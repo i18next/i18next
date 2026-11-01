@@ -31,6 +31,7 @@ const Logger = {
 
 const Backend = {
   type: 'backend',
+  callbackApi: true,
 
   init(services, options) {
     this.services = services;

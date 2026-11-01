@@ -9,7 +9,7 @@ import Formatter from './Formatter.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
 import postProcessor from './postProcessor.js';
-import { defer, isString } from './utils.js';
+import { defer, isString, callbackApiOf, isSafeLanguageCode } from './utils.js';
 import keysFromSelector from './selector.js';
 
 const noop = () => {}
@@ -143,7 +143,9 @@ class I18n extends EventEmitter {
 
       s.interpolator = new Interpolator(this.options);
       s.utils = {
-        hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
+        hasLoadedNamespace: this.hasLoadedNamespace.bind(this),
+        // lets a backend refresh its bundles (reloadInterval) without driving the backendConnector
+        reloadResources: this.reloadResources.bind(this)
       };
 
       s.backendConnector = new BackendConnector(
@@ -161,6 +163,11 @@ class I18n extends EventEmitter {
       if (this.modules.languageDetector) {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
         if (s.languageDetector.init) s.languageDetector.init(s, this.options.detection, this.options);
+        if (s.languageDetector.async && callbackApiOf(s.languageDetector) === undefined) {
+          this.logger.deprecate(
+            'languageDetector: set callbackApi to declare how the async detect() answers (true: detect(callback); false: detect() returns a promise); guessing it from the number of parameters is deprecated',
+          );
+        }
       }
 
       if (this.modules.i18nFormat) {
@@ -290,7 +297,8 @@ class I18n extends EventEmitter {
       callback = ns;
       ns = undefined;
     }
-    if (!lngs) lngs = this.languages;
+    // no languages yet (no lng, no detector, the default fallbackLng): nothing to reload
+    if (!lngs) lngs = this.languages || [];
     if (!ns) ns = this.options.ns;
     if (!callback) callback = noop;
     this.services.backendConnector.reload(lngs, ns, err => {
@@ -344,6 +352,33 @@ class I18n extends EventEmitter {
       this.modules.external.push(module);
     }
 
+    return this;
+  }
+
+  // puts server-rendered resources into the store and switches to the server's language, each once
+  // (react-i18next useSSR, next-i18next). Sets the same flags those wrote directly before.
+  hydrate(resources, lng) {
+    // a clone shares its parent's store (one clone per request on a server): like useSSR, leave it alone
+    if (this.options.isClone) return this;
+    if (!this.services.resourceStore) {
+      this.logger.warn('hydrate: call init() first, the instance has no resource store yet');
+      return this;
+    }
+    if (resources && !this.initializedStoreOnce) {
+      this.services.resourceStore.data = resources;
+      // add the namespaces, so a language change loads all of them
+      Object.values(resources).forEach((lngResources) => {
+        Object.keys(lngResources).forEach((ns) => {
+          if (!this.options.ns.includes(ns)) this.options.ns.push(ns);
+        });
+      });
+      this.initializedStoreOnce = true;
+      this.isInitialized = true;
+    }
+    if (lng && !this.initializedLanguageOnce) {
+      this.changeLanguage(lng);
+      this.initializedLanguageOnce = true;
+    }
     return this;
   }
 
@@ -401,6 +436,23 @@ class I18n extends EventEmitter {
       const fl = isString(lngs) ? lngs : lngs && lngs[0];
       const l = this.store.hasLanguageSomeTranslations(fl) ? fl : this.services.languageUtils.getBestMatchFromCodes(isString(lngs) ? [lngs] : lngs);
 
+      // v27 refuses a language code of another shape unless it is configured; 26.7 warns in debug mode
+      // only (the check runs a fallbackLng function, which may expect a code)
+      if (l && this.logger.debug && !isSafeLanguageCode(l)) {
+        const configured = [].concat(
+          this.options.supportedLngs || [],
+          this.services.languageUtils.getFallbackCodes(this.options.fallbackLng, l),
+          this.options.preload || [],
+        );
+        if (!configured.includes(l) && !Object.prototype.hasOwnProperty.call(this.store.data, l)) {
+          this.logger.once(
+            `lng:${l}`,
+            'deprecate',
+            `changeLanguage: the language code '${l.slice(0, 64)}' comes from lng, changeLanguage() or the language detector and is not configured; from v27 such a code is refused unless it has only letters, digits, '-', '_', '@' and '.' (no '..'), at most 128 characters. Set supportedLngs, or check the code before passing it on`,
+          );
+        }
+      }
+
       if (l) {
         if (!this.language) {
           setLngProps(l);
@@ -418,7 +470,8 @@ class I18n extends EventEmitter {
     if (!lng && this.services.languageDetector && !this.services.languageDetector.async) {
       setLng(this.services.languageDetector.detect());
     } else if (!lng && this.services.languageDetector && this.services.languageDetector.async) {
-      if (this.services.languageDetector.detect.length === 0) {
+      const callbackApi = callbackApiOf(this.services.languageDetector);
+      if (callbackApi === false || (callbackApi === undefined && this.services.languageDetector.detect.length === 0)) {
         this.services.languageDetector.detect().then(setLng);
       } else {
         this.services.languageDetector.detect(setLng);
