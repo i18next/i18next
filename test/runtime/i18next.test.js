@@ -268,6 +268,11 @@ describe('i18next', () => {
 
   describe('i18next - functions', () => {
     describe('t', () => {
+      it('returns an empty string before init()', () => {
+        const instance = i18next.createInstance();
+        expect(instance.t('key')).to.equal('');
+      });
+
       it('is usable as a free function', () => {
         const { t } = i18next;
         expect(t('key')).to.equal('key');

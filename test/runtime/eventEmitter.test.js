@@ -116,5 +116,25 @@ describe('i18next', () => {
       expect(calls2).to.eql([1, 2]);
       expect(calls3).to.eql([1, 2, 3]);
     });
+
+    it('unbinds a space-separated list of events, as on() binds it', () => {
+      const calls = [];
+      const listener = (payload) => calls.push(payload);
+      emitter.on('a b', listener);
+      emitter.off('a b', listener);
+      emitter.emit('a', 1);
+      emitter.emit('b', 2);
+
+      const onceCalls = [];
+      emitter.once('c d', (payload) => onceCalls.push(payload));
+      emitter.emit('c', 3);
+      emitter.emit('d', 4);
+
+      expect(calls).to.eql([]);
+      expect(onceCalls).to.eql([3]);
+      // a non-string event is a no-op, as before
+      expect(() => emitter.off(undefined, listener)).not.toThrow();
+      expect(() => emitter.off()).not.toThrow();
+    });
   });
 });

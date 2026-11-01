@@ -471,7 +471,11 @@ class I18n extends EventEmitter {
   }
 
   t(...args) {
-    return this.translator?.translate(...args);
+    if (!this.translator) {
+      this.logger.warn('t: called before init(); returning an empty string');
+      return '';
+    }
+    return this.translator.translate(...args);
   }
 
   exists(...args) {
@@ -572,7 +576,7 @@ class I18n extends EventEmitter {
 
   dir(lng) {
     if (!lng) lng = this.resolvedLanguage || (this.languages?.length > 0 ? this.languages[0] : this.language);
-    if (!lng) return 'rtl';
+    if (!lng) return 'ltr';
 
     try {
       const l = new Intl.Locale(lng)

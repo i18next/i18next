@@ -20,14 +20,17 @@ class EventEmitter {
     return this;
   }
 
-  off(event, listener) {
-    if (!this.observers[event]) return;
-    if (!listener) {
-      delete this.observers[event];
-      return;
-    }
+  off(events, listener) {
+    // like on(), a string lists events separated by spaces; anything else is looked up as it is
+    (typeof events === 'string' ? events.split(' ') : [events]).forEach((event) => {
+      if (!this.observers[event]) return;
+      if (!listener) {
+        delete this.observers[event];
+        return;
+      }
 
-    this.observers[event].delete(listener);
+      this.observers[event].delete(listener);
+    });
   }
 
   once(event, listener) {
