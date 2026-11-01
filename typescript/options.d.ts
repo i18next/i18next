@@ -14,7 +14,6 @@ import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.js';
  *     returnObjects: false;
  *     nsSeparator: ':';
  *     keySeparator: '.';
- *     compatibilityJSON: 'v4';
  *     allowObjectInHTMLChildren: false;
  *     resources: {
  *       custom: {
@@ -140,7 +139,10 @@ export type TypeOptions = $MergeBy<
       /** @see {InitOptions.fallbackNS} */
       fallbackNS: false;
 
-      /** @see {InitOptions.compatibilityJSON} */
+      /**
+       * @see {InitOptions.compatibilityJSON}
+       * @deprecated has no effect, removed in v27. Remove it from `CustomTypeOptions`.
+       */
       compatibilityJSON: 'v4';
 
       /** @see {InitOptions.resources} */
@@ -177,6 +179,12 @@ export type TypeOptions = $MergeBy<
        * Suffix for interpolation
        */
       interpolationSuffix: '}}';
+
+      /**
+       * Separates the variable from its format, as in `{{price, currency}}` (since v26.7.0)
+       * @see {InterpolationOptions.formatSeparator}
+       */
+      interpolationFormatSeparator: ',';
 
       /** @see {InterpolationOptions.unescapePrefix} */
       unescapePrefix: '-';
@@ -284,6 +292,21 @@ export type TypeOptions = $MergeBy<
        * ```
        */
       interpolationFormatTypeMap: {};
+
+      /**
+       * The variables `interpolation.defaultVariables` fills in at runtime (since v26.7.0). They
+       * become optional in the `t()` options, also with `strictInterpolationChecks`.
+       *
+       * @default {}
+       *
+       * @example
+       * ```ts
+       * interface CustomTypeOptions {
+       *   defaultVariables: { appName: string };
+       * }
+       * ```
+       */
+      defaultVariables: {};
     },
     CustomTypeOptions
   >,
@@ -370,11 +393,13 @@ export interface InterpolationOptions {
   /**
    * Escaped prefix for interpolation (regexSafe)
    * @default undefined
+   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `prefix`.
    */
   prefixEscaped?: string;
   /**
    * Escaped suffix for interpolation (regexSafe)
    * @default undefined
+   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `suffix`.
    */
   suffixEscaped?: string;
   /**
@@ -400,11 +425,13 @@ export interface InterpolationOptions {
   /**
    * Escaped prefix for nesting (regexSafe)
    * @default undefined
+   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `nestingPrefix`.
    */
   nestingPrefixEscaped?: string;
   /**
    * Escaped suffix for nesting (regexSafe)
    * @default undefined
+   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `nestingSuffix`.
    */
   nestingSuffixEscaped?: string;
   /**
@@ -599,6 +626,9 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Language will be lowercased EN --> en while leaving full locales like en-US
+   *
+   * From v27 codes without a region are canonicalized by default, as codes with one already are
+   * (`'EN'` → `'en'`, `'iw'` → `'he'`), and this option is deprecated.
    * @default false
    */
   cleanCode?: boolean;
@@ -729,10 +759,11 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   returnDetails?: boolean;
 
   /**
-   * Gets called if object was passed in as key but returnObjects was set to false
+   * Gets called if object was passed in as key but returnObjects was set to false.
+   * What it returns is what `t()` returns.
    * @default noop
    */
-  returnedObjectHandler?(key: string, value: string, options: any): void;
+  returnedObjectHandler?(key: string, value: string, options: any): unknown;
 
   /**
    * Char, eg. '\n' that arrays will be joined by
@@ -812,6 +843,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * Compatibility JSON version
    * @warning only `v4` is available and supported by typescript
    * @default 'v4'
+   * @deprecated has no effect since v24 (only the v4 JSON format is supported), removed in v27. Remove the option.
    */
   compatibilityJSON?: 'v4';
 
@@ -961,6 +993,10 @@ export interface TOptionsBase {
    * Override interpolation options
    */
   interpolation?: InterpolationOptions;
+  /**
+   * Skip interpolation and nesting for this call (since v26.7.0 in the types)
+   */
+  skipInterpolation?: boolean;
   /**
    * Optional keyPrefix that will be applied to the key before resolving.
    * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).

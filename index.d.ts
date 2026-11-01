@@ -609,6 +609,12 @@ export type {
   NsResource,
   InterpolationMap,
   SelectorKey,
+  ParseKeysWithoutVariables,
+  // used by react-i18next
+  SelectorFn,
+  ApplyTarget,
+  ConstrainTarget,
+  GetSource,
 } from './typescript/t.js';
 
 declare const i18next: i18n;

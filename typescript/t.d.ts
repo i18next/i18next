@@ -23,7 +23,8 @@ type _ReturnObjects = TypeOptions['returnObjects'];
 type _ReturnEmptyString = TypeOptions['returnEmptyString'];
 type _ReturnNull = TypeOptions['returnNull'];
 type _KeySeparator = TypeOptions['keySeparator'];
-type _NsSeparator = TypeOptions['nsSeparator'];
+// `nsSeparator: false`: no `ns:key` keys (a `false` here made `nsfalsekey` keys and split keys containing "false")
+type _NsSeparator = Exclude<TypeOptions['nsSeparator'], false>;
 type _PluralSeparator = TypeOptions['pluralSeparator'];
 type _ContextSeparator = TypeOptions['contextSeparator'];
 type _FallbackNamespace = TypeOptions['fallbackNS'];
@@ -31,6 +32,8 @@ type _Resources = TypeOptions['resources'];
 type _CompatibilityJSON = TypeOptions['compatibilityJSON'];
 type _InterpolationPrefix = TypeOptions['interpolationPrefix'];
 type _InterpolationSuffix = TypeOptions['interpolationSuffix'];
+type _InterpolationFormatSeparator = TypeOptions['interpolationFormatSeparator'];
+type _DefaultVariables = TypeOptions['defaultVariables'];
 type _UnescapePrefix = TypeOptions['unescapePrefix'];
 type _UnescapeSuffix = TypeOptions['unescapeSuffix'];
 type _StrictKeyChecks = TypeOptions['strictKeyChecks'];
@@ -197,7 +200,7 @@ type ParseActualValue<Ret> = Ret extends `${_UnescapePrefix}${infer ActualValue}
 type ParseInterpolationEntries<Ret> = [_ParseInterpolation] extends [false | 'icu' | 'mf2']
   ? never
   : Ret extends `${string}${_InterpolationPrefix}${infer Value}${_InterpolationSuffix}${infer Rest}`
-    ? | (Value extends `${infer ActualValue},${infer Format}`
+    ? | (Value extends `${infer ActualValue}${_InterpolationFormatSeparator}${infer Format}`
           ? [ParseActualValue<ActualValue>, TrimSpaces<Format>]
           : [ParseActualValue<Value>, never])
       | ParseInterpolationEntries<Rest>
@@ -433,14 +436,21 @@ type _Mf2ArgsMap<Ret> = Ret extends string
       : never
   : never;
 
-export type InterpolationMap<Ret> = [_ParseInterpolation] extends ['icu']
-  ? $PreservedValue<_IcuArgsMap<Ret>, Record<string, unknown>>
-  : [_ParseInterpolation] extends ['mf2']
-    ? $PreservedValue<_Mf2ArgsMap<Ret>, Record<string, unknown>>
-    : $PreservedValue<
-        _InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>,
-        Record<string, unknown>
-      >;
+/** The variables declared in `defaultVariables` are optional: they are filled in at runtime. */
+type _WithDefaultVariables<Map> = [keyof _DefaultVariables] extends [never]
+  ? Map
+  : Omit<Map, keyof _DefaultVariables> & Partial<Pick<Map, keyof _DefaultVariables & keyof Map>>;
+
+export type InterpolationMap<Ret> = _WithDefaultVariables<
+  [_ParseInterpolation] extends ['icu']
+    ? $PreservedValue<_IcuArgsMap<Ret>, Record<string, unknown>>
+    : [_ParseInterpolation] extends ['mf2']
+      ? $PreservedValue<_Mf2ArgsMap<Ret>, Record<string, unknown>>
+      : $PreservedValue<
+          _InterpolationMapFromEntries<ParseInterpolationEntries<Ret>>,
+          Record<string, unknown>
+        >
+>;
 
 type ParseTReturnPlural<
   Res,
@@ -776,6 +786,32 @@ export interface TFunction<
 export type KeyPrefix<Ns extends Namespace> = ResourceKeys<true>[$FirstNamespace<Ns>] | undefined;
 
 /**
+ * The keys of `ParseKeys<Ns, {}, KPrefix>` that `t()` takes without options: their string has no
+ * variables, and a plural key is left out when its forms take `count`. For a wrapper that passes a
+ * key on to `t()`, which then compiles with `strictInterpolationChecks` (since v26.7.0):
+ *
+ * @example
+ * ```ts
+ * import type { ParseKeysWithoutVariables } from 'i18next';
+ *
+ * const label = (key: ParseKeysWithoutVariables<'common'>) => t(key);
+ * ```
+ */
+export type ParseKeysWithoutVariables<
+  Ns extends Namespace = DefaultNamespace,
+  KPrefix = undefined,
+> = _KeysWithoutVariables<ParseKeys<Ns, {}, KPrefix>, Ns, KPrefix>;
+
+// resolved with `count`, so a plural key is checked against its plural forms
+type _KeysWithoutVariables<Key, Ns extends Namespace, KPrefix> = Key extends string
+  ? {} extends InterpolationMap<
+      TFunctionReturn<Ns, AppendKeyPrefix<Key, KPrefix>, { count: number }>
+    >
+    ? Key
+    : never
+  : never;
+
+/**
  * Strict variant: every namespace (primary included) is exposed under its own
  * key on `$`. The flattened-primary form (`Resources[Ns[0]] &`) is dropped, so
  * `$.foo` no longer typechecks when `foo` is a key in the primary namespace —
@@ -1001,7 +1037,8 @@ type SelectorReturn<
   ? TFunctionReturnOptionalDetails<ProcessReturnValue<DeepUnwrapPlural<Target>, DV>, Opts>
   : DefaultTReturn<Opts>;
 
-interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
+/** Public for react-i18next's `Trans` types (since v26.7.0). */
+export interface SelectorFn<Source, Target, Opts extends SelectorOptions<unknown>> {
   (translations: Select<Source, Opts['context']>): Target;
 }
 
@@ -1012,12 +1049,14 @@ type ApplyKeyPrefix<
   ? ApplyKeyPrefix<[T[0][Head]], Tail>
   : T[0][KPrefix & string];
 
-type ApplyTarget<
+/** Public for react-i18next's `Trans` types (since v26.7.0). */
+export type ApplyTarget<
   Target,
   Opts extends { returnObjects?: unknown },
 > = Opts['returnObjects'] extends true ? unknown : Target;
 
-type ConstrainTarget<Opts extends SelectorOptions<any>> = _ReturnObjects extends true
+/** Public for react-i18next's `Trans` types (since v26.7.0). */
+export type ConstrainTarget<Opts extends SelectorOptions<any>> = _ReturnObjects extends true
   ? unknown
   : Opts['returnObjects'] extends true
     ? unknown
@@ -1044,7 +1083,8 @@ type SelectorReturnSource<KPrefix, Fallback> = KPrefix extends (...args: any[]) 
     : Fallback
   : Fallback;
 
-type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (
+/** Public for react-i18next's `Trans` types (since v26.7.0). */
+export type GetSource<Ns extends Namespace, KPrefix, Res = NsResource<Ns>> = KPrefix extends (
   ...args: any[]
 ) => any
   ? SelectorReturnSource<KPrefix, Res>
