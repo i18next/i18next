@@ -229,11 +229,20 @@ class Connector extends EventEmitter {
     });
   }
 
-  saveMissing(languages, namespace, key, fallbackValue, isUpdate, options = {}, clb = () => {}) {
-    if (
-      this.services?.utils?.hasLoadedNamespace &&
-      !this.services?.utils?.hasLoadedNamespace(namespace)
-    ) {
+  // hasLoadedNamespace: the check of the calling instance; the connector (and its services) is shared with all clones,
+  // so a direct call without it checks the newest clone, or the instance that created the connector
+  saveMissing(
+    languages,
+    namespace,
+    key,
+    fallbackValue,
+    isUpdate,
+    options = {},
+    clb = () => {},
+    hasLoadedNamespace = this.newestCloneHasLoadedNamespace ||
+      this.services?.utils?.hasLoadedNamespace,
+  ) {
+    if (hasLoadedNamespace && !hasLoadedNamespace(namespace)) {
       this.logger.warn(
         `did not save key "${key}" as the namespace "${namespace}" was not yet loaded`,
         'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!',

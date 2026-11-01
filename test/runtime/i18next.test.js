@@ -27,6 +27,56 @@ describe('i18next', () => {
       });
     });
 
+    describe('cloneInstance() and services.utils', () => {
+      // a backend whose 'de' never finishes loading
+      const backend = () => ({
+        type: 'backend',
+        callbackApi: true,
+        created: [],
+        read(lng, ns, callback) {
+          if (lng !== 'de') callback(null, { key: lng });
+        },
+        create(languages, ns, key) {
+          this.created.push(`${languages.join()}|${key}`);
+        },
+      });
+
+      it("keeps the parent's own checks after cloning", async () => {
+        const parent = i18next.createInstance().use(backend());
+        await parent.init({ lng: 'en', fallbackLng: 'en' });
+        const clone = parent.cloneInstance({ lng: 'de', initAsync: false });
+        expect(clone.hasLoadedNamespace('translation')).to.equal(false);
+        expect(parent.services.utils.hasLoadedNamespace('translation')).to.equal(true);
+        expect(clone.services.utils.hasLoadedNamespace('translation')).to.equal(false);
+      });
+
+      it('saves a missing key of a clone by its own check, not by the newest clone', async () => {
+        const b = backend();
+        const parent = i18next.createInstance().use(b);
+        await parent.init({ lng: 'en', fallbackLng: 'en', saveMissing: true });
+        let ready;
+        await new Promise((resolve) => {
+          ready = parent.cloneInstance({ lng: 'en' }, resolve);
+        });
+        parent.cloneInstance({ lng: 'de' }); // created last, its namespace never loads
+        ready.t('missing');
+        expect(b.created).to.eql(['en|missing']);
+      });
+
+      it('a direct saveMissing() call keeps checking the newest clone, as before', async () => {
+        // i18next-http-middleware's missing keys route: a parent without languages, one clone per request
+        const b = backend();
+        const parent = i18next.createInstance().use(b);
+        await parent.init({ fallbackLng: false, saveMissing: true });
+        expect(parent.hasLoadedNamespace('translation')).to.equal(false);
+        await new Promise((resolve) => {
+          parent.cloneInstance({ lng: 'en' }, resolve);
+        });
+        parent.services.backendConnector.saveMissing(['en'], 'translation', 'newKey', 'value');
+        expect(b.created).to.eql(['en|newKey']);
+      });
+    });
+
     describe('cloneInstance()', () => {
       /** @type {import('i18next').i18n} */
       let newInstance;

@@ -684,7 +684,9 @@ class I18n extends EventEmitter {
     });
     clone.services = { ...this.services };
     clone.services.utils = {
-      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
+      ...clone.services.utils,
+      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone),
+      reloadResources: clone.reloadResources.bind(clone)
     };
     if (forkResourceStore) {
       // faster than const clonedData = JSON.parse(JSON.stringify(this.store.data))
@@ -712,9 +714,9 @@ class I18n extends EventEmitter {
     });
     clone.init(mergedOptions, callback);
     clone.translator.options = mergedOptions; // sync options
-    clone.translator.backendConnector.services.utils = {
-      hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
-    };
+    // direct callers of the shared connector's saveMissing() (i18next-http-middleware's missing keys route)
+    // keep checking the newest clone, as before; the translators pass the check of their own instance
+    clone.translator.backendConnector.newestCloneHasLoadedNamespace = clone.hasLoadedNamespace.bind(clone);
 
     return clone;
   }

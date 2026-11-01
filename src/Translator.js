@@ -317,6 +317,8 @@ class Translator extends EventEmitter {
               defaultForMissing,
               updateMissing,
               opt,
+              undefined,
+              this.utils?.hasLoadedNamespace,
             );
           }
           this.emit('missingKey', l, namespace, k, res);
