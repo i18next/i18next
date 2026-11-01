@@ -19,6 +19,10 @@ node_modules/**/*
 coverage/**/*
 dist/**/*
 
+# root copies of dist/umd, made by `npm run build` and published for the unversioned unpkg URLs
+/i18next.js
+/i18next.min.js
+
 # Ignore IntelliJ based IDEs project files
 .idea
 
