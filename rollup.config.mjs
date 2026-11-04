@@ -1,5 +1,4 @@
 import babel from '@rollup/plugin-babel';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import { readFileSync } from 'fs';
 
@@ -35,11 +34,11 @@ export default [
   {
     input: inputCjs,
     output: { format: 'umd', name, file: `dist/umd/${name}.js` },
-    plugins: [babel(babelOptions), nodeResolve()],
+    plugins: [babel(babelOptions)],
   },
   {
     input: inputCjs,
     output: { format: 'umd', name, file: `dist/umd/${name}.min.js` },
-    plugins: [babel(babelOptions), nodeResolve(), terser()],
+    plugins: [babel(babelOptions), terser()],
   },
 ];

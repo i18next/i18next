@@ -662,6 +662,7 @@ describe('v1.11.1 initialisation', () => {
                 'ns.common',
                 'notExisting',
                 'notExisting',
+                expect.any(Function),
                 expect.objectContaining({
                   isUpdate: expect.any(Boolean),
                   postProcess: expect.any(String),

@@ -223,6 +223,7 @@ describe('v1.11.1 basic usage', () => {
           'translation',
           'missing',
           'missing',
+          expect.any(Function),
           expect.objectContaining({
             isUpdate: expect.any(Boolean),
             postProcess: expect.any(String),
@@ -261,6 +262,7 @@ describe('v1.11.1 basic usage', () => {
             'translation',
             'missing',
             'missing',
+            expect.any(Function),
             expect.objectContaining({
               isUpdate: expect.any(Boolean),
               postProcess: expect.any(String),
@@ -317,6 +319,7 @@ describe('v1.11.1 basic usage', () => {
           'translation',
           'missing2',
           'missing2',
+          expect.any(Function),
           expect.objectContaining({
             isUpdate: expect.any(Boolean),
             postProcess: expect.any(String),
