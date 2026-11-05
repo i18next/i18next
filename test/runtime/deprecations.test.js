@@ -58,37 +58,38 @@ describe('26.7 deprecations', () => {
   });
 
   describe('bare language codes', () => {
-    it('warns for a code v27 canonicalizes differently', async () => {
+    it('warns for a code whose casing v27 changes', async () => {
       const { instance, warnings } = setup();
       await instance.init({
         debug: true,
         lng: 'EN',
-        fallbackLng: 'iw',
+        fallbackLng: 'IW',
         resources: { en: { translation: { hi: 'hi' } }, iw: { translation: { hi: 'shalom' } } },
       });
       expect(instance.language).to.equal('EN');
-      const msgs = warnings('canonicalizes');
+      const msgs = warnings('canonical casing');
       expect(
-        msgs.some((m) => m.includes("'EN' is used as 'EN'") && m.includes("to 'en'")),
+        msgs.some((m) => m.includes("'EN' is used as 'EN'") && m.includes("casing 'en'")),
       ).to.equal(true);
+      // an alias keeps its letters in v27, only the casing changes
       expect(
-        msgs.some((m) => m.includes("'iw' is used as 'iw'") && m.includes("to 'he'")),
+        msgs.some((m) => m.includes("'IW' is used as 'IW'") && m.includes("casing 'iw'")),
       ).to.equal(true);
     });
 
-    it('does not warn for canonical or custom codes', async () => {
+    it('does not warn for canonical, alias or custom codes', async () => {
       const { instance, warnings } = setup();
       await instance.init({
         debug: true,
         lng: 'en',
-        fallbackLng: 'my_custom',
+        fallbackLng: ['iw', 'tl', 'eng', 'my_custom'],
         resources: { en: { translation: { hi: 'hi' } } },
       });
       instance.changeLanguage('EN');
-      expect(warnings('canonicalizes')).toHaveLength(1);
+      expect(warnings('canonical casing')).toHaveLength(1);
       const cleaned = setup();
       await cleaned.instance.init({ debug: true, lng: 'EN', cleanCode: true, fallbackLng: 'en' });
-      expect(cleaned.warnings('canonicalizes')).toHaveLength(0);
+      expect(cleaned.warnings('canonical casing')).toHaveLength(0);
     });
   });
 

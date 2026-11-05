@@ -60,20 +60,22 @@ class LanguageUtil {
     return formatted;
   }
 
-  // v27 canonicalizes codes without a region as it already does with one ('EN' -> 'en', 'iw' -> 'he')
+  // v27 gives codes without a region their canonical casing ('EN' -> 'en'); aliases like 'iw' or
+  // 'eng' keep their letters ('IW' -> 'iw')
   deprecateBareCode(code, formatted) {
-    let v27;
+    let canonical;
     try {
-      v27 = Intl.getCanonicalLocales(code)[0];
+      canonical = Intl.getCanonicalLocales(code)[0];
     } catch (e) {
       return; // not BCP 47: v27 keeps it as it is
     }
+    let v27 = canonical.toLowerCase() === code.toLowerCase() ? canonical : code.toLowerCase();
     if (this.options.lowerCaseLng) v27 = v27.toLowerCase();
     if (v27 === formatted) return;
     this.logger.once(
       code,
       'deprecate',
-      `language code '${code}' is used as '${formatted}'; i18next v27 canonicalizes it to '${v27}', use '${v27}' in lng, fallbackLng, supportedLngs and the resources`,
+      `language code '${code}' is used as '${formatted}'; i18next v27 gives it the canonical casing '${v27}', use '${v27}' in lng, fallbackLng, supportedLngs and the resources`,
     );
   }
 
