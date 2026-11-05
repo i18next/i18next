@@ -1,3 +1,7 @@
+## 26.7.2
+
+- fix: the debug-mode deprecation warning for a language code without a region no longer says that v27 replaces aliases. 26.7.0 and 26.7.1 warned that v27 turns `'iw'` into `'he'` or `'tl'` into `'fil'` and asked you to rename them. v27 only gives such codes their canonical casing (`'EN'` becomes `'en'`, `'IW'` becomes `'iw'`), so `iw`, `tl`, `eng` and similar codes stay as they are. If you renamed them because of that warning, you can keep or restore the old codes. The warning now only appears when the casing changes.
+
 ## 26.7.1
 
 - fix: `reloadResources()` retries the bundles that failed to load. The load queue skipped them also when reloading, so a language whose first load failed (a backend or network outage at startup) stayed missing. i18next-http-backend 4.0.8, i18next-chained-backend 5.0.7 and i18next-locize-backend 10.0.5 reload through `reloadResources()` with i18next 26.7, so their `reloadInterval` no longer recovered from such a failure, as their own reload did before.
