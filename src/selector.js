@@ -18,7 +18,9 @@ function createProxy() {
 export default function keysFromSelector(selector, opts) {
   const { [PATH_KEY]: path } = selector(createProxy());
 
-  const keySeparator = opts?.keySeparator ?? '.';
+  // keySeparator: false joins with '.', as getFixedT() joins a key prefix: `$.a.b` is the flat key 'a.b'
+  // (joined with false it was 'afalseb')
+  const keySeparator = opts?.keySeparator || '.';
   const nsSeparator = opts?.nsSeparator ?? ':';
   const strict = opts?.enableSelector === 'strict';
 

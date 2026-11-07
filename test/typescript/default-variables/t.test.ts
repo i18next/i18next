@@ -37,6 +37,12 @@ describe('defaultVariables, interpolationFormatSeparator and ParseKeysWithoutVar
     // @ts-expect-error `nested.hint` needs `who`
     label('nested.hint');
 
+    const wrapper = (key: 'title' | 'welcome') => t(key);
+    wrapper('welcome');
+    // @ts-expect-error `item` needs `count`, also next to keys with default variables
+    const pluralWrapper = (key: 'title' | 'welcome' | 'item') => t(key);
+    pluralWrapper('title');
+
     const tn = (() => '') as unknown as TFunction<'app', 'nested'>;
     const nestedLabel = (key: ParseKeysWithoutVariables<'app', 'nested'>) => tn(key);
     nestedLabel('label');

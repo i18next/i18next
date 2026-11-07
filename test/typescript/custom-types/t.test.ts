@@ -108,7 +108,7 @@ describe('t', () => {
     });
 
     it('should work with `returnObjects`', () => {
-      // t('alternate:foobar.deep').deeper.deeeeeper; // i18next would say: "key 'foobar.deep (en)' returned an object instead of string."
+      // t('alternate:foobar.deep').deeper.deeeeeper; // i18next returns the key (no returnObjects)
       expectTypeOf(t('alternate:foobar.deep', { returnObjects: true })).toEqualTypeOf<{
         deeper: {
           deeeeeper: 'foobar';
@@ -138,6 +138,11 @@ describe('t', () => {
     expectTypeOf(t('place', { ordinal: true, count: 2 })).toBeString();
     expectTypeOf(t('place', { ordinal: true, count: 3 })).toBeString();
     expectTypeOf(t('place', { ordinal: true, count: 4 })).toBeString();
+
+    // without strictInterpolationChecks, `count` is not required
+    expectTypeOf(t('place')).toEqualTypeOf<string>();
+    expectTypeOf(t('place', { ordinal: true })).toEqualTypeOf<string>();
+    expectTypeOf(t('place', { defaultValue: 'x' })).toEqualTypeOf<string>();
   });
 
   describe('context', () => {

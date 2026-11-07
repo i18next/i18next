@@ -1,6 +1,5 @@
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
-import postProcessor from './postProcessor.js';
 import { copy as utilsCopy, looksLikeObjectPath, isString } from './utils.js';
 import keysFromSelector from './selector.js';
 
@@ -20,7 +19,7 @@ class Translator extends EventEmitter {
         'backendConnector',
         'i18nFormat',
         'utils',
-        'ownPostProcessors',
+        'postProcessors',
       ],
       services,
       this,
@@ -31,7 +30,7 @@ class Translator extends EventEmitter {
       this.options.keySeparator = '.';
     }
 
-    this.logger = baseLogger.create('translator');
+    this.logger = (services.logger || baseLogger).create('translator');
 
     this.checkedLoadedFor = {};
   }
@@ -195,37 +194,32 @@ class Translator extends EventEmitter {
     const handleAsObject = shouldHandleAsObject(resForObjHndl);
     const resType = Object.prototype.toString.apply(resForObjHndl);
 
-    if (
+    const isObjectHit =
       handleAsObjectInI18nFormat &&
       resForObjHndl &&
       handleAsObject &&
       !noObject.includes(resType) &&
-      !(isString(joinArrays) && Array.isArray(resForObjHndl))
-    ) {
-      if (!opt.returnObjects && !this.options.returnObjects) {
-        if (!this.options.returnedObjectHandler) {
-          this.logger.warn('accessing an object - but returnObjects options is not enabled!');
-          // v27 returns the key here
-          this.logger.once(
-            'returnedObject',
-            'deprecate',
-            "accessing an object without returnObjects returns a sentence about it today; from v27 t() returns the key, as for a missing key (returnedObjectHandler can keep today's text)",
-          );
-        }
-        const r = this.options.returnedObjectHandler
-          ? this.options.returnedObjectHandler(resUsedKey, resForObjHndl, {
-              ...opt,
-              ns: namespaces,
-            })
-          : `key '${key} (${this.language})' returned an object instead of string.`;
-        if (returnDetails) {
-          resolved.res = r;
-          resolved.usedParams = this.getUsedParamsDetails(opt);
-          return resolved;
-        }
-        return r;
+      !(isString(joinArrays) && Array.isArray(resForObjHndl));
+    // an object or array without returnObjects: what returnedObjectHandler returns, else it is handled
+    // like a missing key below (the default value, else the key), without saving it, as the key exists
+    const objectNotReturned = isObjectHit && !opt.returnObjects && !this.options.returnObjects;
+    if (objectNotReturned && this.options.returnedObjectHandler) {
+      const r = this.options.returnedObjectHandler(resUsedKey, resForObjHndl, {
+        ...opt,
+        ns: namespaces,
+      });
+      if (returnDetails) {
+        resolved.res = r;
+        resolved.usedParams = this.getUsedParamsDetails(opt);
+        return resolved;
       }
+      return r;
+    }
+    if (objectNotReturned) {
+      this.logger.warn('accessing an object - but returnObjects options is not enabled!');
+    }
 
+    if (isObjectHit && !objectNotReturned) {
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
       if (keySeparator) {
@@ -258,16 +252,22 @@ class Translator extends EventEmitter {
       res = res.join(joinArrays);
       if (res) res = this.extendTranslation(res, keys, opt, resolved, lastKey);
     } else {
-      // string, empty or null
+      // string, empty or null (or an object that is not returned)
       let usedDefault = false;
       let usedKey = false;
+      if (objectNotReturned) res = undefined;
 
-      // fallback value
-      if (!this.isValidLookup(res) && hasDefaultValue) {
+      // fallback value (for an object hit, not an object default value either)
+      if (
+        !this.isValidLookup(res) &&
+        hasDefaultValue &&
+        !(objectNotReturned && shouldHandleAsObject(defaultValue))
+      ) {
         usedDefault = true;
         res = defaultValue;
       }
-      if (!this.isValidLookup(res)) {
+      // an explicit '' default from code counts: only empty translations fall back (returnEmptyString)
+      if (!this.isValidLookup(res) && !(usedDefault && res === '')) {
         usedKey = true;
         res = key;
       }
@@ -278,7 +278,7 @@ class Translator extends EventEmitter {
 
       // save missing
       const updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
-      if (usedKey || usedDefault || updateMissing) {
+      if (!objectNotReturned && (usedKey || usedDefault || updateMissing)) {
         this.logger.log(
           updateMissing ? 'updateKey' : 'missingKey',
           lng,
@@ -450,33 +450,22 @@ class Translator extends EventEmitter {
     const postProcessorNames = isString(postProcess) ? [postProcess] : postProcess;
 
     if (res != null && postProcessorNames?.length && opt.applyPostProcessor !== false) {
-      // v27 keeps post-processors per instance (clones keep their parent's)
+      const ppOptions = this.options?.postProcessPassResolved
+        ? { i18nResolved: { ...resolved, usedParams: this.getUsedParamsDetails(opt) }, ...opt }
+        : opt;
+      // the post-processors registered with use() on this instance (or the parent of a clone)
       postProcessorNames.forEach((name) => {
-        if (
-          this.logger.debug &&
-          postProcessor.processors[name] &&
-          this.ownPostProcessors &&
-          !this.ownPostProcessors.has(name)
-        ) {
+        const processor = this.postProcessors?.[name];
+        if (!processor) {
           this.logger.once(
-            name,
-            'deprecate',
-            `postProcess: '${name}' was registered with use() on another i18next instance; from v27 post-processors are per instance, so call use() with it on this instance too`,
+            `postProcess:${name}`,
+            'warn',
+            `postProcess: '${name}' is not registered on this i18next instance; call use() with it on this instance`,
           );
+          return;
         }
+        res = processor.process(res, key, ppOptions, this) ?? res;
       });
-      res = postProcessor.handle(
-        postProcessorNames,
-        res,
-        key,
-        this.options && this.options.postProcessPassResolved
-          ? {
-              i18nResolved: { ...resolved, usedParams: this.getUsedParamsDetails(opt) },
-              ...opt,
-            }
-          : opt,
-        this,
-      );
     }
 
     return res;

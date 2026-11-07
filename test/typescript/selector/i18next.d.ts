@@ -74,6 +74,8 @@ declare const ns3: {
 
 declare module 'i18next' {
   interface CustomTypeOptions {
+    // the v26 default, to cover the types without the checks (on by default since v27)
+    strictInterpolationChecks: false;
     defaultNS: 'ns1';
     contextSeparator: '|';
     enableSelector: true;

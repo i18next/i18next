@@ -1,4 +1,4 @@
-import baseLogger from './logger.js';
+import { Logger } from './logger.js';
 import EventEmitter from './EventEmitter.js';
 import ResourceStore from './ResourceStore.js';
 import Translator from './Translator.js';
@@ -8,14 +8,51 @@ import Interpolator from './Interpolator.js';
 import Formatter from './Formatter.js';
 import BackendConnector from './BackendConnector.js';
 import { get as getDefaults, transformOptions } from './defaults.js';
-import postProcessor from './postProcessor.js';
 import { defer, isString, callbackApiOf, isSafeLanguageCode } from './utils.js';
 import keysFromSelector from './selector.js';
 
 const noop = () => {}
 
-// the instance whose use() set the shared logger, to warn when another instance's init() replaces it
-let loggerOwner;
+// defaults under the given options, with the interpolation options merged one level deep
+const withDefaults = (options) => {
+  const defOpts = getDefaults();
+  const merged = { ...defOpts, ...options };
+  merged.interpolation = { ...defOpts.interpolation, ...options.interpolation }; // do not use reference
+  if (typeof merged.overloadTranslationOptionHandler !== 'function') {
+    merged.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
+  }
+  return merged;
+};
+
+// The language codes the user configured at init() (supportedLngs, a fallbackLng that is not a function,
+// preload, the languages in resources): changeLanguage() and loadLanguages() take them whatever their shape.
+// Taken from the options as passed, so neither loadLanguages() (it extends preload) nor added resources, nor
+// a fallbackLng function that returns the code it gets, can make an outside code count as configured.
+const configuredLanguageCodes = (options) => {
+  const codes = [].concat(options.supportedLngs || [], options.preload || []);
+  codes.push(...Object.keys(options.resources || {}));
+  const fallbackLng = options.fallbackLng;
+  if (isString(fallbackLng) || Array.isArray(fallbackLng)) codes.push(...[].concat(fallbackLng));
+  else if (fallbackLng && typeof fallbackLng === 'object') {
+    Object.keys(fallbackLng).forEach((code) => {
+      if (code !== 'default') codes.push(code);
+      codes.push(...[].concat(fallbackLng[code]));
+    });
+  }
+  return codes;
+};
+
+// A code from lng, changeLanguage(), a detector or loadLanguages() with another shape than isSafeLanguageCode()
+// allows is refused unless it is configured: apps put the language into <html lang>, URLs and file paths.
+const isRefusedLanguageCode = (i18n, code) => {
+  if (!isString(code) || isSafeLanguageCode(code) || i18n.configuredLngs?.has(code)) return false;
+  i18n.logger.once(
+    `lng:${code}`,
+    'warn',
+    `refused the language code '${code.slice(0, 64)}' from lng, changeLanguage(), the language detector or loadLanguages(): it is not configured and has other characters than letters, digits, '-', '_', '@' and '.' (or '..', or more than 128). List it in supportedLngs to use it`,
+  );
+  return true;
+};
 
 // Binds the member functions of the given class instance so that they can be
 // destructured or used as callbacks.
@@ -32,17 +69,23 @@ class I18n extends EventEmitter {
   constructor(options = {}, callback) {
     super();
 
-    this.options = transformOptions(options);
-    // ownPostProcessors: names registered with this instance's use(), shared with its clones
-    this.services = { ownPostProcessors: new Set() };
-    this.logger = baseLogger;
+    // the options as the user passed them, to tell "not set" from a default; this.options has the
+    // defaults merged in from the start, so getFixedT() and the options work before init()
+    this.userOptions = transformOptions(options);
+    this.options = withDefaults(this.userOptions);
+    // post-processors registered with use(); a clone's registry inherits its parent's
+    this.services = { postProcessors: Object.create(null) };
+    // each instance logs through its own logger (a clone through its parent's); init() sets it up again
+    // with the logger module, until then it logs to the console with the options given here
+    this.logger = new Logger(null, this.options);
     this.modules = { external: [] };
 
     bindMemberFunctions(this);
 
     if (callback && !this.isInitialized && !options.isClone) {
       // https://github.com/i18next/i18next/issues/879
-      if (!this.options.initAsync) {
+      // the user's own initAsync: the defaults merged above always have it true
+      if (!this.userOptions.initAsync) {
         this.init(options, callback);
         return this;
       }
@@ -67,19 +110,23 @@ class I18n extends EventEmitter {
       }
     }
 
-    const fallbackLngIsDefault = options.fallbackLng === undefined && this.options.fallbackLng === undefined;
-    const defOpts = getDefaults();
-    this.options = { ...defOpts, ...this.options, ...transformOptions(options) };
-    this.options.interpolation = { ...defOpts.interpolation, ...this.options.interpolation }; // do not use reference
-    if (options.keySeparator !== undefined) {
-      this.options.userDefinedKeySeparator = options.keySeparator;
+    transformOptions(options);
+    // what the user set, in createInstance() or here
+    const userOptions = { ...this.userOptions, ...options };
+    this.options = withDefaults({ ...this.options, ...options });
+    if (userOptions.keySeparator !== undefined) {
+      this.options.userDefinedKeySeparator = userOptions.keySeparator;
     }
-    if (options.nsSeparator !== undefined) {
-      this.options.userDefinedNsSeparator = options.nsSeparator;
+    if (userOptions.nsSeparator !== undefined) {
+      this.options.userDefinedNsSeparator = userOptions.nsSeparator;
     }
-
-    if (typeof this.options.overloadTranslationOptionHandler !== 'function') {
-      this.options.overloadTranslationOptionHandler = defOpts.overloadTranslationOptionHandler;
+    // a clone gets its parent's from cloneInstance(), with its own options added there: its init() options
+    // are the parent's, whose inline resources are the live store
+    if (!this.options.isClone) {
+      this.configuredLngs = new Set([
+        ...(this.configuredLngs || []),
+        ...configuredLanguageCodes(userOptions),
+      ]);
     }
 
     const createClassOnDemand = (ClassOrObject) => {
@@ -90,18 +137,8 @@ class I18n extends EventEmitter {
 
     // init services
     if (!this.options.isClone) {
-      // v27 keeps a logger per instance; in v26 the last non-clone init() sets it for all
-      if (loggerOwner && loggerOwner !== this && loggerOwner.modules.logger !== this.modules.logger) {
-        baseLogger.deprecate(
-          'init: this init() replaces the logger another i18next instance set with use(), as the logger is shared in v26; from v27 each instance keeps its own logger',
-        );
-      }
-      loggerOwner = this.modules.logger ? this : undefined;
-      if (this.modules.logger) {
-        baseLogger.init(createClassOnDemand(this.modules.logger), this.options);
-      } else {
-        baseLogger.init(null, this.options);
-      }
+      this.logger.init(createClassOnDemand(this.modules.logger), this.options);
+      const { logger } = this;
       this.pendingWarnings?.forEach((msg) => this.logger.warn(msg));
       this.pendingWarnings = undefined;
 
@@ -112,7 +149,7 @@ class I18n extends EventEmitter {
         formatter = Formatter;
       }
 
-      const lu = new LanguageUtils(this.options);
+      const lu = new LanguageUtils(this.options, logger);
 
       // if (this.options.resources) {
       //   Object.keys(this.options.resources).forEach((lng) => {
@@ -125,15 +162,13 @@ class I18n extends EventEmitter {
       //   })
       // }
 
-      this.store = new ResourceStore(this.options.resources, this.options);
+      this.store = new ResourceStore(this.options.resources, this.options, logger);
 
       const s = this.services;
-      s.logger = baseLogger;
+      s.logger = logger;
       s.resourceStore = this.store;
       s.languageUtils = lu;
-      s.pluralResolver = new PluralResolver(lu, {
-        prepend: this.options.pluralSeparator,
-      });
+      s.pluralResolver = new PluralResolver(lu, { prepend: this.options.pluralSeparator }, logger);
 
       if (formatter) {
         s.formatter = createClassOnDemand(formatter);
@@ -141,7 +176,7 @@ class I18n extends EventEmitter {
         this.options.interpolation.format = s.formatter.format.bind(s.formatter);
       }
 
-      s.interpolator = new Interpolator(this.options);
+      s.interpolator = new Interpolator(this.options, logger);
       s.utils = {
         hasLoadedNamespace: this.hasLoadedNamespace.bind(this),
         // lets a backend refresh its bundles (reloadInterval) without driving the backendConnector
@@ -154,7 +189,6 @@ class I18n extends EventEmitter {
         s,
         this.options,
       );
-      s.backendConnector.devIsDefaultFallback = fallbackLngIsDefault;
       // pipe events from backendConnector
       s.backendConnector.on('*', (event, ...args) => {
         this.emit(event, ...args);
@@ -345,8 +379,7 @@ class I18n extends EventEmitter {
     }
 
     if (module.type === 'postProcessor') {
-      postProcessor.addPostProcessor(module);
-      this.services.ownPostProcessors?.add(module.name);
+      this.services.postProcessors[module.name] = module;
     }
 
     if (module.type === 'formatter') {
@@ -437,26 +470,19 @@ class I18n extends EventEmitter {
     const setLng = lngs => {
       // if detected lng is falsy, set it to empty array, to make sure at least the fallbackLng will be used
       if (!lng && !lngs && this.services.languageDetector) lngs = [];
+      // a refused code is skipped like an unsupported one: the detector's next code, else the fallback
+      // language, else none (fallbackLng: false leaves the language unset). With supportedLngs the input is
+      // matched as before ('de-DE;q=0.9' gives 'de'); only an unsafe match is refused, which only
+      // nonExplicitSupportedLngs can return ('de-<x>' for a supported 'de')
+      const { supportedLngs } = this.options;
+      if (lngs && !supportedLngs) {
+        const accepted = [].concat(lngs).filter((c) => !isRefusedLanguageCode(this, c));
+        if (accepted.length < [].concat(lngs).length) lngs = accepted;
+      }
       // depending on API in detector lng can be a string (old) or an array of languages ordered in priority
       const fl = isString(lngs) ? lngs : lngs && lngs[0];
-      const l = this.store.hasLanguageSomeTranslations(fl) ? fl : this.services.languageUtils.getBestMatchFromCodes(isString(lngs) ? [lngs] : lngs);
-
-      // v27 refuses a language code of another shape unless it is configured; 26.7 warns in debug mode
-      // only (the check runs a fallbackLng function, which may expect a code)
-      if (l && this.logger.debug && !isSafeLanguageCode(l)) {
-        const configured = [].concat(
-          this.options.supportedLngs || [],
-          this.services.languageUtils.getFallbackCodes(this.options.fallbackLng, l),
-          this.options.preload || [],
-        );
-        if (!configured.includes(l) && !Object.prototype.hasOwnProperty.call(this.store.data, l)) {
-          this.logger.once(
-            `lng:${l}`,
-            'deprecate',
-            `changeLanguage: the language code '${l.slice(0, 64)}' comes from lng, changeLanguage() or the language detector and is not configured; from v27 such a code is refused unless it has only letters, digits, '-', '_', '@' and '.' (no '..'), at most 128 characters. Set supportedLngs, or check the code before passing it on`,
-          );
-        }
-      }
+      let l = this.store.hasLanguageSomeTranslations(fl) ? fl : this.services.languageUtils.getBestMatchFromCodes(isString(lngs) ? [lngs] : lngs);
+      if (supportedLngs && isRefusedLanguageCode(this, l)) l = this.services.languageUtils.getBestMatchFromCodes([]);
 
       if (l) {
         if (!this.language) {
@@ -619,7 +645,9 @@ class I18n extends EventEmitter {
   loadNamespaces(ns, callback) {
     const deferred = defer();
 
-    if (!this.options.ns) {
+    // before init() (react-i18next's useTranslation can call it then): nothing to load yet, as in v26,
+    // where the options of an instance were empty until init()
+    if (!this.options.ns || !this.services.backendConnector) {
       if (callback) callback();
       return Promise.resolve();
     }
@@ -643,7 +671,7 @@ class I18n extends EventEmitter {
     if (isString(lngs)) lngs = [lngs];
     const preloaded = this.options.preload || [];
 
-    const newLngs = lngs.filter(lng => !preloaded.includes(lng) && this.services.languageUtils.isSupportedCode(lng));
+    const newLngs = lngs.filter(lng => !preloaded.includes(lng) && !isRefusedLanguageCode(this, lng) && this.services.languageUtils.isSupportedCode(lng));
     // Exit early if all given languages are already preloaded
     if (!newLngs.length) {
       if (callback) callback();
@@ -760,14 +788,18 @@ class I18n extends EventEmitter {
     // changeLanguage costs languages × namespaces per call (https://github.com/i18next/i18next/issues/2451)
     const mergedOptions = { ...this.options, preload: false, ...options, ...{ isClone: true } };
     const clone = new I18n(mergedOptions);
-    if ((options.debug !== undefined || options.prefix !== undefined)) {
-      clone.logger = clone.logger.clone(options);
-    }
-    const membersToCopy = ['store', 'services', 'language'];
+    // a clone logs through its parent's logger, or a copy of it with its own debug or prefix (its
+    // services, translator included, keep the parent's, as before)
+    clone.logger = options.debug !== undefined || options.prefix !== undefined
+      ? this.logger.clone(options)
+      : this.logger;
+    const membersToCopy = ['store', 'language'];
     membersToCopy.forEach(m => {
       clone[m] = this[m];
     });
     clone.services = { ...this.services };
+    // it sees what its parent registers, also later; what it registers itself stays its own
+    clone.services.postProcessors = Object.create(this.services.postProcessors);
     clone.services.utils = {
       ...clone.services.utils,
       hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone),
@@ -783,7 +815,7 @@ class I18n extends EventEmitter {
         return copied;
       };
       const clonedData = copyData(this.store.data);
-      clone.store = new ResourceStore(clonedData, mergedOptions);
+      clone.store = new ResourceStore(clonedData, mergedOptions, this.logger);
       clone.services.resourceStore = clone.store;
     }
     // Ensure interpolation options are always merged with defaults when cloning
@@ -791,8 +823,11 @@ class I18n extends EventEmitter {
       const defOpts = getDefaults();
       const mergedInterpolation = { ...defOpts.interpolation, ...this.options.interpolation, ...options.interpolation };
       const mergedForInterpolator = { ...mergedOptions, interpolation: mergedInterpolation };
-      clone.services.interpolator = new Interpolator(mergedForInterpolator);
+      clone.services.interpolator = new Interpolator(mergedForInterpolator, this.logger);
     }
+    // the codes the parent was configured with at its init(), plus those in the options given here; not the
+    // languages added to the shared store since
+    clone.configuredLngs = new Set([...(this.configuredLngs || []), ...configuredLanguageCodes(options)]);
     clone.translator = new Translator(clone.services, mergedOptions);
     clone.translator.on('*', (event, ...args) => {
       clone.emit(event, ...args);

@@ -132,16 +132,14 @@ describe('Interpolator', () => {
           interpolation: {
             prefix: '(*(',
             suffix: ')*)',
-            prefixEscaped: '\\(\\^\\(',
-            suffixEscaped: ')\\^\\)',
           },
         },
         expected: { prefix: '\\(\\*\\(', suffix: '\\)\\*\\)' },
       },
       {
-        description: 'uses prefixEscaped and suffixEscaped if prefix and suffix not provided',
+        description: 'ignores the removed prefixEscaped and suffixEscaped',
         options: { interpolation: { prefixEscaped: '<<', suffixEscaped: '>>' } },
-        expected: { prefix: '<<', suffix: '>>' },
+        expected: { prefix: '{{', suffix: '}}' },
       },
       {
         description: 'uses unescapePrefix if provided',
@@ -164,19 +162,16 @@ describe('Interpolator', () => {
           interpolation: {
             nestingPrefix: 'nest(',
             nestingSuffix: ')nest',
-            nestingPrefixEscaped: 'neste\\(',
-            nestingSuffixEscaped: '\\)neste',
           },
         },
         expected: { nestingPrefix: 'nest\\(', nestingSuffix: '\\)nest' },
       },
       {
-        description:
-          'uses nestingPrefixEscaped and nestingSuffixEscaped if nestingPrefix and nestingSuffix not provided',
+        description: 'ignores the removed nestingPrefixEscaped and nestingSuffixEscaped',
         options: {
           interpolation: { nestingPrefixEscaped: 'neste\\(', nestingSuffixEscaped: '\\)neste' },
         },
-        expected: { nestingPrefix: 'neste\\(', nestingSuffix: '\\)neste' },
+        expected: { nestingPrefix: '\\$t\\(', nestingSuffix: '\\)' },
       },
       {
         description: 'uses maxReplaces if provided',
@@ -326,11 +321,11 @@ describe('Interpolator', () => {
     const tests = [
       {
         args: ['test {{test}}', { test: '<a>foo</a>' }],
-        expected: 'test &lt;a&gt;foo&lt;&#x2F;a&gt;',
+        expected: 'test &lt;a&gt;foo&lt;/a&gt;', // '/' is not escaped since v27
       },
       {
         args: ['test {{test.deep}}', { test: { deep: '<a>foo</a>' } }],
-        expected: 'test &lt;a&gt;foo&lt;&#x2F;a&gt;',
+        expected: 'test &lt;a&gt;foo&lt;/a&gt;', // '/' is not escaped since v27
       },
       {
         args: ['test {{- test.deep}}', { test: { deep: '<a>foo</a>' } }],
@@ -488,11 +483,11 @@ describe('Interpolator', () => {
       { args: ['test __test.deep__', { test: { deep: '123' } }], expected: 'test 123' },
       {
         args: ['test __test__', { test: '<a>foo</a>' }],
-        expected: 'test &lt;a&gt;foo&lt;&#x2F;a&gt;',
+        expected: 'test &lt;a&gt;foo&lt;/a&gt;', // '/' is not escaped since v27
       },
       {
         args: ['test __test.deep__', { test: { deep: '<a>foo</a>' } }],
-        expected: 'test &lt;a&gt;foo&lt;&#x2F;a&gt;',
+        expected: 'test &lt;a&gt;foo&lt;/a&gt;', // '/' is not escaped since v27
       },
       {
         args: ['test __test.deepHTML__', { test: { deep: '<a>foo</a>' } }],

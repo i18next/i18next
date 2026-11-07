@@ -4,7 +4,11 @@ import ResourceStore from '../../../src/ResourceStore.js';
 import LanguageUtils from '../../../src/LanguageUtils';
 import PluralResolver from '../../../src/PluralResolver';
 import Interpolator from '../../../src/Interpolator';
-import PostProcessor from '../../../src/postProcessor';
+
+// post-processors belong to an instance; the translator reads its services' registry
+const addPostProcessor = (t, pp) => {
+  t.postProcessors = { ...t.postProcessors, [pp.name]: pp };
+};
 
 describe('Translator', () => {
   describe('translate() with arrays', () => {
@@ -54,7 +58,7 @@ describe('Translator', () => {
           },
         },
       );
-      PostProcessor.addPostProcessor({
+      addPostProcessor(t, {
         name: 'appendResolvedKey',
         process: (value, key, options) =>
           `${value} (${options.i18nResolved.usedNS}:${options.i18nResolved.exactUsedKey})`,

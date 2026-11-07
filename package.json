@@ -7,7 +7,6 @@
   "types": "./index.d.ts",
   "files": [
     "dist",
-    "index.js",
     "index.d.ts",
     "index.d.mts",
     "typescript",
@@ -57,6 +56,9 @@
       "url": "https://www.locize.com"
     }
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "peerDependencies": {
     "typescript": "^5 || ^6 || ^7"
   },

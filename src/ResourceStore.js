@@ -8,13 +8,27 @@ import { getPath, deepFind, setPath, deepExtend, isString } from './utils.js';
 // ponytail: a bundle emptied by hand with `delete` on every key keeps counting as non-empty
 const nonEmptyBundles = new WeakSet();
 
+// The dotted form, addResource('en.translation.key', value), was removed in v27: without this check its
+// value would land in options.ns, or an object would and break the next lookup
+const assertSeparateArguments = (method, ...args) => {
+  if (args.some((a) => !isString(a))) {
+    throw new TypeError(
+      `${method}: pass language, namespace${method === 'addResource' ? ' and key' : ''} as separate strings; the dotted form ('en.translation.key') was removed in i18next v27`,
+    );
+  }
+};
+
 class ResourceStore extends EventEmitter {
-  constructor(data, options = { ns: ['translation'], defaultNS: 'translation' }) {
+  constructor(
+    data,
+    options = { ns: ['translation'], defaultNS: 'translation' },
+    logger = baseLogger,
+  ) {
     super();
 
     this.data = data || {};
     this.options = options;
-    this.logger = baseLogger.create('resourceStore');
+    this.logger = logger.create('resourceStore');
     if (this.options.keySeparator === undefined) {
       this.options.keySeparator = '.';
     }
@@ -36,15 +50,6 @@ class ResourceStore extends EventEmitter {
     }
   }
 
-  // the dotted-language form, getResource('en.translation.a.b') and friends, is removed in v27
-  deprecateDottedLng(method) {
-    this.logger.once(
-      method,
-      'deprecate',
-      `${method}: a dotted language ('en.translation.key') that carries the namespace and key is removed in v27; pass language, namespace and key as separate arguments`,
-    );
-  }
-
   getResource(lng, ns, key, options = {}) {
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
@@ -54,48 +59,31 @@ class ResourceStore extends EventEmitter {
         ? options.ignoreJSONStructure
         : this.options.ignoreJSONStructure;
 
-    let path;
-    if (lng.includes('.')) {
-      this.deprecateDottedLng('getResource');
-      path = lng.split('.');
-    } else {
-      path = [lng, ns];
-      if (key) {
-        if (Array.isArray(key)) {
-          path.push(...key);
-        } else if (isString(key) && keySeparator) {
-          path.push(...key.split(keySeparator));
-        } else {
-          path.push(key);
-        }
+    const path = [lng, ns];
+    if (key) {
+      if (Array.isArray(key)) {
+        path.push(...key);
+      } else if (isString(key) && keySeparator) {
+        path.push(...key.split(keySeparator));
+      } else {
+        path.push(key);
       }
     }
 
     const result = getPath(this.data, path);
     // false, 0 and '' are values; null (not a valid lookup by default) still falls back to a flat key
-    if (result == null && !ns && !key && lng.includes('.')) {
-      lng = path[0];
-      ns = path[1];
-      key = path.slice(2).join('.');
-    }
     if (result != null || !ignoreJSONStructure || !isString(key)) return result;
 
     return deepFind(this.data?.[lng]?.[ns], key, keySeparator);
   }
 
   addResource(lng, ns, key, value, options = { silent: false }) {
+    assertSeparateArguments('addResource', lng, ns, key);
     const keySeparator =
       options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     let path = [lng, ns];
     if (key) path = path.concat(keySeparator ? key.split(keySeparator) : key);
-
-    if (lng.includes('.')) {
-      this.deprecateDottedLng('addResource');
-      path = lng.split('.');
-      value = ns;
-      ns = path[1];
-    }
 
     this.addNamespaces(ns);
 
@@ -105,10 +93,12 @@ class ResourceStore extends EventEmitter {
   }
 
   addResources(lng, ns, resources, options = { silent: false }) {
-    for (const m in resources) {
-      if (isString(resources[m]) || Array.isArray(resources[m]))
-        this.addResource(lng, ns, m, resources[m], { silent: true });
-    }
+    assertSeparateArguments('addResources', lng, ns);
+    // every value, as addResource() takes it (numbers, booleans and objects were dropped)
+    Object.keys(resources || {}).forEach((m) => {
+      if (m === '__proto__' || m === 'constructor') return;
+      this.addResource(lng, ns, m, resources[m], { silent: true });
+    });
     if (!options.silent) this.emit('added', lng, ns, resources);
   }
 
@@ -120,14 +110,8 @@ class ResourceStore extends EventEmitter {
     overwrite,
     options = { silent: false, skipCopy: false },
   ) {
-    let path = [lng, ns];
-    if (lng.includes('.')) {
-      this.deprecateDottedLng('addResourceBundle');
-      path = lng.split('.');
-      deep = resources;
-      resources = ns;
-      ns = path[1];
-    }
+    assertSeparateArguments('addResourceBundle', lng, ns);
+    const path = [lng, ns];
 
     this.addNamespaces(ns);
 

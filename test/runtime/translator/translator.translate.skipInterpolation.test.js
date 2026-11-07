@@ -4,7 +4,11 @@ import ResourceStore from '../../../src/ResourceStore.js';
 import LanguageUtils from '../../../src/LanguageUtils';
 import PluralResolver from '../../../src/PluralResolver';
 import Interpolator from '../../../src/Interpolator';
-import PostProcessor from '../../../src/postProcessor';
+
+// post-processors belong to an instance; the translator reads its services' registry
+const addPostProcessor = (t, pp) => {
+  t.postProcessors = { ...t.postProcessors, [pp.name]: pp };
+};
 
 describe('Translator', () => {
   describe('translate() skip interpolation', () => {
@@ -122,7 +126,7 @@ describe('Translator', () => {
           interpolation: {},
         },
       );
-      PostProcessor.addPostProcessor({
+      addPostProcessor(t, {
         name: 'postProcessValue',
         process: (value) => `post processed: ${value}`,
       });

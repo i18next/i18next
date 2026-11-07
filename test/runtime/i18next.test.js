@@ -192,9 +192,10 @@ describe('i18next', () => {
 
       it('it should have correct lngs', () => {
         expect(instance1.language).to.equal('en');
-        expect(instance1.languages).to.eql(['en', 'dev']);
+        // no fallbackLng: since v27 the default is false, not ['dev']
+        expect(instance1.languages).to.eql(['en']);
         expect(instance2.language).to.equal('de');
-        expect(instance2.languages).to.eql(['de', 'dev']);
+        expect(instance2.languages).to.eql(['de']);
 
         expect(instance1.translator.language).to.equal('en');
         expect(instance2.translator.language).to.equal('de');
@@ -493,9 +494,9 @@ describe('i18next', () => {
 
       it('it adds resources by addResourceBundle', () => {
         i18next
-          .addResourceBundle('en.translation', { something1: 'deeper1' })
-          .addResourceBundle('en.translation', { something2: 'deeper2' });
-        expect(i18next.getResource('en.translation')).to.eql({
+          .addResourceBundle('en', 'translation', { something1: 'deeper1' })
+          .addResourceBundle('en', 'translation', { something2: 'deeper2' });
+        expect(i18next.getResource('en', 'translation')).to.eql({
           something1: 'deeper1',
           something2: 'deeper2',
         });

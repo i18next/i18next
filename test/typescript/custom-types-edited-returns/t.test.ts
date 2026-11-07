@@ -6,9 +6,7 @@ describe('main', () => {
     expectTypeOf(i18next.t('nullKey')).toBeNull();
   });
 
-  it('should fallback for empty string translations with returnEmpty set to false in config', () => {
-    expectTypeOf(
-      i18next.t('empty string with {{val}}'),
-    ).toEqualTypeOf<'empty string with {{val}}'>();
+  it('should accept empty string translations with returnEmptyString set to true in config', () => {
+    expectTypeOf(i18next.t('empty string with {{val}}')).toEqualTypeOf<''>();
   });
 });

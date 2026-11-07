@@ -6,7 +6,7 @@ export const get = () => ({
 
   ns: ['translation'],
   defaultNS: ['translation'],
-  fallbackLng: ['dev'],
+  fallbackLng: false, // string, array, object or function; 'dev' only when set
   fallbackNS: false, // string or array of namespaces
 
   supportedLngs: false, // array with supported languages
@@ -39,7 +39,7 @@ export const get = () => ({
   postProcess: false, // string or array of postProcessor names
   postProcessPassResolved: false, // pass resolved object into 'options.i18nResolved' for postprocessor
   returnNull: false, // allows null value as valid translation
-  returnEmptyString: true, // allows empty string value as valid translation
+  returnEmptyString: false, // an empty string falls back like a missing value
   returnObjects: false,
   joinArrays: false, // or string to join array
   returnedObjectHandler: false, // function(key, value, options) triggered if key returns object but returnObjects is set to false
@@ -64,16 +64,12 @@ export const get = () => ({
     prefix: '{{',
     suffix: '}}',
     formatSeparator: ',',
-    // prefixEscaped: '{{',
-    // suffixEscaped: '}}',
     // unescapeSuffix: '',
     unescapePrefix: '-',
 
     nestingPrefix: '$t(',
     nestingSuffix: ')',
     nestingOptionsSeparator: ',',
-    // nestingPrefixEscaped: '$t(',
-    // nestingSuffixEscaped: ')',
     // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
     maxReplaces: 1000, // max replaces to prevent endless loop
     skipOnVariables: true,

@@ -10,6 +10,8 @@ import {
 declare module 'i18next' {
   interface CustomTypeOptions {
     strictKeyChecks: true;
+    // the v26 default, to cover the types without the checks (on by default since v27)
+    strictInterpolationChecks: false;
     defaultNS: 'custom';
     fallbackNS: 'fallback';
     resources: {
@@ -17,6 +19,7 @@ declare module 'i18next' {
       alternate: TestNamespaceCustomAlternate;
       fallback: TestNamespaceFallback;
       interpolators: TestNamespaceInterpolators;
+      plurals: { plain: 'Plain'; item_one: '{{count}} item'; item_other: '{{count}} items' };
       arrayKeys: {
         arrayOfStrings: ['zero', 'one'];
         readonlyArrayOfStrings: readonly ['readonly zero', 'readonly one'];

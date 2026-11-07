@@ -5,7 +5,7 @@ import { TestNamespaceCustom, TestNamespaceInterpolators } from '../test.namespa
 declare module 'i18next' {
   interface CustomTypeOptions {
     strictKeyChecks: true;
-    strictInterpolationChecks: true;
+    // strictInterpolationChecks: true is the default since v27
     defaultNS: 'custom';
     resources: {
       custom: TestNamespaceCustom;

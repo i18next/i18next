@@ -26,6 +26,16 @@ describe('strictInterpolationChecks with the selector API', () => {
     t([($) => $.simple, ($) => $.simple_multiple_keys], { olim: '' });
   });
 
+  it('keeps plural selectors and arrays with count compiling', () => {
+    const tp = (() => '') as unknown as TFunction<'plurals'>;
+    expectTypeOf(tp(($) => $.item, { count: 2 })).toEqualTypeOf<
+      '{{count}} item' | '{{count}} items'
+    >();
+    tp([($) => $.plain, ($) => $.item], { count: 2 });
+    // @ts-expect-error a plural selector needs `count`
+    tp(($) => $.item);
+  });
+
   it('leaves a string without variables alone', () => {
     expectTypeOf(t(($) => $.just_a_string)).toEqualTypeOf<string>();
   });

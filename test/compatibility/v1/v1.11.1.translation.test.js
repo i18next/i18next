@@ -356,7 +356,8 @@ describe('v1.11.1 translation', () => {
       });
 
       it('it should not fail silently on accessing an objectTree', () => {
-        expect(i18n.t('test')).to.equal("key 'test (en-US)' returned an object instead of string.");
+        // since v27 handled like a missing key: here with appendNamespaceToMissingKey
+        expect(i18n.t('test')).to.equal('translation:test');
       });
     });
 

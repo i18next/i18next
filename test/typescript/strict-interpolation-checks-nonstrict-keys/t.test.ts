@@ -18,4 +18,21 @@ describe('strictInterpolationChecks without strictKeyChecks', () => {
     t('simple', 'some default value');
     t('not_a_key', 'some default value');
   });
+
+  it('a wrapper over a union with a plural key fails', () => {
+    const tp = (() => '') as unknown as TFunction<'plurals'>;
+    tp('item', { count: 2 });
+    // @ts-expect-error `item` needs `count`
+    tp('item');
+    function label(key: 'plain' | 'item') {
+      // @ts-expect-error `item` needs `count`
+      return tp(key);
+    }
+    label('plain');
+
+    // @ts-expect-error `item` needs `count`
+    tp('item', {});
+    // a default value makes any key valid in this mode, see above
+    tp('item', { defaultValue: 'x' });
+  });
 });

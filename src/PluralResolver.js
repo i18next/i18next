@@ -18,11 +18,11 @@ const dummyRule = {
 };
 
 class PluralResolver {
-  constructor(languageUtils, options = {}) {
+  constructor(languageUtils, options = {}, logger = baseLogger) {
     this.languageUtils = languageUtils;
     this.options = options;
 
-    this.logger = baseLogger.create('pluralResolver');
+    this.logger = logger.create('pluralResolver');
 
     // Cache calls to Intl.PluralRules, since repeated calls can be slow in runtimes like React Native
     // and the memory usage difference is negligible

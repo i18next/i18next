@@ -19,7 +19,7 @@ describe('getFixedT', () => {
     });
 
     it('should work with `returnObjects`', () => {
-      // t('deeper').deeeeeper; // i18next would say: "key 'deeper (en)' returned an object instead of string."
+      // t('deeper').deeeeeper; // i18next returns the key (no returnObjects)
       expectTypeOf(t(($) => $.deep.deeper, { returnObjects: true })).toEqualTypeOf<{
         deeeeeper: 'foobar';
       }>();

@@ -28,7 +28,7 @@ describe('i18next.t', () => {
       };
     };
 
-    // i18next.t('alternate:foobar.deep').deeper.deeeeeper; // i18next would say: "key 'foobar.deep (en)' returned an object instead of string."
+    // i18next.t('alternate:foobar.deep').deeper.deeeeeper; // i18next returns the key (no returnObjects)
     expectTypeOf(
       i18next.t(($) => $.foobar.deep, { returnObjects: true, ns: 'alternate' }),
     ).toEqualTypeOf<AlternateFoobarDeepResult>();

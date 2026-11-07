@@ -7,14 +7,12 @@ describe('ResourceStore', () => {
       const rs = new ResourceStore({ en: { translation: { a: { b: value }, 'a.b': 'flat' } } });
 
       expect(rs.getResource('en', 'translation', 'a.b')).toBe(value);
-      expect(rs.getResource('en.translation.a.b')).toBe(value);
     });
 
     it('falls back to a flat key when the nested value is null', () => {
       const rs = new ResourceStore({ en: { translation: { a: { b: null }, 'a.b': 'flat' } } });
 
       expect(rs.getResource('en', 'translation', 'a.b')).toBe('flat');
-      expect(rs.getResource('en.translation.a.b')).toBe('flat');
     });
 
     it('returns a nested null value when there is no flat key', () => {

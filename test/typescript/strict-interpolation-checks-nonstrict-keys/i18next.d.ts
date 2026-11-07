@@ -9,6 +9,7 @@ declare module 'i18next' {
     resources: {
       custom: TestNamespaceCustom;
       interpolators: TestNamespaceInterpolators;
+      plurals: { plain: 'Plain'; item_one: '{{count}} item'; item_other: '{{count}} items' };
     };
   }
 }

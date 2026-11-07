@@ -23,7 +23,21 @@ describe('i18next t default returns', () => {
   it('it should not return null values by default', () => {
     expect(i18n.t('key')).to.equal('normal');
     expect(i18n.t('keyNull')).to.equal('keyNull');
-    expect(i18n.t('keyEmpty')).to.equal('');
+    // an empty string falls back like a missing value since v27 (returnEmptyString: false)
+    expect(i18n.t('keyEmpty')).to.equal('keyEmpty');
+  });
+
+  it('returnEmptyString: true keeps an empty string', async () => {
+    const instance = i18next.createInstance();
+    await instance.init({
+      lng: 'de',
+      fallbackLng: 'en',
+      returnEmptyString: true,
+      resources: { de: { translation: { title: '' } }, en: { translation: { title: 'Settings' } } },
+    });
+    expect(instance.t('title')).to.equal('');
+    await instance.init({ returnEmptyString: false });
+    expect(instance.t('title')).to.equal('Settings');
   });
 
   it('it should not return Object prototype stuff', () => {

@@ -208,7 +208,7 @@ describe('i18next.translation.formatting', () => {
       // datetime
       {
         args: ['intlDateTime', { val: new Date(Date.UTC(2012, 11, 20, 3, 0, 0)) }],
-        expected: 'On the 12&#x2F;20&#x2F;2012', // &#x2F; = /
+        expected: 'On the 12/20/2012', // '/' is not escaped since v27
       },
       {
         args: [

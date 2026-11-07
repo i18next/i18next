@@ -40,16 +40,55 @@ describe('ResourceStore', () => {
         rs.addResource('de', 'translation', 'nest.test', 'test_nest');
         expect(rs.getResource('de', 'translation', 'nest.test')).to.equal('test_nest');
 
-        // using first param fullDot
-        rs.addResource('de.translation.nest.fullDot', 'test_fullDot');
-        expect(rs.getResource('de.translation.nest.fullDot')).to.equal('test_fullDot');
-
         // setting object
-        rs.addResource('de.translation.nest.object', { something: 'deeper' });
-        expect(rs.getResource('de.translation.nest.object.something')).to.equal('deeper');
+        rs.addResource('de', 'translation', 'nest.object', { something: 'deeper' });
+        expect(rs.getResource('de', 'translation', 'nest.object.something')).to.equal('deeper');
 
         // getting object
-        expect(rs.getResource('de.translation.nest.object')).to.eql({ something: 'deeper' });
+        expect(rs.getResource('de', 'translation', 'nest.object')).to.eql({ something: 'deeper' });
+      });
+
+      it('a language with dots is a language, not language, namespace and key', () => {
+        rs.addResource('de_DE.UTF-8', 'translation', 'key', 'value');
+        expect(rs.getResource('de_DE.UTF-8', 'translation', 'key')).to.equal('value');
+        expect(rs.data['de_DE.UTF-8'].translation).to.eql({ key: 'value' });
+        rs.addResourceBundle('de_DE.UTF-8', 'other', { a: 'b' });
+        expect(rs.getResource('de_DE.UTF-8', 'other')).to.eql({ a: 'b' });
+        expect(rs.getResource('de.translation.nest.test')).to.equal(undefined);
+      });
+
+      it('the removed dotted form throws instead of filling options.ns', () => {
+        const ns = [...rs.options.ns];
+        expect(() => rs.addResource('en.translation.x', 'v')).to.throw(
+          TypeError,
+          /addResource: pass language, namespace and key as separate strings/,
+        );
+        expect(() => rs.addResourceBundle('en.common', { a: 'b' })).to.throw(
+          TypeError,
+          /addResourceBundle: .*removed in i18next v27/,
+        );
+        expect(() => rs.addResources('en.common', { a: 'b' })).to.throw(TypeError);
+        expect(rs.options.ns).to.eql(ns);
+      });
+
+      it('addResources keeps every value, not only strings and arrays', () => {
+        rs.addResources('it', 'translation', {
+          num: 1,
+          bool: false,
+          deep: { x: 'y' },
+          str: 's',
+          arr: ['a'],
+        });
+        expect(rs.getResource('it', 'translation')).to.eql({
+          num: 1,
+          bool: false,
+          deep: { x: 'y' },
+          str: 's',
+          arr: ['a'],
+        });
+        rs.addResources('it', 'translation', JSON.parse('{"__proto__": {"polluted": true}}'));
+        expect(rs.getResource('it', 'translation').polluted).to.equal(undefined);
+        expect({}.polluted).to.equal(undefined);
       });
 
       it("it should emit 'added' event on addResource call", () => {
@@ -132,11 +171,11 @@ describe('ResourceStore', () => {
           'a.key.deeper': 'fourth',
           'b.k': 'fifth',
         });
-        expect(rs.getResource('fr.translation.a.key')).to.eql('first');
-        expect(rs.getResource('fr.translation.a.key.deep')).to.eql('second');
-        expect(rs.getResource('fr.translation.a.key.deep.deeper')).to.eql('third');
-        expect(rs.getResource('fr.translation.a.key.deeper')).to.eql('fourth');
-        expect(rs.getResource('fr.translation.b.k')).to.eql('fifth');
+        expect(rs.getResource('fr', 'translation', 'a.key')).to.eql('first');
+        expect(rs.getResource('fr', 'translation', 'a.key.deep')).to.eql('second');
+        expect(rs.getResource('fr', 'translation', 'a.key.deep.deeper')).to.eql('third');
+        expect(rs.getResource('fr', 'translation', 'a.key.deeper')).to.eql('fourth');
+        expect(rs.getResource('fr', 'translation', 'b.k')).to.eql('fifth');
       });
     });
 
@@ -150,9 +189,8 @@ describe('ResourceStore', () => {
         rs.addResourceBundle('en', 'translation', { something: 'deeper' });
         expect(rs.getResource('en', 'translation')).to.eql({ something: 'deeper', test: 'test' });
 
-        // dotty
-        rs.addResourceBundle('en.translation', { something1: 'deeper1' });
-        expect(rs.getResource('en.translation')).to.eql({
+        rs.addResourceBundle('en', 'translation', { something1: 'deeper1' });
+        expect(rs.getResource('en', 'translation')).to.eql({
           something: 'deeper',
           something1: 'deeper1',
           test: 'test',

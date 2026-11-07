@@ -84,9 +84,8 @@ describe('i18next', () => {
         expect(Logger.entries.warn[0]).to.equal(
           'i18next: init: no languageDetector is used and no lng is defined',
         );
-        // no fallbackLng set: the default ['dev'] is loaded, with the 26.7 notice about v27
-        expect(Logger.entries.warn[1]).to.contain("language 'dev' is requested");
-        expect(Logger.entries.warn[2]).to.equal(
+        // no fallbackLng set (the default is false since v27): no language to load
+        expect(Logger.entries.warn[1]).to.equal(
           'i18next: hasLoadedNamespace: i18n.languages were undefined or empty',
         );
         Logger.reset();
@@ -123,7 +122,7 @@ describe('i18next', () => {
 
           expect(Logger.entries.warn.length).to.equal(3);
           expect(Logger.entries.warn[0]).to.equal(
-            'i18next::translator: key "keyNotFound" for languages "en-US, en, dev" won\'t get resolved as namespace "ns1" was not yet loaded',
+            'i18next::translator: key "keyNotFound" for languages "en-US, en" won\'t get resolved as namespace "ns1" was not yet loaded',
           );
           Logger.reset();
         });
@@ -133,7 +132,8 @@ describe('i18next', () => {
         it('it should call saveMissing create on backend if loaded ns', () => {
           i18n.t('keyNotFound');
           expect(Backend.created.length).to.equal(1);
-          expect(Backend.created[0]).to.equal('dev-translation-keyNotFound');
+          // no fallbackLng: missing keys are saved to the current language
+          expect(Backend.created[0]).to.equal('en-US-translation-keyNotFound');
           Backend.reset();
         });
 

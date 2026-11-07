@@ -29,7 +29,7 @@ describe('i18next.t', () => {
       };
     };
 
-    // i18next.t('alternate:foobar.deep').deeper.deeeeeper; // i18next would say: "key 'foobar.deep (en)' returned an object instead of string."
+    // i18next.t('alternate:foobar.deep').deeper.deeeeeper; // i18next returns the key (no returnObjects)
     expectTypeOf(
       i18next.t('alternate:foobar.deep', { returnObjects: true }),
     ).toEqualTypeOf<AlternateFoobarDeepResult>();
@@ -95,8 +95,11 @@ describe('i18next.t', () => {
     expectTypeOf(i18next.t('nullKey')).toEqualTypeOf<'nullKey'>();
   });
 
-  it('should accept empty string translations with returnEmpty with unset returnEmpty in config', () => {
-    expectTypeOf(i18next.t('empty string with {{val}}')).toEqualTypeOf<''>();
+  it('should fallback for empty string translations with unset returnEmptyString in config', () => {
+    // returnEmptyString is false by default since v27: the key is returned
+    expectTypeOf(
+      i18next.t('empty string with {{val}}'),
+    ).toEqualTypeOf<'empty string with {{val}}'>();
   });
 
   it('should work with plurals', () => {

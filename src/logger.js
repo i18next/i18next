@@ -21,7 +21,9 @@ const consoleLogger = {
   },
 };
 
-class Logger {
+// Each i18next instance has its own Logger (clones share their parent's); the default export serves
+// the classes when they are used without an instance.
+export class Logger {
   constructor(concreteLogger, options = {}) {
     this.init(concreteLogger, options);
   }

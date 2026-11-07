@@ -63,6 +63,22 @@ describe('basic usage with strictKeyChecks == true', () => {
   });
 });
 
+describe('plural keys without strictInterpolationChecks', () => {
+  const t = (() => '') as unknown as TFunction<'plurals'>;
+
+  it('do not require count', () => {
+    expectTypeOf(t('item')).toEqualTypeOf<string>();
+    expectTypeOf(t('item', { defaultValue: 'x' })).toEqualTypeOf<string>();
+    expectTypeOf(t('item', 'some default value')).toEqualTypeOf<string>();
+    t('item', {});
+    t('item', 'some default value', {});
+    const label = (key: 'plain' | 'item') => t(key, { defaultValue: 'x' });
+    const labelWithoutOptions = (key: 'plain' | 'item') => t(key);
+    label('item');
+    labelWithoutOptions('item');
+  });
+});
+
 describe('basic array access with strictKeyChecks == true', () => {
   const t = (() => '') as unknown as TFunction<['arrayKeys']>;
 

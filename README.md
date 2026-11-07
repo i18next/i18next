@@ -11,6 +11,8 @@
 
 i18next is a very popular internationalization framework for browser or any other javascript environment (eg. Node.js, Deno).
 
+It runs on Node.js 22 or later and in browsers that support ES2020 (Chrome and Edge 80, Firefox 80, Safari 14). The types support TypeScript 5, 6 and 7.
+
 ![ecosystem](https://raw.githubusercontent.com/i18next/i18next/master/assets/i18next-ecosystem.jpg)
 
 i18next provides:

@@ -582,7 +582,8 @@ export interface i18n extends CustomInstanceExtensions {
   options: InitOptions;
 
   /**
-   * Is initialized
+   * Is initialized. Set by `init()` and `hydrate()`; writing it from outside is deprecated (still
+   * possible in v27), SSR integrations should call `hydrate()` instead.
    */
   isInitialized: boolean;
 
@@ -592,12 +593,14 @@ export interface i18n extends CustomInstanceExtensions {
   isInitializing: boolean;
 
   /**
-   * Store was initialized. Set by `hydrate()`; SSR integrations should call that instead of setting it.
+   * Store was initialized. Set by `hydrate()`; writing it from outside is deprecated (still possible in
+   * v27), SSR integrations should call `hydrate()` instead.
    */
   initializedStoreOnce: boolean;
 
   /**
-   * Language was initialized. Set by `hydrate()`; SSR integrations should call that instead of setting it.
+   * Language was initialized. Set by `hydrate()`; writing it from outside is deprecated (still possible
+   * in v27), SSR integrations should call `hydrate()` instead.
    */
   initializedLanguageOnce: boolean;
 
@@ -670,9 +673,10 @@ export const loadLanguages: i18n['loadLanguages'];
 export declare const keyFromSelector: KeyFromSelectorFn;
 
 /**
- * Whether a language code has the shape i18next v27 accepts from outside (`changeLanguage()`, language
- * detectors) without it being configured: letters, digits, `-`, `_`, `@` and `.` (no `..`), at most
- * 128 characters, not a prototype key. Not a BCP 47 check: `'en_US'` and `'sr@latin'` pass. For plugins
- * that take a language from a request, a URL or storage. Since v26.7.0.
+ * Whether a language code has the shape i18next accepts from outside (`lng`, `changeLanguage()`,
+ * language detectors) without it being configured: letters, digits, `-`, `_`, `@` and `.` (no `..`), at
+ * most 128 characters, not a prototype key. Since v27 other codes are refused unless they are listed in
+ * `supportedLngs`, `fallbackLng`, `preload` or the resources. Not a BCP 47 check: `'en_US'` and
+ * `'sr@latin'` pass. For plugins that take a language from a request, a URL or storage. Since v26.7.0.
  */
 export declare const isSafeLanguageCode: (code: unknown) => boolean;

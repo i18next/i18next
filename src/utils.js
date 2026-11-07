@@ -21,8 +21,8 @@ export const makeString = (object) => {
   return String(object);
 };
 
-// The shape of a language code that i18next v27 accepts from outside (changeLanguage, detectors) unless it is
-// configured. Not a BCP 47 check: 'en_US', 'zh_Hant_TW', 'sr@latin' and 'de_DE.UTF-8' pass; markup, slashes, spaces,
+// The shape of a language code that i18next accepts from outside (lng, changeLanguage, detectors) unless it is
+// configured; other codes are refused. Not a BCP 47 check: 'en_US', 'zh_Hant_TW', 'sr@latin' and 'de_DE.UTF-8' pass; markup, slashes, spaces,
 // '..', prototype keys and codes over 128 characters do not. Exported for plugins (detectors, backends, middleware).
 export const isSafeLanguageCode = (code) =>
   isString(code) &&
@@ -153,12 +153,11 @@ const _entityMap = {
   '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;',
-  '/': '&#x2F;',
 };
 
 export const escape = (data) => {
   if (isString(data)) {
-    return data.replace(/[&<>"'\/]/g, (s) => _entityMap[s]);
+    return data.replace(/[&<>"']/g, (s) => _entityMap[s]);
   }
 
   return data;
@@ -231,6 +230,10 @@ export const deepFind = (obj, path, keySeparator = '.') => {
   if (obj[path]) {
     if (!Object.prototype.hasOwnProperty.call(obj, path)) return undefined;
     return obj[path];
+  }
+  // keySeparator: false means flat keys only, there is nothing to split (not even at the text 'false')
+  if (!keySeparator) {
+    return Object.prototype.hasOwnProperty.call(obj, path) ? obj[path] : undefined;
   }
   const tokens = path.split(keySeparator);
   let current = obj;

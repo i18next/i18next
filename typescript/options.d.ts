@@ -1,5 +1,9 @@
 import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.js';
 
+// Only the declarations marked `export` are public: without an export list, every declaration of a
+// .d.ts module counts as exported, and the `_` helpers below were importable.
+export {};
+
 /**
  * This interface can be augmented by users to add types to `i18next` default TypeOptions.
  *
@@ -116,7 +120,7 @@ export type TypeOptions = $MergeBy<
       returnNull: false;
 
       /** @see {InitOptions.returnEmptyString} */
-      returnEmptyString: true;
+      returnEmptyString: false;
 
       /** @see {InitOptions.returnObjects} */
       returnObjects: false;
@@ -138,12 +142,6 @@ export type TypeOptions = $MergeBy<
 
       /** @see {InitOptions.fallbackNS} */
       fallbackNS: false;
-
-      /**
-       * @see {InitOptions.compatibilityJSON}
-       * @deprecated has no effect, removed in v27. Remove it from `CustomTypeOptions`.
-       */
-      compatibilityJSON: 'v4';
 
       /** @see {InitOptions.resources} */
       resources: object;
@@ -167,8 +165,11 @@ export type TypeOptions = $MergeBy<
        * string-key API (with `strictKeyChecks`, also to `t(key, defaultValue)`) and
        * to the selector API. Messages under `parseInterpolation: 'icu'` or `'mf2'`
        * require their arguments regardless of this flag.
+       *
+       * On by default since v27; set it to `false` to keep the v26 types.
+       * @default true
        */
-      strictInterpolationChecks: false;
+      strictInterpolationChecks: true;
 
       /**
        * Prefix for interpolation
@@ -391,18 +392,6 @@ export interface InterpolationOptions {
    */
   suffix?: string;
   /**
-   * Escaped prefix for interpolation (regexSafe)
-   * @default undefined
-   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `prefix`.
-   */
-  prefixEscaped?: string;
-  /**
-   * Escaped suffix for interpolation (regexSafe)
-   * @default undefined
-   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `suffix`.
-   */
-  suffixEscaped?: string;
-  /**
    * Suffix to unescaped mode
    * @default undefined
    */
@@ -422,18 +411,6 @@ export interface InterpolationOptions {
    * @default ')'
    */
   nestingSuffix?: string;
-  /**
-   * Escaped prefix for nesting (regexSafe)
-   * @default undefined
-   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `nestingPrefix`.
-   */
-  nestingPrefixEscaped?: string;
-  /**
-   * Escaped suffix for nesting (regexSafe)
-   * @default undefined
-   * @deprecated inserted into the RegExp unescaped, removed in v27. Pass the literal delimiter as `nestingSuffix`.
-   */
-  nestingSuffixEscaped?: string;
   /**
    * Separates options from key
    * @default ','
@@ -468,83 +445,11 @@ export type FallbackLng =
   | FallbackLngObjList
   | ((code: string) => string | readonly string[] | FallbackLngObjList);
 
-export interface ReactOptions {
-  /**
-   * Set it to fallback to let passed namespaces to translated hoc act as fallbacks
-   * @default 'default'
-   */
-  nsMode?: 'default' | 'fallback';
-  /**
-   * Set it to the default parent element created by the Trans component.
-   * @default 'div'
-   */
-  defaultTransParent?: string;
-  /**
-   * Set which events trigger a re-render, can be set to false or string of events
-   * @default 'languageChanged'
-   */
-  bindI18n?: string | false;
-  /**
-   * Set which events on store trigger a re-render, can be set to false or string of events
-   * @default ''
-   */
-  bindI18nStore?: string | false;
-  /**
-   * Set fallback value for Trans components without children
-   * @default undefined
-   */
-  transEmptyNodeValue?: string;
-  /**
-   * Set it to false if you do not want to use Suspense
-   * @default true
-   */
-  useSuspense?: boolean;
-  /**
-   * Function to generate an i18nKey from the defaultValue (or Trans children)
-   * when no key is provided.
-   * By default, the defaultValue (Trans text) itself is used as the key.
-   * If you want to require keys for all translations, supply a function
-   * that always throws an error.
-   * @default undefined
-   */
-  hashTransKey?(defaultValue: TOptionsBase['defaultValue']): TOptionsBase['defaultValue'];
-  /**
-   * Convert eg. <br/> found in translations to a react component of type br
-   * @default true
-   */
-  transSupportBasicHtmlNodes?: boolean;
-  /**
-   * Which nodes not to convert in defaultValue generation in the Trans component.
-   * @default ['br', 'strong', 'i', 'p']
-   */
-  transKeepBasicHtmlNodesFor?: readonly string[];
-  /**
-   * Wrap text nodes in a user-specified element.
-   * @default ''
-   */
-  transWrapTextNodes?: string;
-  /**
-   * Default props to apply to all Trans components.
-   * Component-level props will override these defaults.
-   */
-  transDefaultProps?: {
-    tOptions?: TOptions;
-    values?: object;
-    shouldUnescape?: boolean;
-    components?: readonly unknown[] | { readonly [tagName: string]: unknown }; // Use `unknown` (or `any`) to be permissive without importing React.
-  };
-  /**
-   * Optional keyPrefix that will be automatically applied to returned t function in useTranslation for example.
-   * Accepts a string or a selector function (e.g. `$ => $.deeply.nested`).
-   * @default undefined
-   */
-  keyPrefix?: string | (($: any) => any);
-  /**
-   * Unescape function
-   * by default it unescapes some basic html entities
-   */
-  unescape?(str: string): string;
-}
+/**
+ * The `react` options of react-i18next, which fills in this interface (since v27; before, i18next
+ * declared them). Without react-i18next in the program, `react` takes any object.
+ */
+export interface ReactOptions {}
 
 export type ResourceKey =
   | string
@@ -587,7 +492,8 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Language to use if translations in user language are not available.
-   * @default 'dev'
+   * Since v27 there is none by default; `'dev'` was the default before.
+   * @default false
    */
   fallbackLng?: false | FallbackLng;
 
@@ -604,7 +510,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   nonExplicitSupportedLngs?: boolean;
 
   /**
-   * Language codes to lookup, given set language is 'en-US':
+   * Language codes to lookup, given set language is 'en-US' and fallbackLng 'dev':
    * 'all' --> ['en-US', 'en', 'dev'],
    * 'currentOnly' --> 'en-US',
    * 'languageOnly' --> 'en'
@@ -625,11 +531,11 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   lowerCaseLng?: boolean;
 
   /**
-   * Language will be lowercased EN --> en while leaving full locales like en-US
-   *
-   * From v27 codes without a region are canonicalized by default, as codes with one already are
-   * (`'EN'` → `'en'`, `'iw'` → `'he'`), and this option is deprecated.
-   * @default false
+   * Since v27, codes without a region get their canonical casing (`'EN'` → `'en'`); aliases like
+   * `'tl'` or `'iw'` stay. `false` keeps them as they are, as before v27. `true` also lower-cases a
+   * code that is not BCP 47.
+   * @deprecated canonical codes are the default since v27
+   * @default undefined
    */
   cleanCode?: boolean;
 
@@ -741,8 +647,9 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   returnNull?: boolean;
 
   /**
-   * Allows empty string as valid translation
-   * @default true
+   * Allows empty string as valid translation. Since v27 an empty string falls back like a missing value
+   * by default.
+   * @default false
    */
   returnEmptyString?: boolean;
 
@@ -760,7 +667,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Gets called if object was passed in as key but returnObjects was set to false.
-   * What it returns is what `t()` returns.
+   * What it returns is what `t()` returns; without it, `t()` returns the key (since v27).
    * @default noop
    */
   returnedObjectHandler?(key: string, value: string, options: any): unknown;
@@ -838,55 +745,6 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
    * @default false
    */
   appendNamespaceToCIMode?: boolean;
-
-  /**
-   * Compatibility JSON version
-   * @warning only `v4` is available and supported by typescript
-   * @default 'v4'
-   * @deprecated has no effect since v24 (only the v4 JSON format is supported), removed in v27. Remove the option.
-   */
-  compatibilityJSON?: 'v4';
-
-  /**
-   * Options for https://github.com/locize/locize-lastused
-   * @default undefined
-   */
-  locizeLastUsed?: {
-    /**
-     * The id of your locize project
-     */
-    projectId: string;
-
-    /**
-     * An api key if you want to send missing keys
-     */
-    apiKey?: string;
-
-    /**
-     * The reference language of your project
-     * @default 'en'
-     */
-    referenceLng?: string;
-
-    /**
-     * Version
-     * @default 'latest'
-     */
-    version?: string;
-
-    /**
-     * Debounce interval to send data in milliseconds
-     * @default 90000
-     */
-    debounceSubmit?: number;
-
-    /**
-     * Hostnames that are allowed to send last used data.
-     * Please keep those to your local system, staging, test servers (not production)
-     * @default ['localhost']
-     */
-    allowedHosts?: readonly string[];
-  };
 
   /**
    * Automatically lookup for a flat key if a nested key is not found an vice-versa

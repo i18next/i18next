@@ -1,5 +1,6 @@
 import { describe, it, assertType, expectTypeOf } from 'vitest';
 import i18next, { InitOptions, TFunction, createInstance, i18n } from 'i18next';
+import type { ReactOptions } from 'i18next';
 
 describe('i18nInstance', () => {
   describe('initOptions', () => {
@@ -121,9 +122,11 @@ describe('i18nInstance', () => {
     });
 
     it('should accept `react`', () => {
+      // react-i18next fills in ReactOptions; without it in the program, `react` takes any object
+      expectTypeOf<ReactOptions>().toEqualTypeOf<{}>();
       expectTypeOf(i18next.init).toBeCallableWith({
         react: {
-          hashTransKey: (defaultValue) => {
+          hashTransKey: (defaultValue: unknown) => {
             if (typeof defaultValue === 'string') {
               return defaultValue.replace(/\s+/g, '_');
             }

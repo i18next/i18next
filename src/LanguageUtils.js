@@ -2,16 +2,18 @@ import baseLogger from './logger.js';
 import { getCleanedCode, isString } from './utils.js';
 
 class LanguageUtil {
-  constructor(options) {
+  constructor(options, logger = baseLogger) {
     this.options = options;
 
     this.supportedLngs = this.options.supportedLngs || false;
-    this.logger = baseLogger.create('languageUtils');
+    this.logger = logger.create('languageUtils');
     this.resolveHierarchyCache = {};
+    this.formattedCodes = new Map();
   }
 
   clearCache() {
     this.resolveHierarchyCache = {};
+    this.formattedCodes.clear();
   }
 
   getScriptPartFromCode(code) {
@@ -33,50 +35,39 @@ class LanguageUtil {
     return this.formatLanguageCode(p[0]);
   }
 
+  // Canonical form of a code with subtags ('en-us' -> 'en-US', 'iw-IL' -> 'he-IL', as before v27); a code
+  // without subtags only gets its canonical casing ('EN' -> 'en', 'TL' -> 'tl'), aliases stay ('tl', 'iw'). A code
+  // that is not BCP 47 (getCanonicalLocales throws) stays as it is. cleanCode: false keeps a code without
+  // subtags as it is (before v27).
   formatLanguageCode(code) {
-    // http://www.iana.org/assignments/language-tags/language-tags.xhtml
-    if (isString(code) && code.includes('-')) {
-      let formattedCode;
-      try {
-        formattedCode = Intl.getCanonicalLocales(code)[0];
-      } catch (e) {
-        /* fall through */
-      }
-      if (formattedCode && this.options.lowerCaseLng) {
-        formattedCode = formattedCode.toLowerCase();
-      }
-      if (formattedCode) return formattedCode;
-
-      if (this.options.lowerCaseLng) {
-        return code.toLowerCase();
-      }
-
-      return code;
-    }
-
-    const formatted =
-      this.options.cleanCode || this.options.lowerCaseLng ? code.toLowerCase() : code;
-    if (this.logger.debug && isString(code)) this.deprecateBareCode(code, formatted);
+    if (!isString(code)) return code;
+    let formatted = this.formattedCodes.get(code);
+    if (formatted !== undefined) return formatted;
+    formatted = this.formatUncached(code);
+    // ponytail: codes come from outside (detectors), so the cache is emptied at 1000 codes instead of growing
+    if (this.formattedCodes.size >= 1000) this.formattedCodes.clear();
+    this.formattedCodes.set(code, formatted);
     return formatted;
   }
 
-  // v27 gives codes without a region their canonical casing ('EN' -> 'en'); aliases like 'iw' or
-  // 'eng' keep their letters ('IW' -> 'iw')
-  deprecateBareCode(code, formatted) {
-    let canonical;
-    try {
-      canonical = Intl.getCanonicalLocales(code)[0];
-    } catch (e) {
-      return; // not BCP 47: v27 keeps it as it is
+  formatUncached(code) {
+    const hasSubtags = code.includes('-');
+    if (hasSubtags || this.options.cleanCode !== false) {
+      let canonical;
+      try {
+        canonical = Intl.getCanonicalLocales(code)[0];
+      } catch (e) {
+        /* fall through */
+      }
+      if (canonical && (hasSubtags || canonical.toLowerCase() === code.toLowerCase())) {
+        return this.options.lowerCaseLng ? canonical.toLowerCase() : canonical;
+      }
+      // an alias Intl would replace ('TL' -> 'fil', 'IW' -> 'he'): only its casing changes ('tl', 'iw')
+      if (canonical) return code.toLowerCase();
     }
-    let v27 = canonical.toLowerCase() === code.toLowerCase() ? canonical : code.toLowerCase();
-    if (this.options.lowerCaseLng) v27 = v27.toLowerCase();
-    if (v27 === formatted) return;
-    this.logger.once(
-      code,
-      'deprecate',
-      `language code '${code}' is used as '${formatted}'; i18next v27 gives it the canonical casing '${v27}', use '${v27}' in lng, fallbackLng, supportedLngs and the resources`,
-    );
+    return this.options.lowerCaseLng || (this.options.cleanCode && !hasSubtags)
+      ? code.toLowerCase()
+      : code;
   }
 
   isSupportedCode(code) {

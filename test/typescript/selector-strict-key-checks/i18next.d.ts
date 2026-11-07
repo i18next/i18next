@@ -10,6 +10,8 @@ import {
 declare module 'i18next' {
   interface CustomTypeOptions {
     strictKeyChecks: true;
+    // the v26 default, to cover the types without the checks (on by default since v27)
+    strictInterpolationChecks: false;
     defaultNS: 'custom';
     fallbackNS: 'fallback';
     enableSelector: true;

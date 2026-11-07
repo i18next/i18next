@@ -6,7 +6,7 @@ declare module 'i18next' {
 
     // We're mostly testing for setting returnNull and returnEmptyString to their non-default values
     returnNull: true;
-    returnEmptyString: false;
+    returnEmptyString: true;
 
     resources: {
       custom: {

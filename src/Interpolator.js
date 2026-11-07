@@ -25,8 +25,8 @@ const deepFindWithDefaults = (
 };
 
 class Interpolator {
-  constructor(options = {}) {
-    this.logger = baseLogger.create('interpolator');
+  constructor(options = {}, logger = baseLogger) {
+    this.logger = logger.create('interpolator');
 
     this.options = options;
     this.format = options?.interpolation?.format || ((value) => value);
@@ -41,44 +41,23 @@ class Interpolator {
       escapeValue,
       useRawValueToEscape,
       prefix,
-      prefixEscaped,
       suffix,
-      suffixEscaped,
       formatSeparator,
       unescapeSuffix,
       unescapePrefix,
       nestingPrefix,
-      nestingPrefixEscaped,
       nestingSuffix,
-      nestingSuffixEscaped,
       nestingOptionsSeparator,
       maxReplaces,
       alwaysFormat,
     } = options.interpolation;
 
-    // init() runs on every t() call with interpolation options, so the names are only built when needed
-    if (prefixEscaped || suffixEscaped || nestingPrefixEscaped || nestingSuffixEscaped) {
-      const names = Object.entries({
-        prefixEscaped,
-        suffixEscaped,
-        nestingPrefixEscaped,
-        nestingSuffixEscaped,
-      })
-        .filter(([, v]) => v)
-        .map(([k]) => k);
-      this.logger.once(
-        names.join(),
-        'deprecate',
-        `interpolation.${names.join(', interpolation.')}: the regex-escaped delimiter options are removed in v27; pass the literal delimiters as prefix, suffix, nestingPrefix and nestingSuffix`,
-      );
-    }
-
     this.escape = escape !== undefined ? escape : utilsEscape;
     this.escapeValue = escapeValue !== undefined ? escapeValue : true;
     this.useRawValueToEscape = useRawValueToEscape !== undefined ? useRawValueToEscape : false;
 
-    this.prefix = prefix ? regexEscape(prefix) : prefixEscaped || '{{';
-    this.suffix = suffix ? regexEscape(suffix) : suffixEscaped || '}}';
+    this.prefix = prefix ? regexEscape(prefix) : '{{';
+    this.suffix = suffix ? regexEscape(suffix) : '}}';
 
     this.formatSeparator = formatSeparator || ',';
 
@@ -89,12 +68,8 @@ class Interpolator {
         ? regexEscape(unescapeSuffix)
         : '';
 
-    this.nestingPrefix = nestingPrefix
-      ? regexEscape(nestingPrefix)
-      : nestingPrefixEscaped || regexEscape('$t(');
-    this.nestingSuffix = nestingSuffix
-      ? regexEscape(nestingSuffix)
-      : nestingSuffixEscaped || regexEscape(')');
+    this.nestingPrefix = regexEscape(nestingPrefix || '$t(');
+    this.nestingSuffix = regexEscape(nestingSuffix || ')');
 
     this.nestingOptionsSeparator = nestingOptionsSeparator || ',';
 
@@ -214,25 +189,7 @@ class Interpolator {
       {
         // regular escape on demand
         regex: this.regexp,
-        safeValue: (val) => {
-          if (!this.escapeValue) return val;
-          // v27 no longer escapes '/', which only changes the default escape. An instance with
-          // escapeValue: false escapes only on request (react-i18next Trans forces it for one t()
-          // call and decodes the entities after)
-          if (
-            this.escape === utilsEscape &&
-            this.options?.interpolation?.escapeValue !== false &&
-            isString(val) &&
-            val.includes('/')
-          ) {
-            this.logger.once(
-              '/',
-              'deprecate',
-              "escapeValue renders '/' in a value as '&#x2F;' today; from v27 the default escape leaves '/' as it is",
-            );
-          }
-          return this.escape(val);
-        },
+        safeValue: (val) => (this.escapeValue ? this.escape(val) : val),
       },
     ];
     // skipOnVariables: the escape pass skips the unescaped values, offset by its own edits.

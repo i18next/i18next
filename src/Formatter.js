@@ -86,6 +86,8 @@ class Formatter {
   }
 
   init(services, options = { interpolation: {} }) {
+    // the instance's logger (the constructor runs init() with the options instead of the services)
+    if (services?.logger?.create) this.logger = services.logger.create('formatter');
     this.formatSeparator = options.interpolation.formatSeparator || ',';
     const cf = options.cacheInBuiltFormats ? createCachedFormatter : createNonCachedFormatter;
     this.formats = {
