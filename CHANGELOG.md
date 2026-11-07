@@ -1,3 +1,70 @@
+## 27.0.0
+
+**This is a major breaking release.** It changes defaults that most setups had to override, gives every instance its own logger and post-processors, refuses language codes that look like markup or paths, and removes options that were broken or had no effect. 26.7 warned in debug mode about most of the runtime changes. The [migration guide](https://www.i18next.com/misc/migration-guide#v26.x.x-to-v27.0.0) has the details; to keep the v26 behavior where an option exists:
+
+```js
+i18next.init({
+  fallbackLng: 'dev', // or better your source language: there is no implicit 'dev' any more
+  returnEmptyString: true, // an empty translation is a translation again
+  cleanCode: false, // keep codes without a region as they are ('EN' stays 'EN')
+});
+```
+
+```ts
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    strictInterpolationChecks: false;
+    returnEmptyString: true;
+  }
+}
+```
+
+### Changed defaults
+
+- `fallbackLng` defaults to `false` instead of `['dev']`. Without a `fallbackLng`, i18next no longer requests `dev` from the backend (`/locales/dev/translation.json` with i18next-http-backend), and `saveMissing` sends missing keys for the current language instead of `dev`. With `supportedLngs` and no `fallbackLng`, an unsupported language leaves `language` and `languages` unset, as `fallbackLng: false` already did. Set `fallbackLng` to your main language, or to `'dev'` for the previous behavior.
+- `returnEmptyString` defaults to `false`: an empty translation falls back like a missing value (to the fallback language, the default value or the key), as `null` already does. i18next-cli writes `''` for untranslated keys in the other languages, which now fall back instead of rendering blank. An explicit `''` default from code still counts: `t('key', '')` and `t('key', { defaultValue: '' })` return `''`. Set `returnEmptyString: true` (in `init()` and in `CustomTypeOptions`) if an empty translation is meant to render nothing, for example for a Locize project with "preserve empty strings" on.
+- Language codes without a region get their canonical casing, as codes with one already did: `'EN'` becomes `'en'`. Only the casing changes: aliases like `tl`, `iw` or `eng` stay as they are (`'TL'` becomes `'tl'`), and so do codes that are not BCP 47 (`en_US`, `my_custom`). i18next 26.7.0 and 26.7.1 warned that v27 turns `iw` into `he` or `tl` into `fil`; that was wrong and 26.7.2 corrects it. `iw`, `tl` and the like stay as they are. Set `cleanCode: false` to keep codes without a region exactly as they are. `cleanCode` is deprecated.
+- types: `strictInterpolationChecks` defaults to `true`: `t()` needs the options for a string with variables, so a `{{name}}` cannot be left out of a call. Type a wrapper around `t()` with `ParseKeysWithoutVariables`, declare the variables `interpolation.defaultVariables` fills in with `defaultVariables` in `CustomTypeOptions`, or set `strictInterpolationChecks: false` to keep the v26 types (also for ICU and MF2 messages, whose arguments are required either way). The fixes below close the gap plural keys left.
+- types: `returnEmptyString` defaults to `false` in `TypeOptions` too, so a key whose value is `''` is typed as the key.
+
+### Changed behavior
+
+- The logger and the post-processors belong to the instance. `use()` of a logger or a post-processor on one instance no longer changes the others, and the `init()` of one instance no longer rewires the logging of all of them. An instance from `createInstance()` does not see what the default `i18next` instance (or any other) registered: call `use()` on each instance. A clone (`cloneInstance()`) keeps its parent's logger and post-processors, also those its parent registers later, and what it registers itself stays its own. A plugin that calls `use()` from its own `init()` (the Locize InContext editor) registers right away, as before. `services.logger` stays the instance's logger, with `forward()`. In debug mode, a `postProcess` name that is not registered on the instance logs a warning.
+- An object or an array without `returnObjects` is handled like a missing key: `t()` returns the default value if one is passed, else the key (with `appendNamespaceToMissingKey`, `parseMissingKeyHandler` and the post-processors applied), instead of the sentence `key '... (en)' returned an object instead of string.`, which ended up in the UI. It is not saved as missing, since the key exists. The debug warning stays, and `returnedObjectHandler` still decides what is returned when it is set (`` returnedObjectHandler: (key) => `key '${key}' returned an object instead of string.` `` brings a sentence back).
+- `addResources()` keeps every value: numbers, booleans and objects were dropped silently, only strings and arrays were added.
+- The default escape no longer escapes `/`: `'$10/month'` stays `'$10/month'` instead of `'$10&#x2F;month'`, and dates in react-i18next's `Trans` no longer render as `17&#x2F;12&#x2F;2025` ([discussion 2199](https://github.com/i18next/i18next/discussions/2199)). `&`, `<`, `>`, `"` and `'` are still escaped, which covers HTML text and quoted attributes; a `/` cannot end either. Update snapshots that contain `&#x2F;`, or pass your own `interpolation.escape` to keep escaping it.
+- A language code from `lng`, `changeLanguage()`, a language detector or `loadLanguages()` that does not have the shape of `isSafeLanguageCode()` (letters, digits, `-`, `_`, `@` and `.`, no `..`, at most 128 characters) is refused unless it is configured: listed in `supportedLngs`, in a `fallbackLng` that is not a function or in `preload`, or a language in `resources`, as given to `init()`. `changeLanguage()` continues as with an unsupported code: with the detector's next code, else the fallback language, else none (with `fallbackLng: false`, a code refused at `init()` leaves `language` unset); `loadLanguages()` skips it. With `supportedLngs`, the input is matched as before (`'de-DE;q=0.9'` still gives `'de'`), and only an unsafe match is refused, which only `nonExplicitSupportedLngs` can return (`'de-<x>'` for a supported `'de'`). Without `supportedLngs`, a detector that returned `"><img src=x onerror=alert(1)>` made that string `i18next.language`, which apps put into `<html lang>`, and backends were asked to load it. BCP 47, POSIX (`en_US.UTF-8@euro`, `sr@latin`) and private-use codes (`en-x-pirate`) pass; to use a code with other characters (`+`, spaces, `/`), list it in `supportedLngs`. In debug mode a refused code logs a warning.
+- `createInstance(options)` merges the defaults right away, without initializing: before `init()`, `instance.options` has the defaults, `getFixedT()` no longer throws (`t()` returns `''` until `init()`), and `debug: true` already shows the warnings before `init()`. `init()` still tells the options you set from the defaults, so a `keySeparator` or `nsSeparator` passed to `createInstance()` counts as set by you ([#2426](https://github.com/i18next/i18next/issues/2426)). `loadNamespaces()` before `init()` does nothing and calls back, as it did for an instance without options.
+- `keySeparator: false` means flat keys only: a lookup no longer splits a key at the text `false` (`t('nestedfalsec')` returned the value of `nested.c`), and a selector path is joined with `.` like a key prefix, so selectors work on the flat keys (`$ => $['a.b']` and `$ => $.a.b` look up the flat key `'a.b'`; `$ => $.nested.c` no longer resolves `nested`, then `c`). types: with `keySeparator: false` in `CustomTypeOptions`, the keys are the flat keys (no `nestedfalsec` keys), a key containing `false` is no longer split, and `keyPrefix` takes the parts of the flat keys before a `.`, which is how `getFixedT()` joins it (`'nested'` for `'nested.c'`). A key prefix combined with selectors is not typed for flat keys.
+
+### Removed
+
+- The dotted language in the resource store calls: `getResource('en.translation.key')`, `addResource('en.translation.key', value)` and `addResourceBundle('en.translation', resources)`. Pass language, namespace and key as separate arguments; `addResource()`, `addResources()` and `addResourceBundle()` throw a `TypeError` for the dotted form. A language code with a `.` (`de_DE.UTF-8`) is now a language like any other.
+- `interpolation.prefixEscaped`, `suffixEscaped`, `nestingPrefixEscaped` and `nestingSuffixEscaped`, which were inserted into the RegExp unescaped. Pass the literal delimiters as `prefix`, `suffix`, `nestingPrefix` and `nestingSuffix`.
+- types: `compatibilityJSON` (it had no effect since v24).
+- types: the option types of plugins. `locizeLastUsed` is declared by locize-lastused (5.1.0 and later). `ReactOptions` stays importable from `'i18next'` but is empty: react-i18next fills it in (17.1.13 and later, and 18), so the `react` options are checked when react-i18next is in the program.
+- types: the `_` and `$` helpers in `typescript/t.d.ts` and `typescript/options.d.ts` (`$FirstNamespace`, `_ValueOf` and 84 more) are no longer importable; every declaration of those files counted as exported. The other types of those files (`TOptionsBase`, `TFunctionSignature`, `ParseTReturn`, ...) are now exported on purpose. If you imported one of the hidden helpers, please open an issue: exporting it again does not break anything.
+- The root `index.js`, a CommonJS shim that the `exports` map made unreachable.
+
+### Support
+
+- Node.js 22 or later (`engines`); CI tests 22, 24 and 26.
+- The build targets ES2020 (Chrome and Edge 80, Firefox 80, Safari 14, Opera 67, Samsung Internet 13) instead of browserslist `defaults`, which moved with every update of the browser data. The output is the same as 26.7's.
+- TypeScript `^5 || ^6 || ^7`, unchanged.
+
+### Kept
+
+- Backends and async language detectors without `callbackApi` still work; i18next guesses their calling convention from the number of parameters and logs a deprecation warning in debug mode.
+- `isInitialized`, `initializedStoreOnce` and `initializedLanguageOnce` stay writable, so react-i18next 17's `useSSR` and next-i18next's Pages Router work with 27. Writing them is deprecated: call `hydrate()`.
+- `services.backendConnector.backend` stays readable.
+
+### Type fixes for `strictInterpolationChecks`
+
+- fix(types): with `strictInterpolationChecks`, a plural key no longer switches the check off. Without `count` a plural key like `item` (`item_one`, `item_other`) has no value of its own, and the `string` it resolved to hid the variables of every other key in a union: `(key: 'greeting' | 'item') => t(key)` and `(key: ParseKeys<'ns'>) => t(key)` compiled as soon as the namespace had a plural key, while the same wrapper without one failed. Now such a call is checked against the plural forms, ordinal ones and `'ns:item'` keys included: `t('item')` needs `count` when the forms use it, and a wrapper over a union with a plural key fails as it does without one. To migrate, pass `count`, or type the wrapper with `ParseKeysWithoutVariables`.
+- fix(types): with `strictInterpolationChecks`, a call with options needs the variables of a plural key's forms too: `t('item', { defaultValue: 'x' })` and `(key: 'plain' | 'item') => t(key, { defaultValue: 'x' })` need `count` when the forms use it, as `t('item')` does. Before, any options object turned the check off for a plural key without `count`. Without the flag the options types are unchanged.
+- fix(types): `ParseKeysWithoutVariables` leaves out a key whose ordinal forms take `count`, and keeps a key that has its own value next to its plural forms, since `t()` returns that value without `count`.
+- fix(types): `t('ns:item')` for a plural key without `count` returns `string`, as `t('item')` does, instead of `never`.
+
 ## 26.7.2
 
 - fix: the debug-mode deprecation warning for a language code without a region no longer says that v27 replaces aliases. 26.7.0 and 26.7.1 warned that v27 turns `'iw'` into `'he'` or `'tl'` into `'fil'` and asked you to rename them. v27 only gives such codes their canonical casing (`'EN'` becomes `'en'`, `'IW'` becomes `'iw'`), so `iw`, `tl`, `eng` and similar codes stay as they are. If you renamed them because of that warning, you can keep or restore the old codes. The warning now only appears when the casing changes.
