@@ -43,8 +43,13 @@ const parseFormatStr = (formatStr) => {
   };
 };
 
+// The cache key holds the options of the t() call, and so the interpolated values: a formatter is
+// kept for each new value. Without a limit, a long running process that formats ever new
+// amounts, dates or names keeps them all (#2227).
+const cachedFormattersLimit = 1000;
+
 const createCachedFormatter = (fn) => {
-  const cache = {};
+  const cache = new Map();
   return (v, l, o) => {
     let optForCache = o;
     // this cache optimization will only work for keys having 1 interpolated value
@@ -67,10 +72,12 @@ const createCachedFormatter = (fn) => {
       // options are not serializable (e.g. BigInt or circular values): format without the cache
       return fn(getCleanedCode(l), o)(v);
     }
-    let frm = cache[key];
+    let frm = cache.get(key);
     if (!frm) {
       frm = fn(getCleanedCode(l), o);
-      cache[key] = frm;
+      // forget the oldest formatter, which is made again if it is needed
+      if (cache.size >= cachedFormattersLimit) cache.delete(cache.keys().next().value);
+      cache.set(key, frm);
     }
     return frm(v);
   };
