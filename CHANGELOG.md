@@ -1,3 +1,7 @@
+## 27.0.1
+
+- fix: each cached format keeps at most 1000 formatters, dropping the oldest when full. This covers the built-in formats (number, currency, datetime, relativetime, list) with the default `cacheInBuiltFormats: true`, and formats added with `addCached`. The cache key holds all `t()` options, including the interpolated values, so every new amount, date or name added a formatter that was never released: about 50 MB per 100k values, growing without end in a long-running server. A dropped formatter is made again from the same language and options, so the output does not change. Thanks @liustack ([#2467](https://github.com/i18next/i18next/pull/2467)).
+
 ## 27.0.0
 
 **This is a major breaking release.** It changes defaults that most setups had to override, gives every instance its own logger and post-processors, refuses language codes that look like markup or paths, and removes options that were broken or had no effect. 26.7 warned in debug mode about most of the runtime changes. The [migration guide](https://www.i18next.com/misc/migration-guide#v26.x.x-to-v27.0.0) has the details; to keep the v26 behavior where an option exists:
