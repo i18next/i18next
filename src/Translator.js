@@ -180,11 +180,16 @@ class Translator extends EventEmitter {
         ? this.pluralResolver.getSuffix(lng, opt.count, { ordinal: false })
         : '';
     const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
+    const sep = this.options.pluralSeparator;
     const defaultValue =
-      (needsZeroSuffixLookup && opt[`defaultValue${this.options.pluralSeparator}zero`]) ||
+      (needsZeroSuffixLookup && opt[`defaultValue${sep}zero`]) ||
       opt[`defaultValue${defaultValueSuffix}`] ||
       opt[`defaultValue${defaultValueSuffixOrdinalFallback}`] ||
-      opt.defaultValue;
+      // like the lookup: the plain default value first, then the "other" form
+      (opt.defaultValue ??
+        (needsPluralHandling
+          ? opt[`defaultValue${opt.ordinal ? `${sep}ordinal${sep}` : sep}other`]
+          : undefined));
 
     let resForObjHndl = res;
     if (handleAsObjectInI18nFormat && !res && hasDefaultValue) {
@@ -565,6 +570,21 @@ class Translator extends EventEmitter {
                 if (needsZeroSuffixLookup) {
                   finalKeys.push(contextKey + zeroSuffix);
                 }
+              }
+            }
+
+            // last in this language: the "other" form, as in CLDR's lateral inheritance (a missing plural
+            // category falls back to "other" before the parent locale). After the plain key, so `key` +
+            // `key_other` still resolves `key`; before the next fallback language.
+            if (needsPluralHandling) {
+              const otherSuffix = `${opt.ordinal ? ordinalPrefix : this.options.pluralSeparator}other`;
+              if (pluralSuffix !== otherSuffix) {
+                if (needsContextHandling) {
+                  finalKeys.unshift(
+                    `${key}${this.options.contextSeparator || '_'}${opt.context}${otherSuffix}`,
+                  );
+                }
+                finalKeys.unshift(key + otherSuffix);
               }
             }
           }
