@@ -1,3 +1,7 @@
+## 27.1.0
+
+- feat: when the plural form selected for `count` is missing, `t()` uses the `_other` form of the same language before the next fallback language, as CLDR does ([lateral inheritance](https://www.unicode.org/reports/tr35/#Lateral_Inheritance)), instead of returning the key. Current CLDR data gives French, Spanish, Italian and Portuguese a `many` form for exact millions, so files with only `_one` and `_other` showed the key (or the fallback language) for `count: 1000000`. The plain key still comes first, so `key` + `key_other` keeps resolving `key`; with a context, `key_<context>_other` comes before `key_other`; ordinals use `_ordinal_other`; and `defaultValue_other` is used after `defaultValue`. A form filled in from `_other` is no longer reported as missing (`saveMissing`, `missingKeyHandler`, `exists()`). Thanks @TenPotatoes ([#2468](https://github.com/i18next/i18next/issues/2468))
+
 ## 27.0.1
 
 - fix: each cached format keeps at most 1000 formatters, dropping the oldest when full. This covers the built-in formats (number, currency, datetime, relativetime, list) with the default `cacheInBuiltFormats: true`, and formats added with `addCached`. The cache key holds all `t()` options, including the interpolated values, so every new amount, date or name added a formatter that was never released: about 50 MB per 100k values, growing without end in a long-running server. A dropped formatter is made again from the same language and options, so the output does not change. Thanks @liustack ([#2467](https://github.com/i18next/i18next/pull/2467)).
