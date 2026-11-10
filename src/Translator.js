@@ -408,7 +408,9 @@ class Translator extends EventEmitter {
           : this.options.interpolation.skipOnVariables);
       let nestBef;
       if (skipOnVariables) {
-        const nb = res.match(this.interpolator.nestingRegexp);
+        const nb = res.includes(this.interpolator.nestingPrefixText)
+          ? res.match(this.interpolator.nestingRegexp)
+          : null;
         // has nesting aftbeforeer interpolation
         nestBef = nb && nb.length;
       }
@@ -426,7 +428,9 @@ class Translator extends EventEmitter {
 
       // nesting
       if (skipOnVariables) {
-        const na = res.match(this.interpolator.nestingRegexp);
+        const na = res.includes(this.interpolator.nestingPrefixText)
+          ? res.match(this.interpolator.nestingRegexp)
+          : null;
         // has nesting after interpolation
         const nestAft = na && na.length;
         if (nestBef < nestAft) opt.nest = false;
