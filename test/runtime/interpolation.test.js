@@ -603,4 +603,63 @@ describe('Interpolator', () => {
       });
     });
   });
+
+  describe('interpolate() and nest() - text without the prefix', () => {
+    /** @type {Interpolator} */
+    let ip;
+    /** @type {Interpolator} */
+    let custom;
+
+    beforeAll(() => {
+      ip = new Interpolator({});
+      custom = new Interpolator({
+        interpolation: { prefix: '%{', suffix: '}', nestingPrefix: '$t[', nestingSuffix: ']' },
+      });
+    });
+
+    const nestFc = (key) => `nested ${key}`;
+    const tests = [
+      { ip: () => ip, method: 'interpolate', args: ['', { a: '1' }], expected: '' },
+      {
+        ip: () => ip,
+        method: 'interpolate',
+        args: ['{a} { {a} } {a}}', { a: '1' }],
+        expected: '{a} { {a} } {a}}',
+      },
+      { ip: () => ip, method: 'interpolate', args: ['%{a} {{a}}', { a: '1' }], expected: '%{a} 1' },
+      {
+        ip: () => custom,
+        method: 'interpolate',
+        args: ['{{a}} %{a}', { a: '1' }],
+        expected: '{{a}} 1',
+      },
+      {
+        ip: () => custom,
+        method: 'interpolate',
+        args: ['{{a}} {a}', { a: '1' }],
+        expected: '{{a}} {a}',
+      },
+      {
+        ip: () => ip,
+        method: 'nest',
+        args: ['$t a $(b) t(c)', nestFc],
+        expected: '$t a $(b) t(c)',
+      },
+      { ip: () => ip, method: 'nest', args: ['$t[a] $t(b)', nestFc], expected: '$t[a] nested b' },
+      {
+        ip: () => custom,
+        method: 'nest',
+        args: ['$t(a) $t[b]', nestFc],
+        expected: '$t(a) nested b',
+      },
+      { ip: () => custom, method: 'nest', args: ['$t(a) $t b]', nestFc], expected: '$t(a) $t b]' },
+    ];
+
+    tests.forEach((test) => {
+      it(`${test.method} returns ${JSON.stringify(test.expected)} for ${JSON.stringify(test.args[0])}`, () => {
+        const target = test.ip();
+        expect(target[test.method].apply(target, test.args)).to.eql(test.expected);
+      });
+    });
+  });
 });

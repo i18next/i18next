@@ -68,6 +68,9 @@ class Interpolator {
         ? regexEscape(unescapeSuffix)
         : '';
 
+    // the plain texts every match of the regexps starts with: a text without them has no match
+    this.prefixText = prefix || '{{';
+    this.nestingPrefixText = nestingPrefix || '$t(';
     this.nestingPrefix = regexEscape(nestingPrefix || '$t(');
     this.nestingSuffix = regexEscape(nestingSuffix || ')');
 
@@ -179,6 +182,9 @@ class Interpolator {
       options?.interpolation?.skipOnVariables !== undefined
         ? options.interpolation.skipOnVariables
         : this.options.interpolation.skipOnVariables;
+
+    // no placeholder at all: neither regexp can match
+    if (isString(str) && !str.includes(this.prefixText)) return str;
 
     const todos = [
       {
@@ -294,6 +300,9 @@ class Interpolator {
         delete clonedOptions.defaultValue;
       return key;
     };
+
+    // nothing to nest (the common case): no copy of the regexp to scan with
+    if (isString(str) && !str.includes(this.nestingPrefixText)) return str;
 
     // One pass over the original str with an own copy of the regexp. The nested lookups
     // (fc) reset the shared nestingRegexp, so the loop used to rescan from 0 after every
