@@ -1,3 +1,7 @@
+## 27.1.1
+
+- perf: `t()` skips the interpolation and nesting regexp scans when the text has no interpolation or nesting prefix, about 6-14% faster for short texts and up to 75% for long ones. The output does not change. Thanks @g4lb ([#2469](https://github.com/i18next/i18next/pull/2469))
+
 ## 27.1.0
 
 - feat: when the plural form selected for `count` is missing, `t()` uses the `_other` form of the same language before the next fallback language, as CLDR does ([lateral inheritance](https://www.unicode.org/reports/tr35/#Lateral_Inheritance)), instead of returning the key. Current CLDR data gives French, Spanish, Italian and Portuguese a `many` form for exact millions, so files with only `_one` and `_other` showed the key (or the fallback language) for `count: 1000000`. The plain key still comes first, so `key` + `key_other` keeps resolving `key`; with a context, `key_<context>_other` comes before `key_other`; ordinals use `_ordinal_other`; and `defaultValue_other` is used after `defaultValue`. A form filled in from `_other` is no longer reported as missing (`saveMissing`, `missingKeyHandler`, `exists()`). Thanks @TenPotatoes ([#2468](https://github.com/i18next/i18next/issues/2468))
