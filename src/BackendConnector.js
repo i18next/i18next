@@ -2,6 +2,11 @@ import { pushPath, isString, callbackApiOf } from './utils.js';
 import baseLogger from './logger.js';
 import EventEmitter from './EventEmitter.js';
 
+// A failed load stays in the state, so it is not read again until a reload. Languages and namespaces can
+// come from requests (a server's language detection, i18next-http-middleware's getResourcesHandler), so
+// only the most recent failures stay: one entry per made-up value would grow without end.
+const maxFailedLoads = 1000;
+
 const removePending = (q, name) => {
   if (q.pending[name] !== undefined) {
     delete q.pending[name];
@@ -28,6 +33,7 @@ class Connector extends EventEmitter {
     this.retryTimeout = options.retryTimeout >= 1 ? options.retryTimeout : 350;
 
     this.state = {};
+    this.failed = new Set();
     this.queue = [];
 
     this.backend?.init?.(services, options.backend, options);
@@ -108,6 +114,16 @@ class Connector extends EventEmitter {
     // set loaded
     this.state[name] = err ? -1 : 2;
     if (err && data) this.state[name] = 0;
+    this.failed.delete(name);
+    if (err) {
+      this.failed.add(name);
+      if (this.failed.size > maxFailedLoads) {
+        const oldest = this.failed.values().next().value;
+        this.failed.delete(oldest);
+        // forget it unless it is being read again: a later load reads it again
+        if (this.state[oldest] < 1) delete this.state[oldest];
+      }
+    }
 
     // consolidated loading done in this run - only emit once for a loaded namespace
     const loaded = {};

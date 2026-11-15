@@ -199,6 +199,8 @@ class LanguageUtil {
     });
 
     if (cacheKey !== null) {
+      // ponytail: codes come from outside (detectors), so the cache is emptied at 1000 codes, as formattedCodes
+      if (Object.keys(this.resolveHierarchyCache).length >= 1000) this.resolveHierarchyCache = {};
       this.resolveHierarchyCache[cacheKey] = codes;
       return codes.slice();
     }

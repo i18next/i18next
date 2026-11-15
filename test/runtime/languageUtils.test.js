@@ -35,6 +35,15 @@ describe('LanguageUtils', () => {
   });
 
   describe('toResolveHierarchy() cache', () => {
+    it('keeps at most 1000 hierarchies, as codes come from outside', () => {
+      const cu = new LanguageUtils({ fallbackLng: 'en' });
+
+      for (let i = 0; i < 5000; i++) cu.toResolveHierarchy(`xx-${i}`);
+
+      expect(Object.keys(cu.resolveHierarchyCache).length).toBeLessThanOrEqual(1000);
+      expect(cu.toResolveHierarchy('xx-1')).to.eql(['xx-1', 'xx', 'en']);
+    });
+
     it('returns a copy of a cached hierarchy', () => {
       const cu = new LanguageUtils({ fallbackLng: 'en' });
 

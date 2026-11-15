@@ -19,6 +19,13 @@ describe('PluralResolver', () => {
       vitest.restoreAllMocks();
     });
 
+    it('keeps at most 1000 rules, as codes come from outside', () => {
+      for (let i = 0; i < 5000; i++) pr.getRule(`en-x-${i}`);
+
+      expect(Object.keys(pr.pluralRulesCache).length).toBeLessThanOrEqual(1000);
+      expect(pr.getRule('en-x-1').select(2)).toBe('other');
+    });
+
     it('correctly returns getRule for a supported locale', () => {
       const expected = {
         resolvedOptions() {},

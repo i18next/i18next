@@ -56,6 +56,8 @@ class PluralResolver {
       rule = this.getRule(lngPart, options);
     }
 
+    // ponytail: codes come from outside (detectors), so the cache is emptied at 1000 rules, as formattedCodes
+    if (Object.keys(this.pluralRulesCache).length >= 1000) this.pluralRulesCache = {};
     this.pluralRulesCache[cacheKey] = rule;
     return rule;
   }
