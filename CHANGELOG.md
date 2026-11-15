@@ -1,3 +1,7 @@
+## 27.1.2
+
+- security: language codes and namespaces that come from requests no longer grow the memory of a server without end. The backend connector kept one entry per failed load, so that it does not read it again, and the language hierarchy and plural rule caches kept one entry per language code. With the default `supportedLngs: false`, every made-up language a detector found (`?lng=xx1`, `?lng=xx2`, ...) or every made-up namespace requested from i18next-http-middleware's `getResourcesHandler` added about 180 bytes for good. Now only the most recent 1000 failed loads are kept (an older one is read again when it is needed), and both caches are emptied at 1000 codes, as the formatted language codes already were. Pairs with i18next-http-middleware 3.10.1 ([GHSA-mjcw-gfh6-3cxm](https://github.com/i18next/i18next-http-middleware/security/advisories/GHSA-mjcw-gfh6-3cxm)).
+
 ## 27.1.1
 
 - perf: `t()` skips the interpolation and nesting regexp scans when the text has no interpolation or nesting prefix, about 6-14% faster for short texts and up to 75% for long ones. The output does not change. Thanks @g4lb ([#2469](https://github.com/i18next/i18next/pull/2469))
