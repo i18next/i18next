@@ -98,7 +98,8 @@ export const setPath = (object, path, newValue) => {
 export const pushPath = (object, path, newValue, concat) => {
   const { obj, k } = getLastOfPath(object, path, Object);
 
-  obj[k] = obj[k] || [];
+  // own keys only: a language code from a request can name an inherited property (`hasOwnProperty`)
+  if (!Object.prototype.hasOwnProperty.call(obj, k) || !obj[k]) obj[k] = [];
   if (concat) obj[k] = obj[k].concat(newValue);
   if (!concat) obj[k].push(newValue);
 };

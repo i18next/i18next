@@ -138,7 +138,7 @@ class Connector extends EventEmitter {
       if (q.pendingCount === 0 && !q.done) {
         // only do once per loaded -> this.emit('loaded', q.loaded);
         Object.keys(q.loaded).forEach((l) => {
-          if (!loaded[l]) loaded[l] = {};
+          if (!Object.prototype.hasOwnProperty.call(loaded, l)) loaded[l] = {};
           const loadedKeys = q.loaded[l];
           if (loadedKeys.length) {
             loadedKeys.forEach((n) => {
