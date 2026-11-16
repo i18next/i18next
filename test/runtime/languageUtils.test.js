@@ -1,7 +1,79 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import LanguageUtils from '../../src/LanguageUtils';
+import i18next from '../../src/i18next.js';
 
 describe('LanguageUtils', () => {
+  describe('getFallbackCodes() own properties', () => {
+    const codes = [
+      'constructor',
+      'toString',
+      'valueOf',
+      'hasOwnProperty',
+      '__proto__',
+      'constructor-US',
+    ];
+
+    it.each(codes)('ignores inherited fallback mappings for %s', (code) => {
+      const cu = new LanguageUtils({});
+
+      expect(cu.getFallbackCodes({ default: ['en'] }, code)).to.eql(['en']);
+      expect(cu.getFallbackCodes({}, code)).to.eql([]);
+      expect(cu.getFallbackCodes({ [code]: ['de'], default: ['en'] }, code)).to.eql(['de']);
+    });
+
+    it('ignores inherited defaults with and without a language code', () => {
+      const cu = new LanguageUtils({});
+      const fallbacks = Object.create({ default: ['de'], fr: ['de'] });
+
+      expect(cu.getFallbackCodes(fallbacks)).to.eql([]);
+      expect(cu.getFallbackCodes(fallbacks, 'fr')).to.eql([]);
+      fallbacks.default = ['en'];
+      expect(cu.getFallbackCodes(fallbacks, 'fr')).to.eql(['en']);
+    });
+
+    it('preserves own regional, canonical, script and language mappings', () => {
+      const cu = new LanguageUtils({});
+      const fallbacks = Object.assign(Object.create(null), {
+        'de-CH': ['fr'],
+        'zh-Hant': ['zh'],
+        constructor: ['de'],
+        default: ['en'],
+      });
+
+      expect(cu.getFallbackCodes(fallbacks, 'de-CH')).to.eql(['fr']);
+      expect(cu.getFallbackCodes(fallbacks, 'de-ch')).to.eql(['fr']);
+      expect(cu.getFallbackCodes(fallbacks, 'zh-Hant-TW')).to.eql(['zh']);
+      expect(cu.getFallbackCodes(fallbacks, 'constructor-US')).to.eql(['de']);
+      expect(cu.getFallbackCodes(fallbacks)).to.eql(['en']);
+    });
+
+    it.each([{ supportedLngs: false }, { supportedLngs: ['en'] }])(
+      'resolves public APIs with %j',
+      async ({ supportedLngs }) => {
+        const instance = i18next.createInstance();
+        await instance.init({
+          lng: 'en',
+          supportedLngs,
+          fallbackLng: { default: ['en'] },
+          resources: { en: { translation: { key: 'translated' } } },
+        });
+
+        codes.forEach((lng) => {
+          expect(instance.t('key', { lng })).toBe('translated');
+          expect(instance.exists('key', { lng })).toBe(true);
+          expect(instance.getFixedT(lng)('key')).toBe('translated');
+        });
+        for (const lng of ['hasOwnProperty', 'constructor-US']) {
+          await instance.changeLanguage(lng);
+          expect(instance.t('key')).toBe('translated');
+          const initialized = i18next.createInstance();
+          await initialized.init({ ...instance.options, lng });
+          expect(initialized.t('key')).toBe('translated');
+        }
+      },
+    );
+  });
+
   describe('toResolveHierarchy()', () => {
     /** @type {LanguageUtils} */
     let cu;

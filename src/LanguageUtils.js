@@ -129,14 +129,16 @@ class LanguageUtil {
     if (isString(fallbacks)) fallbacks = [fallbacks];
     if (Array.isArray(fallbacks)) return fallbacks;
 
-    if (!code) return fallbacks.default || [];
+    const getOwnFallback = (key) =>
+      Object.prototype.hasOwnProperty.call(fallbacks, key) ? fallbacks[key] : undefined;
+    if (!code) return getOwnFallback('default') || [];
 
     // assume we have an object defining fallbacks
-    let found = fallbacks[code];
-    if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
-    if (!found) found = fallbacks[this.formatLanguageCode(code)];
-    if (!found) found = fallbacks[this.getLanguagePartFromCode(code)];
-    if (!found) found = fallbacks.default;
+    let found = getOwnFallback(code);
+    if (!found) found = getOwnFallback(this.getScriptPartFromCode(code));
+    if (!found) found = getOwnFallback(this.formatLanguageCode(code));
+    if (!found) found = getOwnFallback(this.getLanguagePartFromCode(code));
+    if (!found) found = getOwnFallback('default');
 
     return found || [];
   }
