@@ -1310,12 +1310,18 @@ type _IsContextualKey<T, K extends string> =
  * then re-unified. Without distribution, `keyof (A | B)` is only the common keys
  * and context variants that exist on a single element are invisible, which
  * produced partial element unions for `returnObjects` + `context` (#2398).
+ *
+ * The array check itself must distribute too (`T extends`, not `[T] extends`):
+ * comparing two `TFunction`s over a generic namespace otherwise relates the
+ * array branch through `keyof (readonly any[] & Source)`, whose constraint is
+ * the intersection of every namespace's keys, a cross product that fails with
+ * TS2590 once there are many wide namespaces.
  */
-export type FilterKeys<T, Context> = [T] extends [readonly any[]]
-  ? { [I in keyof T]: FilterKeys<T[I], Context> }
-  : T extends any
-    ? FilterKeysObject<T, Context>
-    : never;
+export type FilterKeys<T, Context> = T extends readonly any[]
+  ? 0 extends 1 & T
+    ? FilterKeysObject<T, Context> // `any` reaches both branches; keep one result
+    : { [I in keyof T]: FilterKeys<T[I], Context> }
+  : FilterKeysObject<T, Context>;
 
 export type FilterKeysObject<T, Context> = {
   // Mapped type 1: object-valued keys (recurse) + plain leaf keys (non-plural, non-context)
