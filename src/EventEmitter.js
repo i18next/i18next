@@ -1,3 +1,6 @@
+// the listeners passed to once(): off() looks for their wrappers, and stays O(1) for all others
+const onceListeners = new WeakSet();
+
 class EventEmitter {
   constructor() {
     // This is an Object containing Maps:
@@ -30,18 +33,22 @@ class EventEmitter {
       }
 
       this.observers[event].delete(listener);
-      this.observers[event].forEach((_, observer) => {
-        if (observer.listener === listener) this.observers[event].delete(observer);
-      });
+      if (onceListeners.has(listener)) {
+        this.observers[event].forEach((_, observer) => {
+          if (observer.listener === listener) this.observers[event].delete(observer);
+        });
+      }
     });
   }
 
   once(event, listener) {
     const wrapper = (...args) => {
-      listener(...args);
+      // removed first, so a listener that emits the same event again or throws still runs once
       this.off(event, wrapper);
+      listener(...args);
     };
     wrapper.listener = listener;
+    onceListeners.add(listener);
     this.on(event, wrapper);
     return this;
   }

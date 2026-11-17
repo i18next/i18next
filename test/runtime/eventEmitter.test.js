@@ -127,6 +127,41 @@ describe('i18next', () => {
       expect(calls).to.eql([]);
     });
 
+    it('unbinds a listener bound with once() twice, or with on() and once()', () => {
+      const calls = [];
+      const listener = (payload) => calls.push(payload);
+      emitter.once('events', listener);
+      emitter.once('events', listener);
+      emitter.off('events', listener);
+      emitter.emit('events', 1);
+
+      emitter.on('events', listener);
+      emitter.once('events', listener);
+      emitter.off('events', listener);
+      emitter.emit('events', 2);
+
+      expect(calls).to.eql([]);
+    });
+
+    it('calls a once() listener once, also when it emits the same event or throws', () => {
+      let calls = 0;
+      emitter.once('events', () => {
+        calls++;
+        if (calls < 3) emitter.emit('events');
+      });
+      emitter.emit('events');
+      expect(calls).to.eql(1);
+
+      let throws = 0;
+      emitter.once('throws', () => {
+        throws++;
+        throw new Error('listener failed');
+      });
+      expect(() => emitter.emit('throws')).toThrow('listener failed');
+      emitter.emit('throws');
+      expect(throws).to.eql(1);
+    });
+
     it('unbinds a space-separated list of events, as on() binds it', () => {
       const calls = [];
       const listener = (payload) => calls.push(payload);
