@@ -117,6 +117,16 @@ describe('i18next', () => {
       expect(calls3).to.eql([1, 2, 3]);
     });
 
+    it('unbinds a listener bound with once()', () => {
+      const calls = [];
+      const listener = (payload) => calls.push(payload);
+      emitter.once('events', listener);
+      emitter.off('events', listener);
+      emitter.emit('events', 1);
+
+      expect(calls).to.eql([]);
+    });
+
     it('unbinds a space-separated list of events, as on() binds it', () => {
       const calls = [];
       const listener = (payload) => calls.push(payload);

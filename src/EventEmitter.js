@@ -30,6 +30,9 @@ class EventEmitter {
       }
 
       this.observers[event].delete(listener);
+      this.observers[event].forEach((_, observer) => {
+        if (observer.listener === listener) this.observers[event].delete(observer);
+      });
     });
   }
 
@@ -38,6 +41,7 @@ class EventEmitter {
       listener(...args);
       this.off(event, wrapper);
     };
+    wrapper.listener = listener;
     this.on(event, wrapper);
     return this;
   }
