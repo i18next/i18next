@@ -1,3 +1,7 @@
+## 27.1.5
+
+- fix: `off(event, listener)` removes a listener added with `once()`. `once()` registers a wrapper, so `off()` with the listener itself found nothing and the listener still ran on the next event. A `once()` listener is now also removed before it runs, so one that emits the same event again (like calling `changeLanguage()` from `languageChanged`) or throws runs only once. Thanks @SudeepGowda55 ([#2475](https://github.com/i18next/i18next/pull/2475))
+
 ## 27.1.4
 
 - fix(types): with `enableSelector`, assigning a `t` function to a wider `TFunction` (`TFunction<'ns'>` to `TFunction<'ns', string>` or `TFunction<Namespace>`, or a key prefix to a wider one) failed with TS2590 "Expression produces a union type that is too complex to represent" once the namespaces had about 600 top-level keys together. This started in 26.3.3. Selector results for JSON arrays that mix arrays with objects or strings also keep the inner arrays as arrays. Thanks @reckter ([#2474](https://github.com/i18next/i18next/pull/2474))
