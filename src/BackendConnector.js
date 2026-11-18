@@ -127,6 +127,8 @@ class Connector extends EventEmitter {
 
     // consolidated loading done in this run - only emit once for a loaded namespace
     const loaded = {};
+    // an error thrown by a callback: the other callbacks and the loaded event still run, then it is thrown on
+    const thrown = [];
 
     // callback if ready
     this.queue.forEach((q) => {
@@ -148,19 +150,25 @@ class Connector extends EventEmitter {
         });
 
         q.done = true;
-        if (q.errors.length) {
-          q.callback(q.errors);
-        } else {
-          q.callback();
+        try {
+          if (q.errors.length) {
+            q.callback(q.errors);
+          } else {
+            q.callback();
+          }
+        } catch (e) {
+          thrown.push(e);
         }
       }
     });
 
+    // remove done load requests
+    this.queue = this.queue.filter((q) => !q.done);
+
     // emit consolidated loaded event
     this.emit('loaded', loaded);
 
-    // remove done load requests
-    this.queue = this.queue.filter((q) => !q.done);
+    if (thrown.length) throw thrown[0];
   }
 
   read(lng, ns, fcName, tried = 0, wait = this.retryTimeout, callback) {

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vitest } from 'vitest';
 import BackendConnector from '../../../src/BackendConnector.js';
 import Interpolator from '../../../src/Interpolator.js';
 import ResourceStore from '../../../src/ResourceStore.js';
@@ -38,5 +38,39 @@ describe('BackendConnector failed loads', () => {
     // the oldest failure was let go, so it is read again
     connector.load(['made-up-0'], ['translation'], () => {});
     expect(readsOf('made-up-0|translation')).toBe(2);
+  });
+
+  it('calls the other waiting callbacks and emits loaded when a callback throws', () => {
+    let finishRead;
+    const backend = {
+      type: 'backend',
+      callbackApi: true,
+      read(lng, ns, callback) {
+        finishRead = callback;
+      },
+    };
+    const connector = new BackendConnector(
+      backend,
+      new ResourceStore(),
+      { interpolator: new Interpolator() },
+      {},
+    );
+    const loadedEvents = [];
+    connector.on('loaded', (loaded) => loadedEvents.push(loaded));
+    const second = vitest.fn();
+
+    connector.load(['en'], ['translation'], () => {
+      throw new Error('app bug');
+    });
+    connector.load(['en'], ['translation'], second);
+
+    // the error reaches whoever finished the read, after everything else ran
+    expect(() => finishRead(null, { hi: 'hi' })).toThrow('app bug');
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledWith();
+    expect(loadedEvents).toEqual([{ en: { translation: true } }]);
+    expect(connector.queue).toHaveLength(0);
+    expect(connector.state['en|translation']).toBe(2);
+    expect(connector.readingCalls).toBe(0);
   });
 });
