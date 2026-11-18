@@ -48,6 +48,14 @@ describe('utils', () => {
 
       expect(res).toEqual({ a: { b: 'new', c: 'keep', d: 'add' } });
     });
+
+    it('it should treat numbers, booleans and null as leaves', () => {
+      const target = { n: 0, b: false, z: null, o: 1 };
+      const source = { n: 5, b: true, z: 'set', o: { deep: 'x' } };
+
+      expect(deepExtend({ ...target }, source, false)).toEqual(target);
+      expect(deepExtend({ ...target }, source, true)).toEqual(source);
+    });
   });
 
   describe('#deepFind', () => {
