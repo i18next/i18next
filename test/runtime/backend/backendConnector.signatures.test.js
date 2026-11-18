@@ -98,6 +98,30 @@ describe('BackendConnector with different signatures', () => {
           namespace: 'namespace2',
         });
       });
+
+      it('should resolve the read once when the callback throws', async () => {
+        const listeners = process.listeners('unhandledRejection');
+        process.removeAllListeners('unhandledRejection');
+        const callback = vitest.fn(() => {
+          throw new Error('boom');
+        });
+        let unhandled;
+        try {
+          const rejection = new Promise((resolve) => process.once('unhandledRejection', resolve));
+          connector.load(['en'], ['namespace2'], callback);
+          unhandled = await Promise.race([
+            rejection,
+            new Promise((resolve) => setTimeout(resolve, 100)),
+          ]);
+        } finally {
+          listeners.forEach((l) => process.on('unhandledRejection', l));
+        }
+
+        expect(callback).toHaveBeenCalledTimes(1);
+        expect(connector.readingCalls).toBe(0);
+        expect(connector.state['en|namespace2']).toBe(2);
+        expect(unhandled?.message).toBe('boom');
+      });
     });
 
     describe('#saveMissing', () => {
