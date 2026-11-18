@@ -130,7 +130,13 @@ describe('missing variables with skipOnVariables', () => {
       debug,
       lng: 'en',
       resources: {
-        en: { translation: { greet: 'Hello {{name}} from {{- place}}', other: 'Bye {{name}}' } },
+        en: {
+          translation: {
+            greet: 'Hello {{name}} from {{- place}}',
+            other: 'Bye {{name}}',
+            total: 'Total {{amount, number}}',
+          },
+        },
       },
     });
     const missing = () =>
@@ -160,5 +166,11 @@ describe('missing variables with skipOnVariables', () => {
     const quiet = await setup(false);
     quiet.inst.t('other');
     expect(quiet.missing()).to.eql([]);
+  });
+
+  it('renders a formatted variable passed as undefined as an empty string', async () => {
+    const { inst, missing } = await setup(true);
+    expect(inst.t('total', { amount: undefined })).to.equal('Total ');
+    expect(missing()).to.eql([]);
   });
 });
