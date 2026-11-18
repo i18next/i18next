@@ -200,6 +200,20 @@ describe('BackendConnector with different signatures', () => {
         expect(connector.readingCalls).toBe(0);
         expect(connector.state['en|namespace3']).toBe(2);
       });
+
+      it('should pass an error thrown by read to the callback once', () => {
+        const error = new Error('read failed');
+        connector.backend.read = (language, namespace) => {
+          throw error;
+        };
+        const callback = vitest.fn();
+
+        connector.read('en', 'namespace3', 'read', 0, 350, callback);
+
+        expect(callback).toHaveBeenCalledTimes(1);
+        expect(callback).toHaveBeenCalledWith(error, undefined);
+        expect(connector.readingCalls).toBe(0);
+      });
     });
 
     describe('#saveMissing', () => {
