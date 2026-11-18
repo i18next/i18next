@@ -164,6 +164,18 @@ describe('BackendConnector with different signatures', () => {
           namespace: 'namespace3',
         });
       });
+
+      it('should resolve the read once when the callback throws', () => {
+        const callback = vitest.fn(() => {
+          throw new Error('boom');
+        });
+
+        expect(() => connector.load(['en'], ['namespace3'], callback)).toThrow('boom');
+
+        expect(callback).toHaveBeenCalledTimes(1);
+        expect(connector.readingCalls).toBe(0);
+        expect(connector.state['en|namespace3']).toBe(2);
+      });
     });
 
     describe('#saveMissing', () => {
