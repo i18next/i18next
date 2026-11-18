@@ -121,17 +121,14 @@ export const getPathWithDefaults = (data, defaultData, key) => {
   return getPath(defaultData, key);
 };
 
+const isLeaf = (value) => value === null || typeof value !== 'object' || value instanceof String;
+
 export const deepExtend = (target, source, overwrite) => {
   for (const prop in source) {
     if (prop !== '__proto__' && prop !== 'constructor') {
       if (Object.prototype.hasOwnProperty.call(target, prop)) {
-        // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-        if (
-          isString(target[prop]) ||
-          target[prop] instanceof String ||
-          isString(source[prop]) ||
-          source[prop] instanceof String
-        ) {
+        // If we reached a leaf (string, number, boolean or null) in target or source then replace with source or skip depending on the 'overwrite' switch
+        if (isLeaf(target[prop]) || isLeaf(source[prop])) {
           if (overwrite) target[prop] = source[prop];
         } else {
           deepExtend(target[prop], source[prop], overwrite);
