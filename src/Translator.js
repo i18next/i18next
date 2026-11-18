@@ -88,7 +88,8 @@ class Translator extends EventEmitter {
         (nsSeparator === keySeparator && this.options.ns.includes(parts[0]))
       )
         namespaces = parts.shift();
-      key = parts.join(keySeparator);
+      // flat keys (keySeparator: false) keep the text after the namespace as it is, not joined with 'false'
+      key = parts.join(keySeparator === false ? nsSeparator : keySeparator);
     }
 
     return {

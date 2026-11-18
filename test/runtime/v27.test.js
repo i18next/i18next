@@ -494,6 +494,17 @@ describe('v27 behavior', () => {
       expect(instance.t('hi', { user: { name: 'Ann' } })).to.equal('Hi Ann');
       expect(instance.t('hi', { userfalsename: 'no' })).to.equal('Hi {{user.name}}');
     });
+
+    it('keeps a namespace separator inside the key after the namespace', async () => {
+      const instance = i18next.createInstance();
+      await instance.init({
+        lng: 'en',
+        keySeparator: false,
+        ns: ['common'],
+        resources: { en: { common: { 'errors:required': 'Required' } } },
+      });
+      expect(instance.t('common:errors:required')).to.equal('Required');
+    });
   });
 
   describe('language codes from outside', () => {
