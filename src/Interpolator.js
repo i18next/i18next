@@ -216,7 +216,13 @@ class Interpolator {
           if (typeof missingInterpolationHandler === 'function') {
             const temp = missingInterpolationHandler(str, match, options);
             value = isString(temp) ? temp : '';
-          } else if (options && Object.prototype.hasOwnProperty.call(options, matchedVar)) {
+          } else if (
+            options &&
+            Object.prototype.hasOwnProperty.call(
+              options,
+              matchedVar.split(this.formatSeparator)[0].trim(),
+            )
+          ) {
             value = ''; // undefined becomes empty string
           } else if (skipOnVariables) {
             // keyed by the placeholder text: both passes see an unescaped `{{- var}}`.
