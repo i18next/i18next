@@ -1,3 +1,7 @@
+## 27.2.1
+
+- fix: a variable passed as `undefined` renders as an empty string when its placeholder has a format too (`{{amount, number}}`), as `{{amount}}` already did. The placeholder stayed in the result with the default `skipOnVariables: true`, and debug mode logged "missed to pass in variable" with either setting. Thanks @Vineet829 ([#2479](https://github.com/i18next/i18next/pull/2479))
+
 ## 27.2.0
 
 - fix: an error thrown by a load callback or a listener (the callback of `init`, `changeLanguage`, `loadNamespaces` or `loadLanguages`, or a `languageChanged` / `loaded` listener) is no longer handed back to the backend connector as if the read had failed. With a backend whose `read` returns a value or a promise, the connector got that error a second time: the namespace that had loaded was marked as failed, `failedLoading` was emitted with your error and the count of running reads dropped to -1. The error now reaches your app: it is thrown from the call that started the load for a `read` that returns a value, and it is an unhandled rejection for a `read` that returns a promise, which ends a Node.js process unless you handle `unhandledRejection`. Thanks @SudeepGowda55 ([#2477](https://github.com/i18next/i18next/pull/2477))
