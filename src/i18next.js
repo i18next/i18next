@@ -595,6 +595,8 @@ class I18n extends EventEmitter {
 
   setDefaultNamespace(ns) {
     this.options.defaultNS = ns;
+    // a clone's translator has its own options object (see cloneInstance)
+    if (this.translator?.options) this.translator.options.defaultNS = ns;
   }
 
   hasLoadedNamespace(ns, options = {}) {

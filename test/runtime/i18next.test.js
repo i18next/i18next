@@ -156,6 +156,23 @@ describe('i18next', () => {
         expect(instance.cloneInstance({ preload: ['fr'] }).options.preload).to.eql(['fr']);
       });
 
+      it('setDefaultNamespace() on a clone changes the namespace its t() uses', async () => {
+        const instance = i18next.createInstance();
+        await instance.init({
+          lng: 'en',
+          ns: ['translation', 'interview'],
+          resources: {
+            en: { translation: { welcome: 'default ns' }, interview: { welcome: 'interview ns' } },
+          },
+        });
+        const clone = instance.cloneInstance({ initAsync: false });
+
+        clone.setDefaultNamespace('interview');
+
+        expect(clone.t('welcome')).to.equal('interview ns');
+        expect(instance.t('welcome')).to.equal('default ns');
+      });
+
       it('should interpolate list for cloned instance with empty interpolation config', async () => {
         const config = {
           lng: 'en',
