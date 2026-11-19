@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.json",
+  "include": ["./**/*"],
+  "compilerOptions": {
+    "noErrorTruncation": true,
+    "strict": false,
+    "strictNullChecks": false
+  },
+  "exclude": []
+}
