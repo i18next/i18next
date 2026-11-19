@@ -74,7 +74,13 @@ class LanguageUtil {
     if (this.options.load === 'languageOnly' || this.options.nonExplicitSupportedLngs) {
       code = this.getLanguagePartFromCode(code);
     }
-    return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.includes(code);
+    if (!this.supportedLngs || !this.supportedLngs.length) return true;
+    if (!Array.isArray(this.supportedLngs)) return this.supportedLngs.includes(code);
+    // compared formatted, like every other code: 'pt-br' and 'pt-BR' match, all lowercase with lowerCaseLng
+    const formatted = this.formatLanguageCode(code);
+    return this.supportedLngs.some(
+      (supportedLng) => this.formatLanguageCode(supportedLng) === formatted,
+    );
   }
 
   getBestMatchFromCodes(codes) {
@@ -104,17 +110,19 @@ class LanguageUtil {
 
         if (this.isSupportedCode(lngOnly)) return (found = lngOnly);
 
-        found = this.options.supportedLngs.find((supportedLng) => {
-          if (supportedLng === lngOnly) return true;
-          if (!supportedLng.includes('-') && !lngOnly.includes('-')) return false;
-          if (
-            supportedLng.includes('-') &&
-            !lngOnly.includes('-') &&
-            supportedLng.slice(0, supportedLng.indexOf('-')) === lngOnly
-          )
-            return true;
-          return false;
-        });
+        found = this.options.supportedLngs
+          .map((supportedLng) => this.formatLanguageCode(supportedLng))
+          .find((supportedLng) => {
+            if (supportedLng === lngOnly) return true;
+            if (!supportedLng.includes('-') && !lngOnly.includes('-')) return false;
+            if (
+              supportedLng.includes('-') &&
+              !lngOnly.includes('-') &&
+              supportedLng.slice(0, supportedLng.indexOf('-')) === lngOnly
+            )
+              return true;
+            return false;
+          });
       });
     }
     // if nothing found, use fallbackLng

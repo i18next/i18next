@@ -580,6 +580,73 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('supportedLngs in any casing', () => {
+    const tests = [
+      { options: { supportedLngs: ['en', 'pt-br'] }, codes: ['pt-br'], expected: 'pt-BR' },
+      {
+        options: { supportedLngs: ['en', 'pt-BR'], lowerCaseLng: true },
+        codes: ['pt-BR'],
+        expected: 'pt-br',
+      },
+      { options: { supportedLngs: ['EN', 'pt-BR'] }, codes: ['en'], expected: 'en' },
+      { options: { supportedLngs: ['EN-US'] }, codes: ['en'], expected: 'en-US' },
+    ];
+
+    tests.forEach(({ options, codes, expected }) => {
+      it(`matches ${JSON.stringify(codes)} with ${JSON.stringify(options)}`, () => {
+        const cu = new LanguageUtils({ fallbackLng: 'dev', ...options });
+        expect(cu.getBestMatchFromCodes(codes)).to.eql(expected);
+        expect(cu.isSupportedCode(expected)).to.eql(true);
+      });
+    });
+
+    it('keeps supportedLngs as written and sees later changes to it', async () => {
+      const instance = i18next.createInstance();
+      await instance.init({
+        lng: 'en',
+        supportedLngs: ['en', 'pt-br'],
+        resources: { en: { translation: { k: 'en' } }, fr: { translation: { k: 'fr' } } },
+      });
+      expect(instance.options.supportedLngs).to.eql(['en', 'pt-br', 'cimode']);
+      instance.options.supportedLngs.push('fr');
+      await instance.changeLanguage('fr');
+      expect(instance.t('k')).to.eql('fr');
+    });
+
+    it('loads a language requested in another casing than in supportedLngs', async () => {
+      const reads = [];
+      const instance = i18next.createInstance();
+      instance.use({
+        type: 'backend',
+        read: (lng, ns, callback) => {
+          reads.push(lng);
+          callback(null, { k: lng });
+        },
+      });
+      await instance.init({ lng: 'en', fallbackLng: 'en', supportedLngs: ['en', 'pt-br'] });
+      await instance.loadLanguages('pt-br');
+      expect(reads).to.include('pt-BR');
+    });
+
+    it('translates with the language whatever the casing in supportedLngs', async () => {
+      const resources = {
+        en: { translation: { k: 'en' } },
+        'pt-BR': { translation: { k: 'pt' } },
+        'pt-br': { translation: { k: 'pt lowercase' } },
+      };
+      const translate = async (options, lng) => {
+        const instance = i18next.createInstance();
+        await instance.init({ fallbackLng: 'en', resources, lng, ...options });
+        return instance.t('k');
+      };
+      expect(await translate({ supportedLngs: ['en', 'pt-br'] }, 'pt-br')).to.eql('pt');
+      expect(
+        await translate({ supportedLngs: ['en', 'pt-BR'], lowerCaseLng: true }, 'pt-BR'),
+      ).to.eql('pt lowercase');
+      expect(await translate({ supportedLngs: ['EN', 'pt-BR'] }, 'en')).to.eql('en');
+    });
+  });
+
   describe('getBestMatchFromCodes() with dev and nonExplicitSupportedLngs: true', () => {
     /** @type {LanguageUtils} */
     let cu;
