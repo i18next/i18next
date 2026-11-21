@@ -1,3 +1,7 @@
+## 27.2.3
+
+- fix: a variable in the options of a nested `$t(key, { "name": "{{name}}" })` is escaped once. With the default `escapeValue: true` it was escaped for HTML before the options were parsed and again by the nested `t()`, so `Tom & Jerry` came out as `Tom &amp;amp; Jerry` (and react-i18next's `Trans` has shown `Tom &amp; Jerry` since 17.1.10, with `escapeValue: false` too). These variables are now escaped for the options' JSON, whatever `escapeValue` is, and the nested `t()` escapes them like the values of a direct call; `defaultValue` and `joinArrays` there, which it does not interpolate, stay escaped once. A value with `"`, `'`, `\` or a line break no longer breaks the options, with `escapeValue: false` a value can no longer inject options such as `lng`, and with `skipOnVariables` a `{{placeholder}}` inside a value is no longer interpolated a second time. The warning added in 26.0.6 now covers `{{- var}}` in these options, the one form still inserted unescaped, instead of `escapeValue: false`.
+
 ## 27.2.2
 
 - fix: `setDefaultNamespace()` works on a clone. A clone's translator keeps its own options object, so the call changed `i18n.options.defaultNS` while `t()` kept using the old default namespace. i18next-http-middleware hands every request a clone, so `req.i18n.setDefaultNamespace()` did nothing there. ([#2106](https://github.com/i18next/i18next/discussions/2106))
