@@ -191,3 +191,105 @@ describe('i18next.interpolation.nesting', () => {
     });
   });
 });
+
+describe('i18next.interpolation.nesting: values passed on in $t() options', () => {
+  const resources = {
+    en: {
+      translation: {
+        greet: 'Say Hi {{name}}',
+        test: '$t(greet, { "name": "{{name}}" })',
+        testUnescaped: '$t(greet, { "name": "{{- name}}" })',
+        testSingleQuotes: "$t(greet, { 'name': '{{name}}' })",
+        item_one: '{{count}} item for {{name}}',
+        item_other: '{{count}} items for {{name}}',
+        testCount: '$t(item, { "count": {{count}}, "name": "{{name}}" })',
+        testDefaultValue: '$t(missing, { "defaultValue": "<b>{{name}}</b>" })',
+        list: ['a', 'b'],
+        testJoinArrays: '$t(list, { "joinArrays": "{{separator}}" })',
+        // the formatter returns the whole $t() argument (react-i18next#1952)
+        testFormatter: 'Size: $t({{value, bytes}})',
+        testFormatterUnescaped: 'Size: $t({{- value, bytes}})',
+        byte_one: '{{count}} byte',
+        byte_other: '{{count}} bytes',
+      },
+    },
+  };
+
+  const create = async (interpolation) => {
+    const instance = i18next.createInstance();
+    await instance.init({ lng: 'en', resources, interpolation });
+    instance.services.formatter.add('bytes', (value) => `byte, { "count": ${value} }`);
+    return instance;
+  };
+
+  describe('with escapeValue: true', () => {
+    let instance;
+    beforeAll(async () => {
+      instance = await create();
+    });
+
+    it('escapes a value once, as a direct t() call does', () => {
+      expect(instance.t('test', { name: 'Tom & Jerry' })).toBe('Say Hi Tom &amp; Jerry');
+      expect(instance.t('greet', { name: 'Tom & Jerry' })).toBe('Say Hi Tom &amp; Jerry');
+      expect(instance.t('testSingleQuotes', { name: "O'Dood & Co" })).toBe(
+        'Say Hi O&#39;Dood &amp; Co',
+      );
+      expect(instance.t('testCount', { count: 2, name: 'Tom & Jerry' })).toBe(
+        '2 items for Tom &amp; Jerry',
+      );
+    });
+
+    it('passes on a value with quotes, backslashes and braces unchanged', () => {
+      expect(instance.t('test', { name: 'C:\\new "q", {b} it\'s' })).toBe(
+        'Say Hi C:\\new &quot;q&quot;, {b} it&#39;s',
+      );
+    });
+
+    it('interpolates a value once (skipOnVariables)', () => {
+      expect(instance.t('test', { name: '{{other}}', other: 'X' })).toBe('Say Hi {{other}}');
+    });
+
+    it('keeps {{- }} unescaped there, escaped once by the nested t()', () => {
+      expect(instance.t('testUnescaped', { name: 'Tom & Jerry' })).toBe('Say Hi Tom &amp; Jerry');
+    });
+
+    it('escapes a value once in defaultValue and joinArrays, which are not interpolated again', () => {
+      expect(instance.t('testDefaultValue', { name: '<i>' })).toBe('<b>&lt;i&gt;</b>');
+      expect(instance.t('testJoinArrays', { separator: '<br>' })).toBe('a&lt;br&gt;b');
+    });
+
+    it('parses $t() options a formatter returns only with {{- }}', () => {
+      expect(instance.t('testFormatter', { value: 3 })).not.toContain('3 bytes');
+      expect(instance.t('testFormatterUnescaped', { value: 3 })).toBe('Size: 3 bytes');
+    });
+  });
+
+  describe('with escapeValue: false', () => {
+    let instance;
+    beforeAll(async () => {
+      instance = await create({ escapeValue: false });
+    });
+
+    it('passes on a value unchanged', () => {
+      expect(instance.t('test', { name: 'Tom & Jerry' })).toBe('Say Hi Tom & Jerry');
+      expect(instance.t('test', { name: 'C:\\new "q", {b} it\'s' })).toBe(
+        'Say Hi C:\\new "q", {b} it\'s',
+      );
+      expect(instance.t('testSingleQuotes', { name: "O'Dood & Co" })).toBe("Say Hi O'Dood & Co");
+      expect(instance.t('testDefaultValue', { name: '<i>' })).toBe('<b><i></b>');
+      expect(instance.t('testJoinArrays', { separator: '<br>' })).toBe('a<br>b');
+    });
+  });
+
+  describe('with skipOnVariables: false', () => {
+    let instance;
+    beforeAll(async () => {
+      instance = await create({ skipOnVariables: false });
+    });
+
+    it('escapes a value once and interpolates the placeholders in it', () => {
+      expect(instance.t('test', { name: 'Tom & Jerry' })).toBe('Say Hi Tom &amp; Jerry');
+      expect(instance.t('test', { name: '{{other}}', other: 'X & Y' })).toBe('Say Hi X &amp; Y');
+    });
+  });
+});

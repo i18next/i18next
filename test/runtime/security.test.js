@@ -5,7 +5,7 @@ import Logger from '../../src/logger.js';
 // Security tests for fixes shipped in 26.0.6.
 // See CHANGELOG for the associated GHSA advisory.
 
-describe('security: warning for risky nesting-options pattern with escapeValue:false', () => {
+describe('security: variables inside a $t() nesting options block', () => {
   const makeSink = () => {
     const calls = [];
     return {
@@ -21,54 +21,44 @@ describe('security: warning for risky nesting-options pattern with escapeValue:f
     };
   };
 
-  it('emits a warn when interpolated vars land inside a $t() options block with escapeValue:false', async () => {
+  const create = async (welcomeTitle, interpolation) => {
     const { calls, sink } = makeSink();
     const instance = i18next.createInstance();
     instance.use(sink);
     await instance.init({
       lng: 'en',
       debug: true,
-      interpolation: { escapeValue: false },
+      interpolation,
       resources: {
-        en: {
-          translation: {
-            welcomeTitle: '$t(welcome, { "name": "{{userName}}" })',
-            welcome: 'Hi {{name}}',
-          },
-        },
+        en: { translation: { welcomeTitle, welcome: 'Hi {{name}}' } },
+        de: { translation: { welcome: 'Hallo {{name}}' } },
       },
     });
-    instance.t('welcomeTitle', { userName: 'World' });
-    const joined = calls
-      .flat()
-      .filter((x) => typeof x === 'string')
-      .join(' ');
-    expect(joined).toMatch(/nesting options string contains interpolated variables/);
-    expect(joined).toMatch(/escapeValue: false/);
+    const warnings = () =>
+      calls
+        .flat()
+        .filter((x) => typeof x === 'string')
+        .join(' ');
+    return { instance, warnings };
+  };
+
+  [true, false].forEach((escapeValue) => {
+    it(`a value can not inject nesting options with escapeValue: ${escapeValue}`, async () => {
+      const { instance, warnings } = await create('$t(welcome, { "name": "{{userName}}" })', {
+        escapeValue,
+      });
+      const userName = 'x", "lng": "de';
+      expect(instance.t('welcomeTitle', { userName })).toBe(
+        escapeValue ? 'Hi x&quot;, &quot;lng&quot;: &quot;de' : `Hi ${userName}`,
+      );
+      expect(warnings()).not.toMatch(/nesting options string contains/);
+    });
   });
 
-  it('does NOT warn with escapeValue:true (default) — the pattern is safe there', async () => {
-    const { calls, sink } = makeSink();
-    const instance = i18next.createInstance();
-    instance.use(sink);
-    await instance.init({
-      lng: 'en',
-      debug: true,
-      resources: {
-        en: {
-          translation: {
-            welcomeTitle: '$t(welcome, { "name": "{{userName}}" })',
-            welcome: 'Hi {{name}}',
-          },
-        },
-      },
-    });
+  it('emits a warn when {{- var}} inserts a value unescaped there', async () => {
+    const { instance, warnings } = await create('$t(welcome, { "name": "{{- userName}}" })');
     instance.t('welcomeTitle', { userName: 'World' });
-    const joined = calls
-      .flat()
-      .filter((x) => typeof x === 'string')
-      .join(' ');
-    expect(joined).not.toMatch(/nesting options string contains interpolated variables/);
+    expect(warnings()).toMatch(/nesting options string contains a variable inserted unescaped/);
   });
 });
 

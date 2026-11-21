@@ -24,6 +24,15 @@ const deepFindWithDefaults = (
   return path;
 };
 
+// A value inside the `{ ... }` options of a `$t(key, { ... })`, escaped for a JSON string:
+// it can not end the string, and no markup reaches the output if the options do not parse.
+const escapeNestingOptionsValue = (value) =>
+  makeString(value).replace(
+    // eslint-disable-next-line no-control-regex
+    /["'\\&<>\u0000-\u001f]/g,
+    (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`,
+  );
+
 class Interpolator {
   constructor(options = {}, logger = baseLogger) {
     this.logger = logger.create('interpolator');
@@ -111,7 +120,7 @@ class Interpolator {
     );
   }
 
-  interpolate(str, data, lng, options) {
+  interpolate(str, data, lng, options, escape) {
     let match;
     let value;
     let replaces;
@@ -159,19 +168,18 @@ class Interpolator {
 
     this.resetRegExp();
 
-    // Security warning: when escapeValue is false AND the translation embeds
-    // interpolation placeholders inside a $t() nesting options block (i.e.
-    // $t(key, { ... "{{var}}" ... })), attacker-controlled string values that
-    // contain `"` can break out of the JSON string literal and inject extra
-    // nesting options (e.g. redirect lng/ns). This is safe under the default
-    // escapeValue: true, where HTML-escaping neutralises the quote before
-    // JSON.parse. See CHANGELOG entry for 26.0.6 and the security docs.
-    if (!this.escapeValue && typeof str === 'string' && /\$t\([^)]*\{[^}]*\{\{/.test(str)) {
+    // Security warning: a `{{- var}}` inside a $t() nesting options block
+    // (i.e. $t(key, { ... "{{- var}}" ... })) is inserted unescaped, so an
+    // attacker-controlled value that contains `"` can break out of the JSON
+    // string literal and inject extra nesting options (e.g. redirect lng/ns).
+    // A `{{var}}` there is escaped for JSON by nest(), whatever escapeValue is.
+    // See the CHANGELOG (26.0.6 and later) and the security docs.
+    if (typeof str === 'string' && /\$t\([^)]*\{[^}]*\{\{-/.test(str)) {
       this.logger.warn(
-        'nesting options string contains interpolated variables with escapeValue: false — ' +
-          'if any of those values are attacker-controlled they can inject additional ' +
-          'nesting options (e.g. redirect lng/ns). Sanitise untrusted input before passing ' +
-          'it to t(), or keep escapeValue: true.',
+        'nesting options string contains a variable inserted unescaped with {{- }}: ' +
+          'if its value is attacker-controlled it can inject additional nesting options ' +
+          '(e.g. redirect lng/ns). Use {{var}} there, which is escaped for the options, or ' +
+          'sanitise untrusted input before passing it to t().',
       );
     }
 
@@ -186,6 +194,34 @@ class Interpolator {
     // no placeholder at all: neither regexp can match
     if (isString(str) && !str.includes(this.prefixText)) return str;
 
+    if (!escape) {
+      escape = (val) => (this.escapeValue ? this.escape(val) : val);
+      // The `{ ... }` options of a `$t(key, { ... })` are left for nest(), which fills them in
+      // escaped for JSON. Escaped for HTML here, a value was escaped again by the nested t().
+      if (isString(str) && str.includes(this.nestingPrefixText)) {
+        const nestingRegexp = new RegExp(this.nestingRegexp);
+        const optionsRegexp = new RegExp(`${regexEscape(this.nestingOptionsSeparator)}[ ]*{`);
+        let out = '';
+        let lastEnd = 0;
+        let nesting;
+        while ((nesting = nestingRegexp.exec(str))) {
+          const inner = nesting.index + this.nestingPrefixText.length;
+          const opts = optionsRegexp.exec(nesting[1]);
+          const start = opts ? inner + opts.index + opts[0].length - 1 : -1;
+          // nest() takes the options up to the last `}` (formatters may follow)
+          const end = inner + nesting[1].lastIndexOf('}') + 1;
+          // `$t(key, {{- options}})`: the options are a variable, filled in here
+          if (start !== -1 && end > start && !str.startsWith(this.prefixText, start)) {
+            out +=
+              this.interpolate(str.slice(lastEnd, start), data, lng, options, escape) +
+              str.slice(start, end);
+            lastEnd = end;
+          }
+        }
+        if (lastEnd) return out + this.interpolate(str.slice(lastEnd), data, lng, options, escape);
+      }
+    }
+
     const todos = [
       {
         // unescape if has unescapePrefix/Suffix
@@ -195,7 +231,7 @@ class Interpolator {
       {
         // regular escape on demand
         regex: this.regexp,
-        safeValue: (val) => (this.escapeValue ? this.escape(val) : val),
+        safeValue: escape,
       },
     ];
     // skipOnVariables: the escape pass skips the unescaped values, offset by its own edits.
@@ -280,22 +316,38 @@ class Interpolator {
 
       const c = key.split(new RegExp(`${regexEscape(sep)}[ ]*{`));
 
-      let optionsString = `{${c[1]}`;
+      const template = `{${c[1]}`;
       key = c[0];
-      optionsString = this.interpolate(optionsString, clonedOptions);
-      const matchedSingleQuotes = optionsString.match(/'/g);
-      const matchedDoubleQuotes = optionsString.match(/"/g);
-      if (
-        ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes) ||
-        (matchedDoubleQuotes?.length ?? 0) % 2 !== 0
-      ) {
-        optionsString = optionsString.replace(/'/g, '"');
-      }
+      let optionsString;
+      // interpolate() left the variables in the options to this: escaped for JSON, a value is
+      // passed on unchanged, and the nested t() escapes it once, as a direct t() call does
+      const parse = (escape) => {
+        optionsString = this.interpolate(template, inheritedOptions, options.lng, options, escape);
+        const matchedSingleQuotes = optionsString.match(/'/g);
+        const matchedDoubleQuotes = optionsString.match(/"/g);
+        if (
+          ((matchedSingleQuotes?.length ?? 0) % 2 === 0 && !matchedDoubleQuotes) ||
+          (matchedDoubleQuotes?.length ?? 0) % 2 !== 0
+        ) {
+          optionsString = optionsString.replace(/'/g, '"');
+        }
+        return JSON.parse(optionsString);
+      };
 
       try {
-        clonedOptions = JSON.parse(optionsString);
+        const parsed = parse(escapeNestingOptionsValue);
+        // the nested t() does not interpolate these again: their values are escaped here
+        const verbatim = this.escapeValue
+          ? Object.keys(parsed).filter((k) => k.startsWith('defaultValue') || k === 'joinArrays')
+          : [];
+        if (verbatim.length) {
+          const escaped = parse((val) => escapeNestingOptionsValue(this.escape(val)));
+          verbatim.forEach((k) => {
+            parsed[k] = escaped[k];
+          });
+        }
 
-        if (inheritedOptions) clonedOptions = { ...inheritedOptions, ...clonedOptions };
+        clonedOptions = inheritedOptions ? { ...inheritedOptions, ...parsed } : parsed;
       } catch (e) {
         this.logger.warn(`failed parsing options string in nesting for key ${key}`, e);
         return `${key}${sep}${optionsString}`;
