@@ -41,6 +41,26 @@ describe('modules', () => {
         read: (_language, _namespace, callback) => callback(null, {}),
       });
 
+      // `callbackApi: false`: read, readMulti and create return a promise, create gets the options
+      assertType<BackendModule>({
+        type: 'backend',
+        callbackApi: false,
+        init: () => null,
+        read: async (_language, _namespace) => ({ key: 'value' }),
+        readMulti: async (_languages, _namespaces) => ({ en: { namespace: { key: 'value' } } }),
+        create: async (_languages, _namespace, _key, _fallbackValue, options) => options.isUpdate,
+      });
+
+      // `callbackApi: true`: create gets the callback and the options
+      assertType<BackendModule>({
+        type: 'backend',
+        callbackApi: true,
+        init: () => null,
+        read: (_language, _namespace, callback) => callback(null, {}),
+        create: (_languages, _namespace, _key, _fallbackValue, callback, _options) =>
+          callback(null, true),
+      });
+
       expectTypeOf(i18next.use<BackendModule>)
         .parameter(0)
         .extract<BackendModule>()

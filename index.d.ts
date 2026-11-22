@@ -124,15 +124,29 @@ export interface BackendModule<Options = object> extends Module {
    */
   callbackApi?: boolean;
   init(services: Services, backendOptions: Options, i18nextOptions: InitOptions): void;
+  /**
+   * Load a namespace. With `callbackApi: false`, implement it as `read(language, namespace)`
+   * returning the data or a promise of it (the `void` return type accepts both forms).
+   */
   read(language: string, namespace: string, callback: ReadCallback): void;
-  /** Save the missing translation */
+  /**
+   * Save the missing translation. Called as `create(languages, namespace, key, fallbackValue, callback, options)`
+   * with `callbackApi: true`, as `create(languages, namespace, key, fallbackValue, options)` returning a promise
+   * or a value with `callbackApi: false`. `options` are the options of the `t` call plus `isUpdate`.
+   */
   create?(
     languages: readonly string[],
     namespace: string,
     key: string,
     fallbackValue: string,
+    // `any`, not a union of both shapes, so implementations typed either way keep compiling
+    callbackOrOptions?: any,
+    options?: any,
   ): void;
-  /** Load multiple languages and namespaces. For backends supporting multiple resources loading */
+  /**
+   * Load multiple languages and namespaces. For backends supporting multiple resources loading.
+   * With `callbackApi: false`, implement it as `readMulti(languages, namespaces)` returning the data or a promise of it.
+   */
   readMulti?(
     languages: readonly string[],
     namespaces: readonly string[],
