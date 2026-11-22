@@ -570,7 +570,7 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
 
   /**
    * Calls save missing key function on backend if key not found also for plural forms.
-   * @default false
+   * @default true
    */
   saveMissingPlurals?: boolean;
 

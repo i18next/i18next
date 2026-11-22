@@ -1,9 +1,22 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import * as defaultFc from '../../src/defaults';
 
 const defaults = defaultFc.get();
 
 describe('defaults', () => {
+  it('the typings document the runtime default of each top-level boolean option', () => {
+    const typings = readFileSync(new URL('../../typescript/options.d.ts', import.meta.url), 'utf8');
+    // `@default true|false`, the rest of the doc comment, then the option name
+    const documented = [
+      ...typings.matchAll(/@default (true|false)\r?\n(?:\s*\*.*\n)*?\s*\*\/\r?\n\s*(\w+)\??:/g),
+    ].filter(([, , name]) => typeof defaults[name] === 'boolean');
+    expect(documented.length).toBeGreaterThan(10);
+    documented.forEach(([, doc, name]) =>
+      expect(`${name}: ${defaults[name]}`).toBe(`${name}: ${doc}`),
+    );
+  });
+
   it('it should have default shortcut', () => {
     expect(defaults.overloadTranslationOptionHandler(['key', 'my default value'])).to.eql({
       defaultValue: 'my default value',
