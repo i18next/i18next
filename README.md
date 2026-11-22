@@ -18,7 +18,7 @@ It runs on Node.js 22 or later and in browsers that support ES2020 (Chrome and E
 i18next provides:
 
 - Flexible connection to [backend](https://www.i18next.com/overview/plugins-and-utils#backends) (loading translations via xhr, ...)
-- Optional [caching](https://www.i18next.com/how-to/caching), user [language detection](https://www.i18next.com/overview/plugins-and-utils#language-detector), ...
+- Optional [caching](https://www.i18next.com/how-to/cache-and-fallback), user [language detection](https://www.i18next.com/overview/plugins-and-utils#language-detector), ...
 - Proper [pluralizations](https://www.i18next.com/translation-function/plurals)
 - Translation [context](https://www.i18next.com/translation-function/context)
 - [Nesting](https://www.i18next.com/translation-function/nesting), [Variable replacement](https://www.i18next.com/translation-function/interpolation)
@@ -50,9 +50,9 @@ Our focus is providing the core to building a booming ecosystem. Independent of 
 
 ### Documentation
 
-The general i18next documentation is published on [www.i18next.com](https://www.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/i18next-gitbook).
+The general i18next documentation is published on [www.i18next.com](https://www.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/www).
 
-The react specific documentation is published on [react.i18next.com](https://react.i18next.com) and PR changes can be supplied [here](https://github.com/i18next/react-i18next-gitbook).
+The react specific documentation is published on [www.i18next.com/react](https://www.i18next.com/react) and PR changes can be supplied [here](https://github.com/i18next/www).
 
 ---
 
