@@ -1,4 +1,4 @@
-## Unreleased
+## 27.2.4
 
 - fix(types): `BackendModule.create` takes the parameters i18next passes it: a backend with `callbackApi: true` gets `create(languages, namespace, key, fallbackValue, callback, options)`, one with `callbackApi: false` gets `create(languages, namespace, key, fallbackValue, options)` and may return a promise. The types declared only the first four parameters, so a required fifth or sixth parameter failed to compile and an object-literal backend could not take them at all. One rare case now fails: a `create: (...args) => other.create(...args)` that forwards to a `create` typed with exactly four parameters. The doc comments of `read` and `readMulti` now describe their promise form (`read(language, namespace)` returning the data or a promise of it), which the types already accepted.
 - fix(types): `getFixedT()` takes its fourth parameter, `{ scopeNs }`, the full list of namespaces the returned `t` is bound to, which selector keys use to find a namespace prefix; lookups still use `ns` (react-i18next's `useTranslation` passes it).
