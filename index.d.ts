@@ -347,6 +347,10 @@ export interface i18n extends CustomInstanceExtensions {
    * On the returned function you can like in the t function override the languages or namespaces by passing them in options or by prepending namespace.
    *
    * Accepts optional keyPrefix that will be automatically applied to returned t function.
+   *
+   * Accepts optional fixedOpts: `scopeNs` is the full namespace list the t function is bound to
+   * (react-i18next passes the namespaces of `useTranslation`); selector keys use it to find a namespace prefix,
+   * lookups still use `ns`.
    */
   getFixedT<
     Ns extends Namespace | null,
@@ -358,6 +362,7 @@ export interface i18n extends CustomInstanceExtensions {
     lng: string | readonly string[] | null,
     ns: Ns,
     keyPrefix: TKPrefixFn,
+    fixedOpts?: { scopeNs?: readonly string[] },
   ): TFunction<ActualNs, TKPrefixFn>;
 
   getFixedT<
@@ -366,8 +371,18 @@ export interface i18n extends CustomInstanceExtensions {
     ActualNs extends Namespace = Ns extends null ? DefaultNamespace : Ns,
   >(
     ...args:
-      | [lng: string | readonly string[], ns?: Ns, keyPrefix?: TKPrefix | (($: any) => any)]
-      | [lng: null, ns: Ns, keyPrefix?: TKPrefix | (($: any) => any)]
+      | [
+          lng: string | readonly string[],
+          ns?: Ns,
+          keyPrefix?: TKPrefix | (($: any) => any),
+          fixedOpts?: { scopeNs?: readonly string[] },
+        ]
+      | [
+          lng: null,
+          ns: Ns,
+          keyPrefix?: TKPrefix | (($: any) => any),
+          fixedOpts?: { scopeNs?: readonly string[] },
+        ]
   ): TFunction<ActualNs, TKPrefix>;
 
   /**

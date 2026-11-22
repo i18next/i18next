@@ -172,6 +172,9 @@ describe('t', () => {
     const fixedT = getFixedT(null, 'ns1', 'coffee');
 
     expectTypeOf(fixedT(($) => $.bar.shot)).toEqualTypeOf<'a shot of espresso'>();
+
+    const scopedT = getFixedT(null, 'ns1', ($) => $.coffee, { scopeNs: ['ns1', 'ns2'] });
+    expectTypeOf(scopedT(($) => $.bar.shot)).toEqualTypeOf<'a shot of espresso'>();
   });
 
   it('namespace: single', () => {

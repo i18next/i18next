@@ -252,6 +252,14 @@ describe('i18nInstance', () => {
     const anotherNamespace = i18next.getFixedT(null, 'anotherNamespace');
     // no need to prefix ns i18n.t('anotherNamespace:anotherNamespaceKey')
     assertType<string>(anotherNamespace('anotherNamespaceKey'));
+
+    // 4th parameter: options bound to the t function
+    assertType<string>(
+      i18next.getFixedT(null, 'anotherNamespace', undefined, {
+        scopeNs: ['anotherNamespace', 'translation'],
+      })('anotherNamespaceKey'),
+    );
+    assertType<string>(i18next.getFixedT('en', undefined, undefined, {})('anotherNamespaceKey'));
   });
 
   it('`changeLanguage`', () => {
