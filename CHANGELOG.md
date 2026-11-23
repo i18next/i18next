@@ -1,4 +1,4 @@
-## Unreleased
+## 27.2.5
 
 - fix(types): `LoggerModule`'s `log`, `warn` and `error` take one array, the way i18next calls them (`log(args)`); they were typed with rest parameters, so a logger typed to spread `...args` got the array as its only argument. Loggers typed either way still compile.
 - fix(types): `I18nFormatModule` declares the members i18next calls: `init`, `parse`, `addLookupKeys`, `handleAsObject` and `getResource`, all optional. It declared only `type`, so an object-literal i18n format with these members failed to compile.
