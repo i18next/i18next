@@ -116,6 +116,15 @@ describe('modules', () => {
           .parameter(0)
           .extract<LoggerModule>()
           .toMatchTypeOf<LoggerModule>();
+
+        // i18next passes the arguments of each log call as one array
+        expectTypeOf<Parameters<LoggerModule['log']>>().toEqualTypeOf<[any[]]>();
+        assertType<LoggerModule>({
+          type: 'logger',
+          log: (args) => console.log(...args),
+          warn: (args) => console.warn(...args),
+          error: (args) => console.error(...args),
+        });
       });
 
       it('as class', () => {
@@ -143,6 +152,20 @@ describe('modules', () => {
     it('I18nFormatModule', () => {
       assertType<I18nFormatModule>({
         type: 'i18nFormat',
+      });
+
+      // the members i18next calls (i18next-icu and i18next-mf2 implement them)
+      assertType<I18nFormatModule>({
+        type: 'i18nFormat',
+        init: (instance) => {
+          expectTypeOf(instance.options).toMatchTypeOf<object>();
+        },
+        parse: (res, _options, lng, _ns, _key, info) => `${res} ${lng} ${info.resolved}`,
+        addLookupKeys: (finalKeys, key) => {
+          finalKeys.push(`${key}_other`);
+        },
+        handleAsObject: false,
+        getResource: () => undefined,
       });
 
       expectTypeOf(i18next.use<I18nFormatModule>)

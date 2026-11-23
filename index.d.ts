@@ -209,13 +209,41 @@ export interface PostProcessorModule extends Module {
  */
 export interface LoggerModule extends Module {
   type: 'logger';
-  log(...args: any[]): void;
-  warn(...args: any[]): void;
-  error(...args: any[]): void;
+  /** i18next passes the arguments of each log call as one array */
+  log(args: any[]): void;
+  warn(args: any[]): void;
+  error(args: any[]): void;
 }
 
+/**
+ * Replaces the i18next message format with another syntax (like i18next-icu or i18next-mf2).
+ * Only one per i18next instance.
+ */
 export interface I18nFormatModule extends Module {
   type: 'i18nFormat';
+  /** Called on `i18next.init` with the instance; by convention the options are in `i18next.options.i18nFormat` */
+  init?(i18next: i18n): void;
+  /**
+   * Called instead of interpolation and nesting; the return value goes through post processing and is
+   * returned by `t`. `res` is the found value, or the default value or key if nothing was found.
+   */
+  parse?(
+    res: any,
+    options: any,
+    lng: string | undefined,
+    ns: string | undefined,
+    key: string | undefined,
+    info: { resolved: any },
+  ): any;
+  /**
+   * Called instead of the plural and context suffix lookup, for each language code and namespace;
+   * push more keys to `finalKeys` (the last one is looked up first).
+   */
+  addLookupKeys?(finalKeys: string[], key: string, code: string, ns: string, options: any): void;
+  /** If true, i18next handles objects and arrays as usual (`returnObjects`, `joinArrays`); else they go to `parse` */
+  handleAsObject?: boolean;
+  /** Replaces the lookup in the resource store */
+  getResource?(code: string, ns: string, key: string, options: any): any;
 }
 
 export interface FormatterModule extends Module, Formatter {

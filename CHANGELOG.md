@@ -1,3 +1,8 @@
+## Unreleased
+
+- fix(types): `LoggerModule`'s `log`, `warn` and `error` take one array, the way i18next calls them (`log(args)`); they were typed with rest parameters, so a logger typed to spread `...args` got the array as its only argument. Loggers typed either way still compile.
+- fix(types): `I18nFormatModule` declares the members i18next calls: `init`, `parse`, `addLookupKeys`, `handleAsObject` and `getResource`, all optional. It declared only `type`, so an object-literal i18n format with these members failed to compile.
+
 ## 27.2.4
 
 - fix(types): `BackendModule.create` takes the parameters i18next passes it: a backend with `callbackApi: true` gets `create(languages, namespace, key, fallbackValue, callback, options)`, one with `callbackApi: false` gets `create(languages, namespace, key, fallbackValue, options)` and may return a promise. The types declared only the first four parameters, so a required fifth or sixth parameter failed to compile and an object-literal backend could not take them at all. One rare case now fails: a `create: (...args) => other.create(...args)` that forwards to a `create` typed with exactly four parameters. The doc comments of `read` and `readMulti` now describe their promise form (`read(language, namespace)` returning the data or a promise of it), which the types already accepted.
