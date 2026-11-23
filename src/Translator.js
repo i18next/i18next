@@ -182,15 +182,18 @@ class Translator extends EventEmitter {
         : '';
     const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
     const sep = this.options.pluralSeparator;
-    const defaultValue =
-      (needsZeroSuffixLookup ? opt[`defaultValue${sep}zero`] : undefined) ??
-      opt[`defaultValue${defaultValueSuffix}`] ??
-      opt[`defaultValue${defaultValueSuffixOrdinalFallback}`] ??
-      // like the lookup: the plain default value first, then the "other" form
+    // like the lookup: the plain default value first, then the "other" form
+    const otherDefaultValue =
       opt.defaultValue ??
       (needsPluralHandling
         ? opt[`defaultValue${opt.ordinal ? `${sep}ordinal${sep}` : sep}other`]
         : undefined);
+    const countDefaultValue =
+      opt[`defaultValue${defaultValueSuffix}`] ??
+      opt[`defaultValue${defaultValueSuffixOrdinalFallback}`] ??
+      otherDefaultValue;
+    const defaultValue =
+      (needsZeroSuffixLookup ? opt[`defaultValue${sep}zero`] : undefined) ?? countDefaultValue;
 
     let resForObjHndl = res;
     if (handleAsObjectInI18nFormat && !res && hasDefaultValue) {
@@ -351,8 +354,16 @@ class Translator extends EventEmitter {
               ) {
                 suffixes.push(`${sep}zero`);
               }
+              // a form without its own default: the form for the count gets what t() resolved
+              // for it, the others the plain or "other" default (the zero default stays in _zero)
               suffixes.forEach((suffix) => {
-                send([language], key + suffix, opt[`defaultValue${suffix}`] ?? defaultValue);
+                send(
+                  [language],
+                  key + suffix,
+                  opt[`defaultValue${suffix}`] ??
+                    (suffix === defaultValueSuffix ? countDefaultValue : otherDefaultValue) ??
+                    defaultValue,
+                );
               });
             });
           } else {

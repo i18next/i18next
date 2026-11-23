@@ -104,4 +104,26 @@ describe('plural fallback to the "other" form', () => {
     i.t('item', { ...defaults, count: 2 });
     expect(i.getResource('en', 'translation', 'item_one')).toBe('');
   });
+
+  it('saves a form without its own default with the plain or "other" default, not the zero one', async () => {
+    const i = await make({ lng: 'en', saveMissing: true, resources: { en: { translation: {} } } });
+    const get = (key) => i.getResource('en', 'translation', key);
+
+    i.t('n', { count: 0, defaultValue_zero: '', defaultValue_other: '{{count}} notifications' });
+    expect(get('n_zero')).toBe('');
+    expect(get('n_one')).toBe('{{count}} notifications');
+    expect(get('n_other')).toBe('{{count}} notifications');
+
+    i.t('m', { count: 0, defaultValue_zero: 'none', defaultValue: 'some' });
+    expect(get('m_zero')).toBe('none');
+    expect(get('m_one')).toBe('some');
+    expect(get('m_other')).toBe('some');
+
+    // the form for the count keeps what t() returned, here the cardinal _one
+    expect(
+      i.t('p', { count: 1, ordinal: true, defaultValue_one: '', defaultValue_ordinal_other: 'th' }),
+    ).toBe('');
+    expect(get('p_ordinal_one')).toBe('');
+    expect(get('p_ordinal_two')).toBe('th');
+  });
 });
