@@ -89,4 +89,19 @@ describe('plural fallback to the "other" form', () => {
       i.t('file', { count: 1000000, defaultValue: 'plain', defaultValue_other: 'plusieurs' }),
     ).toBe('plain');
   });
+
+  it('keeps empty plural defaults when translating and saving missing keys', async () => {
+    const i = await make({ lng: 'en', saveMissing: true, resources: { en: { translation: {} } } });
+    const defaults = { defaultValue_one: '', defaultValue_other: 'other' };
+
+    expect(i.t('file', { ...defaults, count: 0, defaultValue_zero: '' })).toBe('');
+    expect(i.getResource('en', 'translation', 'file_zero')).toBe('');
+    expect(i.t('message', { ...defaults, count: 1 })).toBe('');
+    expect(
+      i.t('place', { ...defaults, count: 1, ordinal: true, defaultValue_ordinal_other: 'other' }),
+    ).toBe('');
+
+    i.t('item', { ...defaults, count: 2 });
+    expect(i.getResource('en', 'translation', 'item_one')).toBe('');
+  });
 });

@@ -183,14 +183,14 @@ class Translator extends EventEmitter {
     const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
     const sep = this.options.pluralSeparator;
     const defaultValue =
-      (needsZeroSuffixLookup && opt[`defaultValue${sep}zero`]) ||
-      opt[`defaultValue${defaultValueSuffix}`] ||
-      opt[`defaultValue${defaultValueSuffixOrdinalFallback}`] ||
+      (needsZeroSuffixLookup ? opt[`defaultValue${sep}zero`] : undefined) ??
+      opt[`defaultValue${defaultValueSuffix}`] ??
+      opt[`defaultValue${defaultValueSuffixOrdinalFallback}`] ??
       // like the lookup: the plain default value first, then the "other" form
-      (opt.defaultValue ??
-        (needsPluralHandling
-          ? opt[`defaultValue${opt.ordinal ? `${sep}ordinal${sep}` : sep}other`]
-          : undefined));
+      opt.defaultValue ??
+      (needsPluralHandling
+        ? opt[`defaultValue${opt.ordinal ? `${sep}ordinal${sep}` : sep}other`]
+        : undefined);
 
     let resForObjHndl = res;
     if (handleAsObjectInI18nFormat && !res && hasDefaultValue) {
@@ -341,15 +341,18 @@ class Translator extends EventEmitter {
           if (this.options.saveMissingPlurals && needsPluralHandling) {
             lngs.forEach((language) => {
               const suffixes = this.pluralResolver.getSuffixes(language, opt);
+              const zeroDefaultValue = opt[`defaultValue${sep}zero`];
+
               if (
                 needsZeroSuffixLookup &&
-                opt[`defaultValue${this.options.pluralSeparator}zero`] &&
-                !suffixes.includes(`${this.options.pluralSeparator}zero`)
+                zeroDefaultValue !== undefined &&
+                zeroDefaultValue !== null &&
+                !suffixes.includes(`${sep}zero`)
               ) {
-                suffixes.push(`${this.options.pluralSeparator}zero`);
+                suffixes.push(`${sep}zero`);
               }
               suffixes.forEach((suffix) => {
-                send([language], key + suffix, opt[`defaultValue${suffix}`] || defaultValue);
+                send([language], key + suffix, opt[`defaultValue${suffix}`] ?? defaultValue);
               });
             });
           } else {
