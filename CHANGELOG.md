@@ -1,3 +1,7 @@
+## 27.2.7
+
+- fix: `addResource`, and with it `saveMissing` writing to the store, keeps a key below a number, a boolean or an array's `length` flat, like it already did below a string, instead of throwing `Cannot create property` or `Invalid array length`. A request to `i18next-http-middleware`'s `missingKeyHandler` with `{"a":5,"a.b":"x"}` got a 500 from that throw.
+
 ## 27.2.6
 
 - fix: an empty plural default value counts, like `defaultValue: ''`: `t('key', { count: 0, defaultValue_zero: '', defaultValue_other: '{{count}} items' })` returns `''` instead of "0 items", and saveMissing saves `''` for a form given as `''` (`key_zero` too) instead of another form's text. A form without its own default saves `defaultValue`, then the `other` default, instead of the default resolved for the current count. Thanks @arba-octo ([#2480](https://github.com/i18next/i18next/pull/2480))
