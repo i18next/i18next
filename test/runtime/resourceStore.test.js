@@ -48,6 +48,25 @@ describe('ResourceStore', () => {
         expect(rs.getResource('de', 'translation', 'nest.object')).to.eql({ something: 'deeper' });
       });
 
+      it('keeps a key below a number, boolean or array flat instead of throwing', () => {
+        // used to throw `Cannot create property 'b' on number '5'` / `Invalid array length`,
+        // e.g. from saveMissing with keys posted to i18next-http-middleware's missingKeyHandler
+        rs.addResource('de', 'translation', 'num', 5);
+        rs.addResource('de', 'translation', 'num.b', 'x');
+        rs.addResource('de', 'translation', 'bool', true);
+        rs.addResource('de', 'translation', 'bool.b.c', 'y');
+        rs.addResource('de', 'translation', 'arr', ['a']);
+        rs.addResource('de', 'translation', 'arr.length', 'z');
+        expect(rs.getResourceBundle('de', 'translation')).to.eql({
+          num: 5,
+          'num.b': 'x',
+          bool: true,
+          'bool.b.c': 'y',
+          arr: ['a'],
+          'arr.length': 'z',
+        });
+      });
+
       it('a language with dots is a language, not language, namespace and key', () => {
         rs.addResource('de_DE.UTF-8', 'translation', 'key', 'value');
         expect(rs.getResource('de_DE.UTF-8', 'translation', 'key')).to.equal('value');

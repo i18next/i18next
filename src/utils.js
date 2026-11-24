@@ -47,7 +47,10 @@ const lastOfPathSeparatorRegExp = /###/g;
 const cleanKey = (key) =>
   key && key.includes('###') ? key.replace(lastOfPathSeparatorRegExp, '.') : key;
 
-const canNotTraverseDeeper = (object) => !object || isString(object);
+// only objects (and functions) hold keys: a string, number or boolean below a key ends the path,
+// so setPath keeps the rest flat instead of throwing on the primitive
+const canNotTraverseDeeper = (object) =>
+  !object || (typeof object !== 'object' && typeof object !== 'function');
 
 const getLastOfPath = (object, path, Empty) => {
   const stack = !isString(path) ? path : path.split('.');
@@ -76,7 +79,8 @@ const getLastOfPath = (object, path, Empty) => {
 
 export const setPath = (object, path, newValue) => {
   const { obj, k } = getLastOfPath(object, path, Object);
-  if (obj !== undefined || path.length === 1) {
+  // an array's length takes no value (`Invalid array length`): such a key stays flat too
+  if ((obj !== undefined && !(Array.isArray(obj) && k === 'length')) || path.length === 1) {
     obj[k] = newValue;
     return;
   }
