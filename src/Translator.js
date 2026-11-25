@@ -3,6 +3,9 @@ import EventEmitter from './EventEmitter.js';
 import { copy as utilsCopy, looksLikeObjectPath, isString } from './utils.js';
 import keysFromSelector from './selector.js';
 
+// 0n too: a BigInt count looks up the _zero form as 0 does
+const isZeroCount = (count) => count === 0 || (typeof count === 'bigint' && !count);
+
 const shouldHandleAsObject = (res) =>
   !isString(res) && typeof res !== 'boolean' && typeof res !== 'number';
 
@@ -180,7 +183,7 @@ class Translator extends EventEmitter {
       opt.ordinal && needsPluralHandling
         ? this.pluralResolver.getSuffix(lng, opt.count, { ordinal: false })
         : '';
-    const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
+    const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && isZeroCount(opt.count);
     const sep = this.options.pluralSeparator;
     // like the lookup: the plain default value first, then the "other" form
     const otherDefaultValue =
@@ -518,7 +521,7 @@ class Translator extends EventEmitter {
       if (this.options.fallbackNS) namespaces = namespaces.concat(this.options.fallbackNS);
 
       const needsPluralHandling = opt.count !== undefined && !isString(opt.count);
-      const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && opt.count === 0;
+      const needsZeroSuffixLookup = needsPluralHandling && !opt.ordinal && isZeroCount(opt.count);
       const needsContextHandling =
         opt.context !== undefined &&
         (isString(opt.context) || typeof opt.context === 'number') &&
