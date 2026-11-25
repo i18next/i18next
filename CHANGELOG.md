@@ -1,4 +1,4 @@
-## Unreleased
+## 27.2.9
 
 - fix: `t('item', { count: 2n })` picks the plural form instead of throwing `TypeError: Cannot convert a BigInt value to a number`: a BigInt `count` (as some database drivers return for `COUNT(*)`) is converted to a number for `Intl.PluralRules`, `{{count}}` still gets the BigInt, and `0n` looks up `_zero` like `0`. Above `Number.MAX_SAFE_INTEGER` the form follows the rounded number. Thanks @Asimmimx ([#2484](https://github.com/i18next/i18next/pull/2484))
 
