@@ -647,6 +647,38 @@ describe('LanguageUtils', () => {
     });
   });
 
+  describe('a language code without subtags in any casing', () => {
+    const tests = [
+      // a region of the same language, as for 'en' and 'EN-GB'
+      { options: { supportedLngs: ['en-US', 'de-DE'] }, codes: ['EN'], expected: 'en-US' },
+      { options: { supportedLngs: ['en-US', 'de-DE'] }, codes: ['De'], expected: 'de-DE' },
+      { options: { supportedLngs: ['en-US', 'de-DE'] }, codes: ['EN-GB'], expected: 'en-US' },
+      {
+        options: { supportedLngs: ['en-US'], lowerCaseLng: true },
+        codes: ['EN'],
+        expected: 'en-us',
+      },
+      // cleanCode: false keeps a code without subtags as written, so 'EN' is not 'en'
+      { options: { supportedLngs: ['en-US'], cleanCode: false }, codes: ['EN'], expected: 'dev' },
+    ];
+
+    tests.forEach(({ options, codes, expected }) => {
+      it(`matches ${JSON.stringify(codes)} with ${JSON.stringify(options)}`, () => {
+        const cu = new LanguageUtils({ fallbackLng: 'dev', ...options });
+        expect(cu.getBestMatchFromCodes(codes)).to.eql(expected);
+      });
+    });
+
+    it('gets the formatted language part', () => {
+      const cu = new LanguageUtils({});
+      expect(cu.getLanguagePartFromCode('EN')).to.eql('en');
+      expect(cu.getLanguagePartFromCode('EN-GB')).to.eql('en');
+      expect(cu.getLanguagePartFromCode('')).to.eql('');
+      expect(cu.getLanguagePartFromCode(undefined)).to.eql(undefined);
+      expect(new LanguageUtils({ cleanCode: false }).getLanguagePartFromCode('EN')).to.eql('EN');
+    });
+  });
+
   describe('getBestMatchFromCodes() with dev and nonExplicitSupportedLngs: true', () => {
     /** @type {LanguageUtils} */
     let cu;

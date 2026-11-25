@@ -29,7 +29,9 @@ class LanguageUtil {
 
   getLanguagePartFromCode(code) {
     code = getCleanedCode(code);
-    if (!code || !code.includes('-')) return code;
+    if (!code) return code;
+    // formatted like the language part of a code with subtags: 'AR' is 'ar' as 'AR-EG' gives 'ar'
+    if (!code.includes('-')) return this.formatLanguageCode(code);
 
     const p = code.split('-');
     return this.formatLanguageCode(p[0]);
