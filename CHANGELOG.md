@@ -1,3 +1,7 @@
+## Unreleased
+
+- fix(types): a `t()` call with `context` looks the key up along its own path in the namespace it names, instead of matching it against every key of every namespace. With several large namespaces each such call cost up to millions of type instantiations and could fail with TS2589, a literal `context: 'x'` soonest. A context value without a key is still an error, as since 25.9.0 ([#2482](https://github.com/i18next/i18next/issues/2482))
+
 ## 27.2.7
 
 - fix: `addResource`, and with it `saveMissing` writing to the store, keeps a key below a number, a boolean or an array's `length` flat, like it already did below a string, instead of throwing `Cannot create property` or `Invalid array length`. A request to `i18next-http-middleware`'s `missingKeyHandler` with `{"a":5,"a.b":"x"}` got a 500 from that throw.
