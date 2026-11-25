@@ -565,26 +565,116 @@ export type KeyWithContext<Key, TOpt extends TOptions> = _NoStrictNullChecks ext
     ? `${Key & string}${_ContextSeparator}${TOpt['context']}`
     : Key;
 
+/**
+ * The type of `context` for a key: `string` when the key also exists without a
+ * context, else the passed context values that have a key of their own
+ * (`${key}${_ContextSeparator}${context}`, plural forms included). The key is
+ * looked up along its path in the namespace it names (`ns:`, else the first
+ * namespace with the key prefix, and the fallback namespace): matched against
+ * the keys of all namespaces, every key cost the size of all resources.
+ */
 export type ContextOfKey<
   Key extends string,
   Ns extends Namespace = DefaultNamespace,
   TOpt extends TOptions = {},
   KPrefix = undefined,
+  ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
+  Objects = TOpt['returnObjects'] extends true ? true : _ReturnObjects,
+> = $IsResourcesDefined extends true
+  ? _OrScan<
+      | _ContextIn<
+          Resources[$FirstNamespace<ActualNS> & keyof Resources],
+          AppendKeyPrefix<Key, KPrefix> & string,
+          TOpt['context'],
+          Objects
+        >
+      | (ActualNS extends readonly (infer NsList)[]
+          ? Key extends `${infer N extends NsList & keyof Resources & string}${_NsSeparator}${infer Rest}`
+            ? _ContextIn<Resources[N], Rest, TOpt['context'], Objects>
+            : never
+          : never)
+      | _ContextIn<
+          FallbackResourcesOf<_FallbackNamespace, Resources>,
+          Key,
+          TOpt['context'],
+          Objects
+        >,
+      Key,
+      Ns,
+      TOpt,
+      KPrefix
+    >
+  : string;
+
+/** A key the walk does not find (a key segment with a `.` in it): all keys are matched. */
+type _OrScan<R, Key extends string, Ns extends Namespace, TOpt extends TOptions, KPrefix> = [
+  R,
+] extends [never]
+  ? _ContextOfKeyScan<Key, Ns, TOpt, KPrefix>
+  : R;
+
+type _ContextOfKeyScan<
+  Key extends string,
+  Ns extends Namespace,
+  TOpt extends TOptions,
+  KPrefix,
   Keys extends $Dictionary = KeysByTOptions<TOpt>,
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
   ActualKeys =
     | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
     | ParseKeysByNamespaces<ActualNS, Keys>
     | ParseKeysByFallbackNs<Keys>,
-> = $IsResourcesDefined extends true
-  ? Key extends ActualKeys
+> = Key extends ActualKeys
+  ? string
+  : ActualKeys extends
+        | `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}`
+        | `${Key}${_ContextSeparator}${infer Context}`
+    ? Context
+    : never;
+
+/** Walks `Key` down `Res`, then checks its last segment and its context keys there. */
+type _ContextIn<
+  Res,
+  Key extends string,
+  Context,
+  Objects,
+> = Key extends `${infer K1}${_KeySeparator}${infer Rest}`
+  ? _ContextIn<
+      Res extends readonly unknown[]
+        ? K1 extends `${infer I extends number}`
+          ? Res[I]
+          : never
+        : _ValueOf<Res, K1>,
+      Rest,
+      Context,
+      Objects
+    >
+  : _HasKey<Res, Key, Objects> extends true
     ? string
-    : ActualKeys extends
-          | `${Key}${_ContextSeparator}${infer Context}${_PluralSeparator}${PluralSuffix}`
-          | `${Key}${_ContextSeparator}${infer Context}`
-      ? Context
-      : never
-  : string;
+    : Context extends string
+      ? _IsLiteral<Context> extends true
+        ? _HasKey<Res, `${Key}${_ContextSeparator}${Context}`, Objects> extends true
+          ? Context
+          : never
+        : never
+      : never;
+
+/** Whether `Res` has `Key` or a plural form of it (an object only with `returnObjects`). */
+type _HasKey<Res, Key extends string, Objects> =
+  _ValueOf<
+    Res,
+    | Key
+    | `${Key}${_PluralSeparator}${PluralSuffix}`
+    | `${Key}${_PluralSeparator}ordinal${_PluralSeparator}${PluralSuffix}`
+  > extends infer V
+    ? [V] extends [never]
+      ? false
+      : Objects extends true
+        ? true
+        : _IsBranch<V> extends true
+          ? false
+          : true
+    : never;
 
 // helper that maps the configured fallbackNS value to the matching resources slice
 export type FallbackResourcesOf<FallbackNS, R> = FallbackNS extends readonly (infer FN)[]
@@ -818,7 +908,7 @@ export interface TFunctionStrict<
     key: Key | Key[],
     options: TOpt &
       _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-        context?: Key extends string
+        context?: [Key] extends [string]
           ? unknown extends TOpt['context']
             ? TOpt['context']
             : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
@@ -846,7 +936,7 @@ export interface TFunctionStrict<
     defaultValue: string,
     options: TOpt &
       _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-        context?: Key extends string
+        context?: [Key] extends [string]
           ? unknown extends TOpt['context']
             ? TOpt['context']
             : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
@@ -878,14 +968,14 @@ export interface TFunctionNonStrict<
     Ret extends TFunctionReturn<Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt>,
     const ActualOptions extends Omit<TOpt, 'context'> &
       _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-        context?: Key extends string
+        context?: [Key] extends [string]
           ? unknown extends TOpt['context']
             ? TOpt['context']
             : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
           : never;
       } = TOpt &
       _OptionsMap<Ret, Ns, AppendKeyPrefix<Key, EffectiveKPrefix<KPrefix, TOpt>>, TOpt> & {
-        context?: Key extends string
+        context?: [Key] extends [string]
           ? unknown extends TOpt['context']
             ? TOpt['context']
             : ContextOfKey<Key, Ns, TOpt, EffectiveKPrefix<KPrefix, TOpt>>
