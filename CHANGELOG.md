@@ -1,4 +1,4 @@
-## Unreleased
+## 27.2.8
 
 - fix(types): a `t()` call with `context` looks the key up along its own path in the namespace it names, instead of matching it against every key of every namespace. With several large namespaces each such call cost up to millions of type instantiations and could fail with TS2589, a literal `context: 'x'` soonest. A context value without a key is still an error, as since 25.9.0 ([#2482](https://github.com/i18next/i18next/issues/2482))
 - fix: a language code without subtags gets its language part in the same casing as a code with subtags: with `supportedLngs: ['en-US']`, `'EN'` (from `?lng=EN` or a capitalised cookie) matches `'en-US'` like `'en'` and `'EN-GB'` already did, instead of falling back to `fallbackLng`, and `dir('AR')` returns `'rtl'` where `Intl.Locale` has no `getTextInfo()`. Thanks @anishkun ([#2483](https://github.com/i18next/i18next/pull/2483))
