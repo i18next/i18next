@@ -63,5 +63,11 @@ describe('i18next.use()', () => {
     it('returns ltr without a language', () => {
       expect(i18next.createInstance().dir()).to.equal('ltr');
     });
+
+    it('returns rtl for a right-to-left code without subtags in any casing', () => {
+      const instance = i18next.createInstance();
+      ['ar', 'AR', 'He', 'AR-EG'].forEach((lng) => expect(instance.dir(lng)).to.equal('rtl'));
+      expect(instance.dir('EN')).to.equal('ltr');
+    });
   });
 });
