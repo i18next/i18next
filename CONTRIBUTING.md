@@ -1,4 +1,8 @@
-# Developer's Certificate of Origin
+# Contributing
+
+What we merge and how we release: [CONTRIBUTING.md of the i18next organisation](https://github.com/i18next/.github/blob/master/CONTRIBUTING.md). This page adds the Developer's Certificate of Origin and how to run the tests of this repository.
+
+## Developer's Certificate of Origin
 
 By making a contribution to this project, I certify that:
 
