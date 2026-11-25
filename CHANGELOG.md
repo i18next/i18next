@@ -1,3 +1,7 @@
+## Unreleased
+
+- fix: `t('item', { count: 2n })` picks the plural form instead of throwing `TypeError: Cannot convert a BigInt value to a number`: a BigInt `count` (as some database drivers return for `COUNT(*)`) is converted to a number for `Intl.PluralRules`, `{{count}}` still gets the BigInt, and `0n` looks up `_zero` like `0`. Above `Number.MAX_SAFE_INTEGER` the form follows the rounded number. Thanks @Asimmimx ([#2484](https://github.com/i18next/i18next/pull/2484))
+
 ## 27.2.8
 
 - fix(types): a `t()` call with `context` looks the key up along its own path in the namespace it names, instead of matching it against every key of every namespace. With several large namespaces each such call cost up to millions of type instantiations and could fail with TS2589, a literal `context: 'x'` soonest. A context value without a key is still an error, as since 25.9.0 ([#2482](https://github.com/i18next/i18next/issues/2482))
