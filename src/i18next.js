@@ -769,7 +769,8 @@ class I18n extends EventEmitter {
     const languageUtils = this.services?.languageUtils || new LanguageUtils(getDefaults()) // for uninitialized usage
     if (lng.toLowerCase().indexOf('-latn') > 1) return 'ltr';
 
-    return rtlLngs.includes(languageUtils.getLanguagePartFromCode(lng)) || lng.toLowerCase().indexOf('-arab') > 1
+    // the list is lowercase: with cleanCode: false the language part keeps its casing ('AR')
+    return rtlLngs.includes(languageUtils.getLanguagePartFromCode(lng)?.toLowerCase()) || lng.toLowerCase().indexOf('-arab') > 1
       ? 'rtl'
       : 'ltr';
   }

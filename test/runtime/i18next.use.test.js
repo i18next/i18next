@@ -69,5 +69,21 @@ describe('i18next.use()', () => {
       ['ar', 'AR', 'He', 'AR-EG'].forEach((lng) => expect(instance.dir(lng)).to.equal('rtl'));
       expect(instance.dir('EN')).to.equal('ltr');
     });
+
+    it('returns rtl for a capitalised code without Intl.Locale#getTextInfo, also with cleanCode: false', async () => {
+      // Node 22 and some browsers have no getTextInfo: dir() then compares with its own lowercase list
+      const desc = Object.getOwnPropertyDescriptor(Intl.Locale.prototype, 'getTextInfo');
+      delete Intl.Locale.prototype.getTextInfo;
+      try {
+        for (const options of [{}, { cleanCode: false }]) {
+          const instance = i18next.createInstance();
+          await instance.init({ ...options, initAsync: false });
+          ['ar', 'AR', 'He', 'AR-EG'].forEach((lng) => expect(instance.dir(lng)).to.equal('rtl'));
+          expect(instance.dir('EN')).to.equal('ltr');
+        }
+      } finally {
+        if (desc) Object.defineProperty(Intl.Locale.prototype, 'getTextInfo', desc);
+      }
+    });
   });
 });
