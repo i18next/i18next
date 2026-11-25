@@ -86,7 +86,9 @@ class PluralResolver {
     const rule = this.getRule(code, options);
 
     if (rule) {
-      return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(count)}`;
+      // Intl.PluralRules takes a number only: a BigInt count (e.g. a COUNT(*) from a database driver) threw
+      const n = typeof count === 'bigint' ? Number(count) : count;
+      return `${this.options.prepend}${options.ordinal ? `ordinal${this.options.prepend}` : ''}${rule.select(n)}`;
     }
 
     this.logger.warn(`no plural rule found for: ${code}`);

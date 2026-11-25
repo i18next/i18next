@@ -180,5 +180,17 @@ describe('Translator', () => {
         expect(t.translate.apply(t, test.args)).toEqual(test.expected);
       });
     });
+
+    // listed apart: JSON.stringify() in the test names above throws on a BigInt
+    it('correctly translates for a BigInt count', () => {
+      expect(t.translate('translation:test', { count: 1n })).toEqual('test_en');
+      expect(t.translate('translation:test', { count: 2n })).toEqual('tests_en');
+      expect(t.translate('translationWithZero:test', { count: 0n })).toEqual('test_zero');
+      expect(t.translate('translation:test', { count: 0n, lng: 'ar' })).toEqual('tests_ar_zero');
+      expect(t.translate('translation:test', { count: 3n, lng: 'ar' })).toEqual('tests_ar_few');
+      expect(t.translate('translation:pos_test', { count: 2n, ordinal: true })).toEqual(
+        'pos_test_en_two',
+      );
+    });
   });
 });
