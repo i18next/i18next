@@ -52,6 +52,7 @@ describe('i18next.translation.formatting', () => {
                   keyCustomCachedFormatWithColon:
                     'Before {{date, customDateCached(format: EEEE d MMMM yyyy HH:mm; otherParam: 0)}}',
                   customFormatWithSeparator: "Hello {{myVar, join(separator: ' | ')}}",
+                  customFormatWithSpaceSeparator: "Hello {{myVar, join(separator: ' ')}}",
                   customFormatWithSeparatorComma: "Hello {{myVar, join(separator: ', ')}}",
                   customFormatWithSeparatorCommaNotFirst:
                     "Hello {{myVar, upper, join(separator: ', ')}}",
@@ -290,6 +291,10 @@ describe('i18next.translation.formatting', () => {
       {
         args: ['customFormatWithSeparator', { myVar: ['here', 'there'] }],
         expected: 'Hello here | there',
+      },
+      {
+        args: ['customFormatWithSpaceSeparator', { myVar: ['Anna', 'Smith'] }],
+        expected: 'Hello Anna Smith',
       },
       {
         args: ['customFormatWithSeparatorComma', { myVar: ['here', 'there'] }],
