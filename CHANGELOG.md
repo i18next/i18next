@@ -1,4 +1,4 @@
-## Unreleased
+## 27.2.10
 
 - fix: a formatter option that is empty or only whitespace in quotes stays a string instead of becoming `NaN`: `{{name, join(separator: ' ')}}` passes `' '` to the formatter, so a custom `join` writes "Anna Smith" instead of "AnnaNaNSmith". Thanks @arba-octo ([#2485](https://github.com/i18next/i18next/pull/2485))
 - perf: `t()` runs the natural-language key check only for a key that contains the namespace separator, instead of twice on every call. With the default separators `t()` is about 30% faster; the results do not change. Thanks @ximex ([#2486](https://github.com/i18next/i18next/issues/2486))
