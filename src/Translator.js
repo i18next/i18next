@@ -71,7 +71,9 @@ class Translator extends EventEmitter {
 
     let namespaces = opt.ns || this.options.defaultNS || [];
     const wouldCheckForNsInKey = nsSeparator && key.includes(nsSeparator);
+    // Only read for a key with the namespace separator: skip the regex for every other key.
     const seemsNaturalLanguage =
+      wouldCheckForNsInKey &&
       !this.options.userDefinedKeySeparator &&
       !opt.keySeparator &&
       !this.options.userDefinedNsSeparator &&
