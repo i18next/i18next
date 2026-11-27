@@ -1,3 +1,9 @@
+## Unreleased
+
+- fix: a formatter option that is empty or only whitespace in quotes stays a string instead of becoming `NaN`: `{{name, join(separator: ' ')}}` passes `' '` to the formatter, so a custom `join` writes "Anna Smith" instead of "AnnaNaNSmith". Thanks @arba-octo ([#2485](https://github.com/i18next/i18next/pull/2485))
+- perf: `t()` runs the natural-language key check only for a key that contains the namespace separator, instead of twice on every call. With the default separators `t()` is about 30% faster; the results do not change. Thanks @ximex ([#2486](https://github.com/i18next/i18next/issues/2486))
+- perf: without `debug`, `t()` looks a missing key up once instead of twice. The second lookup only fed the debug warning about flat JSON, so output and logs do not change. Thanks @ximex ([#2487](https://github.com/i18next/i18next/issues/2487))
+
 ## 27.2.9
 
 - fix: `t('item', { count: 2n })` picks the plural form instead of throwing `TypeError: Cannot convert a BigInt value to a number`: a BigInt `count` (as some database drivers return for `COUNT(*)`) is converted to a number for `Intl.PluralRules`, `{{count}}` still gets the BigInt, and `0n` looks up `_zero` like `0`. Above `Number.MAX_SAFE_INTEGER` the form follows the rounded number. Thanks @Asimmimx ([#2484](https://github.com/i18next/i18next/pull/2484))
