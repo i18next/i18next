@@ -302,7 +302,8 @@ class Translator extends EventEmitter {
             : key,
           updateMissing ? defaultValue : res,
         );
-        if (keySeparator) {
+        // The second lookup only feeds a debug-only warning: skip it without debug.
+        if (keySeparator && this.logger.debug) {
           const fk = this.resolve(key, { ...opt, keySeparator: false });
           if (fk && fk.res)
             this.logger.warn(
