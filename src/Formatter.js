@@ -31,7 +31,7 @@ const parseFormatStr = (formatStr) => {
           if (!formatOptions[trimmedKey]) formatOptions[trimmedKey] = val;
           if (val === 'false') formatOptions[trimmedKey] = false;
           if (val === 'true') formatOptions[trimmedKey] = true;
-          if (!isNaN(val)) formatOptions[trimmedKey] = parseInt(val, 10);
+          if (!isNaN(val) && val.trim() !== '') formatOptions[trimmedKey] = parseInt(val, 10);
         }
       });
     }
